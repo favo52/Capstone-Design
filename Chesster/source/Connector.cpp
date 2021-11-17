@@ -1,6 +1,8 @@
 #include "Connector.h"
 #include "assert.h"
 
+// "... do as the Romans do."
+
 namespace Chesster
 {
 	Connector::Connector() :
@@ -18,17 +20,6 @@ namespace Chesster
 		// Set up members of the PROCESS_INFORMATION structure.
 		ZeroMemory(&m_ProcessInfo, sizeof(STARTUPINFO));
 
-		// Fill buffer with zeros
-		ZeroMemory(m_Buffer, sizeof(m_Buffer));
-	}
-
-	Connector::~Connector()
-	{
-		CloseConnections();
-	}
-
-	void Connector::ConnectToEngine(LPWSTR path)
-	{
 		// Set the bInheritHandle flag so pipe handles are inherited.
 		m_SecAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 		m_SecAttr.bInheritHandle = TRUE;
@@ -49,6 +40,17 @@ namespace Chesster
 		m_StartInfo.hStdOutput = m_Pipe_OUT_Wr;
 		m_StartInfo.hStdError = m_Pipe_OUT_Wr;
 
+		// Setup buffer
+		ZeroMemory(m_Buffer, BUFSIZE);
+	}
+
+	Connector::~Connector()
+	{
+		CloseConnections();
+	}
+
+	void Connector::ConnectToEngine(LPWSTR path)
+	{
 		// Create the child process
 		m_Success = CreateProcess(NULL, path, NULL, NULL, TRUE, 0, NULL, NULL, &m_StartInfo, &m_ProcessInfo);
 		if (!m_Success)
@@ -57,63 +59,71 @@ namespace Chesster
 			return;
 		}
 
-		//// Check if Engine is ready
-		m_Success = WriteFile(m_Pipe_IN_Wr, "isready\n", sizeof("isready\n"), &m_Written, NULL);
-		//if (!m_Success)
-		//{
-		//	printf("WriteFile \"isready\" failed (%d).\n", GetLastError());
-		//	return;
-		//}
-		Sleep(500);
+		// Check if engine is ready
+		CHAR str[] = "uci\nisready\nsetoption name Skill Level value 1\n";
+		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
+		Sleep(150);
 
-		// Read Engine's response
+		// Read engine's reply
 		std::string msg;
 		do
 		{
-			ZeroMemory(m_Buffer, sizeof(m_Buffer));
-			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, sizeof(m_Buffer), &m_Read, NULL);
+			ZeroMemory(m_Buffer, BUFSIZE);
+			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
 			if (!m_Success || m_Read == 0) break;
+
 			msg += (char*)m_Buffer;
-			std::cout << msg;
+
 		} while (m_Read >= sizeof(m_Buffer));
+		std::cout << msg;
+
+		CHAR setLevel[] = "setoption name Skill Level value 0\n";
+		WriteFile(m_Pipe_IN_Wr, setLevel, strlen(setLevel), &m_Written, NULL);
+		CHAR setErr[] = "setoption name Skill Level Maximum Error value 900\n";
+		WriteFile(m_Pipe_IN_Wr, setErr, strlen(setErr), &m_Written, NULL);
+		CHAR setProb[] = "setoption name Skill Level Probability value 10\n";
+		WriteFile(m_Pipe_IN_Wr, setProb, strlen(setProb), &m_Written, NULL);
+
 	}
 
-	std::string Connector::getNextMove(std::string chessMove)
+	std::string Connector::getNextMove(const std::string& chessMove)
 	{
-		std::string computerMove;
-		chessMove = "position startpos moves " + chessMove + "\ngo\n";
+		std::string msg = { "position startpos moves " + chessMove + "\ngo depth 1\n" };
 
-		WriteFile(m_Pipe_IN_Wr, chessMove.c_str(), chessMove.length(), &m_Written, NULL);
-		Sleep(500);
+		// Send postion to engine
+		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);
+		Sleep(150);
 
-		PeekNamedPipe(m_Pipe_OUT_Rd, m_Buffer, sizeof(m_Buffer), &m_Read, &m_BytesAvailable, NULL);
+		msg.clear();
+		// Read engine's reply
 		do
 		{
-			ZeroMemory(m_Buffer, sizeof(m_Buffer));
-			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, sizeof(m_Buffer), &m_Read, NULL);
+			ZeroMemory(m_Buffer, BUFSIZE);
+			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
 			if (!m_Success || m_Read == 0) break;
 
-			//m_Buffer[m_Read] = 0;
-			computerMove += (char*)m_Buffer;
-			std::cout << "Stockfish: " << computerMove;
-		} while (m_Read >= sizeof(m_Buffer));
+			msg += (char*)m_Buffer;
 
-		int n = computerMove.find("bestmove");
-		if (n != -1) // if it's found
-			return computerMove.substr(n + 9, 4); // subtract "bestmove ", grab next 4
+		} while (m_Read >= sizeof(m_Buffer));
+		std::cout << msg;
+
+		int found = msg.find("bestmove");
+		if (found != std::string::npos)
+			return msg.substr(found + 9, 4); // subtract "bestmove ", grab next 4 (the notation)
 
 		return "error";
 	}
 
 	void Connector::CloseConnections()
 	{
-		WriteFile(m_Pipe_IN_Wr, "quit\n", 5, &m_Written, NULL);
+		CHAR str[] = "quit\n";
+		WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
 
 		// Close process and thread handles.
-		if (m_Pipe_IN_Wr != NULL) CloseHandle(m_Pipe_IN_Wr);
-		if (m_Pipe_IN_Rd != NULL) CloseHandle(m_Pipe_IN_Rd);
-		if (m_Pipe_OUT_Wr != NULL) CloseHandle(m_Pipe_OUT_Wr);
-		if (m_Pipe_OUT_Rd != NULL) CloseHandle(m_Pipe_OUT_Rd);
+		CloseHandle(m_Pipe_IN_Wr);
+		CloseHandle(m_Pipe_IN_Rd);
+		CloseHandle(m_Pipe_OUT_Wr);
+		CloseHandle(m_Pipe_OUT_Rd);
 		CloseHandle(m_ProcessInfo.hProcess);
 		CloseHandle(m_ProcessInfo.hThread);
 

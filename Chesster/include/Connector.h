@@ -9,7 +9,7 @@
 
 namespace Chesster
 {
-	constexpr unsigned int BUFSIZE{ 2048 };
+	constexpr DWORD BUFSIZE{ 2048 };
 
 	class Connector
 	{
@@ -18,7 +18,7 @@ namespace Chesster
 		~Connector();
 
 		void ConnectToEngine(LPWSTR path);
-		std::string getNextMove(std::string position);
+		std::string getNextMove(const std::string& position);
 
 	private:
 		void CloseConnections();
@@ -29,7 +29,7 @@ namespace Chesster
 		PROCESS_INFORMATION m_ProcessInfo;
 		HANDLE m_Pipe_IN_Rd, m_Pipe_IN_Wr, m_Pipe_OUT_Rd, m_Pipe_OUT_Wr;
 		BYTE m_Buffer[BUFSIZE];
-		DWORD m_Read, m_Written, excode, m_BytesAvailable;
+		DWORD m_Read, m_Written;
 		BOOL m_Success;
 	};
 }

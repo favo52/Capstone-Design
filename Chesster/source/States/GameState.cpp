@@ -30,7 +30,7 @@ namespace Chesster
         m_Turn{ 1 }
 	{
         // Connect to Stockfish engine
-        wchar_t path[] = L"resources/engines/stockfish.exe";
+        wchar_t path[] = L"resources/engines/stockfish_14_x64_avx2.exe";
         m_Connector.ConnectToEngine(path);
 
         // Set font
@@ -75,6 +75,8 @@ namespace Chesster
         {
             // Get stockfish's next move
             m_Str = m_Connector.getNextMove(m_ChessPosition);
+            if (m_Str == "error")
+                return true;
 
             m_oldPos = ToCoord(m_Str[0], m_Str[1]);
             m_newPos = ToCoord(m_Str[2], m_Str[3]);
@@ -260,7 +262,12 @@ namespace Chesster
                 m_Pieces[i].setPosition(newPos * m_PieceOffset);
 
         // Castling
-        if (notation == "e1g1") if (m_ChessPosition.find("e1") == -1) Move("h1f1");
+        if (notation == "e1g1")
+            if (m_ChessPosition.find("e1") == -1)
+            {
+                Move("h1f1");
+                m_ChessPosition += std::string("h1f1") + " ";
+            };
         if (notation == "e8g8") if (m_ChessPosition.find("e8") == -1) Move("h8f8");
         if (notation == "e1c1") if (m_ChessPosition.find("e1") == -1) Move("a1d1");
         if (notation == "e8c8") if (m_ChessPosition.find("e8") == -1) Move("a8d8");
