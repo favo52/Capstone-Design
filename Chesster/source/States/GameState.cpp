@@ -46,7 +46,7 @@ namespace Chesster
         sf::Texture& pieceTexture = context.textures->Get(Textures::Pieces);
         for (int i = 0; i < TOTAL_PIECES; i++)
             m_Pieces[i].setTexture(pieceTexture);
-
+        m_Board.Init();
         LoadPositions();
 	}
 
