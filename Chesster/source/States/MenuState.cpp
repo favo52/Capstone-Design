@@ -77,13 +77,15 @@ namespace Chesster
 				}
 				else if (m_CurrentOption == MenuOptions::Settings)
 				{
-					// TODO: Design a SettingsState
+					// TODO: Implement a SettingsState
+					// SettingsState allows the user to adjust the difficulty level of the engine
+					
 					//RequestStackPush(States::SettingsState);
 				}
 				else if (m_CurrentOption == MenuOptions::Exit)
 				{
-					// The exit option was chosen, by removing itself,
-					// the stack will be empty, and the game will know it is time to close.
+					// By removing itself, the stack will be empty,
+					// and the application will know it is time to close.
 					RequestStackPop();
 				}
 			} break;

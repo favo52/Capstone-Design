@@ -12,7 +12,7 @@ namespace Chesster
 
     GameState::GameState(StateStack& stack, Context context) :
         State{ stack, context },
-        m_Pieces{},
+        m_Pieces{ nullptr },
         m_PieceSize{ 80 },
         m_isMove{ false },
         m_Dx{ 0.0f },
@@ -42,12 +42,19 @@ namespace Chesster
         m_Bounds = m_BoardSprite.getLocalBounds();
 
         // Prepare pieces
+        m_Pieces = new sf::Sprite[TOTAL_PIECES];
         sf::Texture& pieceTexture = context.textures->Get(Textures::Pieces);
         for (int i = 0; i < TOTAL_PIECES; i++)
             m_Pieces[i].setTexture(pieceTexture);
 
         LoadPositions();
 	}
+
+    GameState::~GameState()
+    {
+        delete[] m_Board;
+        delete[] m_Pieces;
+    }
 
 	void GameState::Draw()
 	{
@@ -113,9 +120,13 @@ namespace Chesster
 
             m_Pieces[m_PieceIndex].setPosition(m_newPos * m_PieceOffset);
             m_isComputerTurn = false;
+
+            // Print entire game so far
+            std::cout << '\n' << m_Turn << ". " << m_ChessPosition << ' ';
+            ++m_Turn;
         }
 
-        if (m_isMove)
+        if (m_isMove) // dragging a piece
             m_Pieces[m_PieceIndex].setPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy);
 
 		return true;
@@ -177,8 +188,7 @@ namespace Chesster
                     m_Str = ToChessNotation(m_oldPos) + ToChessNotation(m_newPos);
                     
                     // Print move
-                    std::cout << m_Turn << ". " << m_Str << '\n';
-                    ++m_Turn;
+                    //std::cout << m_Turn << ". " << m_ChessPosition << '\n';
 
                     Move(m_Str); // remove piece
 
@@ -210,10 +220,10 @@ namespace Chesster
         constexpr int RANK{ 8 };
         int pieceIndex{ 0 };
 
-        for (int col = 0; col < RANK; col++)
-            for (int row = 0; row < RANK; row++)
+        for (int y = 0; y < RANK; y++)
+            for (int x = 0; x < RANK; x++)
             {
-                int boardSquare = m_Board[col][row];
+                int boardSquare = m_Board[x + y * RANK];
                 if (!boardSquare)
                     continue;
 
@@ -222,11 +232,11 @@ namespace Chesster
 
                 // Set textures from image
                 m_Pieces[pieceIndex].setTextureRect(sf::IntRect(m_PieceSize * xPos, m_PieceSize * yPos, m_PieceSize, m_PieceSize));
-                m_Pieces[pieceIndex].setPosition((m_PieceSize * row * m_PieceOffset), (m_PieceSize * col * m_PieceOffset));
+                m_Pieces[pieceIndex].setPosition((m_PieceSize * x * m_PieceOffset), (m_PieceSize * y * m_PieceOffset));
                 ++pieceIndex;
             }
 
-        for (int i = 0; i < m_ChessPosition.length(); i += 5)
+        for (int i = 0; i < m_ChessPosition.length(); i += 5) // 5 because "d2d4" (for example) + whitespace
             Move(m_ChessPosition.substr(i, 4));
     }
 
@@ -261,15 +271,26 @@ namespace Chesster
             if (m_Pieces[i].getPosition() / m_PieceOffset == oldPos)
                 m_Pieces[i].setPosition(newPos * m_PieceOffset);
 
-        // Castling
-        if (notation == "e1g1")
-            if (m_ChessPosition.find("e1") == -1)
+        // Castling             // If king has not been moved
+        if (notation == "e1g1") if (m_ChessPosition.find("e1") == std::string::npos)
             {
                 Move("h1f1");
-                m_ChessPosition += std::string("h1f1") + " ";
+                m_ChessPosition += std::string("h1f1 h1f1 ");
             };
-        if (notation == "e8g8") if (m_ChessPosition.find("e8") == -1) Move("h8f8");
-        if (notation == "e1c1") if (m_ChessPosition.find("e1") == -1) Move("a1d1");
-        if (notation == "e8c8") if (m_ChessPosition.find("e8") == -1) Move("a8d8");
+        if (notation == "e8g8") if (m_ChessPosition.find("e8") == std::string::npos)
+        {
+            Move("h8f8");
+            //m_ChessPosition += std::string("0000") + " h8f8 ";
+        }
+        if (notation == "e1c1") if (m_ChessPosition.find("e1") == std::string::npos)
+        {
+            Move("a1d1");
+            //m_ChessPosition += std::string("a1d1") + " ";
+        }
+        if (notation == "e8c8") if (m_ChessPosition.find("e8") == std::string::npos)
+        {
+            Move("a8d8");
+            //m_ChessPosition += std::string("a8d8") + " ";
+        }
     }
 }

@@ -60,8 +60,15 @@ namespace Chesster
 		}
 
 		// Check if engine is ready
-		CHAR str[] = "uci\nisready\nsetoption name Skill Level value 1\n";
+		CHAR str[] = "uci\nisready\n";
 		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
+		Sleep(150);
+
+		// Set difficulty level
+		CHAR setSkillLevel[] = "setoption name Skill Level value 0\n";
+		WriteFile(m_Pipe_IN_Wr, setSkillLevel, strlen(setSkillLevel), &m_Written, NULL);
+		CHAR setLimit[] = "setoption name UCI_LimitStrength value true\n";
+		WriteFile(m_Pipe_IN_Wr, setLimit, strlen(setLimit), &m_Written, NULL);
 		Sleep(150);
 
 		// Read engine's reply
@@ -77,13 +84,8 @@ namespace Chesster
 		} while (m_Read >= sizeof(m_Buffer));
 		std::cout << msg;
 
-		CHAR setLevel[] = "setoption name Skill Level value 0\n";
-		WriteFile(m_Pipe_IN_Wr, setLevel, strlen(setLevel), &m_Written, NULL);
-		CHAR setErr[] = "setoption name Skill Level Maximum Error value 900\n";
-		WriteFile(m_Pipe_IN_Wr, setErr, strlen(setErr), &m_Written, NULL);
-		CHAR setProb[] = "setoption name Skill Level Probability value 10\n";
-		WriteFile(m_Pipe_IN_Wr, setProb, strlen(setProb), &m_Written, NULL);
-
+		//CHAR setProb[] = "setoption name Skill Level Probability value 10\n";
+		//WriteFile(m_Pipe_IN_Wr, setProb, strlen(setProb), &m_Written, NULL);
 	}
 
 	std::string Connector::getNextMove(const std::string& chessMove)
@@ -109,9 +111,10 @@ namespace Chesster
 
 		int found = msg.find("bestmove");
 		if (found != std::string::npos)
-			return msg.substr(found + 9, 4); // subtract "bestmove ", grab next 4 (the notation)
+			// subtract "bestmove ", grab next 4 (the notation, ex. d2d4)
+			return msg.substr(found + 9, 4);
 
-		return "error";
+		return "error"; // if no bestmove is found
 	}
 
 	void Connector::CloseConnections()

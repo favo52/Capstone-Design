@@ -15,6 +15,7 @@ namespace Chesster
 	{
 	public:
 		GameState(StateStack& stack, Context context);
+		~GameState();
 
 		void Draw() override;
 		bool Update(sf::Time dt) override;
@@ -31,7 +32,8 @@ namespace Chesster
 		void Move(const std::string& notation);
 
 	private:
-		int m_Board[8][8] = {
+		int* m_Board = new int[8 * 8]
+		{
 			-1, -2, -3, -4, -5, -3, -2, -1,
 			-6, -6, -6, -6, -6, -6, -6, -6,
 			 0,  0,  0,  0,  0,  0,  0,  0,
@@ -46,7 +48,7 @@ namespace Chesster
 		sf::Sprite m_BoardSprite;
 		sf::FloatRect m_Bounds;
 
-		sf::Sprite m_Pieces[32]; // 32 chess pieces
+		sf::Sprite* m_Pieces; // 32 chess pieces
 		std::string m_ChessPosition;
 		int m_PieceSize;
 
