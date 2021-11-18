@@ -275,7 +275,7 @@ namespace Chesster
         if (notation == "e1g1") if (m_ChessPosition.find("e1") == std::string::npos)
             {
                 Move("h1f1");
-                m_ChessPosition += std::string("h1f1 h1f1 ");
+                //m_ChessPosition += std::string("h1f1 0000 ");
             };
         if (notation == "e8g8") if (m_ChessPosition.find("e8") == std::string::npos)
         {

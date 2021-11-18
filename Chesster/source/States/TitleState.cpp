@@ -23,15 +23,15 @@ namespace Chesster
 		centerOrigin(m_ReadySetGoSprite);
 		m_ReadySetGoSprite.setPosition((context.window->getDefaultView().getSize() / 2.0f) - sf::Vector2f(0.0f, 50.0f));
 
-		// Prepare MSEC Solutions logo
-		m_MSECSprite.setTexture(context.textures->Get(Textures::MSECGroup));
-		centerOrigin(m_MSECSprite);
-		m_MSECSprite.setPosition((context.window->getDefaultView().getSize() / 2.0f) - sf::Vector2f(0.0f, 50.0f));
+		//// Prepare MSEC Solutions logo
+		//m_MSECSprite.setTexture(context.textures->Get(Textures::MSECGroup));
+		//centerOrigin(m_MSECSprite);
+		//m_MSECSprite.setPosition((context.window->getDefaultView().getSize() / 2.0f) - sf::Vector2f(0.0f, 50.0f));
 
 		// Prepare Chesster logo
 		m_LogoSprite.setTexture(context.textures->Get(Textures::ChessterLogo));
 		centerOrigin(m_LogoSprite);
-		m_LogoSprite.setPosition(context.window->getDefaultView().getSize() / 2.0f);
+		m_LogoSprite.setPosition((context.window->getDefaultView().getSize() / 2.0f) - sf::Vector2f(0.0f, 120));
 
 		setText(m_Text, font, "Press any key to start", 50u, sf::Color::Black);
 		centerOrigin(m_Text);
@@ -45,8 +45,8 @@ namespace Chesster
 
 		if (m_ShowReadySetCode)
 			window.draw(m_ReadySetGoSprite);
-		else if (m_ShowMSEC)
-			window.draw(m_MSECSprite);			
+		//else if (m_ShowMSEC)
+		//	window.draw(m_MSECSprite);			
 		else
 			window.draw(m_LogoSprite);
 			
@@ -62,10 +62,11 @@ namespace Chesster
 		if (m_ElapsedTime > sf::seconds(3))
 		{
 			m_ShowReadySetCode = false;
-			m_ShowMSEC = true;
+			//m_ShowMSEC = true;
+
 		}
-		if (m_ElapsedTime > sf::seconds(6))
-			m_ShowMSEC = false;
+		//if (m_ElapsedTime > sf::seconds(6))
+		//	m_ShowMSEC = false;
 
 		if (m_TextEffectTime >= sf::seconds(0.5f))
 		{

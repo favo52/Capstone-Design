@@ -18,7 +18,7 @@ namespace Chesster
 
 	private:
 		sf::Sprite  m_ReadySetGoSprite;
-		sf::Sprite  m_MSECSprite;
+		//sf::Sprite  m_MSECSprite;
 		sf::Sprite  m_LogoSprite;
 		bool m_ShowReadySetCode;
 		bool m_ShowMSEC;
