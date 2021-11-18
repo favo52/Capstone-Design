@@ -11,7 +11,7 @@
 namespace Chesster
 {
 	const sf::Time Application::TimePerFrame = sf::seconds(1.0f / 60.0f);
-	constexpr unsigned int WINDOW_WIDTH{ 1020 };
+	constexpr unsigned int WINDOW_WIDTH{ 720 };
 	constexpr unsigned int WINDOW_HEIGHT{ 720 };
 
 	/*****************************************************

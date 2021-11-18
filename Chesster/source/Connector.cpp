@@ -65,6 +65,7 @@ namespace Chesster
 		Sleep(150);
 
 		// Set difficulty level
+
 		CHAR setSkillLevel[] = "setoption name Skill Level value 0\n";
 		WriteFile(m_Pipe_IN_Wr, setSkillLevel, strlen(setSkillLevel), &m_Written, NULL);
 		CHAR setLimit[] = "setoption name UCI_LimitStrength value true\n";

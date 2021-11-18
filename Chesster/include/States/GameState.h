@@ -45,8 +45,6 @@ namespace Chesster
 		};
 
 	private:
-		Board m_Board;
-
 		sf::Sprite m_BoardSprite;
 		sf::FloatRect m_Bounds;
 
