@@ -15,7 +15,7 @@ namespace Chesster
 		~Connector();
 
 		void ConnectToEngine(LPWSTR path);
-		std::string getNextMove(const std::string& position);
+		std::string GetNextMove(const std::string& position);
 
 		std::vector<std::string> GetValidMoves(const std::string&);
 

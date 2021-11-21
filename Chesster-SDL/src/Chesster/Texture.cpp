@@ -135,6 +135,11 @@ namespace Chesster
 		}
 	}
 
+	void Texture::Move(const Vector2f& offset)
+	{
+		SetPosition(GetPosition().x + offset.x, GetPosition().y + offset.y);
+	}
+
 	void Texture::Draw() const
 	{
 		// Render to screen

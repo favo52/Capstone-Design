@@ -66,7 +66,7 @@ namespace Chesster
 		}
 
 		// Check if engine is ready
-		CHAR str[] = "uci\nisready\n";
+		CHAR str[] = "uci\nisready\nd\n";
 		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
 		Sleep(150);
 
@@ -91,11 +91,11 @@ namespace Chesster
 		std::cout << msg;
 	}
 
-	std::string Connector::getNextMove(const std::string& chessMove)
+	std::string Connector::GetNextMove(const std::string& chessMove)
 	{
 		std::string msg = { "position startpos moves " + chessMove + "\ngo depth 1\n" };
 
-		// Send postion to engine
+		// Send position to engine
 		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);
 		Sleep(150);
 
@@ -112,17 +112,20 @@ namespace Chesster
 		} while (m_Read >= sizeof(m_Buffer));
 		std::cout << msg;
 
+		// Grab the engine's move
 		int found = msg.find("bestmove");
 		if (found != std::string::npos)
-			// subtract "bestmove ", grab next 4 (the notation, ex. d2d4)
+			// Subtract "bestmove ", grab next 4 (the notation, ex. d2d4)
 			return msg.substr(found + 9, 4);
 
-		return "error"; // if no bestmove is found
+		return "error"; // If no bestmove is found
 	}
 
 	std::vector<std::string> Connector::GetValidMoves(const std::string& fen)
 	{
 		std::string filename{ "validmoves.txt" };
+
+		// Create file with all valid moves using python script
 		std::string PyCode
 		{
 			"from Chessnut import Game\n"
@@ -137,6 +140,7 @@ namespace Chesster
 
 		PyRun_SimpleString(PyCode.c_str());
 
+		// Read all moves from file and store inside std::vector
 		std::ifstream ifs{ filename };
 		if (!ifs) throw std::runtime_error("Unable to open file " + filename);
 		std::vector<std::string> validMoves;

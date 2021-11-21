@@ -22,7 +22,7 @@ namespace Chesster
 		SDL_Color White = { 255u, 255u, 255u };
 		m_PausedText.LoadFromRenderedText(m_fMinecraft100, "PAUSE", White);
 		m_PausedText.SetPosition((m_Window->GetWidth() - m_PausedText.GetWidth()) / 2,
-			((m_Window->GetHeight() - m_PausedText.GetHeight()) / 2) - 150);
+			((m_Window->GetHeight() - m_PausedText.GetHeight()) / 2) - 100);
 		
 		// Prepare option text
 		m_ContinueText.LoadFromRenderedText(m_fMinecraft, "CONTINUE", White);
@@ -33,7 +33,7 @@ namespace Chesster
 		m_MenuOptions.push_back(&m_MainMenuText);
 		m_MenuOptions.push_back(&m_ExitText);
 		
-		int y{ 120 };
+		int y{ 50 };
 		for (int i = 0; i < m_MenuOptions.size(); ++i)
 		{
 			m_MenuOptions[i]->SetPosition((m_Window->GetWidth() - m_MenuOptions[i]->GetWidth()) / 2,
@@ -46,7 +46,8 @@ namespace Chesster
 
 	void PauseState::Draw()
 	{
-		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 150u);
+		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 200u);
+		SDL_SetRenderDrawBlendMode(Window::Renderer, SDL_BLENDMODE_BLEND);
 		SDL_RenderFillRect(Window::Renderer, &m_PauseOverlay);
 
 		m_PausedText.Draw();
@@ -66,6 +67,10 @@ namespace Chesster
 		{
 			switch (event.key.keysym.sym)
 			{
+			case SDLK_ESCAPE:
+				RequestStackPop();
+				break;
+
 			case SDLK_RETURN:
 			{
 				if (m_CurrentOption == PauseOptions::Continue)

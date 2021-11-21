@@ -23,10 +23,25 @@ namespace Chesster
 		Sansation_100
 	};
 
+	struct Vector2i
+	{
+		int x = 0, y = 0;
+	};
+
 	struct Vector2f
 	{
+		Vector2f(float a = 0.0f, float b = 0.0f)
+		{
+			x = a;
+			y = b;
+		}
+
+		Vector2f operator-() { return Vector2f(x * -1, y * -1); }
+		Vector2f operator+(const Vector2f& vec2f) { return Vector2f(this->x + vec2f.x, this->y + vec2f.y); }
+
 		float x = 0.0f, y = 0.0f;
 	};
+
 
 	class Texture
 	{
@@ -60,18 +75,16 @@ namespace Chesster
 		void SetBlendMode(SDL_BlendMode blending);
 		void SetAlpha(Uint8 alpha);
 
-		//void SetWidth(const int& width) { m_Width = width; }
-		//void SetHeight(const int& height) { m_Height = height; }
-
-		inline const int GetWidth() const { return m_Width; }
-		inline const int GetHeight() const { return m_Height; }
-
-		//inline void SetTexture(SDL_Texture* texture) { m_Texture = texture; }
-		//inline SDL_Texture* GetTexture() { return m_Texture; }
+		void Move(const Vector2f& offset);
 
 		void SetPosition(int x, int y, SDL_Rect* clip = nullptr, double angle = 0.0,
 			SDL_Point* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
+		inline const Vector2f GetPosition() const { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
+
+		inline const int GetWidth() const { return m_Width; }
+		inline const int GetHeight() const { return m_Height; }
+		
 		void Draw() const;
 
 	private:
