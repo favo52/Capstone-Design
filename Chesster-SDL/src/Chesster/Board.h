@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include "Window.h"
+#include "Connector.h"
 
 namespace Chesster
 {
@@ -17,5 +18,9 @@ namespace Chesster
 
 	private:
 		Window* m_Window;
+		Connector m_Connector;
+
+		bool PrintMoves = true; // testing
+		std::vector<std::string> m_ValidMoves;
 	};
 }

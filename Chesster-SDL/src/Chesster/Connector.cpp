@@ -1,4 +1,8 @@
 #include "pch.h"
+
+#define PY_SSIZE_T_CLEAN
+#include "Python.h"
+
 #include "Connector.h"
 
 // "... do as the Romans do."
@@ -42,6 +46,8 @@ namespace Chesster
 
 		// Setup buffer
 		ZeroMemory(m_Buffer, BUFSIZE);
+
+		Py_Initialize();
 	}
 
 	Connector::~Connector()
@@ -112,6 +118,32 @@ namespace Chesster
 			return msg.substr(found + 9, 4);
 
 		return "error"; // if no bestmove is found
+	}
+
+	std::vector<std::string> Connector::GetValidMoves(const std::string& fen)
+	{
+		std::string filename{ "validmoves.txt" };
+		std::string PyCode
+		{
+			"from Chessnut import Game\n"
+			"chessgame = Game()\n"
+			"chessgame.set_fen(\"" + fen + "\")\n"
+			"move_list = chessgame.get_moves()\n"
+			"file = open(\"" + filename + "\", \"w\")\n"
+			"for element in move_list:"
+			"	file.write(element + \" \")\n"
+			"file.close()\n"
+		};
+
+		PyRun_SimpleString(PyCode.c_str());
+
+		std::ifstream ifs{ filename };
+		if (!ifs) throw std::runtime_error("Unable to open file " + filename);
+		std::vector<std::string> validMoves;
+		for (std::string move; ifs >> move; )
+			validMoves.push_back(move);
+
+		return validMoves;
 	}
 
 	void Connector::CloseConnections()
