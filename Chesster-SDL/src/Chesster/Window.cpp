@@ -13,7 +13,7 @@ namespace Chesster
 		if (!Init(props))
 			throw std::runtime_error("Failed to initialize Window!\n");
 	}
-
+	
 	Window::~Window()
 	{
 		Close();
@@ -42,6 +42,10 @@ namespace Chesster
 			return false;
 		}
 
+		// Set texture filtering to linear
+		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
+			std::cout << "Warning: Linear texture filtering not enabled!\n";
+
 		// Create window
 		m_Window = SDL_CreateWindow(props.Title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, props.Width, props.Height, SDL_WINDOW_SHOWN);
 		if (m_Window == nullptr)
@@ -50,7 +54,7 @@ namespace Chesster
 			return false;
 		}
 
-		// Setup renderer
+		// Create vsynced renderer for window
 		Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if (Renderer == nullptr)
 		{
@@ -70,6 +74,13 @@ namespace Chesster
 			return false;
 		}
 
+		// Initialize SDL_ttf
+		if (TTF_Init() < 0)
+		{
+			std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << '\n';
+			return false;
+		}
+
 		// Get window surface
 		m_ScreenSurface = SDL_GetWindowSurface(m_Window);
 
@@ -86,6 +97,7 @@ namespace Chesster
 		m_Window = nullptr;
 
 		// Quit SDL subsystems
+		TTF_Quit();
 		IMG_Quit();
 		SDL_Quit();
 	}

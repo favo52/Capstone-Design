@@ -4,10 +4,11 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 namespace Chesster
 {
-	struct WindowProps
+	struct WindowProps // properties
 	{
 		std::string Title;
 		unsigned int Width;
@@ -45,7 +46,7 @@ namespace Chesster
 
 	private:
 		WindowProps m_WinProps;
-
+		
 		SDL_Window* m_Window;
 		SDL_Surface* m_ScreenSurface;
 	};

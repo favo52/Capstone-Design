@@ -12,9 +12,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster\Application.cpp" />
+    <ClCompile Include="src\Chesster\Board.cpp" />
     <ClCompile Include="src\Chesster\Connector.cpp" />
     <ClCompile Include="src\Chesster\Main.cpp" />
-    <ClCompile Include="src\Chesster\TextureHandler.cpp" />
+    <ClCompile Include="src\Chesster\States\GameState.cpp" />
+    <ClCompile Include="src\Chesster\States\MenuState.cpp" />
+    <ClCompile Include="src\Chesster\States\PauseState.cpp" />
+    <ClCompile Include="src\Chesster\States\State.cpp" />
+    <ClCompile Include="src\Chesster\States\StateStack.cpp" />
+    <ClCompile Include="src\Chesster\States\TitleState.cpp" />
+    <ClCompile Include="src\Chesster\Texture.cpp" />
     <ClCompile Include="src\Chesster\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -28,7 +35,15 @@
   <ItemGroup>
     <ClInclude Include="src\Chesster\Application.h" />
     <ClInclude Include="src\Chesster\Connector.h" />
-    <ClInclude Include="src\Chesster\TextureHandler.h" />
+    <ClInclude Include="src\Chesster\Board.h" />
+    <ClInclude Include="src\Chesster\States\GameState.h" />
+    <ClInclude Include="src\Chesster\States\MenuState.h" />
+    <ClInclude Include="src\Chesster\States\PauseState.h" />
+    <ClInclude Include="src\Chesster\States\State.h" />
+    <ClInclude Include="src\Chesster\States\StateStack.h" />
+    <ClInclude Include="src\Chesster\States\TitleState.h" />
+    <ClInclude Include="src\Chesster\Texture.h" />
+    <ClInclude Include="src\Chesster\ResourceHolder.h" />
     <ClInclude Include="src\Chesster\Window.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>

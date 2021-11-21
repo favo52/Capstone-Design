@@ -3,7 +3,8 @@
 #include "pch.h"
 
 #include "Window.h"
-#include "TextureHandler.h"
+#include "ResourceHolder.h"
+#include "States/StateStack.h"
 
 namespace Chesster
 {
@@ -14,6 +15,7 @@ namespace Chesster
 		~Application();
 
 		void Run();
+		void Quit();
 
 	private:
 		void ProcessEvents();
@@ -24,13 +26,19 @@ namespace Chesster
 
 		void Cleanup();
 
+		void RegisterStates();
+
 	private:
 		std::unique_ptr<Window> m_Window;
 		bool m_isRunning;
 
-		Texture* m_RSCLogo;
+		Texture::Font m_fMinecraft;
+		Texture m_FPSText;
 
-		TextureHandler<TexturesID> m_TextureHandler;
-		TextureHandler<FontID> m_FontHandler;
+		TextureHolder m_TextureHolder;
+		FontHolder m_FontHolder;
+
+		StateStack m_StateStack;
+
 	};
 }
