@@ -66,7 +66,7 @@ namespace Chesster
 		}
 
 		// Check if engine is ready
-		CHAR str[] = "uci\nisready\nd\n";
+		CHAR str[] = "uci\nisready\n";
 		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
 		Sleep(150);
 
@@ -91,9 +91,9 @@ namespace Chesster
 		std::cout << msg;
 	}
 
-	std::string Connector::GetNextMove(const std::string& chessMove)
+	std::string Connector::GetNextMove(const std::string& moveHistory)
 	{
-		std::string msg = { "position startpos moves " + chessMove + "\ngo depth 1\n" };
+		std::string msg = { "position startpos moves " + moveHistory + "\ngo depth 1\n" };
 
 		// Send position to engine
 		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);
@@ -148,6 +148,51 @@ namespace Chesster
 			validMoves.push_back(move);
 
 		return validMoves;
+	}
+
+	std::string Connector::GetFEN(const std::string& moveHistory)
+	{
+		std::string msg = { "position startpos moves " + moveHistory + "\nd\n" };
+
+		// Send position to engine
+		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);
+		Sleep(150);
+
+		msg.clear();
+		// Read engine's reply
+		do
+		{
+			ZeroMemory(m_Buffer, BUFSIZE);
+			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
+			if (!m_Success || m_Read == 0) break;
+
+			msg += (char*)m_Buffer;
+
+		} while (m_Read >= sizeof(m_Buffer));
+		std::cout << msg;
+
+		// Grab the FEN string
+		int found = msg.find("Fen:");
+		if (found != std::string::npos)
+		{
+			// Erase everything up to and including "Fen:"
+			msg.erase(0, found + sizeof("Fen:"));
+
+			// Grab everything until "Key:" is reached
+			std::istringstream iss{ msg };
+			msg.clear();
+			for (std::string str; iss >> str; )
+			{
+				if (str == "Key:")
+				{
+					msg.pop_back(); // delete last whitespace
+					return msg;
+				}
+				msg += str + ' ';
+			}
+		}
+
+		return "error"; // If no bestmove is found
 	}
 
 	void Connector::CloseConnections()

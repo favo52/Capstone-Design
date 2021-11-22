@@ -19,19 +19,23 @@ namespace Chesster
 		m_Str{ "" },
 		m_PieceIndex{ 0 },
 		m_PositionHistory{ "" },
+		m_MoveHistorySize{ 0 },
 		m_BoardOffset{ 23.0f, 23.0f },
 		m_PieceOffset{ 1.065f },
 		m_HoldingPiece{ false },
 		m_MousePos{},
 		m_Connector{},
 		m_IsComputerTurn{ false },
-		m_Turn{ 1 },
+		m_FEN{},
 		m_ValidMoves{}
 	{
 		// Connect to Stockfish engine
 		wchar_t path[] = L"resources/engines/stockfish_14_x64_avx2.exe";
 		wchar_t path2[] = L"resources/engines/stockfish.exe";
 		m_Connector.ConnectToEngine(path);
+		std::string startPosFEN{ "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" };
+		m_ValidMoves = m_Connector.GetValidMoves(startPosFEN);
+		m_FEN = m_Connector.GetFEN(" ");
 
 		LoadTextures();
 		PrepareBoard();
@@ -66,34 +70,49 @@ namespace Chesster
 
 	bool Board::Update()
 	{
-		std::string fen{ "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" };
-		
 		// Computer move
 		if (m_IsComputerTurn)
 		{
-			m_ValidMoves = m_Connector.GetValidMoves(fen);
-
-			// print all moves
-			for (const std::string& move : m_ValidMoves)
-				std::cout << move << " \n";
-
 			m_IsComputerTurn = false;
-		}
-		
-		if (m_PrintMoves) // testing, need to do it once
-		{
-			m_ValidMoves = m_Connector.GetValidMoves(fen);
-			
-			// print all moves
-			for (const std::string& move : m_ValidMoves)
-				std::cout << move << " \n";
 
-			m_PrintMoves = false;
+			// Get stockfish's next move
+			m_Str = m_Connector.GetNextMove(m_PositionHistory);
+			if (m_Str == "error")
+				return true;
+
+			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
+			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
+
+			for (int i = 0; i < TOTAL_PIECES; ++i)
+				if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(m_OldPos))
+					m_PieceIndex = i;
+
+			// Animation
+
+
+			Move(m_Str);
+			m_PositionHistory += m_Str + " ";
+
+			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset, m_NewPos.y * m_PieceOffset, &m_PieceClip[m_PieceIndex]);
 		}
 
 		// Dragging a piece
 		if (m_IsMove) 
 			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
+
+		// Check if a move was played
+		if (m_PositionHistory.size() != m_MoveHistorySize)
+		{
+			//std::cout << m_PositionHistory << '\n';
+			m_MoveHistorySize = m_PositionHistory.size();
+
+			m_FEN = m_Connector.GetFEN(m_PositionHistory);
+			m_ValidMoves = m_Connector.GetValidMoves(m_FEN);
+
+			// print all moves
+			for (const std::string& move : m_ValidMoves)
+				std::cout << move << " ";
+		}
 
 		return true;
 	}
@@ -106,19 +125,26 @@ namespace Chesster
 			{
 				switch (event.key.keysym.sym)
 				{
+					// Allows the computer to make a move
 					case SDLK_SPACE:
 						m_IsComputerTurn = true;
 						break;
 
+					// Go backwards one move
 					case SDLK_BACKSPACE:
+					{
+						if (m_PositionHistory.length() > 6)
+							m_PositionHistory.erase(m_PositionHistory.length() - 6, 5);
 
-						break;
+						LoadPositions();
+					} break;
 				}
 			} break;
 
 			case SDL_MOUSEMOTION:
 			case SDL_MOUSEBUTTONDOWN:
 			{
+				// Get the mouse screen coordinates
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 				m_MousePos.x -= m_BoardOffset.x;
 				m_MousePos.y -= m_BoardOffset.y;
@@ -142,12 +168,15 @@ namespace Chesster
 					}
 			} break;
 
+			// Mouse button released
 			case SDL_MOUSEBUTTONUP:
 			{
+				// Get the mouse screen coordinates
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 				m_MousePos.x -= m_BoardOffset.x;
 				m_MousePos.y -= m_BoardOffset.y;
 
+				// Left button
 				if (event.button.button == SDL_BUTTON_LEFT)
 				{
 					m_IsMove = false;
@@ -156,17 +185,23 @@ namespace Chesster
 					m_NewPos = Vector2f(m_PieceSize * int(position.x / m_PieceSize) * m_PieceOffset, m_PieceSize * int(position.y / m_PieceSize) * m_PieceOffset);
 					m_Str = ToChessNotation(m_OldPos) + ToChessNotation(m_NewPos);
 
-					// Print move
+					// Check the list of valid moves
+					for (const std::string& move : m_ValidMoves)
+					{
+						if (move.c_str() == m_Str)
+						{
+							Move(m_Str);
 
-					Move(m_Str); // remove piece
+							if (ToChessNotation(m_OldPos) != ToChessNotation(m_NewPos))
+								m_PositionHistory += m_Str + " ";
+							++m_MoveHistorySize;
 
-					std::cout << "[" << m_PieceIndex << "] " << "OldPos: " << "(" << std::ceil(m_Pieces[m_PieceIndex].GetPosition().x / (m_PieceOffset)) << ", " << std::ceil(m_Pieces[m_PieceIndex].GetPosition().y / (m_PieceOffset)) << ")\t" << "NewPos: " << "(" << m_NewPos.x << ", " << m_NewPos.y << ")\n";
-
-					if (ToChessNotation(m_OldPos) != ToChessNotation(m_NewPos))
-						m_PositionHistory += m_Str + " ";
-					std::cout << m_PositionHistory << '\n';
-
-					m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x, m_NewPos.y, &m_PieceClip[m_PieceIndex]);
+							m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x, m_NewPos.y, &m_PieceClip[m_PieceIndex]);
+							break;
+						}
+						else // If not a valid move return piece to original position
+							m_Pieces[m_PieceIndex].SetPosition(m_OldPos.x, m_OldPos.y, &m_PieceClip[m_PieceIndex]);
+					}
 				}
 
 			} break;
@@ -222,6 +257,7 @@ namespace Chesster
 	{
 		Vector2f OldPos = ToCoord(notation[0], notation[1]);
 		Vector2f NewPos = ToCoord(notation[2], notation[3]);
+
 
 		for (int i = 0; i < TOTAL_PIECES; i++)
 			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(NewPos))

@@ -18,6 +18,7 @@ namespace Chesster
 		std::string GetNextMove(const std::string& position);
 
 		std::vector<std::string> GetValidMoves(const std::string&);
+		std::string GetFEN(const std::string& latestMove);
 
 	private:
 		void CloseConnections();

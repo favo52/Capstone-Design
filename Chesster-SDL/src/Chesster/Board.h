@@ -54,6 +54,7 @@ namespace Chesster
 
 		Texture* m_Pieces;
 		std::string m_PositionHistory;
+		int m_MoveHistorySize;
 		int m_PieceSize;
 
 		// Piece moving stuff
@@ -70,9 +71,9 @@ namespace Chesster
 		bool m_HoldingPiece;
 
 		bool m_IsComputerTurn;
-		unsigned int m_Turn;
 
 		bool m_PrintMoves = false; // testing
+		std::string m_FEN;
 		std::vector<std::string> m_ValidMoves;
 	};
 }
