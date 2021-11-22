@@ -27,15 +27,20 @@ namespace Chesster
 		m_Connector{},
 		m_IsComputerTurn{ false },
 		m_FEN{},
-		m_ValidMoves{}
+		m_ValidMoves{},
+		m_PathPythonScript{ "resources/engines/script/__init__.exe" }
 	{
-		// Connect to Stockfish engine
+		// Connect to executables
 		wchar_t path[] = L"resources/engines/stockfish_14_x64_avx2.exe";
 		wchar_t path2[] = L"resources/engines/stockfish.exe";
+
 		m_Connector.ConnectToEngine(path);
-		std::string startPosFEN{ "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" };
-		m_ValidMoves = m_Connector.GetValidMoves(startPosFEN);
-		m_FEN = m_Connector.GetFEN(" ");
+
+		// Prepare valid moves and FEN
+		std::string startPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
+
+		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, startPosFEN);
+		m_FEN += "\"" + m_Connector.GetFEN(" ") + "\"";
 
 		LoadTextures();
 		PrepareBoard();
@@ -106,12 +111,14 @@ namespace Chesster
 			//std::cout << m_PositionHistory << '\n';
 			m_MoveHistorySize = m_PositionHistory.size();
 
-			m_FEN = m_Connector.GetFEN(m_PositionHistory);
-			m_ValidMoves = m_Connector.GetValidMoves(m_FEN);
+			m_FEN.clear();
+			m_FEN += "\"" + m_Connector.GetFEN(m_PositionHistory) + "\"";
+			
+			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
 
 			// print all moves
-			for (const std::string& move : m_ValidMoves)
-				std::cout << move << " ";
+			//for (const std::string& move : m_ValidMoves)
+			//	std::cout << move << " ";
 		}
 
 		return true;

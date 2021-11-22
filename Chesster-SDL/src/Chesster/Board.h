@@ -75,5 +75,6 @@ namespace Chesster
 		bool m_PrintMoves = false; // testing
 		std::string m_FEN;
 		std::vector<std::string> m_ValidMoves;
+		std::string m_PathPythonScript;
 	};
 }

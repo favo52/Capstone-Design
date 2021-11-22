@@ -10,6 +10,7 @@
 namespace Chesster
 {
 	Connector::Connector() :
+		// Chess engine
 		m_StartInfo{ 0 },
 		m_SecAttr{ 0 },
 		m_ProcessInfo{ 0 },
@@ -19,7 +20,12 @@ namespace Chesster
 		m_Pipe_OUT_Rd{ nullptr },
 		m_Read{ 0 },
 		m_Written{ 0 },
-		m_Success{ FALSE }
+		m_Success{ FALSE },
+
+		// Python script
+		m_StartInfo_Py{ 0 },
+		m_ProcessInfo_Py{ 0 },
+		m_Success_Py{ FALSE }
 	{
 		// Set up members of the PROCESS_INFORMATION structure.
 		ZeroMemory(&m_ProcessInfo, sizeof(STARTUPINFO));
@@ -47,12 +53,26 @@ namespace Chesster
 		// Setup buffer
 		ZeroMemory(m_Buffer, BUFSIZE);
 
+		//*****************************************************
+		//	PYTHON SCRIPT INFO
+		//*****************************************************
+
+		// Set up members of the STARTUPINFO structure.
+		ZeroMemory(&m_StartInfo_Py, sizeof(STARTUPINFOA));
+		m_StartInfo_Py.cb = sizeof(m_StartInfo_Py);
+		m_StartInfo_Py.dwFlags = STARTF_USESHOWWINDOW;
+		m_StartInfo_Py.wShowWindow = SW_HIDE;
+		
+		// Set up members of the PROCESS_INFORMATION structure.
+		ZeroMemory(&m_ProcessInfo_Py, sizeof(PROCESS_INFORMATION));
+
 		Py_Initialize();
 	}
 
 	Connector::~Connector()
 	{
 		CloseConnections();
+		Py_Finalize();
 	}
 
 	void Connector::ConnectToEngine(LPWSTR path)
@@ -98,8 +118,8 @@ namespace Chesster
 		// Send position to engine
 		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);
 		Sleep(150);
-
 		msg.clear();
+
 		// Read engine's reply
 		do
 		{
@@ -121,34 +141,70 @@ namespace Chesster
 		return "error"; // If no bestmove is found
 	}
 
-	std::vector<std::string> Connector::GetValidMoves(const std::string& fen)
+	// Run the Python script
+	std::vector<std::string> Connector::GetValidMoves(const std::string& path, const std::string& fen)
 	{
-		std::string filename{ "validmoves.txt" };
+		std::string arg = { path + " " + fen };
 
-		// Create file with all valid moves using python script
-		std::string PyCode
+		// Convert std::string into LPSTR
+		LPSTR lpPath = const_cast<char*>(path.c_str());
+		LPSTR lpPathArg = const_cast<char*>(arg.c_str());
+
+		// Create the child process
+		m_Success_Py = CreateProcessA(lpPath, lpPathArg, NULL, NULL, FALSE, 0, NULL, NULL, &m_StartInfo_Py, &m_ProcessInfo_Py);
+		if (!m_Success_Py)
 		{
-			"from Chessnut import Game\n"
-			"chessgame = Game()\n"
-			"chessgame.set_fen(\"" + fen + "\")\n"
-			"move_list = chessgame.get_moves()\n"
-			"file = open(\"" + filename + "\", \"w\")\n"
-			"for element in move_list:"
-			"	file.write(element + \" \")\n"
-			"file.close()\n"
-		};
+			printf("CreateProcessA failed (%d).\n", GetLastError());
+			throw std::runtime_error("Unable to run Python script");
+		}
 
-		PyRun_SimpleString(PyCode.c_str());
+		// Wait for script to finish
+		WaitForSingleObject(m_ProcessInfo_Py.hProcess, INFINITE);
+
+		// Close connection
+		CloseHandle(m_ProcessInfo_Py.hProcess);
+		CloseHandle(m_ProcessInfo_Py.hThread);
 
 		// Read all moves from file and store inside std::vector
+		std::string filename{ "validmoves.txt" };
 		std::ifstream ifs{ filename };
 		if (!ifs) throw std::runtime_error("Unable to open file " + filename);
+		
 		std::vector<std::string> validMoves;
 		for (std::string move; ifs >> move; )
 			validMoves.push_back(move);
 
 		return validMoves;
 	}
+
+	//std::vector<std::string> Connector::GetValidMoves(const std::string& fen)
+	//{
+	//	std::string filename{ "validmoves.txt" };
+
+	//	// Create file with all valid moves using python script
+	//	std::string PyCode
+	//	{
+	//		"from Chessnut import Game\n"
+	//		"chessgame = Game()\n"
+	//		"chessgame.set_fen(\"" + fen + "\")\n"
+	//		"move_list = chessgame.get_moves()\n"
+	//		"file = open(\"" + filename + "\", \"w\")\n"
+	//		"for element in move_list:"
+	//		"	file.write(element + \" \")\n"
+	//		"file.close()\n"
+	//	};
+
+	//	PyRun_SimpleString(PyCode.c_str());
+
+	//	// Read all moves from file and store inside std::vector
+	//	std::ifstream ifs{ filename };
+	//	if (!ifs) throw std::runtime_error("Unable to open file " + filename);
+	//	std::vector<std::string> validMoves;
+	//	for (std::string move; ifs >> move; )
+	//		validMoves.push_back(move);
+
+	//	return validMoves;
+	//}
 
 	std::string Connector::GetFEN(const std::string& moveHistory)
 	{
@@ -197,6 +253,7 @@ namespace Chesster
 
 	void Connector::CloseConnections()
 	{
+		// Quit chess engine
 		CHAR str[] = "quit\n";
 		WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
 
