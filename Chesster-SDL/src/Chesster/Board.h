@@ -46,6 +46,7 @@ namespace Chesster
 		Window* m_Window;
 		Connector m_Connector;
 
+		// Texture stuff
 		TextureHolder m_TextureHolder;
 		Texture* m_BoardTexture;
 		SDL_Rect m_Bounds;
@@ -55,15 +56,18 @@ namespace Chesster
 		std::string m_PositionHistory;
 		int m_PieceSize;
 
+		// Piece moving stuff
 		bool m_IsMove;
 		float m_Dx, m_Dy;
 		Vector2f m_OldPos, m_NewPos;
 		std::string m_Str;
 		int m_PieceIndex;
 
-		Vector2i m_MousePos;
+		// Mouse stuff
+		SDL_Point m_MousePos;
 		Vector2f m_BoardOffset;
 		float m_PieceOffset;
+		bool m_HoldingPiece;
 
 		bool m_IsComputerTurn;
 		unsigned int m_Turn;
