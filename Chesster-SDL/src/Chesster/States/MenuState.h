@@ -31,8 +31,11 @@ namespace Chesster
 		Window* m_Window;
 		Texture* m_LogoTexture;
 
+		SDL_Point m_MousePos;
+		//Vector2f m_BoardOffset;
+
 		// Options Text
-		Texture::Font m_fMinecraft;
+		Texture::Font m_Font;
 		Texture::Font m_fAbsEmp100;
 		Texture m_TitleText;
 		Texture m_playText;

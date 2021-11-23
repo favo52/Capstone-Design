@@ -74,8 +74,8 @@ namespace Chesster
 		{
 			bool LoadFromFile(const std::string& filename, const int& size = 30)
 			{
-				m_fMinecraft = TTF_OpenFont(filename.c_str(), size);
-				if (m_fMinecraft == nullptr)
+				m_Font = TTF_OpenFont(filename.c_str(), size);
+				if (m_Font == nullptr)
 				{
 					std::cout << "Failed to load " << filename << "! SDL_ttf Error: " << TTF_GetError() << '\n';
 					return false;
@@ -83,7 +83,7 @@ namespace Chesster
 				return true;
 			}
 			
-			TTF_Font* m_fMinecraft;
+			TTF_Font* m_Font;
 		};
 
 	public:

@@ -7,6 +7,7 @@ namespace Chesster
 		State{ stack, context },
 		m_Window{ context.window->get() },
 		m_LogoTexture{},
+		m_MousePos{},
 		m_TitleText{},
 		m_playText(),
 		m_SettingsText{},
@@ -14,7 +15,7 @@ namespace Chesster
 		m_MenuOptions{},
 		m_CurrentOption{ MenuOptions::Play }
 	{
-		m_fMinecraft = context.fonts->Get(FontID::Minecraft);
+		m_Font = context.fonts->Get(FontID::Minecraft);
 		m_fAbsEmp100 = context.fonts->Get(FontID::AbsEmpire_100);
 		m_LogoTexture = &context.textures->Get(TextureID::ChessterLogo);
 		
@@ -28,9 +29,9 @@ namespace Chesster
 		m_TitleText.SetPosition((m_Window->GetWidth() - m_TitleText.GetWidth()) / 2,
 			((m_Window->GetHeight() - m_TitleText.GetHeight()) / 2) - 250);
 
-		m_playText.LoadFromRenderedText(m_fMinecraft, "PLAY", Black);
-		m_SettingsText.LoadFromRenderedText(m_fMinecraft, "SETTINGS", Black);
-		m_ExitText.LoadFromRenderedText(m_fMinecraft, "EXIT", Black);
+		m_playText.LoadFromRenderedText(m_Font, "PLAY", Black);
+		m_SettingsText.LoadFromRenderedText(m_Font, "SETTINGS", Black);
+		m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Black);
 
 		// Prepare all the menu text
 		m_MenuOptions.push_back(&m_playText);
@@ -66,9 +67,6 @@ namespace Chesster
 
 	bool MenuState::HandleEvent(const SDL_Event& event)
 	{
-		if (event.type != SDL_KEYDOWN)
-			return false;
-
 		if (event.type == SDL_KEYDOWN)
 		{
 			switch (event.key.keysym.sym)
@@ -110,6 +108,52 @@ namespace Chesster
 				} break;
 			}
 		}
+
+		if (event.type == SDL_MOUSEMOTION)
+		{
+			// Get the mouse screen coordinates
+			SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
+
+			// Check if mouse is inside text bounds
+			for (int i = 0; i < m_MenuOptions.size(); ++i)
+			{
+				SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+				if (SDL_PointInRect(&m_MousePos, &textBounds))
+				{
+					m_CurrentOption = MenuOptions(i);
+					UpdateOptionText();
+				}
+			}
+		}
+
+		if (event.type == SDL_MOUSEBUTTONUP)
+		{
+			if (event.button.button == SDL_BUTTON_LEFT)
+				for (int i = 0; i < m_MenuOptions.size(); ++i)
+				{
+					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+					if (SDL_PointInRect(&m_MousePos, &textBounds))
+					{
+						if (m_CurrentOption == MenuOptions::Play)
+						{
+							RequestStackPop();
+							RequestStackPush(StateID::Gameplay);
+						}
+						else if (m_CurrentOption == MenuOptions::Settings)
+						{
+							// SettingsState allows the user to adjust the difficulty level of the engine
+
+							//RequestStackPush(States::SettingsState);
+						}
+						else if (m_CurrentOption == MenuOptions::Exit)
+						{
+							Close();
+							RequestStackPop();
+						}
+					}
+				}
+		}
+
 		return true;
 	}
 
@@ -122,23 +166,23 @@ namespace Chesster
 		SDL_Color Red = { 255u, 0u, 0u };
 
 		// Black all texts
-		m_playText.LoadFromRenderedText(m_fMinecraft, "PLAY", Black);
-		m_SettingsText.LoadFromRenderedText(m_fMinecraft, "SETTINGS", Black);
-		m_ExitText.LoadFromRenderedText(m_fMinecraft, "EXIT", Black);
+		m_playText.LoadFromRenderedText(m_Font, "PLAY", Black);
+		m_SettingsText.LoadFromRenderedText(m_Font, "SETTINGS", Black);
+		m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Black);
 
 		// Red the selected text
 		switch (m_CurrentOption)
 		{
 			case MenuOptions::Play:
-				m_playText.LoadFromRenderedText(m_fMinecraft, "PLAY", Red);
+				m_playText.LoadFromRenderedText(m_Font, "PLAY", Red);
 				break;
 
 			case MenuOptions::Settings:
-				m_SettingsText.LoadFromRenderedText(m_fMinecraft, "SETTINGS", Red);
+				m_SettingsText.LoadFromRenderedText(m_Font, "SETTINGS", Red);
 				break;
 
 			case MenuOptions::Exit:
-				m_ExitText.LoadFromRenderedText(m_fMinecraft, "EXIT", Red);
+				m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Red);
 				break;
 		}
 	}
@@ -146,8 +190,8 @@ namespace Chesster
 	void MenuState::Close()
 	{
 		// Release fonts
-		TTF_CloseFont(m_fAbsEmp100.m_fMinecraft);
-		TTF_CloseFont(m_fMinecraft.m_fMinecraft);
+		TTF_CloseFont(m_fAbsEmp100.m_Font);
+		TTF_CloseFont(m_Font.m_Font);
 
 		// Release logo and texts
 		m_LogoTexture->FreeTexture();

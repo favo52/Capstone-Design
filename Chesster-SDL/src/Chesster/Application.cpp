@@ -10,7 +10,7 @@ namespace Chesster
 	Application::Application() :
 		m_Window{ nullptr },
 		m_isRunning{ true },
-		m_fMinecraft{},
+		m_Font{},
 		m_FPSText{},
 		m_TextureHolder{},
 		m_FontHolder{},
@@ -30,8 +30,8 @@ namespace Chesster
 		m_TextureHolder.Load(TextureID::ReadySetCode, "resources/textures/ReadySetCode.jpeg");
 		m_TextureHolder.Load(TextureID::ChessterLogo, "resources/textures/ChessterLogo.jpeg");
 
-		m_fMinecraft = m_FontHolder.Get(FontID::Sansation_10);
-		m_FPSText.LoadFromRenderedText(m_fMinecraft, "FPS: ", { 0u, 0u, 0u });
+		m_Font = m_FontHolder.Get(FontID::Sansation_10);
+		m_FPSText.LoadFromRenderedText(m_Font, "FPS: ", { 0u, 0u, 0u });
 		m_FPSText.SetPosition(5, 5);
 
 		RegisterStates();
@@ -128,7 +128,7 @@ namespace Chesster
 		m_FPSText.FreeTexture();
 
 		// Free font
-		TTF_CloseFont(m_fMinecraft.m_fMinecraft);
+		TTF_CloseFont(m_Font.m_Font);
 	}
 
 	void Application::RegisterStates()

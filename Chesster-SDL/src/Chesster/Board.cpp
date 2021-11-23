@@ -34,7 +34,7 @@ namespace Chesster
 		wchar_t path[] = L"resources/engines/stockfish_14_x64_avx2.exe";
 		wchar_t path2[] = L"resources/engines/stockfish.exe";
 
-		m_Connector.ConnectToEngine(path);
+		m_Connector.ConnectToEngine(path2);
 
 		// Prepare valid moves and FEN
 		std::string startPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
@@ -93,7 +93,7 @@ namespace Chesster
 					m_PieceIndex = i;
 
 			// Animation
-
+			// TODO:
 
 			Move(m_Str);
 			m_PositionHistory += m_Str + " ";
@@ -108,17 +108,14 @@ namespace Chesster
 		// Check if a move was played
 		if (m_PositionHistory.size() != m_MoveHistorySize)
 		{
-			//std::cout << m_PositionHistory << '\n';
+			// Update move count
 			m_MoveHistorySize = m_PositionHistory.size();
 
+			// Get FEN string then get updated valid moves list
 			m_FEN.clear();
 			m_FEN += "\"" + m_Connector.GetFEN(m_PositionHistory) + "\"";
 			
 			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
-
-			// print all moves
-			//for (const std::string& move : m_ValidMoves)
-			//	std::cout << move << " ";
 		}
 
 		return true;
@@ -147,7 +144,7 @@ namespace Chesster
 					} break;
 				}
 			} break;
-
+			
 			case SDL_MOUSEMOTION:
 			case SDL_MOUSEBUTTONDOWN:
 			{
@@ -158,7 +155,7 @@ namespace Chesster
 
 				// Drag and drop
 				if (event.button.button == SDL_BUTTON_LEFT)
-					for (int i = 0; i < TOTAL_PIECES; i++)
+					for (int i = 0; i < TOTAL_PIECES; ++i)
 					{
 						SDL_Rect pieceBounds = m_Pieces[i].GetBounds();
 						if (SDL_PointInRect(&m_MousePos, &pieceBounds) && !m_HoldingPiece)
@@ -187,7 +184,6 @@ namespace Chesster
 				if (event.button.button == SDL_BUTTON_LEFT)
 				{
 					m_IsMove = false;
-					m_HoldingPiece = false;
 					Vector2f position = Vector2f(m_PieceSize / 2.0f, m_PieceSize / 2.0f) + m_Pieces[m_PieceIndex].GetPosition();
 					m_NewPos = Vector2f(m_PieceSize * int(position.x / m_PieceSize) * m_PieceOffset, m_PieceSize * int(position.y / m_PieceSize) * m_PieceOffset);
 					m_Str = ToChessNotation(m_OldPos) + ToChessNotation(m_NewPos);
@@ -206,9 +202,11 @@ namespace Chesster
 							m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x, m_NewPos.y, &m_PieceClip[m_PieceIndex]);
 							break;
 						}
-						else // If not a valid move return piece to original position
+						// If not a valid move return piece to original position
+						else if ((move.c_str() != m_Str) && m_HoldingPiece)
 							m_Pieces[m_PieceIndex].SetPosition(m_OldPos.x, m_OldPos.y, &m_PieceClip[m_PieceIndex]);
 					}
+					m_HoldingPiece = false;
 				}
 
 			} break;
@@ -266,11 +264,11 @@ namespace Chesster
 		Vector2f NewPos = ToCoord(notation[2], notation[3]);
 
 
-		for (int i = 0; i < TOTAL_PIECES; i++)
+		for (int i = 0; i < TOTAL_PIECES; ++i)
 			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(NewPos))
 				m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
 
-		for (int i = 0; i < TOTAL_PIECES; i++)
+		for (int i = 0; i < TOTAL_PIECES; ++i)
 			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(OldPos))
 				m_Pieces[i].SetPosition(NewPos.x * m_PieceOffset, NewPos.y * m_PieceOffset, &m_PieceClip[i]);
 

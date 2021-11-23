@@ -31,7 +31,10 @@ namespace Chesster
 		Window* m_Window;
 		SDL_Rect m_PauseOverlay;
 
-		Texture::Font m_fMinecraft;
+		SDL_Point m_MousePos;
+
+		// Text stuff
+		Texture::Font m_Font;
 		Texture::Font m_fMinecraft100;
 		Texture m_PausedText;
 		Texture m_ContinueText;

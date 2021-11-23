@@ -7,7 +7,8 @@ namespace Chesster
 		State{ stack, context },
 		m_Window{ context.window->get() },
 		m_PauseOverlay{ 0u, 0u, static_cast<int>(m_Window->GetWidth()), static_cast<int>(m_Window->GetHeight()) },
-		m_fMinecraft{},
+		m_MousePos{},
+		m_Font{},
 		m_PausedText{},
 		m_ContinueText{},
 		m_MainMenuText{},
@@ -15,7 +16,7 @@ namespace Chesster
 		m_MenuOptions{},
 		m_CurrentOption{ PauseOptions::Continue }
 	{
-		m_fMinecraft = context.fonts->Get(FontID::Minecraft);
+		m_Font = context.fonts->Get(FontID::Minecraft);
 		m_fMinecraft100 = context.fonts->Get(FontID::Minecraft_100);
 
 		// Prepare pause text
@@ -25,9 +26,9 @@ namespace Chesster
 			((m_Window->GetHeight() - m_PausedText.GetHeight()) / 2) - 100);
 		
 		// Prepare option text
-		m_ContinueText.LoadFromRenderedText(m_fMinecraft, "CONTINUE", White);
-		m_MainMenuText.LoadFromRenderedText(m_fMinecraft, "MAIN MENU", White);
-		m_ExitText.LoadFromRenderedText(m_fMinecraft, "EXIT", White);		
+		m_ContinueText.LoadFromRenderedText(m_Font, "CONTINUE", White);
+		m_MainMenuText.LoadFromRenderedText(m_Font, "MAIN MENU", White);
+		m_ExitText.LoadFromRenderedText(m_Font, "EXIT", White);		
 		
 		m_MenuOptions.push_back(&m_ContinueText);
 		m_MenuOptions.push_back(&m_MainMenuText);
@@ -67,41 +68,85 @@ namespace Chesster
 		{
 			switch (event.key.keysym.sym)
 			{
-			case SDLK_ESCAPE:
-				RequestStackPop();
-				break;
-
-			case SDLK_RETURN:
-			{
-				if (m_CurrentOption == PauseOptions::Continue)
-				{
+				case SDLK_ESCAPE:
 					RequestStackPop();
-				}
-				else if (m_CurrentOption == PauseOptions::MainMenu)
-				{
-					RequestStateClear();
-					RequestStackPush(StateID::Menu);
-				}
-				else if (m_CurrentOption == PauseOptions::Exit)
-				{
-					Close();
-					RequestStackPop();
-					RequestStackPop();
-				}
-			} break;
+					break;
 
-			case SDLK_UP:
-			{
-				--m_CurrentOption;
-				UpdateOptionText();
-			} break;
+				case SDLK_RETURN:
+				{
+					if (m_CurrentOption == PauseOptions::Continue)
+					{
+						RequestStackPop();
+					}
+					else if (m_CurrentOption == PauseOptions::MainMenu)
+					{
+						RequestStateClear();
+						RequestStackPush(StateID::Menu);
+					}
+					else if (m_CurrentOption == PauseOptions::Exit)
+					{
+						Close();
+						RequestStackPop();
+						RequestStackPop();
+					}
+				} break;
 
-			case SDLK_DOWN:
-			{
-				++m_CurrentOption;
-				UpdateOptionText();
-			} break;
+				case SDLK_UP:
+				{
+					--m_CurrentOption;
+					UpdateOptionText();
+				} break;
+
+				case SDLK_DOWN:
+				{
+					++m_CurrentOption;
+					UpdateOptionText();
+				} break;
 			}
+		}
+
+		if (event.type == SDL_MOUSEMOTION)
+		{
+			// Get the mouse screen coordinates
+			SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
+
+			// Check if mouse is inside text bounds
+			for (int i = 0; i < m_MenuOptions.size(); ++i)
+			{
+				SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+				if (SDL_PointInRect(&m_MousePos, &textBounds))
+				{
+					m_CurrentOption = PauseOptions(i);
+					UpdateOptionText();
+				}
+			}
+		}
+
+		if (event.type == SDL_MOUSEBUTTONUP)
+		{
+			if (event.button.button == SDL_BUTTON_LEFT)
+				for (int i = 0; i < m_MenuOptions.size(); ++i)
+				{
+					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+					if (SDL_PointInRect(&m_MousePos, &textBounds))
+					{
+						if (m_CurrentOption == PauseOptions::Continue)
+						{
+							RequestStackPop();
+						}
+						else if (m_CurrentOption == PauseOptions::MainMenu)
+						{
+							RequestStateClear();
+							RequestStackPush(StateID::Menu);
+						}
+						else if (m_CurrentOption == PauseOptions::Exit)
+						{
+							Close();
+							RequestStackPop();
+							RequestStackPop();
+						}
+					}
+				}
 		}
 
 		return false;
@@ -116,23 +161,23 @@ namespace Chesster
 		SDL_Color Red = { 255u, 0u, 0u };
 
 		// Black all texts
-		m_ContinueText.LoadFromRenderedText(m_fMinecraft, "CONTINUE", White);
-		m_MainMenuText.LoadFromRenderedText(m_fMinecraft, "MAIN MENU", White);
-		m_ExitText.LoadFromRenderedText(m_fMinecraft, "EXIT", White);
+		m_ContinueText.LoadFromRenderedText(m_Font, "CONTINUE", White);
+		m_MainMenuText.LoadFromRenderedText(m_Font, "MAIN MENU", White);
+		m_ExitText.LoadFromRenderedText(m_Font, "EXIT", White);
 
 		// Red the selected text
 		switch (m_CurrentOption)
 		{
 		case PauseOptions::Continue:
-			m_ContinueText.LoadFromRenderedText(m_fMinecraft, "CONTINUE", Red);
+			m_ContinueText.LoadFromRenderedText(m_Font, "CONTINUE", Red);
 			break;
 
 		case PauseOptions::MainMenu:
-			m_MainMenuText.LoadFromRenderedText(m_fMinecraft, "MAIN MENU", Red);
+			m_MainMenuText.LoadFromRenderedText(m_Font, "MAIN MENU", Red);
 			break;
 
 		case PauseOptions::Exit:
-			m_ExitText.LoadFromRenderedText(m_fMinecraft, "EXIT", Red);
+			m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Red);
 			break;
 		}
 	}
@@ -140,8 +185,8 @@ namespace Chesster
 	void PauseState::Close()
 	{
 		// Release fonts
-		TTF_CloseFont(m_fMinecraft100.m_fMinecraft);
-		TTF_CloseFont(m_fMinecraft.m_fMinecraft);
+		TTF_CloseFont(m_fMinecraft100.m_Font);
+		TTF_CloseFont(m_Font.m_Font);
 
 		// Release logo and texts
 		m_PausedText.FreeTexture();

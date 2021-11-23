@@ -15,11 +15,15 @@ namespace Chesster
 		bool HandleEvent(const SDL_Event& event) override;
 
 	private:
+		void Close();
+
+	private:
 		Window* m_Window;
 		Texture* m_ReadySetGoTexture;
 		Texture* m_ChessterLogoTexture;
 
-		Texture::Font* m_fMinecraft;
+		Texture::Font m_Font;
+		Texture m_PressKeyText;
 
 		bool m_ShowReadySetCode;
 		bool m_ShowChessterLogo;

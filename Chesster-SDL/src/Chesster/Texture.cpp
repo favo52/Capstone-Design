@@ -63,7 +63,7 @@ namespace Chesster
 		FreeTexture();
 		
 		// Render text surface
-		SDL_Surface* textSurface = TTF_RenderText_Solid(font.m_fMinecraft, textureText.c_str(), color);
+		SDL_Surface* textSurface = TTF_RenderText_Solid(font.m_Font, textureText.c_str(), color);
 		if (textSurface == nullptr)
 			std::cout << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << '\n';
 		else

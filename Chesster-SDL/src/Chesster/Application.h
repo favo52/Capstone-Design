@@ -32,7 +32,7 @@ namespace Chesster
 		std::unique_ptr<Window> m_Window;
 		bool m_isRunning;
 
-		Texture::Font m_fMinecraft;
+		Texture::Font m_Font;
 		Texture m_FPSText;
 
 		TextureHolder m_TextureHolder;
