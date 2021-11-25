@@ -11,7 +11,7 @@ namespace Chesster
 		TitleState(StateStack& stack, Context context);
 
 		void Draw() override;
-		bool Update() override;
+		bool Update(const std::chrono::duration<double>& dt) override;
 		bool HandleEvent(const SDL_Event& event) override;
 
 	private:
@@ -24,6 +24,8 @@ namespace Chesster
 
 		Texture::Font m_Font;
 		Texture m_PressKeyText;
+		std::chrono::duration<double> m_TexEffectTime;
+		bool m_ShowText;
 
 		bool m_ShowReadySetCode;
 		bool m_ShowChessterLogo;

@@ -98,6 +98,7 @@ namespace Chesster
             // Animation
             for (sf::Time elapsedTime = sf::Time::Zero; elapsedTime < sf::seconds(1); elapsedTime += dt)
             {
+                std::cout << dt.asSeconds() << '\n';
                 sf::Vector2f position = m_newPos - m_oldPos;
                 m_Pieces[m_PieceIndex].move(position.x * dt.asSeconds(), position.y * dt.asSeconds());
                 window.draw(m_BoardSprite);

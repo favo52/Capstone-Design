@@ -11,12 +11,17 @@ namespace Chesster
 		m_ChessterLogoTexture{ nullptr },
 		m_Font{},
 		m_PressKeyText{},
+		m_TexEffectTime{},
+		m_ShowText{ true },
 		m_ShowReadySetCode{ true },
 		m_ShowChessterLogo{ false }
 	{
+		using namespace std::literals;
+		m_TexEffectTime = 0s;
+
 		// Prepare text
 		m_Font = context.fonts->Get(FontID::Sansation);
-		m_PressKeyText.LoadFromRenderedText(m_Font, "PRESS ANY KEY TO CONTINUE", { 0u, 0u, 0u, 255u });
+		m_PressKeyText.LoadFromRenderedText(m_Font, "CLICK OR PRESS ANY KEY TO CONTINUE", { 0u, 0u, 0u, 255u });
 		m_PressKeyText.SetPosition((m_Window->GetWidth() - m_PressKeyText.GetWidth()) / 2,
 								  ((m_Window->GetHeight() - m_PressKeyText.GetHeight()) / 2) + 200);
 
@@ -33,7 +38,8 @@ namespace Chesster
 
 	void TitleState::Draw()
 	{
-		m_PressKeyText.Draw();
+		if (m_ShowText)
+			m_PressKeyText.Draw();
 
 		// Render texture to screen
 		if (m_ShowReadySetCode)
@@ -42,8 +48,18 @@ namespace Chesster
 			m_ChessterLogoTexture->Draw();
 	}
 
-	bool TitleState::Update()
+	bool TitleState::Update(const std::chrono::duration<double>& dt)
 	{
+		m_TexEffectTime += dt;
+
+		// Make text blink
+		using namespace std::literals;
+		if (m_TexEffectTime >= 0.5s)
+		{
+			m_ShowText = !m_ShowText;
+			m_TexEffectTime = 0s;
+		}
+
 		return true;
 	}
 

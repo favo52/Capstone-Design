@@ -20,12 +20,13 @@ namespace Chesster
 		m_PieceIndex{ 0 },
 		m_PositionHistory{ "" },
 		m_MoveHistorySize{ 0 },
-		m_BoardOffset{ 23.0f, 23.0f },
-		m_PieceOffset{ 1.065f },
+		m_BoardOffset{ 23.0f, 23.0f }, // 23 23
+		m_PieceOffset{ 1.065f }, // 1.065
 		m_HoldingPiece{ false },
 		m_MousePos{},
 		m_Connector{},
 		m_IsComputerTurn{ false },
+		m_IsComputerDone{ true },
 		m_FEN{},
 		m_ValidMoves{},
 		m_PathPythonScript{ "resources/engines/script/__init__.exe" }
@@ -73,13 +74,11 @@ namespace Chesster
 			m_Pieces[i].Move(-m_BoardOffset);
 	}
 
-	bool Board::Update()
+	bool Board::Update(const std::chrono::duration<double>& dt)
 	{
 		// Computer move
 		if (m_IsComputerTurn)
 		{
-			m_IsComputerTurn = false;
-
 			// Get stockfish's next move
 			m_Str = m_Connector.GetNextMove(m_PositionHistory);
 			if (m_Str == "error")
@@ -88,17 +87,22 @@ namespace Chesster
 			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
 			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
 
+			// If a piece on the board has the notation, move it
 			for (int i = 0; i < TOTAL_PIECES; ++i)
 				if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(m_OldPos))
 					m_PieceIndex = i;
 
-			// Animation
-			// TODO:
+			/* Could do animation here
+			* 
+			*/
 
+			// Remove any piece it "ate", update move history and piece position
 			Move(m_Str);
 			m_PositionHistory += m_Str + " ";
 
 			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset, m_NewPos.y * m_PieceOffset, &m_PieceClip[m_PieceIndex]);
+
+			m_IsComputerTurn = false;
 		}
 
 		// Dragging a piece
@@ -153,6 +157,8 @@ namespace Chesster
 				m_MousePos.x -= m_BoardOffset.x;
 				m_MousePos.y -= m_BoardOffset.y;
 
+				//std::cout << "(" << m_MousePos.x << ", " << m_MousePos.y << ")" << '\n';
+
 				// Drag and drop
 				if (event.button.button == SDL_BUTTON_LEFT)
 					for (int i = 0; i < TOTAL_PIECES; ++i)
@@ -175,7 +181,7 @@ namespace Chesster
 			// Mouse button released
 			case SDL_MOUSEBUTTONUP:
 			{
-				// Get the mouse screen coordinates
+				// Get the mouse screen coordinates and adjust for offset
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 				m_MousePos.x -= m_BoardOffset.x;
 				m_MousePos.y -= m_BoardOffset.y;
@@ -195,6 +201,7 @@ namespace Chesster
 						{
 							Move(m_Str);
 
+							// Update move history if piece is dropped in a new square
 							if (ToChessNotation(m_OldPos) != ToChessNotation(m_NewPos))
 								m_PositionHistory += m_Str + " ";
 							++m_MoveHistorySize;
@@ -253,7 +260,7 @@ namespace Chesster
 	Vector2f Board::ToCoord(char a, char b)
 	{
 		int x = int(a) - int('a');
-		int y = 7 - int(b) + int('1');
+		int y = 7 - int(b) + int('1'); // 7 cuz it's from 0 to 7 (8 ranks)
 
 		return Vector2f(x * m_PieceSize, y * m_PieceSize);
 	}
@@ -263,7 +270,7 @@ namespace Chesster
 		Vector2f OldPos = ToCoord(notation[0], notation[1]);
 		Vector2f NewPos = ToCoord(notation[2], notation[3]);
 
-
+		// Deal with "eaten" pieces, moves them offscreen
 		for (int i = 0; i < TOTAL_PIECES; ++i)
 			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(NewPos))
 				m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);

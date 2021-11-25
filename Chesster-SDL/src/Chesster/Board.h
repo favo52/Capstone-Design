@@ -15,7 +15,7 @@ namespace Chesster
 		~Board();
 
 		void Draw();
-		bool Update();
+		bool Update(const std::chrono::duration<double>& dt);
 		bool HandleEvent(const SDL_Event& event);
 
 	private:
@@ -64,6 +64,11 @@ namespace Chesster
 		std::string m_Str;
 		int m_PieceIndex;
 
+		bool inRange(int low, int high, int x)
+		{
+			return ((x - high) * (x - low) <= 0);
+		}
+
 		// Mouse stuff
 		SDL_Point m_MousePos;
 		Vector2f m_BoardOffset;
@@ -71,6 +76,7 @@ namespace Chesster
 		bool m_HoldingPiece;
 
 		bool m_IsComputerTurn;
+		bool m_IsComputerDone;
 
 		bool m_PrintMoves = false; // testing
 		std::string m_FEN;

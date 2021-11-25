@@ -11,12 +11,12 @@ namespace Chesster
 	{
 	}
 
-	void StateStack::Update(/*sf::Time dt*/)
+	void StateStack::Update(const std::chrono::duration<double>& dt)
 	{
 		// Iterate from top to bottom, stop as soon as update() returns false
 		for (auto itr = m_Stack.rbegin(); itr != m_Stack.rend(); ++itr)
 		{
-			if (!(*itr)->Update(/*dt*/))
+			if (!(*itr)->Update(dt))
 				break;
 		}
 

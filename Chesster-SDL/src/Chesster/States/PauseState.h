@@ -10,7 +10,7 @@ namespace Chesster
 		PauseState(StateStack& stack, Context context);
 
 		void Draw() override;
-		bool Update() override;
+		bool Update(const std::chrono::duration<double>& dt) override;
 		bool HandleEvent(const SDL_Event& event) override;
 				 
 	private:

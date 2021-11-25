@@ -10,6 +10,9 @@ namespace Chesster
 	Application::Application() :
 		m_Window{ nullptr },
 		m_isRunning{ true },
+		m_FPSUpdateTime{},
+		m_FPSNumFrames{ 0 },
+		m_FPSNumberText{},
 		m_Font{},
 		m_FPSText{},
 		m_TextureHolder{},
@@ -18,9 +21,10 @@ namespace Chesster
 	{
 		m_Window = std::unique_ptr<Window>(Window::Create());
 
-		// Prepare text
+		// Prepare fonts
 		m_FontHolder.Load(FontID::AbsEmpire_100, "resources/fonts/aAbsoluteEmpire.ttf", 100);
 		m_FontHolder.Load(FontID::Minecraft, "resources/fonts/Minecraft.ttf");
+		m_FontHolder.Load(FontID::Minecraft_10, "resources/fonts/Minecraft.ttf", 12);
 		m_FontHolder.Load(FontID::Minecraft_100, "resources/fonts/Minecraft.ttf", 100);
 		m_FontHolder.Load(FontID::Sansation, "resources/fonts/Sansation.ttf");
 		m_FontHolder.Load(FontID::Sansation_10, "resources/fonts/Sansation.ttf", 10);
@@ -30,8 +34,9 @@ namespace Chesster
 		m_TextureHolder.Load(TextureID::ReadySetCode, "resources/textures/ReadySetCode.jpeg");
 		m_TextureHolder.Load(TextureID::ChessterLogo, "resources/textures/ChessterLogo.jpeg");
 
-		m_Font = m_FontHolder.Get(FontID::Sansation_10);
-		m_FPSText.LoadFromRenderedText(m_Font, "FPS: ", { 0u, 0u, 0u });
+		// Set text
+		m_Font = m_FontHolder.Get(FontID::Minecraft_10);
+		m_FPSText.LoadFromRenderedText(m_Font, "FPS  ", { 255u, 255u, 255u , 255u });
 		m_FPSText.SetPosition(5, 5);
 
 		RegisterStates();
@@ -45,17 +50,51 @@ namespace Chesster
 
 	void Application::Run()
 	{
+		using namespace std::literals;
+		auto constexpr dt = 1.0s / 60.0;
+
+		// For easier writing
+		using duration = std::chrono::duration<double>;
+		using time_point = std::chrono::time_point<Clock, duration>;
+
+		time_point t{};
+
+		time_point currentTime = Clock::now();
+		duration accumulator = 0s;
+
 		while (m_isRunning)
 		{
-			// Handle events on queue
-			ProcessEvents();
+			time_point newTime = Clock::now();
+			auto frameTime = newTime - currentTime;
+			if (frameTime > 0.25s)
+				frameTime = 0.25s;
+			currentTime = newTime;
 
-			Update();
+			accumulator += frameTime;
 
-			// Check inside this loop, because stack might be empty before update() call
-			if (m_StateStack.IsEmpty())
-				Quit();
+			while (accumulator >= dt)
+			{
+				// Handle events on queue
+				ProcessEvents();
 
+				// Update game logic
+				Update(dt);
+
+				// Stack might be empty before update() call
+				if (m_StateStack.IsEmpty())
+					Quit();
+
+				t += dt;
+				accumulator -= dt;
+			}
+
+			//const double alpha = accumulator / dt;
+			//std::cout << alpha << '\n';
+
+			// Calculate and correct fps
+			CalculateFPS(dt);
+
+			// Draw everything
 			Render();
 		}
 	}
@@ -73,20 +112,18 @@ namespace Chesster
 			// User requests quit
 			if (e.type == SDL_QUIT)
 				Quit();
-			/*else if (e.key.keysym.sym == SDLK_ESCAPE)
-				Quit();*/
 
 			m_StateStack.HandleEvent(e);
 		}
 	}
 
-	void Application::Update()
+	void Application::Update(const std::chrono::duration<double>& dt)
 	{
 		// Apply any Window updates
-		m_Window->OnUpdate();
-
+		//m_Window->OnUpdate();
+		
 		// Update states
-		m_StateStack.Update();
+		m_StateStack.Update(dt);
 	}
 
 	void Application::Render()
@@ -120,6 +157,28 @@ namespace Chesster
 		default:
 			break;
 		}
+	}
+
+	void Application::CalculateFPS(const std::chrono::duration<double>& dt)
+	{
+		using namespace std::chrono;
+		static auto t = time_point_cast<seconds>(steady_clock::now());
+
+		static int frame_count = 0;
+		static int frame_rate = 0;
+		auto pt = t;
+		t = time_point_cast<seconds>(steady_clock::now());
+		++frame_count;
+
+		if (t != pt)
+		{
+			frame_rate = frame_count;
+			frame_count = 0;
+		}
+
+		m_FPSNumberText.str("");
+		m_FPSNumberText << "FPS  " << std::to_string(frame_rate);
+		m_FPSText.LoadFromRenderedText(m_Font, m_FPSNumberText.str().c_str(), { 255u, 255u, 255u , 255u });
 	}
 
 	void Application::Cleanup()

@@ -60,7 +60,7 @@ namespace Chesster
 			text->Draw();
 	}
 
-	bool MenuState::Update()
+	bool MenuState::Update(const std::chrono::duration<double>& dt)
 	{
 		return true;
 	}

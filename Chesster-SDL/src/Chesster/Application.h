@@ -3,6 +3,7 @@
 #include "pch.h"
 
 #include "Window.h"
+#include "Time.h"
 #include "ResourceHolder.h"
 #include "States/StateStack.h"
 
@@ -19,10 +20,11 @@ namespace Chesster
 
 	private:
 		void ProcessEvents();
-		void Update();
+		void Update(const std::chrono::duration<double>& dt);
 		void Render();
 
 		void HandleInput(const SDL_Event& e);
+		void CalculateFPS(const std::chrono::duration<double>& dt);
 
 		void Cleanup();
 
@@ -31,6 +33,11 @@ namespace Chesster
 	private:
 		std::unique_ptr<Window> m_Window;
 		bool m_isRunning;
+
+		// Frames per second
+		std::chrono::duration<double> m_FPSUpdateTime;
+		std::size_t m_FPSNumFrames;
+		std::stringstream m_FPSNumberText;
 
 		Texture::Font m_Font;
 		Texture m_FPSText;

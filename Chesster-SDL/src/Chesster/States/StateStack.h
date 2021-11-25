@@ -21,7 +21,7 @@ namespace Chesster
 		template<typename T>
 		void RegisterState(StateID stateID);
 
-		void Update(/*sf::Time dt*/);
+		void Update(const std::chrono::duration<double>& dt);
 		void Draw();
 		void HandleEvent(const SDL_Event& event);
 

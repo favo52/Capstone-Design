@@ -15,9 +15,9 @@ namespace Chesster
 		m_Board.Draw();
 	}
 
-	bool GameState::Update()
+	bool GameState::Update(const std::chrono::duration<double>& dt)
 	{
-		m_Board.Update();
+		m_Board.Update(dt);
 
 		return true;
 	}

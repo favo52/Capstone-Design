@@ -6,6 +6,7 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
+#include <chrono>
 
 // Errors
 #include <cassert>

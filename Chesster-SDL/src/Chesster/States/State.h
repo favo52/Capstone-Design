@@ -37,7 +37,7 @@ namespace Chesster
 		virtual ~State();
 
 		virtual void Draw() = 0;
-		virtual bool Update(/*sf::Time dt*/) = 0;
+		virtual bool Update(const std::chrono::duration<double>& dt) = 0;
 		virtual bool HandleEvent(const SDL_Event& e) = 0;
 
 	protected:

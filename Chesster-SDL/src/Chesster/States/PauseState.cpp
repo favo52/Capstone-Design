@@ -57,7 +57,7 @@ namespace Chesster
 			text->Draw();
 	}
 
-	bool PauseState::Update()
+	bool PauseState::Update(const std::chrono::duration<double>& dt)
 	{
 		return false;
 	}

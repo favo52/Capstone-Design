@@ -17,6 +17,7 @@ namespace Chesster
 	{
 		AbsEmpire_100,
 		Minecraft,
+		Minecraft_10,
 		Minecraft_100,
 		Sansation,
 		Sansation_10,
@@ -54,6 +55,7 @@ namespace Chesster
 		}
 
 		Vector2f operator-() { return Vector2f(x * -1, y * -1); }
+		Vector2f operator-(const Vector2f& vec2f) { return Vector2f(this->x + (vec2f.x * -1), this->y + (vec2f.y * -1)); }
 		Vector2f operator+(const Vector2f& vec2f) { return Vector2f(this->x + vec2f.x, this->y + vec2f.y); }
 		Vector2f operator+(const SDL_Point& vec2f) { return Vector2f(this->x + vec2f.x, this->y + vec2f.y); }
 		
@@ -95,29 +97,30 @@ namespace Chesster
 		
 		void FreeTexture();
 
+		// Change properties
 		void SetColor(Uint8 red, Uint8 green, Uint8 blue);
 		void SetBlendMode(SDL_BlendMode blending);
 		void SetAlpha(Uint8 alpha);
 
-		void Move(const Vector2f& offset);
-
 		void SetPosition(int x, int y, SDL_Rect* clip = nullptr, double angle = 0.0,
 			SDL_Point* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
+		// Transform
+		void SetVelocity(Vector2f velocity);
+		void SetVelocity(double vx, double vy);
+		
+		void Accelerate(Vector2f acceleration);
+		void Accelerate(double ax, double ay);
+
+		void Move(const Vector2f& offset);
+		void Move(const double& offsetX, const double& offsetY);
+
+		// Get properties
 		inline const Vector2f GetPosition() const { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
 		inline Vector2f GetPosition() { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
 		
-		/*inline const SDL_Point GetPosition() const
-		{
-			SDL_Point point = { m_RenderQuad.x, m_RenderQuad.y };
-			return point;
-		}
-
-		inline SDL_Point GetPosition()
-		{
-			SDL_Point point = { m_RenderQuad.x, m_RenderQuad.y };
-			return point;
-		}*/
+		inline const Vector2f GetVelocity() const { return m_Velocity; }
+		inline Vector2f GetVelocity() { return m_Velocity; }
 
 		inline const int GetWidth() const { return m_Width; }
 		inline const int GetHeight() const { return m_Height; }
@@ -126,10 +129,16 @@ namespace Chesster
 		void Draw() const;
 
 	private:
+		// Image Properties
 		SDL_Texture* m_Texture;
 		int m_Width;
 		int m_Height;
 
+		// Movement
+		double m_Acceleration;
+		Vector2f m_Velocity;
+
+		// Render Properties
 		SDL_Rect m_RenderQuad;
 		SDL_Rect* m_Clip;
 		double m_Angle;
