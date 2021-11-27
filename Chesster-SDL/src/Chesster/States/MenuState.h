@@ -9,9 +9,9 @@ namespace Chesster
 	public:
 		MenuState(StateStack& stack, Context context);
 
-		void Draw() override;
+		bool HandleEvent(SDL_Event& event) override;
 		bool Update(const std::chrono::duration<double>& dt) override;
-		bool HandleEvent(const SDL_Event& event) override;
+		void Draw() override;
 
 	private:
 		enum class MenuOptions
@@ -25,6 +25,7 @@ namespace Chesster
 		friend MenuOptions operator--(MenuOptions& menuOption);
 
 		void UpdateOptionText();
+		void SelectOption();
 		void Close();
 
 	private:
@@ -32,11 +33,10 @@ namespace Chesster
 		Texture* m_LogoTexture;
 
 		SDL_Point m_MousePos;
-		//Vector2f m_BoardOffset;
 
 		// Options Text
-		Texture::Font m_Font;
-		Texture::Font m_fAbsEmp100;
+		Font m_Font;
+		Font m_fAbsEmp100;
 		Texture m_TitleText;
 		Texture m_playText;
 		Texture m_SettingsText;

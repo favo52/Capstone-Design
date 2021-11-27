@@ -29,23 +29,24 @@ namespace Chesster
 		m_ReadySetGoTexture = &context.textures->Get(TextureID::ReadySetCode);
 		m_ChessterLogoTexture = &context.textures->Get(TextureID::ChessterLogo);
 
-		m_ReadySetGoTexture->SetPosition((m_Window->GetWidth() - m_ReadySetGoTexture->GetWidth()) / 2,
-										 ((m_Window->GetHeight() - m_ReadySetGoTexture->GetHeight()) / 2) - 50);
+		m_ReadySetGoTexture->SetPosition((m_Window->GetWidth() - m_ReadySetGoTexture->GetWidth()) / 2, // x
+										 ((m_Window->GetHeight() - m_ReadySetGoTexture->GetHeight()) / 2) - 50); // y
 
 		m_ChessterLogoTexture->SetPosition((m_Window->GetWidth() - m_ReadySetGoTexture->GetWidth()) / 2,
 										   (m_Window->GetHeight() - m_ReadySetGoTexture->GetHeight()) / 2);
 	}
 
-	void TitleState::Draw()
+	bool TitleState::HandleEvent(SDL_Event& event)
 	{
-		if (m_ShowText)
-			m_PressKeyText.Draw();
+		// If click or any key is pressed, tigger the next screen
+		if (event.type == SDL_KEYDOWN ||
+			event.type == SDL_MOUSEBUTTONUP)
+		{
+			RequestStackPop();
+			RequestStackPush(StateID::Menu);
+		}
 
-		// Render texture to screen
-		if (m_ShowReadySetCode)
-			m_ReadySetGoTexture->Draw();
-		else
-			m_ChessterLogoTexture->Draw();
+		return true;
 	}
 
 	bool TitleState::Update(const std::chrono::duration<double>& dt)
@@ -63,33 +64,15 @@ namespace Chesster
 		return true;
 	}
 
-	bool TitleState::HandleEvent(const SDL_Event& event)
+	void TitleState::Draw()
 	{
-		// If any key is pressed, tigger the next screen
-		if (event.type == SDL_KEYDOWN)
-		{
-			//Close();
-			RequestStackPop();
-			RequestStackPush(StateID::Menu);
-		}
+		if (m_ShowText)
+			m_PressKeyText.Draw();
 
-		if (event.type == SDL_MOUSEBUTTONUP)
-		{
-			RequestStackPop();
-			RequestStackPush(StateID::Menu);
-		}
-
-		return true;
-	}
-
-	void TitleState::Close()
-	{
-		// Release font
-		TTF_CloseFont(m_Font.m_Font);
-
-		// Release logo and texts
-		m_PressKeyText.FreeTexture();
-		m_ReadySetGoTexture->FreeTexture();
-		m_ChessterLogoTexture->FreeTexture();
+		// Render texture to screen
+		if (m_ShowReadySetCode)
+			m_ReadySetGoTexture->Draw();
+		else
+			m_ChessterLogoTexture->Draw();
 	}
 }

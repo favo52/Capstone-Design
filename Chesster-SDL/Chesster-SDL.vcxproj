@@ -14,6 +14,7 @@
     <ClCompile Include="src\Chesster\Application.cpp" />
     <ClCompile Include="src\Chesster\Board.cpp" />
     <ClCompile Include="src\Chesster\Connector.cpp" />
+    <ClCompile Include="src\Chesster\Log.cpp" />
     <ClCompile Include="src\Chesster\Main.cpp" />
     <ClCompile Include="src\Chesster\States\GameState.cpp" />
     <ClCompile Include="src\Chesster\States\MenuState.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="src\Chesster\Application.h" />
     <ClInclude Include="src\Chesster\Connector.h" />
     <ClInclude Include="src\Chesster\Board.h" />
+    <ClInclude Include="src\Chesster\Log.h" />
     <ClInclude Include="src\Chesster\States\GameState.h" />
     <ClInclude Include="src\Chesster\States\MenuState.h" />
     <ClInclude Include="src\Chesster\States\PauseState.h" />
@@ -46,6 +48,7 @@
     <ClInclude Include="src\Chesster\Texture.h" />
     <ClInclude Include="src\Chesster\ResourceHolder.h" />
     <ClInclude Include="src\Chesster\Time.h" />
+    <ClInclude Include="src\Chesster\Vector.h" />
     <ClInclude Include="src\Chesster\Window.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
@@ -99,7 +102,7 @@
       <PreprocessorDefinitions>CHESSTER_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;C:\Dev\PUPR-Projects\Capstone-Design\Chesster-SDL\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -119,7 +122,7 @@
       <PreprocessorDefinitions>CHESSTER_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;C:\Dev\PUPR-Projects\Capstone-Design\Chesster-SDL\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>

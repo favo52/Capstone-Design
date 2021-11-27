@@ -7,8 +7,8 @@ namespace Chesster
 		m_Texture{ nullptr },
 		m_Width{ 0 },
 		m_Height{ 0 },
-		m_Acceleration{ 0.0 },
-		m_Velocity{ 0.0 },
+		//m_Acceleration{ 0.0 },
+		//m_Velocity{ 0.0 },
 		m_RenderQuad{ 0, 0, m_Width, m_Height },
 		m_Clip{ nullptr },
 		m_Angle{ 0.0 },
@@ -33,16 +33,20 @@ namespace Chesster
 		// Load image at specified path
 		SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 		if (loadedSurface == nullptr)
-			std::cout << "Unable to load image " << path.c_str() << "! SDL_image Error : " << IMG_GetError() << '\n';
+		{
+			CHESSTER_ERROR("Unable to load image {0}! SDL_image error: {1}", path.c_str(), IMG_GetError());
+		}
 		else
 		{
-			// Color key image
-			SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+			// Color key image. Makes specified color transparent.
+			//SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
 
 			// Create texture from surface pixels
 			newTexture = SDL_CreateTextureFromSurface(Window::Renderer, loadedSurface);
 			if (newTexture == nullptr)
-				std::cout << "Unable to create texture from " << path.c_str() << "! SDL Error : " << SDL_GetError() << '\n';
+			{
+				CHESSTER_ERROR("Unable to create texture from {0}! SDL error: {1}", path.c_str(), SDL_GetError());
+			}
 			else
 			{
 				// Get image dimensions
@@ -67,13 +71,17 @@ namespace Chesster
 		// Render text surface
 		SDL_Surface* textSurface = TTF_RenderText_Solid(font.m_Font, textureText.c_str(), color);
 		if (textSurface == nullptr)
-			std::cout << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << '\n';
+		{
+			CHESSTER_ERROR("Unable to render text surface! SDL_ttf error: {0}", TTF_GetError());
+		}
 		else
 		{
 			// Create texture from surface pixels
 			m_Texture = SDL_CreateTextureFromSurface(Window::Renderer, textSurface);
 			if (m_Texture == nullptr)
-				std::cout << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << '\n';
+			{
+				CHESSTER_ERROR("Unable to create texture from rendered text! SDL error: {0}", SDL_GetError());
+			}
 			else
 			{
 				// Get image dimensions
@@ -81,7 +89,7 @@ namespace Chesster
 				m_Height = textSurface->h;
 			}
 
-			//Get rid of old surface
+			// Get rid of old surface
 			SDL_FreeSurface(textSurface);
 		}
 
@@ -137,7 +145,7 @@ namespace Chesster
 		}
 	}
 
-	void Texture::SetVelocity(Vector2f velocity)
+	/*void Texture::SetVelocity(Vector2f velocity)
 	{
 		m_Velocity = velocity;
 	}
@@ -158,7 +166,7 @@ namespace Chesster
 	{
 		m_Velocity.x += ax;
 		m_Velocity.y += ay;
-	}
+	}*/
 
 	void Texture::Move(const Vector2f& offset)
 	{

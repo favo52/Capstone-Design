@@ -15,6 +15,7 @@ namespace Chesster
 		m_MenuOptions{},
 		m_CurrentOption{ MenuOptions::Play }
 	{
+		// Prepare resources
 		m_Font = context.fonts->Get(FontID::Minecraft);
 		m_fAbsEmp100 = context.fonts->Get(FontID::AbsEmpire_100);
 		m_LogoTexture = &context.textures->Get(TextureID::ChessterLogo);
@@ -49,15 +50,63 @@ namespace Chesster
 		UpdateOptionText();
 	}
 
-	void MenuState::Draw()
+	bool MenuState::HandleEvent(SDL_Event& event)
 	{
-		SDL_SetRenderDrawColor(Window::Renderer, 255u, 255u, 255u, 255u);
-		
-		m_TitleText.Draw();
-		m_LogoTexture->Draw();
+		switch (event.type)
+		{
+			// Handle keyboard
+			case SDL_KEYDOWN:
+			{
+				switch (event.key.keysym.sym)
+				{
+					case SDLK_RETURN:
+						SelectOption();
+						break;
 
-		for (const Texture* text : m_MenuOptions)
-			text->Draw();
+					case SDLK_UP:
+					{
+						--m_CurrentOption;
+						UpdateOptionText();
+					} break;
+
+					case SDLK_DOWN:
+					{
+						++m_CurrentOption;
+						UpdateOptionText();
+					} break;
+				}
+			} break;
+
+			case SDL_MOUSEMOTION:
+			{
+				// Get the mouse screen coordinates
+				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
+
+				// Check if mouse is inside text bounds
+				for (int i = 0; i < m_MenuOptions.size(); ++i)
+				{
+					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+					if (SDL_PointInRect(&m_MousePos, &textBounds))
+					{
+						m_CurrentOption = MenuOptions(i);
+						UpdateOptionText();
+					}
+				}
+			} break;
+
+			case SDL_MOUSEBUTTONUP:
+			{
+				if (event.button.button == SDL_BUTTON_LEFT)
+					for (int i = 0; i < m_MenuOptions.size(); ++i)
+					{
+						SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+						if (SDL_PointInRect(&m_MousePos, &textBounds))
+							SelectOption();
+					}
+			} break;
+		}
+
+		return true;
 	}
 
 	bool MenuState::Update(const std::chrono::duration<double>& dt)
@@ -65,96 +114,15 @@ namespace Chesster
 		return true;
 	}
 
-	bool MenuState::HandleEvent(const SDL_Event& event)
+	void MenuState::Draw()
 	{
-		if (event.type == SDL_KEYDOWN)
-		{
-			switch (event.key.keysym.sym)
-			{
-				case SDLK_RETURN:
-				{
-					if (m_CurrentOption == MenuOptions::Play)
-					{
-						RequestStackPop();
-						RequestStackPush(StateID::Gameplay);
-					}
-					else if (m_CurrentOption == MenuOptions::Settings)
-					{
-						// TODO: Implement a SettingsState
-						// SettingsState allows the user to adjust the difficulty level of the engine
+		SDL_SetRenderDrawColor(Window::Renderer, 255u, 255u, 255u, 255u);
 
-						//RequestStackPush(States::SettingsState);
-					}
-					else if (m_CurrentOption == MenuOptions::Exit)
-					{
-						Close();
+		m_TitleText.Draw();
+		m_LogoTexture->Draw();
 
-						// By removing itself, the stack will be empty,
-						// and the application will know it is time to close.
-						RequestStackPop();
-					}
-				} break;
-
-				case SDLK_UP:
-				{
-					--m_CurrentOption;
-					UpdateOptionText();
-				} break;
-
-				case SDLK_DOWN:
-				{
-					++m_CurrentOption;
-					UpdateOptionText();
-				} break;
-			}
-		}
-
-		if (event.type == SDL_MOUSEMOTION)
-		{
-			// Get the mouse screen coordinates
-			SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
-
-			// Check if mouse is inside text bounds
-			for (int i = 0; i < m_MenuOptions.size(); ++i)
-			{
-				SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-				if (SDL_PointInRect(&m_MousePos, &textBounds))
-				{
-					m_CurrentOption = MenuOptions(i);
-					UpdateOptionText();
-				}
-			}
-		}
-
-		if (event.type == SDL_MOUSEBUTTONUP)
-		{
-			if (event.button.button == SDL_BUTTON_LEFT)
-				for (int i = 0; i < m_MenuOptions.size(); ++i)
-				{
-					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-					if (SDL_PointInRect(&m_MousePos, &textBounds))
-					{
-						if (m_CurrentOption == MenuOptions::Play)
-						{
-							RequestStackPop();
-							RequestStackPush(StateID::Gameplay);
-						}
-						else if (m_CurrentOption == MenuOptions::Settings)
-						{
-							// SettingsState allows the user to adjust the difficulty level of the engine
-
-							//RequestStackPush(States::SettingsState);
-						}
-						else if (m_CurrentOption == MenuOptions::Exit)
-						{
-							Close();
-							RequestStackPop();
-						}
-					}
-				}
-		}
-
-		return true;
+		for (const Texture* text : m_MenuOptions)
+			text->Draw();
 	}
 
 	void MenuState::UpdateOptionText()
@@ -184,6 +152,30 @@ namespace Chesster
 			case MenuOptions::Exit:
 				m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Red);
 				break;
+		}
+	}
+
+	void MenuState::SelectOption()
+	{
+		if (m_CurrentOption == MenuOptions::Play)
+		{
+			RequestStackPop();
+			RequestStackPush(StateID::Gameplay);
+		}
+		else if (m_CurrentOption == MenuOptions::Settings)
+		{
+			// SettingsState allows the user to adjust
+			// the difficulty level of the engine
+
+			//RequestStackPush(States::SettingsState);
+		}
+		else if (m_CurrentOption == MenuOptions::Exit)
+		{
+			Close();
+
+			// By removing itself, the stack will be empty,
+			// and the application will know it is time to close.
+			RequestStackPop();
 		}
 	}
 

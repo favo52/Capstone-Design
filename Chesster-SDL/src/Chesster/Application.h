@@ -32,20 +32,20 @@ namespace Chesster
 
 	private:
 		std::unique_ptr<Window> m_Window;
-		bool m_isRunning;
+		bool m_IsRunning;
 
 		// Frames per second
 		std::chrono::duration<double> m_FPSUpdateTime;
 		std::size_t m_FPSNumFrames;
 		std::stringstream m_FPSNumberText;
 
-		Texture::Font m_Font;
+		Font m_Font;
 		Texture m_FPSText;
 
+		// Resource holders
 		TextureHolder m_TextureHolder;
 		FontHolder m_FontHolder;
 
 		StateStack m_StateStack;
-
 	};
 }

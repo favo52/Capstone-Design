@@ -1,5 +1,9 @@
 #pragma once
 
+// Chesster
+#include "Chesster/Log.h"
+
+// General
 #include <iostream>
 #include <fstream>
 #include <memory>

@@ -7,7 +7,6 @@ namespace Chesster
 
 	Window::Window(const WindowProps& props) :
 		m_Window{ nullptr },
-		m_ScreenSurface{ nullptr },
 		m_WinProps{ props }
 	{
 		if (!Init(props))
@@ -17,15 +16,6 @@ namespace Chesster
 	Window::~Window()
 	{
 		Close();
-	}
-
-	void Window::OnUpdate()
-	{
-		// Fill the surface white
-		//SDL_FillRect(m_ScreenSurface, NULL, SDL_MapRGB(m_ScreenSurface->format, 0xFF, 0xFF, 0xFF));
-
-		// Update the surface
-		//SDL_UpdateWindowSurface(m_Window);
 	}
 
 	Window* Window::Create(const WindowProps& props)
@@ -38,19 +28,25 @@ namespace Chesster
 		// Initialize SDL
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
-			LogSDLError(std::cout, "Init");
+			CHESSTER_ERROR("SDL_Init failed with error: {0}", SDL_GetError())
 			return false;
 		}
 
 		// Set texture filtering to linear
 		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
-			std::cout << "Warning: Linear texture filtering not enabled!\n";
+			CHESSTER_WARN("Warning: Linear texture filtering not enabled!");
 
 		// Create window
-		m_Window = SDL_CreateWindow(props.Title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, props.Width, props.Height, SDL_WINDOW_SHOWN);
+		m_Window = SDL_CreateWindow
+		(
+			props.Title.c_str(),
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			props.Width, props.Height,
+			SDL_WINDOW_SHOWN
+		);
 		if (m_Window == nullptr)
 		{
-			LogSDLError(std::cout, "Window");
+			CHESSTER_ERROR("SDL_CreateWindow failed with error: {0}", SDL_GetError());
 			return false;
 		}
 
@@ -58,7 +54,7 @@ namespace Chesster
 		Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if (Renderer == nullptr)
 		{
-			LogSDLError(std::cout, "Renderer");
+			CHESSTER_ERROR("SDL_CreateRenderer failed with error: {0}", SDL_GetError());
 			return false;
 		}
 
@@ -70,19 +66,16 @@ namespace Chesster
 		int imgFlagsJPG = IMG_INIT_JPG;
 		if (!(IMG_Init(imgFlagsPNG) & imgFlagsPNG) || !(IMG_Init(imgFlagsJPG) & imgFlagsJPG))
 		{
-			std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError << '\n';
+			CHESSTER_ERROR("IMG_Init failed with error: {0}", IMG_GetError());
 			return false;
 		}
 
 		// Initialize SDL_ttf
 		if (TTF_Init() < 0)
 		{
-			std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << '\n';
+			CHESSTER_ERROR("TTF_Init failed with error: {0}", TTF_GetError());
 			return false;
 		}
-
-		// Get window surface
-		m_ScreenSurface = SDL_GetWindowSurface(m_Window);
 
 		return true;
 	}
@@ -100,10 +93,5 @@ namespace Chesster
 		TTF_Quit();
 		IMG_Quit();
 		SDL_Quit();
-	}
-
-	void Window::LogSDLError(std::ostream& os, const std::string& msg)
-	{
-		os << msg << " SDL Error: " << SDL_GetError() << std::endl;
 	}
 }

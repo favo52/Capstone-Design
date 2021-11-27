@@ -9,10 +9,10 @@ namespace Chesster
 	public:
 		PauseState(StateStack& stack, Context context);
 
-		void Draw() override;
+		bool HandleEvent(SDL_Event& event) override;
 		bool Update(const std::chrono::duration<double>& dt) override;
-		bool HandleEvent(const SDL_Event& event) override;
-				 
+		void Draw() override;
+
 	private:
 		enum class PauseOptions
 		{
@@ -25,6 +25,7 @@ namespace Chesster
 		friend PauseOptions operator--(PauseOptions& menuOption);
 		
 		void UpdateOptionText();
+		void SelectOption();
 		void Close();
 
 	private:
@@ -34,8 +35,8 @@ namespace Chesster
 		SDL_Point m_MousePos;
 
 		// Text stuff
-		Texture::Font m_Font;
-		Texture::Font m_fMinecraft100;
+		Font m_Font;
+		Font m_fMinecraft100;
 		Texture m_PausedText;
 		Texture m_ContinueText;
 		Texture m_MainMenuText;

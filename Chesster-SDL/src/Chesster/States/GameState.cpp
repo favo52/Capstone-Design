@@ -9,10 +9,20 @@ namespace Chesster
 	{
 	}
 
-	void GameState::Draw()
+	bool GameState::HandleEvent(SDL_Event& event)
 	{
-		SDL_SetRenderDrawColor(Window::Renderer, 255u, 255u, 255u, 255u);
-		m_Board.Draw();
+		switch (event.type)
+		{
+			case SDL_KEYDOWN:
+			{
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+					RequestStackPush(StateID::Pause);
+			} break;
+		}
+
+		m_Board.HandleEvent(event);
+
+		return true;
 	}
 
 	bool GameState::Update(const std::chrono::duration<double>& dt)
@@ -22,20 +32,9 @@ namespace Chesster
 		return true;
 	}
 
-	bool GameState::HandleEvent(const SDL_Event& event)
+	void GameState::Draw()
 	{
-		if (event.type == SDL_KEYDOWN)
-		{
-			switch (event.key.keysym.sym)
-			{
-				case SDLK_ESCAPE:
-					RequestStackPush(StateID::Pause);
-					break;
-			}
-		}
-
-		m_Board.HandleEvent(event);
-
-		return true;
+		SDL_SetRenderDrawColor(Window::Renderer, 255u, 255u, 255u, 255u);
+		m_Board.Draw();
 	}
 }

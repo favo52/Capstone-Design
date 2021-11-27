@@ -6,6 +6,9 @@
 int main(int argc, char* args[])
 try
 {
+	Chesster::Log::Init();
+	CHESSTER_INFO("Welcome to the Chesster UCI!");
+
 	Chesster::Application* App = new Chesster::Application();
 	App->Run();
 	delete App;

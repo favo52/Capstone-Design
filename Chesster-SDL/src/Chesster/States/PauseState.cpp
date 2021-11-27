@@ -45,16 +45,66 @@ namespace Chesster
 		UpdateOptionText();
 	}
 
-	void PauseState::Draw()
+	bool PauseState::HandleEvent(SDL_Event& event)
 	{
-		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 200u);
-		SDL_SetRenderDrawBlendMode(Window::Renderer, SDL_BLENDMODE_BLEND);
-		SDL_RenderFillRect(Window::Renderer, &m_PauseOverlay);
+		switch (event.type)
+		{
+			case SDL_KEYDOWN:
+			{
+				switch (event.key.keysym.sym)
+				{
+					case SDLK_ESCAPE:
+						RequestStackPop();
+						break;
 
-		m_PausedText.Draw();
+					case SDLK_RETURN:
+						SelectOption();
+						break;
 
-		for (const Texture* text : m_MenuOptions)
-			text->Draw();
+					case SDLK_UP:
+					{
+						--m_CurrentOption;
+						UpdateOptionText();
+					} break;
+
+					case SDLK_DOWN:
+					{
+						++m_CurrentOption;
+						UpdateOptionText();
+					} break;
+				}
+			} break;
+
+			case SDL_MOUSEMOTION:
+			{
+				// Get the mouse screen coordinates
+				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
+
+				// Check if mouse is inside text bounds
+				for (int i = 0; i < m_MenuOptions.size(); ++i)
+				{
+					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+					if (SDL_PointInRect(&m_MousePos, &textBounds))
+					{
+						m_CurrentOption = PauseOptions(i);
+						UpdateOptionText();
+					}
+				}
+			} break;
+
+			case SDL_MOUSEBUTTONUP:
+			{
+				if (event.button.button == SDL_BUTTON_LEFT)
+					for (int i = 0; i < m_MenuOptions.size(); ++i)
+					{
+						SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+						if (SDL_PointInRect(&m_MousePos, &textBounds))
+							SelectOption();
+					}
+			} break;
+		}
+
+		return false;
 	}
 
 	bool PauseState::Update(const std::chrono::duration<double>& dt)
@@ -62,94 +112,17 @@ namespace Chesster
 		return false;
 	}
 
-	bool PauseState::HandleEvent(const SDL_Event& event)
+	void PauseState::Draw()
 	{
-		if (event.type == SDL_KEYDOWN)
-		{
-			switch (event.key.keysym.sym)
-			{
-				case SDLK_ESCAPE:
-					RequestStackPop();
-					break;
+		// Draw a semi transparent square
+		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 180u);
+		SDL_SetRenderDrawBlendMode(Window::Renderer, SDL_BLENDMODE_BLEND);
+		SDL_RenderFillRect(Window::Renderer, &m_PauseOverlay);
 
-				case SDLK_RETURN:
-				{
-					if (m_CurrentOption == PauseOptions::Continue)
-					{
-						RequestStackPop();
-					}
-					else if (m_CurrentOption == PauseOptions::MainMenu)
-					{
-						RequestStateClear();
-						RequestStackPush(StateID::Menu);
-					}
-					else if (m_CurrentOption == PauseOptions::Exit)
-					{
-						Close();
-						RequestStackPop();
-						RequestStackPop();
-					}
-				} break;
+		m_PausedText.Draw();
 
-				case SDLK_UP:
-				{
-					--m_CurrentOption;
-					UpdateOptionText();
-				} break;
-
-				case SDLK_DOWN:
-				{
-					++m_CurrentOption;
-					UpdateOptionText();
-				} break;
-			}
-		}
-
-		if (event.type == SDL_MOUSEMOTION)
-		{
-			// Get the mouse screen coordinates
-			SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
-
-			// Check if mouse is inside text bounds
-			for (int i = 0; i < m_MenuOptions.size(); ++i)
-			{
-				SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-				if (SDL_PointInRect(&m_MousePos, &textBounds))
-				{
-					m_CurrentOption = PauseOptions(i);
-					UpdateOptionText();
-				}
-			}
-		}
-
-		if (event.type == SDL_MOUSEBUTTONUP)
-		{
-			if (event.button.button == SDL_BUTTON_LEFT)
-				for (int i = 0; i < m_MenuOptions.size(); ++i)
-				{
-					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-					if (SDL_PointInRect(&m_MousePos, &textBounds))
-					{
-						if (m_CurrentOption == PauseOptions::Continue)
-						{
-							RequestStackPop();
-						}
-						else if (m_CurrentOption == PauseOptions::MainMenu)
-						{
-							RequestStateClear();
-							RequestStackPush(StateID::Menu);
-						}
-						else if (m_CurrentOption == PauseOptions::Exit)
-						{
-							Close();
-							RequestStackPop();
-							RequestStackPop();
-						}
-					}
-				}
-		}
-
-		return false;
+		for (const Texture* text : m_MenuOptions)
+			text->Draw();
 	}
 
 	void PauseState::UpdateOptionText()
@@ -168,17 +141,36 @@ namespace Chesster
 		// Red the selected text
 		switch (m_CurrentOption)
 		{
-		case PauseOptions::Continue:
-			m_ContinueText.LoadFromRenderedText(m_Font, "CONTINUE", Red);
-			break;
+			case PauseOptions::Continue:
+				m_ContinueText.LoadFromRenderedText(m_Font, "CONTINUE", Red);
+				break;
 
-		case PauseOptions::MainMenu:
-			m_MainMenuText.LoadFromRenderedText(m_Font, "MAIN MENU", Red);
-			break;
+			case PauseOptions::MainMenu:
+				m_MainMenuText.LoadFromRenderedText(m_Font, "MAIN MENU", Red);
+				break;
 
-		case PauseOptions::Exit:
-			m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Red);
-			break;
+			case PauseOptions::Exit:
+				m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Red);
+				break;
+		}
+	}
+
+	void PauseState::SelectOption()
+	{
+		if (m_CurrentOption == PauseOptions::Continue)
+		{
+			RequestStackPop();
+		}
+		else if (m_CurrentOption == PauseOptions::MainMenu)
+		{
+			RequestStateClear();
+			RequestStackPush(StateID::Menu);
+		}
+		else if (m_CurrentOption == PauseOptions::Exit)
+		{
+			Close();
+			RequestStackPop();
+			RequestStackPop();
 		}
 	}
 

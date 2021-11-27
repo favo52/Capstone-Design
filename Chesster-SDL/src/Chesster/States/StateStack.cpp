@@ -11,6 +11,18 @@ namespace Chesster
 	{
 	}
 
+	void StateStack::HandleEvent(SDL_Event& event)
+	{
+		// Iterate from top to bottom, stop as soon as handleEvent() returns false
+		for (auto itr = m_Stack.rbegin(); itr != m_Stack.rend(); ++itr)
+		{
+			if (!(*itr)->HandleEvent(event))
+				break;
+		}
+
+		ApplyPendingChanges();
+	}
+
 	void StateStack::Update(const std::chrono::duration<double>& dt)
 	{
 		// Iterate from top to bottom, stop as soon as update() returns false
@@ -28,18 +40,6 @@ namespace Chesster
 		// Draw all active states from bottom to top
 		for (State::StatePtr& state : m_Stack)
 			state->Draw();
-	}
-
-	void StateStack::HandleEvent(const SDL_Event& event)
-	{
-		// Iterate from top to bottom, stop as soon as handleEvent() returns false
-		for (auto itr = m_Stack.rbegin(); itr != m_Stack.rend(); ++itr)
-		{
-			if (!(*itr)->HandleEvent(event))
-				break;
-		}
-
-		ApplyPendingChanges();
 	}
 
 	void StateStack::PushState(StateID stateID)
@@ -76,17 +76,17 @@ namespace Chesster
 		{
 			switch (change.action)
 			{
-			case Action::Push:
-				m_Stack.push_back(CreateState(change.stateID));
-				break;
+				case Action::Push:
+					m_Stack.push_back(CreateState(change.stateID));
+					break;
 
-			case Action::Pop:
-				m_Stack.pop_back();
-				break;
+				case Action::Pop:
+					m_Stack.pop_back();
+					break;
 
-			case Action::Clear:
-				m_Stack.clear();
-				break;
+				case Action::Clear:
+					m_Stack.clear();
+					break;
 			}
 		}
 

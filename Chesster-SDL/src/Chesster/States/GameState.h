@@ -11,9 +11,9 @@ namespace Chesster
 	public:
 		GameState(StateStack& stack, Context context);
 
-		void Draw() override;
+		bool HandleEvent(SDL_Event& event) override;
 		bool Update(const std::chrono::duration<double>& dt) override;
-		bool HandleEvent(const SDL_Event& event) override;
+		void Draw() override;
 
 	private:
 		Board m_Board;

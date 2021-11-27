@@ -21,9 +21,9 @@ namespace Chesster
 		template<typename T>
 		void RegisterState(StateID stateID);
 
+		void HandleEvent(SDL_Event& event);
 		void Update(const std::chrono::duration<double>& dt);
 		void Draw();
-		void HandleEvent(const SDL_Event& event);
 
 		void PushState(StateID stateID);
 		void PopState();

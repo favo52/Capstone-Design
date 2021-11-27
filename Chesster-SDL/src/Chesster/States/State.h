@@ -36,9 +36,9 @@ namespace Chesster
 		State(StateStack& stack, Context context);
 		virtual ~State();
 
-		virtual void Draw() = 0;
+		virtual bool HandleEvent(SDL_Event& e) = 0;
 		virtual bool Update(const std::chrono::duration<double>& dt) = 0;
-		virtual bool HandleEvent(const SDL_Event& e) = 0;
+		virtual void Draw() = 0;
 
 	protected:
 		void RequestStackPush(StateID stateID);

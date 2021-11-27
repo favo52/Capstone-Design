@@ -79,5 +79,5 @@ namespace Chesster
 
 	// A few type definitions
 	typedef ResourceHolder<Texture, TextureID> TextureHolder;
-	typedef ResourceHolder<Texture::Font, FontID> FontHolder;
+	typedef ResourceHolder<Font, FontID> FontHolder;
 }

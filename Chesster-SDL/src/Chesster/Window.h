@@ -28,12 +28,8 @@ namespace Chesster
 		Window(const WindowProps& props);
 		virtual ~Window();
 
-		void OnUpdate();
-
 		inline unsigned int GetWidth() const { return m_WinProps.Width; }
 		inline unsigned int GetHeight() const { return m_WinProps.Height; }
-
-		void LogSDLError(std::ostream& os, const std::string& msg);
 
 		static Window* Create(const WindowProps& props = WindowProps());
 
@@ -45,9 +41,7 @@ namespace Chesster
 		void Close();
 
 	private:
-		WindowProps m_WinProps;
-		
 		SDL_Window* m_Window;
-		SDL_Surface* m_ScreenSurface;
+		WindowProps m_WinProps;
 	};
 }

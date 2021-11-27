@@ -9,7 +9,7 @@ namespace Chesster
 {
 	Application::Application() :
 		m_Window{ nullptr },
-		m_isRunning{ true },
+		m_IsRunning{ true },
 		m_FPSUpdateTime{},
 		m_FPSNumFrames{ 0 },
 		m_FPSNumberText{},
@@ -34,7 +34,7 @@ namespace Chesster
 		m_TextureHolder.Load(TextureID::ReadySetCode, "resources/textures/ReadySetCode.jpeg");
 		m_TextureHolder.Load(TextureID::ChessterLogo, "resources/textures/ChessterLogo.jpeg");
 
-		// Set text
+		// Set FPS text
 		m_Font = m_FontHolder.Get(FontID::Minecraft_10);
 		m_FPSText.LoadFromRenderedText(m_Font, "FPS  ", { 255u, 255u, 255u , 255u });
 		m_FPSText.SetPosition(5, 5);
@@ -50,19 +50,19 @@ namespace Chesster
 
 	void Application::Run()
 	{
+		// Fixed timestep
 		using namespace std::literals;
 		auto constexpr dt = 1.0s / 60.0;
 
-		// For easier writing
 		using duration = std::chrono::duration<double>;
 		using time_point = std::chrono::time_point<Clock, duration>;
 
-		time_point t{};
+		time_point totalTime{};
 
 		time_point currentTime = Clock::now();
 		duration accumulator = 0s;
 
-		while (m_isRunning)
+		while (m_IsRunning)
 		{
 			time_point newTime = Clock::now();
 			auto frameTime = newTime - currentTime;
@@ -84,12 +84,9 @@ namespace Chesster
 				if (m_StateStack.IsEmpty())
 					Quit();
 
-				t += dt;
+				totalTime += dt;
 				accumulator -= dt;
 			}
-
-			//const double alpha = accumulator / dt;
-			//std::cout << alpha << '\n';
 
 			// Calculate and correct fps
 			CalculateFPS(dt);
@@ -101,7 +98,7 @@ namespace Chesster
 
 	void Application::Quit()
 	{
-		m_isRunning = false;
+		m_IsRunning = false;
 	}
 
 	void Application::ProcessEvents()
@@ -119,9 +116,6 @@ namespace Chesster
 
 	void Application::Update(const std::chrono::duration<double>& dt)
 	{
-		// Apply any Window updates
-		//m_Window->OnUpdate();
-		
 		// Update states
 		m_StateStack.Update(dt);
 	}
@@ -146,13 +140,11 @@ namespace Chesster
 		case SDLK_RETURN:
 			break;
 		case SDLK_ESCAPE:
-			m_isRunning = false;
+			m_IsRunning = false;
 			break;
 		case SDLK_SPACE:
-			//m_RSCLogo->SetColor(255u, 0u, 0u); // paint red
 			break;
 		case SDLK_BACKSPACE:
-			//m_RSCLogo->SetColor(255u, 255u, 255u); // paint white
 			break;
 		default:
 			break;

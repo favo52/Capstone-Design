@@ -24,6 +24,11 @@ namespace Chesster
 		std::string ToChessNotation(const Vector2f& position);
 		Vector2f ToCoord(char a, char b);
 
+		bool inRange(int low, int high, int x)
+		{
+			return ((x - high) * (x - low) <= 0);
+		}
+
 		void Move(const std::string& notation);
 
 		void LoadTextures();
@@ -63,11 +68,6 @@ namespace Chesster
 		Vector2f m_OldPos, m_NewPos;
 		std::string m_Str;
 		int m_PieceIndex;
-
-		bool inRange(int low, int high, int x)
-		{
-			return ((x - high) * (x - low) <= 0);
-		}
 
 		// Mouse stuff
 		SDL_Point m_MousePos;
