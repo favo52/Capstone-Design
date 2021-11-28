@@ -21,4 +21,4 @@ namespace Chesster
 #define CHESSTER_INFO(...)	::Chesster::Log::GetCoreLogger()->info(__VA_ARGS__);
 #define CHESSTER_WARN(...)	::Chesster::Log::GetCoreLogger()->warn(__VA_ARGS__);
 #define CHESSTER_ERROR(...)	::Chesster::Log::GetCoreLogger()->error(__VA_ARGS__);
-#define CHESSTER_FATAL(...)	::Chesster::Log::GetCoreLogger()->fatal(__VA_ARGS__);
+#define CHESSTER_CRITICAL(...)	::Chesster::Log::GetCoreLogger()->critical(__VA_ARGS__);

@@ -1,8 +1,10 @@
 #pragma once
 
 #include "pch.h"
-#include "Window.h"
+//#include "Window.h"
 #include "Vector.h"
+
+#include "SDL_ttf.h"
 
 namespace Chesster
 {

@@ -26,7 +26,7 @@ namespace Chesster
 	bool Window::Init(const WindowProps& props)
 	{
 		// Initialize SDL
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
 		{
 			CHESSTER_ERROR("SDL_Init failed with error: {0}", SDL_GetError())
 			return false;
@@ -37,12 +37,13 @@ namespace Chesster
 			CHESSTER_WARN("Warning: Linear texture filtering not enabled!");
 
 		// Create window
+		SDL_WindowFlags WindowFlags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
 		m_Window = SDL_CreateWindow
 		(
 			props.Title.c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			props.Width, props.Height,
-			SDL_WINDOW_SHOWN
+			WindowFlags
 		);
 		if (m_Window == nullptr)
 		{
@@ -57,6 +58,9 @@ namespace Chesster
 			CHESSTER_ERROR("SDL_CreateRenderer failed with error: {0}", SDL_GetError());
 			return false;
 		}
+		SDL_RendererInfo info;
+		SDL_GetRendererInfo(Renderer, &info);
+		CHESSTER_INFO("Current SDL_Renderer: {0}", info.name);
 
 		// Initialize renderer color
 		SDL_SetRenderDrawColor(Renderer, 255u, 255u, 255u, 255u); // White

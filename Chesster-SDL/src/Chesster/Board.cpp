@@ -28,19 +28,22 @@ namespace Chesster
 		m_IsComputerTurn{ false },
 		m_IsComputerDone{ true },
 		m_FEN{},
+		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_ValidMoves{},
 		m_PathPythonScript{ "resources/engines/script/__init__.exe" }
 	{
 		// Connect to executables
-		wchar_t path[] = L"resources/engines/stockfish_14_x64_avx2.exe";
-		wchar_t path2[] = L"resources/engines/stockfish.exe";
+		wchar_t path_Stockfish5[] = L"resources/engines/stockfish.exe";
+		wchar_t path_Stockfish14[] = L"resources/engines/stockfish_14_x64_avx2.exe";
+		wchar_t path_Stockfish14_popcnt[] = L"resources/engines/stockfish/stockfish_14.1_win_x64_popcnt/stockfish_14.1_win_x64_popcnt.exe";
+		wchar_t path_Hannibal_x64[] = L"resources/engines/Hannibal1.7/Hannibal1.7x64.exe";
 
-		m_Connector.ConnectToEngine(path2);
+		m_Connector.ConnectToEngine(path_Stockfish14_popcnt);
 
 		// Prepare valid moves and FEN
-		std::string startPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
+		//std::string startPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
 
-		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, startPosFEN);
+		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
 		m_FEN += "\"" + m_Connector.GetFEN(" ") + "\"";
 
 		LoadTextures();
@@ -50,82 +53,16 @@ namespace Chesster
 
 	Board::~Board()
 	{
+		m_BoardTexture->FreeTexture();
+
+		for (int i = 0; i < TOTAL_PIECES; ++i)
+			m_Pieces[i].FreeTexture();
+
 		delete[] m_Board;
 		delete[] m_Pieces;
 	}
 
-	void Board::Draw()
-	{
-		m_BoardTexture->Draw();
-
-		for (int i = 0; i < TOTAL_PIECES; ++i)
-			m_Pieces[i].Move(m_BoardOffset);
-
-		for (int i = 0; i < TOTAL_PIECES; ++i)
-		{
-			m_Pieces[i].SetPosition(m_Pieces[i].GetPosition().x, m_Pieces[i].GetPosition().y, &m_PieceClip[i]);
-			m_Pieces[i].Draw();
-		}
-		
-		m_Pieces[m_PieceIndex].SetPosition(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y, &m_PieceClip[m_PieceIndex]);
-		m_Pieces[m_PieceIndex].Draw();
-
-		for (int i = 0; i < TOTAL_PIECES; ++i)
-			m_Pieces[i].Move(-m_BoardOffset);
-	}
-
-	bool Board::Update(const std::chrono::duration<double>& dt)
-	{
-		// Computer move
-		if (m_IsComputerTurn)
-		{
-			// Get stockfish's next move
-			m_Str = m_Connector.GetNextMove(m_PositionHistory);
-			if (m_Str == "error")
-				return true;
-
-			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
-			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
-
-			// If a piece on the board has the notation, move it
-			for (int i = 0; i < TOTAL_PIECES; ++i)
-				if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(m_OldPos))
-					m_PieceIndex = i;
-
-			/* Could do animation here
-			* 
-			*/
-
-			// Remove any piece it "ate", update move history and piece position
-			Move(m_Str);
-			m_PositionHistory += m_Str + " ";
-
-			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset, m_NewPos.y * m_PieceOffset, &m_PieceClip[m_PieceIndex]);
-
-			m_IsComputerTurn = false;
-		}
-
-		// Dragging a piece
-		if (m_IsMove) 
-			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
-
-		// Check if a move was played
-		if (m_PositionHistory.size() != m_MoveHistorySize)
-		{
-			// Update move count
-			m_MoveHistorySize = m_PositionHistory.size();
-
-			// Get FEN string then get updated valid moves list
-			m_FEN.clear();
-			m_FEN += "\"" + m_Connector.GetFEN(m_PositionHistory) + "\"";
-			
-			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
-		}
-
-		return true;
-	}
-
-	bool Board::HandleEvent(const SDL_Event& event)
+	bool Board::HandleEvent(SDL_Event& event)
 	{
 		switch (event.type)
 		{
@@ -220,6 +157,87 @@ namespace Chesster
 		}
 
 		return true;
+	}
+
+	bool Board::Update(const std::chrono::duration<double>& dt)
+	{
+		// Computer move
+		if (m_IsComputerTurn)
+		{
+			// Get stockfish's next move
+			m_Str = m_Connector.GetNextMove(m_PositionHistory);
+			if (m_Str == "error")
+				return true;
+
+			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
+			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
+
+			// If a piece on the board has the notation, move it
+			for (int i = 0; i < TOTAL_PIECES; ++i)
+				if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(m_OldPos))
+					m_PieceIndex = i;
+
+			/* Could do animation here
+			*
+			*/
+
+			// Remove any piece it "ate", update move history and piece position
+			Move(m_Str);
+			m_PositionHistory += m_Str + " ";
+
+			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset, m_NewPos.y * m_PieceOffset, &m_PieceClip[m_PieceIndex]);
+
+			m_IsComputerTurn = false;
+		}
+
+		// Dragging a piece
+		if (m_IsMove)
+			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
+
+		// Check if a move was played
+		if (m_PositionHistory.size() != m_MoveHistorySize)
+		{
+			// Update move count
+			m_MoveHistorySize = m_PositionHistory.size();
+
+			// Get FEN string then get updated valid moves list
+			m_FEN.clear();
+			m_FEN += "\"" + m_Connector.GetFEN(m_PositionHistory) + "\"";
+
+			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
+		}
+
+		return true;
+	}
+
+	void Board::Draw()
+	{
+		m_BoardTexture->Draw();
+
+		for (int i = 0; i < TOTAL_PIECES; ++i)
+			m_Pieces[i].Move(m_BoardOffset);
+
+		for (int i = 0; i < TOTAL_PIECES; ++i)
+		{
+			m_Pieces[i].SetPosition(m_Pieces[i].GetPosition().x, m_Pieces[i].GetPosition().y, &m_PieceClip[i]);
+			m_Pieces[i].Draw();
+		}
+
+		m_Pieces[m_PieceIndex].SetPosition(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y, &m_PieceClip[m_PieceIndex]);
+		m_Pieces[m_PieceIndex].Draw();
+
+		for (int i = 0; i < TOTAL_PIECES; ++i)
+			m_Pieces[i].Move(-m_BoardOffset);
+	}
+
+	void Board::ResetBoard()
+	{
+		m_PositionHistory.clear();
+		m_MoveHistorySize = 0;
+
+		LoadPositions();
+		m_Connector.ResetGame();
+		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
 	}
 
 	void Board::LoadPositions()

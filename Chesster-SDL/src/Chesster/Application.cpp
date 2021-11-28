@@ -5,6 +5,10 @@
 #include "States/GameState.h"
 #include "States/PauseState.h"
 
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdlrenderer.h"
+
 namespace Chesster
 {
 	Application::Application() :
@@ -20,6 +24,20 @@ namespace Chesster
 		m_StateStack{ State::Context(m_Window, m_TextureHolder, m_FontHolder) }
 	{
 		m_Window = std::unique_ptr<Window>(Window::Create());
+
+		// Setup Dear ImGui context
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+
+		// Setup Platform/Renderer backends
+		ImGui_ImplSDL2_InitForSDLRenderer(m_Window.get()->GetSDLWindow());
+		ImGui_ImplSDLRenderer_Init(Window::Renderer);
+
+		//io.Fonts->AddFontDefault();
 
 		// Prepare fonts
 		m_FontHolder.Load(FontID::AbsEmpire_100, "resources/fonts/aAbsoluteEmpire.ttf", 100);
@@ -58,7 +76,6 @@ namespace Chesster
 		using time_point = std::chrono::time_point<Clock, duration>;
 
 		time_point totalTime{};
-
 		time_point currentTime = Clock::now();
 		duration accumulator = 0s;
 
@@ -88,8 +105,13 @@ namespace Chesster
 				accumulator -= dt;
 			}
 
+			// Start the Dear ImGui frame
+			ImGui_ImplSDLRenderer_NewFrame();
+			ImGui_ImplSDL2_NewFrame(m_Window.get()->GetSDLWindow());
+			ImGui::NewFrame();
+
 			// Calculate and correct fps
-			CalculateFPS(dt);
+			//CalculateFPS(dt);
 
 			// Draw everything
 			Render();
@@ -106,8 +128,14 @@ namespace Chesster
 		SDL_Event e;
 		while (SDL_PollEvent(&e))
 		{
+			ImGui_ImplSDL2_ProcessEvent(&e);
+
 			// User requests quit
 			if (e.type == SDL_QUIT)
+				Quit();
+			if (e.type == SDL_WINDOWEVENT &&
+				e.window.event == SDL_WINDOWEVENT_CLOSE &&
+				e.window.windowID == SDL_GetWindowID(m_Window.get()->GetSDLWindow()))
 				Quit();
 
 			m_StateStack.HandleEvent(e);
@@ -127,7 +155,10 @@ namespace Chesster
 
 		m_StateStack.Draw();
 		
-		m_FPSText.Draw();
+		//m_FPSText.Draw();
+
+		ImGui::Render();
+		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 
 		// Update screen
 		SDL_RenderPresent(Window::Renderer);
@@ -180,6 +211,11 @@ namespace Chesster
 
 		// Free font
 		TTF_CloseFont(m_Font.m_Font);
+
+		// Free ImGui
+		ImGui_ImplSDLRenderer_Shutdown();
+		ImGui_ImplSDL2_Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	void Application::RegisterStates()

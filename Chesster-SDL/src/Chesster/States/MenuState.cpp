@@ -116,7 +116,7 @@ namespace Chesster
 
 	void MenuState::Draw()
 	{
-		SDL_SetRenderDrawColor(Window::Renderer, 255u, 255u, 255u, 255u);
+		SDL_SetRenderDrawColor(Window::Renderer, 255u, 255u, 255u, 255u); // White
 
 		m_TitleText.Draw();
 		m_LogoTexture->Draw();

@@ -4,6 +4,7 @@
 #include "Python.h"
 
 #include "Connector.h"
+#include "Chesster/States/GameState.h"
 
 // "... do as the Romans do."
 
@@ -67,6 +68,8 @@ namespace Chesster
 		ZeroMemory(&m_ProcessInfo_Py, sizeof(PROCESS_INFORMATION));
 
 		Py_Initialize();
+
+		CHESSTER_INFO("Engine connection opened.");
 	}
 
 	Connector::~Connector()
@@ -81,7 +84,7 @@ namespace Chesster
 		m_Success = CreateProcess(NULL, path, NULL, NULL, TRUE, 0, NULL, NULL, &m_StartInfo, &m_ProcessInfo);
 		if (!m_Success)
 		{
-			printf("CreateProcess failed (%d).\n", GetLastError());
+			CHESSTER_ERROR("CreateProcess failed with error: {0}", GetLastError());
 			return;
 		}
 
@@ -108,7 +111,29 @@ namespace Chesster
 			msg += (char*)m_Buffer;
 
 		} while (m_Read >= sizeof(m_Buffer));
-		std::cout << msg;
+		GameState::ImGuiMainWindow.AddLog(msg.c_str());
+		//CHESSTER_INFO(msg);
+	}
+
+	void Connector::ResetGame()
+	{
+		CHAR str[] = "ucinewgame\nposition fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\nd\nisready\n";
+		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
+		Sleep(150);
+
+		// Read engine's reply
+		std::string msg{ "GAME RESET\n" };
+		do
+		{
+			ZeroMemory(m_Buffer, BUFSIZE);
+			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
+			if (!m_Success || m_Read == 0) break;
+
+			msg += (char*)m_Buffer;
+
+		} while (m_Read >= sizeof(m_Buffer));
+		msg += '\n';
+		GameState::ImGuiMainWindow.AddLog(msg.c_str());
 	}
 
 	std::string Connector::GetNextMove(const std::string& moveHistory)
@@ -130,7 +155,8 @@ namespace Chesster
 			msg += (char*)m_Buffer;
 
 		} while (m_Read >= sizeof(m_Buffer));
-		std::cout << msg;
+		GameState::ImGuiMainWindow.AddLog(msg.c_str());
+		//CHESSTER_INFO(msg);
 
 		// Grab the engine's move
 		int found = msg.find("bestmove");
@@ -154,7 +180,7 @@ namespace Chesster
 		m_Success_Py = CreateProcessA(lpPath, lpPathArg, NULL, NULL, FALSE, 0, NULL, NULL, &m_StartInfo_Py, &m_ProcessInfo_Py);
 		if (!m_Success_Py)
 		{
-			printf("CreateProcessA failed (%d).\n", GetLastError());
+			CHESSTER_ERROR("CreateProcessA failed with error: {0}", GetLastError());
 			throw std::runtime_error("Unable to run Python script");
 		}
 
@@ -225,7 +251,10 @@ namespace Chesster
 			msg += (char*)m_Buffer;
 
 		} while (m_Read >= sizeof(m_Buffer));
-		std::cout << msg;
+		msg += '\n';
+		GameState::ImGuiMainWindow.AddLog(msg.c_str());
+		msg.pop_back();
+		//CHESSTER_TRACE(msg);
 
 		// Grab the FEN string
 		int found = msg.find("Fen:");
@@ -248,7 +277,7 @@ namespace Chesster
 			}
 		}
 
-		return "error"; // If no bestmove is found
+		return "error"; // If no FEN string is found
 	}
 
 	void Connector::CloseConnections()
@@ -265,6 +294,6 @@ namespace Chesster
 		CloseHandle(m_ProcessInfo.hProcess);
 		CloseHandle(m_ProcessInfo.hThread);
 
-		std::cout << "Engine connection closed.\n";
+		CHESSTER_INFO("Engine connection closed.");
 	}
 }

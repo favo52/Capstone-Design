@@ -14,9 +14,11 @@ namespace Chesster
 		Board(Window* window);
 		~Board();
 
-		void Draw();
+		bool HandleEvent(SDL_Event& event);
 		bool Update(const std::chrono::duration<double>& dt);
-		bool HandleEvent(const SDL_Event& event);
+		void Draw();
+
+		void ResetBoard();
 
 	private:
 		void LoadPositions();
@@ -80,6 +82,7 @@ namespace Chesster
 
 		bool m_PrintMoves = false; // testing
 		std::string m_FEN;
+		std::string m_StartPosFEN;
 		std::vector<std::string> m_ValidMoves;
 		std::string m_PathPythonScript;
 	};

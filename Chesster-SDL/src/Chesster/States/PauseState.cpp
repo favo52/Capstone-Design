@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PauseState.h"
+#include "GameState.h"
 
 namespace Chesster
 {
@@ -22,8 +23,11 @@ namespace Chesster
 		// Prepare pause text
 		SDL_Color White = { 255u, 255u, 255u };
 		m_PausedText.LoadFromRenderedText(m_fMinecraft100, "PAUSE", White);
-		m_PausedText.SetPosition((m_Window->GetWidth() - m_PausedText.GetWidth()) / 2,
-			((m_Window->GetHeight() - m_PausedText.GetHeight()) / 2) - 100);
+		m_PausedText.SetPosition
+		(
+			((m_Window->GetWidth() - m_PausedText.GetWidth()) / 2) - 280,
+			((m_Window->GetHeight() - m_PausedText.GetHeight()) / 2) - 100
+		);
 		
 		// Prepare option text
 		m_ContinueText.LoadFromRenderedText(m_Font, "CONTINUE", White);
@@ -37,8 +41,11 @@ namespace Chesster
 		int y{ 50 };
 		for (int i = 0; i < m_MenuOptions.size(); ++i)
 		{
-			m_MenuOptions[i]->SetPosition((m_Window->GetWidth() - m_MenuOptions[i]->GetWidth()) / 2,
-				((m_Window->GetHeight() - m_MenuOptions[i]->GetHeight()) / 2) + y);
+			m_MenuOptions[i]->SetPosition
+			(
+				((m_Window->GetWidth() - m_MenuOptions[i]->GetWidth()) / 2) - 280,
+				((m_Window->GetHeight() - m_MenuOptions[i]->GetHeight()) / 2) + y
+			);
 			y += 50;
 		}
 
@@ -115,7 +122,7 @@ namespace Chesster
 	void PauseState::Draw()
 	{
 		// Draw a semi transparent square
-		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 180u);
+		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 200u);
 		SDL_SetRenderDrawBlendMode(Window::Renderer, SDL_BLENDMODE_BLEND);
 		SDL_RenderFillRect(Window::Renderer, &m_PauseOverlay);
 
@@ -163,6 +170,7 @@ namespace Chesster
 		}
 		else if (m_CurrentOption == PauseOptions::MainMenu)
 		{
+			GameState::ImGuiMainWindow.Clear();
 			RequestStateClear();
 			RequestStackPush(StateID::Menu);
 		}

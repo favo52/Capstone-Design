@@ -3,6 +3,9 @@
 
 namespace Chesster
 {
+	AppLogGUI GameState::ImGuiMainWindow{};
+	AppSettingsGUI GameState::ImGuiSettingsWindow{};
+
 	GameState::GameState(StateStack& stack, Context context) :
 		State{ stack, context },
 		m_Board{ context.window->get() }
@@ -17,6 +20,7 @@ namespace Chesster
 			{
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					RequestStackPush(StateID::Pause);
+
 			} break;
 		}
 
@@ -29,12 +33,32 @@ namespace Chesster
 	{
 		m_Board.Update(dt);
 
+		if (ImGuiSettingsWindow.m_ResetBoard)
+		{
+			m_Board.ResetBoard();
+			ImGuiSettingsWindow.m_ResetBoard = false;
+		}
+
 		return true;
 	}
 
 	void GameState::Draw()
 	{
-		SDL_SetRenderDrawColor(Window::Renderer, 255u, 255u, 255u, 255u);
+		SDL_SetRenderDrawColor(Window::Renderer, 21u, 21u, 255u, 255u);
+
 		m_Board.Draw();
+
+		// Render ImGui
+		ImGuiWindowFlags flags =
+		{
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoFocusOnAppearing |
+			ImGuiWindowFlags_NoBringToFrontOnFocus
+		};
+		//ImGui::ShowDemoWindow();
+		ImGuiMainWindow.Draw("Chesster Console", nullptr, flags);
+		ImGuiSettingsWindow.Draw("Settings", nullptr, flags);
 	}
 }
