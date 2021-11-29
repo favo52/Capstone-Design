@@ -117,6 +117,7 @@ namespace Chesster
 			ImGui::Text
 			(
 				"CONTROLS:\n"
+				"[Mouse] Drag and drop pieces.\n"
 				"[Spacebar] Computer moves.\n"
 				"[Escape] Open pause menu.\n"
 			);
