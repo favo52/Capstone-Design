@@ -23,24 +23,12 @@ namespace Chesster
 		void Update(const std::chrono::duration<double>& dt);
 		void Render();
 
-		void HandleInput(const SDL_Event& e);
-		void CalculateFPS(const std::chrono::duration<double>& dt);
-
 		void Cleanup();
-
 		void RegisterStates();
 
 	private:
 		std::unique_ptr<Window> m_Window;
 		bool m_IsRunning;
-
-		// Frames per second
-		std::chrono::duration<double> m_FPSUpdateTime;
-		std::size_t m_FPSNumFrames;
-		std::stringstream m_FPSNumberText;
-
-		Font m_Font;
-		Texture m_FPSText;
 
 		// Resource holders
 		TextureHolder m_TextureHolder;

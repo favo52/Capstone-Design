@@ -20,8 +20,8 @@ namespace Chesster
 		m_PieceIndex{ 0 },
 		m_PositionHistory{ "" },
 		m_MoveHistorySize{ 0 },
-		m_BoardOffset{ 23.0f, 23.0f }, // 23 23
-		m_PieceOffset{ 1.065f }, // 1.065
+		m_BoardOffset{ 23.0f, 23.0f }, // 23.0f, 23.0f
+		m_PieceOffset{ 1.065f }, // 1.065f
 		m_HoldingPiece{ false },
 		m_MousePos{},
 		m_Connector{},
@@ -39,9 +39,6 @@ namespace Chesster
 		wchar_t path_Hannibal_x64[] = L"resources/engines/Hannibal1.7/Hannibal1.7x64.exe";
 
 		m_Connector.ConnectToEngine(path_Stockfish14_popcnt);
-
-		// Prepare valid moves and FEN
-		//std::string startPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
 
 		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
 		m_FEN += "\"" + m_Connector.GetFEN(" ") + "\"";
@@ -93,8 +90,6 @@ namespace Chesster
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 				m_MousePos.x -= m_BoardOffset.x;
 				m_MousePos.y -= m_BoardOffset.y;
-
-				//std::cout << "(" << m_MousePos.x << ", " << m_MousePos.y << ")" << '\n';
 
 				// Drag and drop
 				if (event.button.button == SDL_BUTTON_LEFT)
@@ -177,9 +172,8 @@ namespace Chesster
 				if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(m_OldPos))
 					m_PieceIndex = i;
 
-			/* Could do animation here
-			*
-			*/
+			/* Could do animation here */
+
 
 			// Remove any piece it "ate", update move history and piece position
 			Move(m_Str);

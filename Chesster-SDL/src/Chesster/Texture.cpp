@@ -8,8 +8,6 @@ namespace Chesster
 		m_Texture{ nullptr },
 		m_Width{ 0 },
 		m_Height{ 0 },
-		//m_Acceleration{ 0.0 },
-		//m_Velocity{ 0.0 },
 		m_RenderQuad{ 0, 0, m_Width, m_Height },
 		m_Clip{ nullptr },
 		m_Angle{ 0.0 },
@@ -145,29 +143,6 @@ namespace Chesster
 			m_RenderQuad.h = clip->h;
 		}
 	}
-
-	/*void Texture::SetVelocity(Vector2f velocity)
-	{
-		m_Velocity = velocity;
-	}
-
-	void Texture::SetVelocity(double vx, double vy)
-	{
-		m_Velocity.x = vx;
-		m_Velocity.y = vy;
-	}
-
-	void Texture::Accelerate(Vector2f acceleration)
-	{
-		m_Velocity.x += acceleration.x;
-		m_Velocity.y += acceleration.y;
-	}
-
-	void Texture::Accelerate(double ax, double ay)
-	{
-		m_Velocity.x += ax;
-		m_Velocity.y += ay;
-	}*/
 
 	void Texture::Move(const Vector2f& offset)
 	{

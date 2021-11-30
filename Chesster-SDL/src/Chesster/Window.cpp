@@ -3,7 +3,7 @@
 
 namespace Chesster
 {
-	SDL_Renderer* Window::Renderer = nullptr;
+	SDL_Renderer* Window::Renderer{ nullptr };
 
 	Window::Window(const WindowProps& props) :
 		m_Window{ nullptr },
@@ -37,7 +37,12 @@ namespace Chesster
 			CHESSTER_WARN("Warning: Linear texture filtering not enabled!");
 
 		// Create window
-		SDL_WindowFlags WindowFlags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
+		SDL_WindowFlags WindowFlags = (SDL_WindowFlags)
+		(
+			SDL_WINDOW_OPENGL |
+			SDL_WINDOW_SHOWN |
+			SDL_WINDOW_ALLOW_HIGHDPI
+		);
 		m_Window = SDL_CreateWindow
 		(
 			props.Title.c_str(),

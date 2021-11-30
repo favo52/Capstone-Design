@@ -113,7 +113,7 @@ namespace Chesster
 
 			ImGui::Separator();
 			ImGui::BeginChild("Information");
-			ImGui::SetWindowFontScale(1.2);
+			ImGui::SetWindowFontScale(1.1);
 			ImGui::Text
 			(
 				"CONTROLS:\n"
@@ -129,8 +129,11 @@ namespace Chesster
 				ImGui::GetIO().MousePos.x,
 				ImGui::GetIO().MousePos.y
 			);
-			ImGui::EndChild();
 
+			ImGui::Spacing();
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			
+			ImGui::EndChild();
 			ImGui::End();
 		}
 	};

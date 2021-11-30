@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pch.h"
-//#include "Window.h"
 #include "Vector.h"
 
 #include "SDL_ttf.h"
@@ -62,13 +61,6 @@ namespace Chesster
 		void SetPosition(int x, int y, SDL_Rect* clip = nullptr, double angle = 0.0,
 			SDL_Point* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
-		// Transform
-		/*void SetVelocity(Vector2f velocity);
-		void SetVelocity(double vx, double vy);
-		
-		void Accelerate(Vector2f acceleration);
-		void Accelerate(double ax, double ay);*/
-
 		void Move(const Vector2f& offset);
 		void Move(const double& offsetX, const double& offsetY);
 
@@ -76,8 +68,6 @@ namespace Chesster
 		inline const Vector2f GetPosition() const { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
 		inline Vector2f GetPosition() { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
 		
-		//inline const Vector2f GetVelocity() const { return m_Velocity; }
-		//inline Vector2f GetVelocity() { return m_Velocity; }
 
 		inline const int GetWidth() const { return m_Width; }
 		inline const int GetHeight() const { return m_Height; }
@@ -90,10 +80,6 @@ namespace Chesster
 		SDL_Texture* m_Texture;
 		int m_Width;
 		int m_Height;
-
-		// Movement
-		//double m_Acceleration;
-		//Vector2f m_Velocity;
 
 		// Render Properties
 		SDL_Rect m_RenderQuad;

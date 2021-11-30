@@ -77,6 +77,7 @@ namespace Chesster
 		float m_PieceOffset;
 		bool m_HoldingPiece;
 
+		// Computer stuff
 		bool m_IsComputerTurn;
 		bool m_IsComputerDone;
 
