@@ -97,5 +97,7 @@ namespace Chesster
 		TTF_Quit();
 		IMG_Quit();
 		SDL_Quit();
+
+		CHESSTER_INFO("SDL closed sucessfully.");
 	}
 }

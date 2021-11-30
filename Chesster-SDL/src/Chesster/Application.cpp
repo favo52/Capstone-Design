@@ -11,6 +11,8 @@
 
 namespace Chesster
 {
+	static auto constexpr TIME_STEP = std::chrono::seconds{ 1 } / 60.0;
+
 	Application::Application() :
 		m_Window{ nullptr },
 		m_IsRunning{ true },
@@ -68,41 +70,40 @@ namespace Chesster
 
 	void Application::Run()
 	{
-		// Fixed timestep
 		using namespace std::literals;
-		auto constexpr dt = 1.0s / 60.0;
-
 		using duration = std::chrono::duration<double>;
 		using time_point = std::chrono::time_point<Clock, duration>;
 
-		time_point totalTime{};
+		// For Semi-Fixed timestep
 		time_point currentTime = Clock::now();
 		duration accumulator = 0s;
 
+		// Main App loop
 		while (m_IsRunning)
 		{
+			// Handle events on queue
+			ProcessEvents();
+
+			// Protection against spiral of death
 			time_point newTime = Clock::now();
 			auto frameTime = newTime - currentTime;
-			if (frameTime > 0.25s)
-				frameTime = 0.25s;
+			if (frameTime > 0.25s) frameTime = 0.25s;
 			currentTime = newTime;
 
 			accumulator += frameTime;
-
-			while (accumulator >= dt)
+			while (accumulator >= TIME_STEP)
 			{
 				// Handle events on queue
 				ProcessEvents();
 
 				// Update game logic
-				Update(dt);
+				Update(TIME_STEP);
 
 				// Stack might be empty before update() call
 				if (m_StateStack.IsEmpty())
 					Quit();
 
-				totalTime += dt;
-				accumulator -= dt;
+				accumulator -= TIME_STEP;
 			}
 
 			// Start the Dear ImGui frame

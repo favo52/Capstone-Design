@@ -1,0 +1,85 @@
+1638091422629 <- Hannibal 1.7 x64
+1638091422629 <- Copyright (C) 2016 Sam Hamilton & Edsel Apostol
+1638091422629 <- Use UCI commands
+1638091422629 <- 
+1638091422629 -> uci
+1638091422629 <- id name Hannibal 1.7 x64
+1638091422629 <- id author Sam Hamilton & Edsel Apostol
+1638091422629 <- option name Hash type spin default 128 min 1 max 65536
+1638091422629 <- option name Pawn Hash type spin default 64 min 1 max 1024
+1638091422629 <- option name MultiPV type spin default 1 min 1 max 128
+1638091422629 <- option name Clear Hash type button
+1638091422629 <- option name OwnBook type check default false
+1638091422629 <- option name Book File type string default Hannibal.bin
+1638091422629 <- option name Ponder type check default false
+1638091422629 <- option name Time Buffer type spin default 1000 min 0 max 10000
+1638091422629 <- option name Threads type spin default 1 min 1 max 512
+1638091422629 <- option name Min Split Depth type spin default 4 min 1 max 8
+1638091422629 <- option name Max Active Splits/Thread type spin default 4 min 1 max 8
+1638091422629 <- option name Contempt type spin default 0 min -100 max 100
+1638091422629 <- uciok
+1638091422629 -> isready
+1638091422629 <- readyok
+1638091422708 -> setoption name Skill Level value 0
+1638091422708 <- No such option: Skill Level
+1638091422708 -> setoption name UCI_LimitStrength value true
+1638091422708 <- No such option: UCI_LimitStrength
+1638091422931 -> position startpos moves  
+1638091422931 -> d
+1638091422931 !! Invalid command: d
+1638091425507 -> position startpos moves 
+1638091425507 -> go depth 1
+1638091425507 == Depth is limited to 1 half moves
+1638091425507 == Search status is THINKING
+1638091425507 == Aborting search: depth limit: 1
+1638091425507 <- bestmove b1c3
+1638091425657 -> position startpos moves b1c3 
+1638091425657 -> d
+1638091425657 !! Invalid command: d
+1638091455492 -> position startpos moves b1c3 
+1638091455492 -> go depth 1
+1638091455492 == Depth is limited to 1 half moves
+1638091455492 == Search status is THINKING
+1638091455492 == Aborting search: depth limit: 1
+1638091455492 <- bestmove e7e6
+1638091455643 -> position startpos moves b1c3 e7e6 
+1638091455643 -> d
+1638091455643 !! Invalid command: d
+1638091457153 -> position startpos moves b1c3 e7e6 
+1638091457153 -> go depth 1
+1638091457153 == Depth is limited to 1 half moves
+1638091457153 == Search status is THINKING
+1638091457153 == Aborting search: depth limit: 1
+1638091457153 <- bestmove g1f3
+1638091457303 -> position startpos moves b1c3 e7e6 g1f3 
+1638091457303 -> d
+1638091457303 !! Invalid command: d
+1638091458006 -> position startpos moves b1c3 e7e6 g1f3 
+1638091458006 -> go depth 1
+1638091458006 == Depth is limited to 1 half moves
+1638091458006 == Search status is THINKING
+1638091458006 == Aborting search: depth limit: 1
+1638091458006 <- bestmove b8c6
+1638091458157 -> position startpos moves b1c3 e7e6 g1f3 b8c6 
+1638091458157 -> d
+1638091458157 !! Invalid command: d
+1638091460361 -> position startpos moves b1c3 e7e6 g1f3 b8c6 
+1638091460361 -> go depth 1
+1638091460361 == Depth is limited to 1 half moves
+1638091460361 == Search status is THINKING
+1638091460361 == Aborting search: depth limit: 1
+1638091460361 <- bestmove e2e3
+1638091460511 -> position startpos moves b1c3 e7e6 g1f3 b8c6 e2e3 
+1638091460511 -> d
+1638091460511 !! Invalid command: d
+1638091461395 -> position startpos moves b1c3 e7e6 g1f3 b8c6 e2e3 
+1638091461395 -> go depth 1
+1638091461395 == Depth is limited to 1 half moves
+1638091461395 == Search status is THINKING
+1638091461395 == Aborting search: depth limit: 1
+1638091461395 <- bestmove g8f6
+1638091461546 -> position startpos moves b1c3 e7e6 g1f3 b8c6 e2e3 g8f6 
+1638091461546 -> d
+1638091461546 !! Invalid command: d
+1638091623913 -> quit
+1638091623913 == Engine quitting
