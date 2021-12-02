@@ -183,7 +183,7 @@ namespace Chesster
 
 			m_IsComputerTurn = false;
 		}
-
+		
 		// Dragging a piece
 		if (m_IsMove)
 			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
