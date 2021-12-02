@@ -75,8 +75,9 @@ namespace Chesster
 					// Go backwards one move
 					case SDLK_BACKSPACE:
 					{
+						int i{ 5 }; // char quantity to erase. notation + white space
 						if (m_PositionHistory.length() > 6)
-							m_PositionHistory.erase(m_PositionHistory.length() - 6, 5);
+							m_PositionHistory.erase(m_PositionHistory.length() - 6, i);
 
 						LoadPositions();
 					} break;

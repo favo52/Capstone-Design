@@ -114,7 +114,7 @@ namespace Chesster
 			if (ImGui::Button("Reset Game", ImVec2(100, 50)))
 				m_ResetBoard = true;
 			ImGui::SameLine();
-			if (ImGui::Button("Evaluate Positions", ImVec2(100, 50)))
+			if (ImGui::Button("Evaluatate\nPosition", ImVec2(100, 50)))
 				m_EvaluateBoard = true;
 
 			// Info area

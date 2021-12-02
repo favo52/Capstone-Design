@@ -10,6 +10,14 @@ namespace Chesster
 		State{ stack, context },
 		m_Board{ context.window->get() }
 	{
+		m_ImGuiFlags =
+		{
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoFocusOnAppearing |
+			ImGuiWindowFlags_NoBringToFrontOnFocus
+		};
 	}
 
 	bool GameState::HandleEvent(SDL_Event& event)
@@ -55,16 +63,8 @@ namespace Chesster
 		m_Board.Draw();
 
 		// Render ImGui
-		ImGuiWindowFlags flags =
-		{
-			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_NoCollapse |
-			ImGuiWindowFlags_NoFocusOnAppearing |
-			ImGuiWindowFlags_NoBringToFrontOnFocus
-		};
 		//ImGui::ShowDemoWindow();
-		ImGuiMainWindow.Draw("Chesster Console", nullptr, flags);
-		ImGuiSettingsWindow.Draw("Settings", nullptr, flags);
+		ImGuiMainWindow.Draw("Chesster Console", nullptr, m_ImGuiFlags);
+		ImGuiSettingsWindow.Draw("Settings", nullptr, m_ImGuiFlags);
 	}
 }

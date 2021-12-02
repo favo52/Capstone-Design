@@ -22,5 +22,6 @@ namespace Chesster
 
 	private:
 		Board m_Board;
+		ImGuiWindowFlags m_ImGuiFlags;
 	};
 }
