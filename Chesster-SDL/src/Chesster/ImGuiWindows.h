@@ -91,9 +91,11 @@ namespace Chesster
 	struct AppSettingsGUI
 	{
 		bool m_ResetBoard;
+		bool m_EvaluateBoard;
 
 		AppSettingsGUI() :
-			m_ResetBoard{ false }
+			m_ResetBoard{ false },
+			m_EvaluateBoard{ false }
 		{
 		}
 
@@ -108,9 +110,14 @@ namespace Chesster
 				return;
 			}
 
+			// Buttons
 			if (ImGui::Button("Reset Game", ImVec2(100, 50)))
 				m_ResetBoard = true;
+			ImGui::SameLine();
+			if (ImGui::Button("Evaluate Positions", ImVec2(100, 50)))
+				m_EvaluateBoard = true;
 
+			// Info area
 			ImGui::Separator();
 			ImGui::BeginChild("Information");
 			ImGui::SetWindowFontScale(1.1);

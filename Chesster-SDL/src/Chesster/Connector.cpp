@@ -96,23 +96,16 @@ namespace Chesster
 		// Set difficulty level
 		CHAR setSkillLevel[] = "setoption name Skill Level value 0\n";
 		WriteFile(m_Pipe_IN_Wr, setSkillLevel, strlen(setSkillLevel), &m_Written, NULL);
-		CHAR setLimit[] = "setoption name UCI_LimitStrength value true\n";
-		WriteFile(m_Pipe_IN_Wr, setLimit, strlen(setLimit), &m_Written, NULL);
 		Sleep(150);
 
+		// Overrides skill level
+		//CHAR setLimit[] = "setoption name UCI_LimitStrength value true\n";
+		//WriteFile(m_Pipe_IN_Wr, setLimit, strlen(setLimit), &m_Written, NULL);
+		//Sleep(150);
+
 		// Read engine's reply
-		std::string msg;
-		do
-		{
-			ZeroMemory(m_Buffer, BUFSIZE);
-			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
-			if (!m_Success || m_Read == 0) break;
-
-			msg += (char*)m_Buffer;
-
-		} while (m_Read >= sizeof(m_Buffer));
+		std::string msg = GetEngineReply();
 		GameState::ImGuiMainWindow.AddLog(msg.c_str());
-		//CHESSTER_INFO(msg);
 	}
 
 	void Connector::ResetGame()
@@ -123,16 +116,19 @@ namespace Chesster
 
 		// Read engine's reply
 		std::string msg{ "GAME RESET\n" };
-		do
-		{
-			ZeroMemory(m_Buffer, BUFSIZE);
-			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
-			if (!m_Success || m_Read == 0) break;
+		msg += GetEngineReply() + '\n';
+		GameState::ImGuiMainWindow.AddLog(msg.c_str());
+	}
 
-			msg += (char*)m_Buffer;
+	void Connector::EvaluateGame()
+	{
+		CHAR str[] = "eval\n";
+		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
+		Sleep(150);
 
-		} while (m_Read >= sizeof(m_Buffer));
-		msg += '\n';
+		// Read engine's reply
+		std::string msg{ "GAME EVALUATION\n" };
+		msg += GetEngineReply() + '\n';
 		GameState::ImGuiMainWindow.AddLog(msg.c_str());
 	}
 
@@ -142,21 +138,12 @@ namespace Chesster
 
 		// Send position to engine
 		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);
-		Sleep(150);
 		msg.clear();
+		Sleep(150);
 
 		// Read engine's reply
-		do
-		{
-			ZeroMemory(m_Buffer, BUFSIZE);
-			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
-			if (!m_Success || m_Read == 0) break;
-
-			msg += (char*)m_Buffer;
-
-		} while (m_Read >= sizeof(m_Buffer));
+		msg = GetEngineReply() + '\n';
 		GameState::ImGuiMainWindow.AddLog(msg.c_str());
-		//CHESSTER_INFO(msg);
 
 		// Grab the engine's move
 		int found = msg.find("bestmove");
@@ -203,58 +190,19 @@ namespace Chesster
 		return validMoves;
 	}
 
-	//std::vector<std::string> Connector::GetValidMoves(const std::string& fen)
-	//{
-	//	std::string filename{ "validmoves.txt" };
-
-	//	// Create file with all valid moves using python script
-	//	std::string PyCode
-	//	{
-	//		"from Chessnut import Game\n"
-	//		"chessgame = Game()\n"
-	//		"chessgame.set_fen(\"" + fen + "\")\n"
-	//		"move_list = chessgame.get_moves()\n"
-	//		"file = open(\"" + filename + "\", \"w\")\n"
-	//		"for element in move_list:"
-	//		"	file.write(element + \" \")\n"
-	//		"file.close()\n"
-	//	};
-
-	//	PyRun_SimpleString(PyCode.c_str());
-
-	//	// Read all moves from file and store inside std::vector
-	//	std::ifstream ifs{ filename };
-	//	if (!ifs) throw std::runtime_error("Unable to open file " + filename);
-	//	std::vector<std::string> validMoves;
-	//	for (std::string move; ifs >> move; )
-	//		validMoves.push_back(move);
-
-	//	return validMoves;
-	//}
-
 	std::string Connector::GetFEN(const std::string& moveHistory)
 	{
 		std::string msg = { "position startpos moves " + moveHistory + "\nd\n" };
 
 		// Send position to engine
 		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);
+		msg.clear();
 		Sleep(150);
 
-		msg.clear();
 		// Read engine's reply
-		do
-		{
-			ZeroMemory(m_Buffer, BUFSIZE);
-			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
-			if (!m_Success || m_Read == 0) break;
-
-			msg += (char*)m_Buffer;
-
-		} while (m_Read >= sizeof(m_Buffer));
-		msg += '\n';
+		msg = GetEngineReply() + '\n';
 		GameState::ImGuiMainWindow.AddLog(msg.c_str());
 		msg.pop_back();
-		//CHESSTER_TRACE(msg);
 
 		// Grab the FEN string
 		int found = msg.find("Fen:");
@@ -278,6 +226,23 @@ namespace Chesster
 		}
 
 		return "error"; // If no FEN string is found
+	}
+
+	const std::string Connector::GetEngineReply()
+	{
+		// Read engine's reply
+		std::string msg;
+		do
+		{
+			ZeroMemory(m_Buffer, BUFSIZE);
+			m_Success = ReadFile(m_Pipe_OUT_Rd, m_Buffer, BUFSIZE, &m_Read, NULL);
+			if (!m_Success || m_Read == 0) break;
+
+			msg += (char*)m_Buffer;
+
+		} while (m_Read >= sizeof(m_Buffer));
+
+		return msg;
 	}
 
 	void Connector::CloseConnections()

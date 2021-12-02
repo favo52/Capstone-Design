@@ -72,9 +72,6 @@ namespace Chesster
 			auto frameTime = newTime - currentTime;
 			currentTime = newTime;
 
-			// Handle events on queue
-			ProcessEvents();
-
 			// Update game logic
 			Update(frameTime);
 

@@ -17,12 +17,14 @@ namespace Chesster
 		void ConnectToEngine(LPWSTR path);
 
 		void ResetGame();
+		void EvaluateGame();
 
 		std::string GetNextMove(const std::string& position);
 		std::vector<std::string> GetValidMoves(const std::string& path, const std::string& fen);
 		std::string GetFEN(const std::string& latestMove);
 
 	private:
+		const std::string GetEngineReply();
 		void CloseConnections();
 
 	private:

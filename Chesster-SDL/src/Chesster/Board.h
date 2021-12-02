@@ -19,6 +19,7 @@ namespace Chesster
 		void Draw();
 
 		void ResetBoard();
+		void EvaluateBoard();
 
 	private:
 		void LoadPositions();

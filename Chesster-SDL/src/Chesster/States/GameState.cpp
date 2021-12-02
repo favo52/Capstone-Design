@@ -39,6 +39,12 @@ namespace Chesster
 			ImGuiSettingsWindow.m_ResetBoard = false;
 		}
 
+		if (ImGuiSettingsWindow.m_EvaluateBoard)
+		{
+			m_Board.EvaluateBoard();
+			ImGuiSettingsWindow.m_EvaluateBoard = false;
+		}
+
 		return true;
 	}
 

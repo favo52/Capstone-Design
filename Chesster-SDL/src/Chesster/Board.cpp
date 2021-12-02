@@ -93,6 +93,7 @@ namespace Chesster
 
 				// Drag and drop
 				if (event.button.button == SDL_BUTTON_LEFT)
+				{
 					for (int i = 0; i < TOTAL_PIECES; ++i)
 					{
 						SDL_Rect pieceBounds = m_Pieces[i].GetBounds();
@@ -108,6 +109,7 @@ namespace Chesster
 							m_OldPos = m_Pieces[i].GetPosition();
 						}
 					}
+				}
 			} break;
 
 			// Mouse button released
@@ -156,6 +158,8 @@ namespace Chesster
 
 	bool Board::Update(const std::chrono::duration<double>& dt)
 	{
+		
+
 		// Computer move
 		if (m_IsComputerTurn)
 		{
@@ -232,6 +236,11 @@ namespace Chesster
 		LoadPositions();
 		m_Connector.ResetGame();
 		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
+	}
+
+	void Board::EvaluateBoard()
+	{
+		m_Connector.EvaluateGame();
 	}
 
 	void Board::LoadPositions()
