@@ -18,6 +18,8 @@ namespace Chesster
 	enum class FontID
 	{
 		AbsEmpire_100,
+		OpenSans,
+		OpenSans_100,
 		Minecraft,
 		Minecraft_10,
 		Minecraft_100,

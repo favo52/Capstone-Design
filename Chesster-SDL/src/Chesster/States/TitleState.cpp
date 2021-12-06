@@ -20,7 +20,7 @@ namespace Chesster
 		m_TexEffectTime = 0s;
 
 		// Prepare text
-		m_Font = context.fonts->Get(FontID::Sansation);
+		m_Font = context.fonts->Get(FontID::OpenSans_100);
 		m_PressKeyText.LoadFromRenderedText(m_Font, "CLICK OR PRESS ANY KEY TO CONTINUE", { 0u, 0u, 0u, 255u });
 		m_PressKeyText.SetPosition((m_Window->GetWidth() - m_PressKeyText.GetWidth()) / 2,
 								  ((m_Window->GetHeight() - m_PressKeyText.GetHeight()) / 2) + 200);
