@@ -14,7 +14,7 @@
     <ClCompile Include="src\Chesster\Application.cpp" />
     <ClCompile Include="src\Chesster\Board.cpp" />
     <ClCompile Include="src\Chesster\Connector.cpp" />
-    <ClCompile Include="src\Chesster\Log.cpp" />
+    <ClCompile Include="src\Chesster\Core\Log.cpp" />
     <ClCompile Include="src\Chesster\Main.cpp" />
     <ClCompile Include="src\Chesster\States\GameState.cpp" />
     <ClCompile Include="src\Chesster\States\MenuState.cpp" />
@@ -22,9 +22,9 @@
     <ClCompile Include="src\Chesster\States\State.cpp" />
     <ClCompile Include="src\Chesster\States\StateStack.cpp" />
     <ClCompile Include="src\Chesster\States\TitleState.cpp" />
-    <ClCompile Include="src\Chesster\Texture.cpp" />
-    <ClCompile Include="src\Chesster\Time.cpp" />
-    <ClCompile Include="src\Chesster\Window.cpp" />
+    <ClCompile Include="src\Chesster\Core\Texture.cpp" />
+    <ClCompile Include="src\Chesster\Core\Time.cpp" />
+    <ClCompile Include="src\Chesster\Core\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -46,18 +46,19 @@
     <ClInclude Include="src\Chesster\Connector.h" />
     <ClInclude Include="src\Chesster\Board.h" />
     <ClInclude Include="src\Chesster\ImGuiWindows.h" />
-    <ClInclude Include="src\Chesster\Log.h" />
+    <ClInclude Include="src\Chesster\Core\Log.h" />
+    <ClInclude Include="src\Chesster\Core\PlatformDetection.h" />
     <ClInclude Include="src\Chesster\States\GameState.h" />
     <ClInclude Include="src\Chesster\States\MenuState.h" />
     <ClInclude Include="src\Chesster\States\PauseState.h" />
     <ClInclude Include="src\Chesster\States\State.h" />
     <ClInclude Include="src\Chesster\States\StateStack.h" />
     <ClInclude Include="src\Chesster\States\TitleState.h" />
-    <ClInclude Include="src\Chesster\Texture.h" />
-    <ClInclude Include="src\Chesster\ResourceHolder.h" />
-    <ClInclude Include="src\Chesster\Time.h" />
-    <ClInclude Include="src\Chesster\Vector.h" />
-    <ClInclude Include="src\Chesster\Window.h" />
+    <ClInclude Include="src\Chesster\Core\Texture.h" />
+    <ClInclude Include="src\Chesster\Core\ResourceHolder.h" />
+    <ClInclude Include="src\Chesster\Core\Time.h" />
+    <ClInclude Include="src\Chesster\Core\Vector.h" />
+    <ClInclude Include="src\Chesster\Core\Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="vendor\imgui\imconfig.h" />
     <ClInclude Include="vendor\imgui\imgui.h" />
@@ -115,7 +116,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CHESSTER_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -135,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CHESSTER_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

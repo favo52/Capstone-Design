@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Window.h"
 
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+
 namespace Chesster
 {
 	SDL_Renderer* Window::Renderer{ nullptr };

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "pch.h"
-#include "Window.h"
+#include "Core/Window.h"
 #include "Connector.h"
-#include "Texture.h"
-#include "ResourceHolder.h"
+#include "Core/Texture.h"
+#include "Core/ResourceHolder.h"
 
 namespace Chesster
 {
@@ -57,10 +57,11 @@ namespace Chesster
 		// Texture stuff
 		TextureHolder m_TextureHolder;
 		Texture* m_BoardTexture;
+		Texture* m_Pieces;	// all 32 pieces
+
 		SDL_Rect m_Bounds;
 		SDL_Rect m_PieceClip[32];
 
-		Texture* m_Pieces;
 		std::string m_PositionHistory;
 		int m_MoveHistorySize;
 		int m_PieceSize;

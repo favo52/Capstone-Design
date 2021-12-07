@@ -1,7 +1,7 @@
 #pragma once
 
 #include "State.h"
-#include "Chesster/Texture.h"
+#include "Chesster/Core/Texture.h"
 
 namespace Chesster
 {

@@ -21,7 +21,7 @@
     <ClCompile Include="src\Chesster\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\Window.cpp">
+    <ClCompile Include="src\Chesster\Core\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
@@ -30,7 +30,7 @@
     <ClCompile Include="src\Chesster\Connector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\Texture.cpp">
+    <ClCompile Include="src\Chesster\Core\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Board.cpp">
@@ -54,10 +54,10 @@
     <ClCompile Include="src\Chesster\States\PauseState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\Time.cpp">
+    <ClCompile Include="src\Chesster\Core\Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\Log.cpp">
+    <ClCompile Include="src\Chesster\Core\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\imgui\imgui.cpp">
@@ -86,7 +86,7 @@
     <ClInclude Include="src\Chesster\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Window.h">
+    <ClInclude Include="src\Chesster\Core\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
@@ -95,10 +95,10 @@
     <ClInclude Include="src\Chesster\Connector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Texture.h">
+    <ClInclude Include="src\Chesster\Core\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\ResourceHolder.h">
+    <ClInclude Include="src\Chesster\Core\ResourceHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Board.h">
@@ -122,13 +122,13 @@
     <ClInclude Include="src\Chesster\States\PauseState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Time.h">
+    <ClInclude Include="src\Chesster\Core\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Log.h">
+    <ClInclude Include="src\Chesster\Core\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Vector.h">
+    <ClInclude Include="src\Chesster\Core\Vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\imgui\imconfig.h">
@@ -156,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\ImGuiWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\PlatformDetection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

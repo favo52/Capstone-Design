@@ -112,7 +112,7 @@ namespace Chesster
 					}
 				}
 			} break;
-
+			
 			// Mouse button released
 			case SDL_MOUSEBUTTONUP:
 			{
@@ -159,8 +159,6 @@ namespace Chesster
 
 	bool Board::Update(const std::chrono::duration<double>& dt)
 	{
-		
-
 		// Computer move
 		if (m_IsComputerTurn)
 		{
@@ -168,6 +166,8 @@ namespace Chesster
 			m_Str = m_Connector.GetNextMove(m_PositionHistory);
 			if (m_Str == "error")
 				return true;
+
+			CHESSTER_INFO("Chesster's move: {0}", m_Str);
 
 			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
 			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
@@ -177,8 +177,26 @@ namespace Chesster
 				if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(m_OldPos))
 					m_PieceIndex = i;
 
-			/* Could do animation here */
+			int BlackPawns[8] = { 8, 9, 10, 11, 12, 13, 14, 15 };
+			int WhitePawns[8] = { 16, 17, 18, 19, 20, 21, 22, 23 };
+			
+			// If pawn
+			for (int i = 0; i < 8; ++i)
+				if (m_PieceIndex == BlackPawns[i])
+				{
+					m_Str[0] != m_Str[2];
+				}
+			
+			for (int i = 0; i < 8; ++i)
+				if (m_PieceIndex == WhitePawns[i])
+				{
 
+				}
+
+			/* Could do animation here */
+			{
+				
+			}
 
 			// Remove any piece it "ate", update move history and piece position
 			Move(m_Str);
@@ -297,6 +315,7 @@ namespace Chesster
 			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(NewPos))
 				m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
 
+
 		for (int i = 0; i < TOTAL_PIECES; ++i)
 			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(OldPos))
 				m_Pieces[i].SetPosition(NewPos.x * m_PieceOffset, NewPos.y * m_PieceOffset, &m_PieceClip[i]);
@@ -306,6 +325,9 @@ namespace Chesster
 		if (notation == "e8g8") if (m_PositionHistory.find("e8") == std::string::npos) Move("h8f8");
 		if (notation == "e1c1") if (m_PositionHistory.find("e1") == std::string::npos) Move("a1d1");
 		if (notation == "e8c8") if (m_PositionHistory.find("e8") == std::string::npos) Move("a8d8");
+
+		// En passant
+
 	}
 
 	void Board::LoadTextures()

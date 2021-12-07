@@ -25,7 +25,7 @@ namespace Chesster
 			((m_Window->GetHeight() - m_LogoTexture->GetHeight()) / 2) - 50);
 
 		// Prepare title text
-		SDL_Color Black = { 0u, 0u, 0u };
+		SDL_Color Black = { 0u, 0u, 0u, 255u };
 		m_TitleText.LoadFromRenderedText(m_fAbsEmp100, "CHESSTER", Black);
 		m_TitleText.SetPosition((m_Window->GetWidth() - m_TitleText.GetWidth()) / 2,
 			((m_Window->GetHeight() - m_TitleText.GetHeight()) / 2) - 250);

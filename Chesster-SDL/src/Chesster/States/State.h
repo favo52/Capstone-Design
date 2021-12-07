@@ -1,8 +1,8 @@
 #pragma once
 
 #include "pch.h"
-#include "Chesster/Window.h"
-#include "Chesster/ResourceHolder.h"
+#include "Chesster/Core/Window.h"
+#include "Chesster/Core/ResourceHolder.h"
 
 namespace Chesster
 {

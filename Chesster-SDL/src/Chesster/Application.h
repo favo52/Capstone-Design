@@ -2,9 +2,9 @@
 
 #include "pch.h"
 
-#include "Window.h"
-#include "Time.h"
-#include "ResourceHolder.h"
+#include "Core/Window.h"
+#include "Core/Time.h"
+#include "Core/ResourceHolder.h"
 #include "States/StateStack.h"
 
 namespace Chesster

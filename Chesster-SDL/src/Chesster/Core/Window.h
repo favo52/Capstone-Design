@@ -2,9 +2,9 @@
 
 #include "pch.h"
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
+// SDL forward declarations
+struct SDL_Window;
+struct SDL_Renderer;
 
 namespace Chesster
 {

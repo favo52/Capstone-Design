@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "TitleState.h"
-#include "Chesster/ResourceHolder.h"
+#include "Chesster/Core/ResourceHolder.h"
 
 namespace Chesster
 {
@@ -23,7 +23,7 @@ namespace Chesster
 		m_Font = context.fonts->Get(FontID::OpenSans_100);
 		m_PressKeyText.LoadFromRenderedText(m_Font, "CLICK OR PRESS ANY KEY TO CONTINUE", { 0u, 0u, 0u, 255u });
 		m_PressKeyText.SetPosition((m_Window->GetWidth() - m_PressKeyText.GetWidth()) / 2,
-								  ((m_Window->GetHeight() - m_PressKeyText.GetHeight()) / 2) + 200);
+								  ((m_Window->GetHeight() - m_PressKeyText.GetHeight()) / 2) * 1.70);
 
 		// Prepare logos
 		m_ReadySetGoTexture = &context.textures->Get(TextureID::ReadySetCode);
@@ -40,7 +40,8 @@ namespace Chesster
 	{
 		// If click or any key is pressed, tigger the next screen
 		if (event.type == SDL_KEYDOWN ||
-			event.type == SDL_MOUSEBUTTONUP)
+			event.type == SDL_MOUSEBUTTONUP ||
+			event.type == SDL_FINGERUP)
 		{
 			RequestStackPop();
 			RequestStackPush(StateID::Menu);

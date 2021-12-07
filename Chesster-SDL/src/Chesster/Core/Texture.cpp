@@ -2,6 +2,8 @@
 #include "Texture.h"
 #include "Window.h"
 
+#include <SDL_image.h>
+
 namespace Chesster
 {
 	Texture::Texture() :

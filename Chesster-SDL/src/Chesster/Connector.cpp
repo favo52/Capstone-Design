@@ -98,6 +98,11 @@ namespace Chesster
 		WriteFile(m_Pipe_IN_Wr, setSkillLevel, strlen(setSkillLevel), &m_Written, NULL);
 		Sleep(150);
 
+		// Specify Elo
+		//CHAR setElo[] = "setoption name UCI_Elo value 1666\n";
+		//WriteFile(m_Pipe_IN_Wr, setElo, strlen(setElo), &m_Written, NULL);
+		//Sleep(150);
+
 		// Overrides skill level
 		//CHAR setLimit[] = "setoption name UCI_LimitStrength value true\n";
 		//WriteFile(m_Pipe_IN_Wr, setLimit, strlen(setLimit), &m_Written, NULL);
@@ -244,6 +249,8 @@ namespace Chesster
 
 		return msg;
 	}
+
+
 
 	void Connector::CloseConnections()
 	{

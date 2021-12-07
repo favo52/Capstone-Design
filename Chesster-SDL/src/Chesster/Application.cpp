@@ -5,9 +5,13 @@
 #include "States/GameState.h"
 #include "States/PauseState.h"
 
+#include "SDL.h"
+
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_sdlrenderer.h"
+
+#include "Core/PlatformDetection.h"
 
 namespace Chesster
 {
@@ -18,7 +22,13 @@ namespace Chesster
 		m_FontHolder{},
 		m_StateStack{ State::Context(m_Window, m_TextureHolder, m_FontHolder) }
 	{
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		#ifdef CHESSTER_PLATFORM_WINDOWS
+			m_Window = std::unique_ptr<Window>(Window::Create());
+		#elif CHESSTER_PLATFORM_ANDROID
+			SDL_DisplayMode displayMode;
+			if (SDL_GetCurrentDisplayMode(0, &displayMode) == 0)
+				m_Window = std::unique_ptr<Window>(Window::Create("CHESSTER", displayMode.w, displayMode.h));
+		#endif
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -26,7 +36,7 @@ namespace Chesster
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 		// Set ImGui font
-		float fontSize = 18.0f;// *2.0f;
+		float fontSize = 18.0f;
 		//io.Fonts->AddFontFromFileTTF("resources/fonts/OpenSans-Bold.ttf", fontSize);
 		//io.FontDefault = io.Fonts->AddFontFromFileTTF("resources/fonts/OpenSans-Regular.ttf", fontSize);
 
