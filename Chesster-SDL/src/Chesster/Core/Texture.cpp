@@ -152,6 +152,12 @@ namespace Chesster
 		m_RenderQuad.y += offset.y;
 	}
 
+	void Texture::Move(const Vector2i& offset)
+	{
+		m_RenderQuad.x += offset.x;
+		m_RenderQuad.y += offset.y;
+	}
+
 	void Texture::Move(const double& offsetX, const double& offsetY)
 	{
 		m_RenderQuad.x += offsetX;

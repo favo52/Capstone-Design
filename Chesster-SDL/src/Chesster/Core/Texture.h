@@ -64,11 +64,15 @@ namespace Chesster
 			SDL_Point* center = nullptr, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 		void Move(const Vector2f& offset);
+		void Move(const Vector2i& offset);
 		void Move(const double& offsetX, const double& offsetY);
 
 		// Get properties
-		inline const Vector2f GetPosition() const { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
-		inline Vector2f GetPosition() { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
+		//inline const Vector2f GetPosition() const { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
+		//inline Vector2f GetPosition() { return Vector2f(m_RenderQuad.x, m_RenderQuad.y); }
+
+		inline const Vector2i GetPosition() const { return Vector2i(m_RenderQuad.x, m_RenderQuad.y); }
+		inline Vector2i GetPosition() { return Vector2i(m_RenderQuad.x, m_RenderQuad.y); }
 
 		inline const int GetWidth() const { return m_Width; }
 		inline const int GetHeight() const { return m_Height; }
