@@ -34,6 +34,7 @@ namespace Chesster
 
 		bool IsWhitePawn(const int& index);
 		bool IsBlackPawn(const int& index);
+		void RemoveEnPassant(int offset);
 
 		void Move(const std::string& notation);
 

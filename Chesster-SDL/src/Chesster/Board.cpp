@@ -222,8 +222,8 @@ namespace Chesster
 			m_Pieces[i].Draw();
 		}
 
-		m_Pieces[m_PieceIndex].SetPosition(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y, &m_PieceClip[m_PieceIndex]);
-		m_Pieces[m_PieceIndex].Draw();
+		//m_Pieces[m_PieceIndex].SetPosition(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y, &m_PieceClip[m_PieceIndex]);
+		//m_Pieces[m_PieceIndex].Draw();
 
 		for (int i = 0; i < TOTAL_PIECES; ++i)
 			m_Pieces[i].Move(-m_BoardOffset);
@@ -336,33 +336,21 @@ namespace Chesster
 		if (notation == "e1c1") if (m_PositionHistory.find("e1") == std::string::npos) Move("a1d1");
 		if (notation == "e8c8") if (m_PositionHistory.find("e8") == std::string::npos) Move("a8d8");
 
-		// En passant for white pieces
-		if (IsWhitePawn(m_PieceIndex))
+		// En passant
+		int offset{ m_PieceSize };
+		if (IsBlackPawn(m_PieceIndex)) offset = -m_PieceSize;
+
+		if (IsWhitePawn(m_PieceIndex) || IsBlackPawn(m_PieceIndex))
 		{
+			// Iterate all 32 pieces to find if a pawn was eaten
 			for (int i = 0; i < TOTAL_PIECES; ++i)
 			{
-				// If a piece is 80 pixels behind the white pawn (one square) then it's the black pawn that was eaten
-				if (ToChessNotation(Vector2i((m_Pieces[m_PieceIndex].GetPosition().x), m_Pieces[m_PieceIndex].GetPosition().y + 80.0f)) ==
-					ToChessNotation(m_Pieces[i].GetPosition()))
+				// If a piece is one square behind then it's the pawn that was eaten
+				if (ToChessNotation(Vector2i((m_Pieces[m_PieceIndex].GetPosition().x), m_Pieces[m_PieceIndex].GetPosition().y + offset))
+					== ToChessNotation(m_Pieces[i].GetPosition()))
 				{
-					// Only eat black pawns safeguard
-					if (IsBlackPawn(i))
-						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
-				}
-			}
-		}
-		// En passant for black pieces
-		if (IsBlackPawn(m_PieceIndex))
-		{
-			// Then iterate all 32 pieces to find the white pawn that was eaten
-			for (int i = 0; i < TOTAL_PIECES; ++i)
-			{
-				// If a piece is 80 pixels behind the black pawn (one square) then it's the white pawn that was eaten
-				if (ToChessNotation(Vector2i(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y - 80.0f)) ==
-					ToChessNotation(m_Pieces[i].GetPosition()))
-				{
-					// Only eat white pawns safeguard
-					if (IsWhitePawn(i))
+					// Safeguard to only eat pawns
+					if (IsBlackPawn(i) || IsWhitePawn(i))
 						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
 				}
 			}
