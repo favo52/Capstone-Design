@@ -20,8 +20,8 @@ namespace Chesster
 		m_PieceIndex{ 0 },
 		m_PositionHistory{ "" },
 		m_MoveHistorySize{ 0 },
-		m_BoardOffset{ 23.0f, 23.0f }, // 23.0f, 23.0f
-		m_PieceOffset{ 1.065f }, // 1.065f
+		m_BoardOffset{ 22, 22 }, // 22, 23
+		m_PieceOffset{ 1.063f, 1.063f }, // 1.063f, 1.063f
 		m_HoldingPiece{ false },
 		m_MousePos{},
 		m_Connector{},
@@ -125,8 +125,8 @@ namespace Chesster
 				if (event.button.button == SDL_BUTTON_LEFT)
 				{
 					m_IsMove = false;
-					Vector2f position = Vector2f(m_PieceSize / 2.0f, m_PieceSize / 2.0f) + m_Pieces[m_PieceIndex].GetPosition();
-					m_NewPos = Vector2f(m_PieceSize * int(position.x / m_PieceSize) * m_PieceOffset, m_PieceSize * int(position.y / m_PieceSize) * m_PieceOffset);
+					Vector2i position = m_Pieces[m_PieceIndex].GetPosition() + Vector2i(m_PieceSize / 2, m_PieceSize / 2);
+					m_NewPos = Vector2i(m_PieceSize * (position.x / m_PieceSize), m_PieceSize * (position.y / m_PieceSize));
 					m_Str = ToChessNotation(m_OldPos) + ToChessNotation(m_NewPos);
 
 					// Check the list of valid moves
@@ -141,7 +141,7 @@ namespace Chesster
 								m_PositionHistory += m_Str + " ";
 							++m_MoveHistorySize;
 
-							m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x, m_NewPos.y, &m_PieceClip[m_PieceIndex]);
+							m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
 							break;
 						}
 						// If not a valid move return piece to original position
@@ -167,31 +167,13 @@ namespace Chesster
 			if (m_Str == "error")
 				return true;
 
-			CHESSTER_INFO("Chesster's move: {0}", m_Str);
-
 			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
 			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
 
 			// If a piece on the board has the notation, move it
 			for (int i = 0; i < TOTAL_PIECES; ++i)
-				if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(m_OldPos))
+				if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(m_OldPos))
 					m_PieceIndex = i;
-
-			int BlackPawns[8] = { 8, 9, 10, 11, 12, 13, 14, 15 };
-			int WhitePawns[8] = { 16, 17, 18, 19, 20, 21, 22, 23 };
-			
-			// If pawn
-			for (int i = 0; i < 8; ++i)
-				if (m_PieceIndex == BlackPawns[i])
-				{
-					m_Str[0] != m_Str[2];
-				}
-			
-			for (int i = 0; i < 8; ++i)
-				if (m_PieceIndex == WhitePawns[i])
-				{
-
-				}
 
 			/* Could do animation here */
 			{
@@ -202,7 +184,7 @@ namespace Chesster
 			Move(m_Str);
 			m_PositionHistory += m_Str + " ";
 
-			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset, m_NewPos.y * m_PieceOffset, &m_PieceClip[m_PieceIndex]);
+			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
 
 			m_IsComputerTurn = false;
 		}
@@ -279,7 +261,8 @@ namespace Chesster
 
 				// Prepare piece clipping and position
 				m_PieceClip[pieceIndex] = { m_PieceSize * xPos, m_PieceSize * yPos, m_PieceSize, m_PieceSize };
-				m_Pieces[pieceIndex].SetPosition((m_PieceSize * x * m_PieceOffset), (m_PieceSize * y * m_PieceOffset), &m_PieceClip[m_PieceIndex]);
+				m_Pieces[pieceIndex].SetPosition((m_PieceSize * x * m_PieceOffset.x), (m_PieceSize * y * m_PieceOffset.y), &m_PieceClip[m_PieceIndex]);
+				//CHESSTER_INFO("({0}, {1})", m_Pieces[pieceIndex].GetPosition().x, m_Pieces[pieceIndex].GetPosition().y);
 				++pieceIndex;
 			}
 
@@ -287,47 +270,103 @@ namespace Chesster
 			Move(m_PositionHistory.substr(i, 4));
 	}
 
-	std::string Board::ToChessNotation(const Vector2f& position)
+	std::string Board::ToChessNotation(const Vector2i& position)
 	{
 		std::string notation{ "" };
 
-		notation += char(m_PieceOffset * position.x / m_PieceSize + int('a'));
-		notation += char(m_PieceOffset * 7 - position.y / m_PieceSize + int('1'));
+		notation += char(m_PieceOffset.x * position.x / m_PieceSize + int('a'));
+		notation += char(m_PieceOffset.y * 7 - position.y / m_PieceSize + int('1'));
 
 		return notation;
 	}
 
-	Vector2f Board::ToCoord(char a, char b)
+	Vector2i Board::ToCoord(char a, char b)
 	{
 		int x = int(a) - int('a');
 		int y = 7 - int(b) + int('1'); // 7 cuz it's from 0 to 7 (8 ranks)
 
-		return Vector2f(x * m_PieceSize, y * m_PieceSize);
+		return Vector2i(x * m_PieceSize, y * m_PieceSize);
+	}
+
+	bool Board::IsWhitePawn(const int& index)
+	{
+		int WhitePawns[8] = { 16, 17, 18, 19, 20, 21, 22, 23 };
+		for (const int& i : WhitePawns)
+			if (i == index)
+				return true;
+
+		return false;
+	}
+
+	bool Board::IsBlackPawn(const int& index)
+	{
+		int BlackPawns[8] = { 8, 9, 10, 11, 12, 13, 14, 15 };
+		for (const int& i : BlackPawns)
+			if (i == index)
+				return true;
+
+		return false;
 	}
 
 	void Board::Move(const std::string& notation)
 	{
-		Vector2f OldPos = ToCoord(notation[0], notation[1]);
-		Vector2f NewPos = ToCoord(notation[2], notation[3]);
+		Vector2i OldPos = ToCoord(notation[0], notation[1]);
+		Vector2i NewPos = ToCoord(notation[2], notation[3]);
 
 		// Deal with "eaten" pieces, moves them offscreen
 		for (int i = 0; i < TOTAL_PIECES; ++i)
-			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(NewPos))
+		{
+			if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(NewPos)
+				&& i != m_PieceIndex) // don't count itself
+			{
+				//CHESSTER_INFO("Here {2} ({0}, {1})", m_Pieces[i].GetPosition().x, m_Pieces[i].GetPosition().y, ToChessNotation(m_Pieces[i].GetPosition()));
+				//CHESSTER_INFO("NewPos {2} ({0}, {1})", NewPos.x, NewPos.y, ToChessNotation(NewPos));
 				m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
-
-
+			}
+		}
+		
+		// Move rooks when castling
 		for (int i = 0; i < TOTAL_PIECES; ++i)
-			if (ToChessNotation(m_Pieces[i].GetPosition() / m_PieceOffset) == ToChessNotation(OldPos))
-				m_Pieces[i].SetPosition(NewPos.x * m_PieceOffset, NewPos.y * m_PieceOffset, &m_PieceClip[i]);
+			if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(OldPos))
+				m_Pieces[i].SetPosition(NewPos.x * m_PieceOffset.x, NewPos.y * m_PieceOffset.y, &m_PieceClip[i]);
 
-		// Castling             // If king has not been moved
+		// Castling             // If king has not been moved						   // Move Rook
 		if (notation == "e1g1") if (m_PositionHistory.find("e1") == std::string::npos) Move("h1f1");
 		if (notation == "e8g8") if (m_PositionHistory.find("e8") == std::string::npos) Move("h8f8");
 		if (notation == "e1c1") if (m_PositionHistory.find("e1") == std::string::npos) Move("a1d1");
 		if (notation == "e8c8") if (m_PositionHistory.find("e8") == std::string::npos) Move("a8d8");
 
-		// En passant
-
+		// En passant for white pieces
+		if (IsWhitePawn(m_PieceIndex))
+		{
+			for (int i = 0; i < TOTAL_PIECES; ++i)
+			{
+				// If a piece is 80 pixels behind the white pawn (one square) then it's the black pawn that was eaten
+				if (ToChessNotation(Vector2i((m_Pieces[m_PieceIndex].GetPosition().x), m_Pieces[m_PieceIndex].GetPosition().y + 80.0f)) ==
+					ToChessNotation(m_Pieces[i].GetPosition()))
+				{
+					// Only eat black pawns safeguard
+					if (IsBlackPawn(i))
+						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
+				}
+			}
+		}
+		// En passant for black pieces
+		if (IsBlackPawn(m_PieceIndex))
+		{
+			// Then iterate all 32 pieces to find the white pawn that was eaten
+			for (int i = 0; i < TOTAL_PIECES; ++i)
+			{
+				// If a piece is 80 pixels behind the black pawn (one square) then it's the white pawn that was eaten
+				if (ToChessNotation(Vector2i(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y - 80.0f)) ==
+					ToChessNotation(m_Pieces[i].GetPosition()))
+				{
+					// Only eat white pawns safeguard
+					if (IsWhitePawn(i))
+						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
+				}
+			}
+		}
 	}
 
 	void Board::LoadTextures()

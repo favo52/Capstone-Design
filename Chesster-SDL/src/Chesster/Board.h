@@ -24,13 +24,16 @@ namespace Chesster
 	private:
 		void LoadPositions();
 
-		std::string ToChessNotation(const Vector2f& position);
-		Vector2f ToCoord(char a, char b);
+		std::string ToChessNotation(const Vector2i& position);
+		Vector2i ToCoord(char a, char b);
 
 		bool inRange(int low, int high, int x)
 		{
 			return ((x - high) * (x - low) <= 0);
 		}
+
+		bool IsWhitePawn(const int& index);
+		bool IsBlackPawn(const int& index);
 
 		void Move(const std::string& notation);
 
@@ -69,14 +72,14 @@ namespace Chesster
 		// Piece moving stuff
 		bool m_IsMove;
 		float m_Dx, m_Dy;
-		Vector2f m_OldPos, m_NewPos;
+		Vector2i m_OldPos, m_NewPos;
 		std::string m_Str;
 		int m_PieceIndex;
 
 		// Mouse stuff
 		SDL_Point m_MousePos;
-		Vector2f m_BoardOffset;
-		float m_PieceOffset;
+		Vector2i m_BoardOffset;
+		Vector2f m_PieceOffset;
 		bool m_HoldingPiece;
 
 		// Computer stuff
