@@ -153,8 +153,13 @@ namespace Chesster
 		// Grab the engine's move
 		int found = msg.find("bestmove");
 		if (found != std::string::npos)
-			// Subtract "bestmove ", grab next 4 (the notation, ex. d2d4)
-			return msg.substr(found + 9, 4);
+		{
+			// Erase everything up to and including "bestmove"
+			msg.erase(0, found + sizeof("bestmove"));
+			std::istringstream iss{ msg }; msg.clear();
+			iss >> msg; // grab the move
+			return msg;
+		}
 
 		return "error"; // If no bestmove is found
 	}
