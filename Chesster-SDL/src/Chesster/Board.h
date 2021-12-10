@@ -21,22 +21,25 @@ namespace Chesster
 		void ResetBoard();
 		void EvaluateBoard();
 
+		inline const std::vector<std::string> GetValidMoves() const { return m_ValidMoves; }
+
 	private:
 		void LoadPositions();
 
 		std::string ToChessNotation(const Vector2i& position);
 		Vector2i ToCoord(char a, char b);
 
-		bool inRange(int low, int high, int x)
+		/*bool inRange(int low, int high, int x)
 		{
 			return ((x - high) * (x - low) <= 0);
-		}
+		}*/
 
 		bool IsWhitePawn(const int& index);
 		bool IsBlackPawn(const int& index);
-		void RemoveEnPassant(int offset);
 
 		void Move(const std::string& notation);
+
+		void PaintActiveSquares();
 
 		void LoadTextures();
 		void PrepareBoard();
@@ -63,12 +66,13 @@ namespace Chesster
 		Texture* m_BoardTexture;
 		Texture* m_Pieces;	// all 32 pieces
 
+		int m_PieceSize;
 		SDL_Rect m_Bounds;
 		SDL_Rect m_PieceClip[32];
+		SDL_FRect m_ActiveSquares[2];
 
 		std::string m_PositionHistory;
 		int m_MoveHistorySize;
-		int m_PieceSize;
 
 		// Piece moving stuff
 		bool m_IsMove;

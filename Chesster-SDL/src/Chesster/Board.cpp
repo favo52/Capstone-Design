@@ -8,14 +8,14 @@ namespace Chesster
 	Board::Board(Window* window) :
 		m_Window{ window },
 		m_BoardTexture{ nullptr },
-		m_Bounds{},
 		m_Pieces{ new Texture[TOTAL_PIECES] },
 		m_PieceSize{ 80 },
+		m_Bounds{},
 		m_IsMove{ false },
 		m_Dx{ 0.0f },
 		m_Dy{ 0.0f },
-		m_OldPos{},
-		m_NewPos{},
+		m_OldPos{ -100, -100 },
+		m_NewPos{ -100, -100 },
 		m_Str{ "" },
 		m_PieceIndex{ 0 },
 		m_PositionHistory{ "" },
@@ -33,12 +33,12 @@ namespace Chesster
 		m_PathPythonScript{ "resources/engines/script/__init__.exe" }
 	{
 		// Connect to executables
-		wchar_t path_Stockfish5[] = L"resources/engines/stockfish.exe";
-		wchar_t path_Stockfish14[] = L"resources/engines/stockfish_14_x64_avx2.exe";
+		wchar_t path_Stockfish5[] = L"resources/engines/stockfish/stockfish_5.exe";
+		wchar_t path_Stockfish14_avx2[] = L"resources/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
 		wchar_t path_Stockfish14_popcnt[] = L"resources/engines/stockfish/stockfish_14.1_win_x64_popcnt/stockfish_14.1_win_x64_popcnt.exe";
 		wchar_t path_Hannibal_x64[] = L"resources/engines/Hannibal1.7/Hannibal1.7x64.exe";
 
-		m_Connector.ConnectToEngine(path_Stockfish14_popcnt);
+		m_Connector.ConnectToEngine(path_Stockfish14_avx2);
 
 		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
 		m_FEN += "\"" + m_Connector.GetFEN(" ") + "\"";
@@ -107,7 +107,8 @@ namespace Chesster
 							m_Dx = m_MousePos.x - m_Pieces[i].GetPosition().x;
 							m_Dy = m_MousePos.y - m_Pieces[i].GetPosition().y;
 
-							m_OldPos = m_Pieces[i].GetPosition();
+							//m_OldPos = m_Pieces[i].GetPosition();
+							m_OldPos = Vector2i(m_PieceSize * (m_Pieces[i].GetPosition().x / m_PieceSize), m_PieceSize * (m_Pieces[i].GetPosition().y / m_PieceSize));
 						}
 					}
 				}
@@ -146,7 +147,7 @@ namespace Chesster
 						}
 						// If not a valid move return piece to original position
 						else if ((move.c_str() != m_Str) && m_HoldingPiece)
-							m_Pieces[m_PieceIndex].SetPosition(m_OldPos.x, m_OldPos.y, &m_PieceClip[m_PieceIndex]);
+							m_Pieces[m_PieceIndex].SetPosition(m_OldPos.x * m_PieceOffset.x, m_OldPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
 					}
 					m_HoldingPiece = false;
 				}
@@ -206,6 +207,12 @@ namespace Chesster
 			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
 		}
 
+		// If no valid moves then game is over
+		if (m_ValidMoves.empty())
+		{
+			
+		}
+
 		return true;
 	}
 
@@ -213,17 +220,21 @@ namespace Chesster
 	{
 		m_BoardTexture->Draw();
 
+		PaintActiveSquares();
+
 		for (int i = 0; i < TOTAL_PIECES; ++i)
 			m_Pieces[i].Move(m_BoardOffset);
 
+		// Draw all pieces
 		for (int i = 0; i < TOTAL_PIECES; ++i)
 		{
 			m_Pieces[i].SetPosition(m_Pieces[i].GetPosition().x, m_Pieces[i].GetPosition().y, &m_PieceClip[i]);
 			m_Pieces[i].Draw();
 		}
 
-		//m_Pieces[m_PieceIndex].SetPosition(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y, &m_PieceClip[m_PieceIndex]);
-		//m_Pieces[m_PieceIndex].Draw();
+		// Draw selected piece on top of all others
+		m_Pieces[m_PieceIndex].SetPosition(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y, &m_PieceClip[m_PieceIndex]);
+		m_Pieces[m_PieceIndex].Draw();
 
 		for (int i = 0; i < TOTAL_PIECES; ++i)
 			m_Pieces[i].Move(-m_BoardOffset);
@@ -231,12 +242,16 @@ namespace Chesster
 
 	void Board::ResetBoard()
 	{
+		m_OldPos = { -100, -100 },
+		m_NewPos = { -100, -100 },
+
 		m_PositionHistory.clear();
 		m_MoveHistorySize = 0;
 
 		LoadPositions();
 		m_Connector.ResetGame();
 		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
+
 	}
 
 	void Board::EvaluateBoard()
@@ -262,7 +277,6 @@ namespace Chesster
 				// Prepare piece clipping and position
 				m_PieceClip[pieceIndex] = { m_PieceSize * xPos, m_PieceSize * yPos, m_PieceSize, m_PieceSize };
 				m_Pieces[pieceIndex].SetPosition((m_PieceSize * x * m_PieceOffset.x), (m_PieceSize * y * m_PieceOffset.y), &m_PieceClip[m_PieceIndex]);
-				//CHESSTER_INFO("({0}, {1})", m_Pieces[pieceIndex].GetPosition().x, m_Pieces[pieceIndex].GetPosition().y);
 				++pieceIndex;
 			}
 
@@ -318,11 +332,7 @@ namespace Chesster
 		{
 			if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(NewPos)
 				&& i != m_PieceIndex) // don't count itself
-			{
-				//CHESSTER_INFO("Here {2} ({0}, {1})", m_Pieces[i].GetPosition().x, m_Pieces[i].GetPosition().y, ToChessNotation(m_Pieces[i].GetPosition()));
-				//CHESSTER_INFO("NewPos {2} ({0}, {1})", NewPos.x, NewPos.y, ToChessNotation(NewPos));
 				m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
-			}
 		}
 		
 		// Move rooks when castling
@@ -355,6 +365,23 @@ namespace Chesster
 				}
 			}
 		}
+	}
+
+	void Board::PaintActiveSquares()
+	{
+		int posOffset{ 3 }, sizeOffset{ 5 };
+
+		m_ActiveSquares[0] = { (m_OldPos.x + m_BoardOffset.x - posOffset) * m_PieceOffset.x, (m_OldPos.y  + m_BoardOffset.y - posOffset) * m_PieceOffset.y,
+								(float)m_PieceSize + sizeOffset, (float)m_PieceSize + sizeOffset };
+
+		m_ActiveSquares[1] = { (m_NewPos.x + m_BoardOffset.x - posOffset) * m_PieceOffset.x, (m_NewPos.y + m_BoardOffset.y - posOffset) * m_PieceOffset.y,
+								(float)m_PieceSize + sizeOffset, (float)m_PieceSize + sizeOffset };
+
+		SDL_SetRenderDrawColor(Window::Renderer, 200u, 200u, 0u, 100u);
+		SDL_RenderFillRectF(Window::Renderer, &m_ActiveSquares[0]);
+		SDL_SetRenderDrawColor(Window::Renderer, 100u, 100u, 0u, 100u);
+		SDL_RenderFillRectF(Window::Renderer, &m_ActiveSquares[1]);
+		SDL_SetRenderDrawColor(Window::Renderer, 21u, 21u, 255u, 255u);
 	}
 
 	void Board::LoadTextures()
