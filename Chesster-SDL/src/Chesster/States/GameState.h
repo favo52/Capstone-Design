@@ -20,8 +20,12 @@ namespace Chesster
 		bool Update(const std::chrono::duration<double>& dt) override;
 		void Draw() override;
 
+		inline static const bool GetWinningColor() { return m_WinningColor; }
+
 	private:
 		Board m_Board;
 		ImGuiWindowFlags m_ImGuiFlags;
+
+		static bool m_WinningColor;
 	};
 }

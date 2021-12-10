@@ -23,6 +23,8 @@ namespace Chesster
 
 		inline const std::vector<std::string> GetValidMoves() const { return m_ValidMoves; }
 
+		inline const bool GetWinningColor() const { return m_WinningColor; }
+
 	private:
 		void LoadPositions();
 
@@ -71,7 +73,7 @@ namespace Chesster
 		SDL_Rect m_PieceClip[32];
 		SDL_FRect m_ActiveSquares[2];
 
-		std::string m_PositionHistory;
+		std::string m_MoveHistory;
 		int m_MoveHistorySize;
 
 		// Piece moving stuff
@@ -96,5 +98,7 @@ namespace Chesster
 		std::string m_StartPosFEN;
 		std::vector<std::string> m_ValidMoves;
 		std::string m_PathPythonScript;
+
+		bool m_WinningColor = 1;
 	};
 }

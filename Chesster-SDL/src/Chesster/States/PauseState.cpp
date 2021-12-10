@@ -9,7 +9,7 @@ namespace Chesster
 		m_Window{ context.window->get() },
 		m_PauseOverlay{ 0u, 0u, static_cast<int>(m_Window->GetWidth()), static_cast<int>(m_Window->GetHeight()) },
 		m_MousePos{},
-		m_Font{},
+		m_Font{ context.fonts->Get(FontID::Minecraft) },
 		m_PausedText{},
 		m_ContinueText{},
 		m_MainMenuText{},
@@ -17,7 +17,6 @@ namespace Chesster
 		m_MenuOptions{},
 		m_CurrentOption{ PauseOptions::Continue }
 	{
-		m_Font = context.fonts->Get(FontID::Minecraft);
 		m_fMinecraft100 = context.fonts->Get(FontID::Minecraft_100);
 
 		// Prepare pause text
@@ -123,7 +122,6 @@ namespace Chesster
 	{
 		// Draw a semi transparent square
 		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 200u);
-		//SDL_SetRenderDrawBlendMode(Window::Renderer, SDL_BLENDMODE_BLEND);
 		SDL_RenderFillRect(Window::Renderer, &m_PauseOverlay);
 
 		m_PausedText.Draw();

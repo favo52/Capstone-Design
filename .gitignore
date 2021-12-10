@@ -1,6 +1,9 @@
 # Directories
 16_Games/
 
+# Files
+validmoves.txt
+
 # User-specific files
 *.rsuser
 *.suo

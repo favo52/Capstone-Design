@@ -50,8 +50,8 @@ namespace Chesster
 
 		// Prepare fonts
 		m_FontHolder.Load(FontID::AbsEmpire_100, "resources/fonts/aAbsoluteEmpire.ttf", 100);
-		m_FontHolder.Load(FontID::OpenSans, "resources/fonts/OpenSans-Regular.ttf", 12);
-		m_FontHolder.Load(FontID::OpenSans_100, "resources/fonts/OpenSans-Regular.ttf", 30);
+		m_FontHolder.Load(FontID::OpenSans, "resources/fonts/OpenSans-Regular.ttf", 30);
+		m_FontHolder.Load(FontID::OpenSans_100, "resources/fonts/OpenSans-Regular.ttf", 50);
 		m_FontHolder.Load(FontID::Minecraft, "resources/fonts/Minecraft.ttf");
 		m_FontHolder.Load(FontID::Minecraft_10, "resources/fonts/Minecraft.ttf", 12);
 		m_FontHolder.Load(FontID::Minecraft_100, "resources/fonts/Minecraft.ttf", 100);

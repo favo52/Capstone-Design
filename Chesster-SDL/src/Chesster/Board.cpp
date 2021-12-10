@@ -18,7 +18,7 @@ namespace Chesster
 		m_NewPos{ -100, -100 },
 		m_Str{ "" },
 		m_PieceIndex{ 0 },
-		m_PositionHistory{ "" },
+		m_MoveHistory{ "" },
 		m_MoveHistorySize{ 0 },
 		m_BoardOffset{ 22, 22 }, // 22, 23
 		m_PieceOffset{ 1.063f, 1.063f }, // 1.063f, 1.063f
@@ -76,8 +76,8 @@ namespace Chesster
 					case SDLK_BACKSPACE:
 					{
 						int i{ 5 }; // char quantity to erase. notation + white space
-						if (m_PositionHistory.length() > 6)
-							m_PositionHistory.erase(m_PositionHistory.length() - 6, i);
+						if (m_MoveHistory.length() > 6)
+							m_MoveHistory.erase(m_MoveHistory.length() - 6, i);
 
 						LoadPositions();
 					} break;
@@ -139,7 +139,7 @@ namespace Chesster
 
 							// Update move history if piece is dropped in a new square
 							if (ToChessNotation(m_OldPos) != ToChessNotation(m_NewPos))
-								m_PositionHistory += m_Str + " ";
+								m_MoveHistory += m_Str + " ";
 							++m_MoveHistorySize;
 
 							m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
@@ -164,7 +164,7 @@ namespace Chesster
 		if (m_IsComputerTurn)
 		{
 			// Get stockfish's next move
-			m_Str = m_Connector.GetNextMove(m_PositionHistory);
+			m_Str = m_Connector.GetNextMove(m_MoveHistory);
 			if (m_Str == "error")
 				return true;
 
@@ -183,7 +183,7 @@ namespace Chesster
 
 			// Remove any piece it "ate", update move history and piece position
 			Move(m_Str);
-			m_PositionHistory += m_Str + " ";
+			m_MoveHistory += m_Str + " ";
 
 			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
 
@@ -195,22 +195,18 @@ namespace Chesster
 			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
 
 		// Check if a move was played
-		if (m_PositionHistory.size() != m_MoveHistorySize)
+		if (m_MoveHistory.size() != m_MoveHistorySize)
 		{
 			// Update move count
-			m_MoveHistorySize = m_PositionHistory.size();
+			m_MoveHistorySize = m_MoveHistory.size();
 
 			// Get FEN string then get updated valid moves list
 			m_FEN.clear();
-			m_FEN += "\"" + m_Connector.GetFEN(m_PositionHistory) + "\"";
+			m_FEN += "\"" + m_Connector.GetFEN(m_MoveHistory) + "\"";
 
 			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
-		}
 
-		// If no valid moves then game is over
-		if (m_ValidMoves.empty())
-		{
-			
+			m_WinningColor = !m_WinningColor;
 		}
 
 		return true;
@@ -245,7 +241,7 @@ namespace Chesster
 		m_OldPos = { -100, -100 },
 		m_NewPos = { -100, -100 },
 
-		m_PositionHistory.clear();
+		m_MoveHistory.clear();
 		m_MoveHistorySize = 0;
 
 		LoadPositions();
@@ -280,8 +276,8 @@ namespace Chesster
 				++pieceIndex;
 			}
 
-		for (int i = 0; i < m_PositionHistory.length(); i += 5) // 5 because "d2d4" (for example) + whitespace
-			Move(m_PositionHistory.substr(i, 4));
+		for (int i = 0; i < m_MoveHistory.length(); i += 5) // 5 because "d2d4" (for example) + whitespace
+			Move(m_MoveHistory.substr(i, 4));
 	}
 
 	std::string Board::ToChessNotation(const Vector2i& position)
@@ -341,10 +337,10 @@ namespace Chesster
 				m_Pieces[i].SetPosition(NewPos.x * m_PieceOffset.x, NewPos.y * m_PieceOffset.y, &m_PieceClip[i]);
 
 		// Castling             // If king has not been moved						   // Move Rook
-		if (notation == "e1g1") if (m_PositionHistory.find("e1") == std::string::npos) Move("h1f1");
-		if (notation == "e8g8") if (m_PositionHistory.find("e8") == std::string::npos) Move("h8f8");
-		if (notation == "e1c1") if (m_PositionHistory.find("e1") == std::string::npos) Move("a1d1");
-		if (notation == "e8c8") if (m_PositionHistory.find("e8") == std::string::npos) Move("a8d8");
+		if (notation == "e1g1") if (m_MoveHistory.find("e1") == std::string::npos) Move("h1f1");
+		if (notation == "e8g8") if (m_MoveHistory.find("e8") == std::string::npos) Move("h8f8");
+		if (notation == "e1c1") if (m_MoveHistory.find("e1") == std::string::npos) Move("a1d1");
+		if (notation == "e8c8") if (m_MoveHistory.find("e8") == std::string::npos) Move("a8d8");
 
 		// En passant
 		int offset{ m_PieceSize };
@@ -359,8 +355,9 @@ namespace Chesster
 				if (ToChessNotation(Vector2i((m_Pieces[m_PieceIndex].GetPosition().x), m_Pieces[m_PieceIndex].GetPosition().y + offset))
 					== ToChessNotation(m_Pieces[i].GetPosition()))
 				{
-					// Safeguard to only eat pawns
-					if (IsBlackPawn(i) || IsWhitePawn(i))
+					// Safeguard to only eat the correct pawns
+					if (IsBlackPawn(m_PieceIndex) && !IsBlackPawn(i) && ToChessNotation(m_Pieces[m_PieceIndex].GetPosition())[1] == '3' ||
+						IsWhitePawn(m_PieceIndex) && !IsWhitePawn(i) && ToChessNotation(m_Pieces[m_PieceIndex].GetPosition())[1] == '6')
 						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
 				}
 			}

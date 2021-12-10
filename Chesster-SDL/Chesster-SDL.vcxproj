@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Chesster\States\GameOverState.cpp" />
     <ClCompile Include="src\Chesster\Application.cpp" />
     <ClCompile Include="src\Chesster\Board.cpp" />
     <ClCompile Include="src\Chesster\Connector.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Chesster\States\GameOverState.h" />
     <ClInclude Include="src\Chesster\Application.h" />
     <ClInclude Include="src\Chesster\Connector.h" />
     <ClInclude Include="src\Chesster\Board.h" />
