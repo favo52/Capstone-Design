@@ -26,7 +26,7 @@ namespace Chesster
 		m_MousePos{},
 		m_Connector{},
 		m_IsComputerTurn{ false },
-		m_IsComputerDone{ true },
+		m_IsAnimationDone{ true },
 		m_FEN{},
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_ValidMoves{},
@@ -166,7 +166,7 @@ namespace Chesster
 			// Get stockfish's next move
 			m_Str = m_Connector.GetNextMove(m_MoveHistory);
 			if (m_Str == "error")
-				return true;
+				return false;
 
 			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
 			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
@@ -178,7 +178,6 @@ namespace Chesster
 
 			/* Could do animation here */
 			{
-				
 			}
 
 			// Remove any piece it "ate", update move history and piece position
@@ -188,8 +187,9 @@ namespace Chesster
 			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
 
 			m_IsComputerTurn = false;
+
 		}
-		
+
 		// Dragging a piece
 		if (m_IsMove)
 			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
@@ -293,7 +293,7 @@ namespace Chesster
 	Vector2i Board::ToCoord(char a, char b)
 	{
 		int x = int(a) - int('a');
-		int y = 7 - int(b) + int('1'); // 7 cuz it's from 0 to 7 (8 ranks)
+		int y = 7 - int(b) + int('1'); // 7 cuz it's from 0 to 7 (8 files)
 
 		return Vector2i(x * m_PieceSize, y * m_PieceSize);
 	}
@@ -316,6 +316,69 @@ namespace Chesster
 				return true;
 
 		return false;
+	}
+
+	bool Board::IsPawn(const int& index)
+	{
+		return { IsWhitePawn(index) || IsBlackPawn(index) };
+	}
+
+	bool Board::IsBackRow(const std::string& notation, char c)
+	{
+		//std::vector<std::string> whiteBackRow = { "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1" };
+		CHESSTER_TRACE("notation.back(), c: {0}, {1}", notation.back(), c);
+		if (notation.back() == c)
+			return true;
+
+		return false;
+	}
+
+	void Board::CheckPromotion(int offset)
+	{
+		char c;
+		if (offset > 0) c = '8';
+		else c = '1';
+
+		if (IsBackRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), c))
+		{
+			char piece{ m_Str.back() };
+			switch (piece)
+			{
+				case 'n':
+				{
+					if (offset > 0) // is white
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 1, m_PieceSize * 1, m_PieceSize, m_PieceSize };
+					else // is black
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 1, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+				} break;
+				
+				case 'b':
+				{
+					if (offset > 0) // is white
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 2, m_PieceSize * 1, m_PieceSize, m_PieceSize };
+					else // is black
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 2, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+				} break;
+
+				case 'r':
+				{
+					if (offset > 0) // is white
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 0, m_PieceSize * 1, m_PieceSize, m_PieceSize };
+					else // is black
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 0, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+				} break;
+
+				case 'q':
+				{
+					if (offset > 0) // is white
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 3, m_PieceSize * 1, m_PieceSize, m_PieceSize };
+					else // is black
+						m_PieceClip[m_PieceIndex] = { m_PieceSize * 3, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+				} break;
+				default:
+					CHESSTER_ERROR("Invalid 5th char");
+			}
+		}
 	}
 
 	void Board::Move(const std::string& notation)
@@ -346,13 +409,16 @@ namespace Chesster
 		int offset{ m_PieceSize };
 		if (IsBlackPawn(m_PieceIndex)) offset = -m_PieceSize;
 
-		if (IsWhitePawn(m_PieceIndex) || IsBlackPawn(m_PieceIndex))
+		bool isPawn{ false };
+		//if (IsWhitePawn(m_PieceIndex) || IsBlackPawn(m_PieceIndex))
+		if (IsPawn(m_PieceIndex))
 		{
+			isPawn = true;
 			// Iterate all 32 pieces to find if a pawn was eaten
 			for (int i = 0; i < TOTAL_PIECES; ++i)
 			{
 				// If a piece is one square behind then it's the pawn that was eaten
-				if (ToChessNotation(Vector2i((m_Pieces[m_PieceIndex].GetPosition().x), m_Pieces[m_PieceIndex].GetPosition().y + offset))
+				if (ToChessNotation(Vector2i(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y + offset))
 					== ToChessNotation(m_Pieces[i].GetPosition()))
 				{
 					// Safeguard to only eat the correct pawns
@@ -362,6 +428,10 @@ namespace Chesster
 				}
 			}
 		}
+
+		// Pawn promotions
+		if (isPawn)
+			CheckPromotion(offset);
 	}
 
 	void Board::PaintActiveSquares()

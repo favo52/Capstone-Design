@@ -38,6 +38,10 @@ namespace Chesster
 
 		bool IsWhitePawn(const int& index);
 		bool IsBlackPawn(const int& index);
+		bool IsPawn(const int& index);
+
+		bool IsBackRow(const std::string& notation, char c);
+		void CheckPromotion(int offset);
 
 		void Move(const std::string& notation);
 
@@ -91,7 +95,7 @@ namespace Chesster
 
 		// Computer stuff
 		bool m_IsComputerTurn;
-		bool m_IsComputerDone;
+		bool m_IsAnimationDone;
 
 		bool m_PrintMoves = false; // testing
 		std::string m_FEN;
