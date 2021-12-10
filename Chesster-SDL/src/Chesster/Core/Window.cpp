@@ -71,8 +71,9 @@ namespace Chesster
 		SDL_GetRendererInfo(Renderer, &info);
 		CHESSTER_INFO("Current SDL_Renderer: {0}", info.name);
 
-		// Initialize renderer color
+		// Initialize renderer color and blend mode
 		SDL_SetRenderDrawColor(Renderer, 255u, 255u, 255u, 255u); // White
+		SDL_SetRenderDrawBlendMode(Renderer, SDL_BLENDMODE_BLEND);
 
 		// Initialize PNG and JPG loading
 		int imgFlagsPNG = IMG_INIT_PNG;

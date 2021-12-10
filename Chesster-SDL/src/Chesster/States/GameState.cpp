@@ -41,17 +41,23 @@ namespace Chesster
 	{
 		m_Board.Update(dt);
 
+		// Reset button is pressed
 		if (ImGuiSettingsWindow.m_ResetBoard)
 		{
 			m_Board.ResetBoard();
 			ImGuiSettingsWindow.m_ResetBoard = false;
 		}
 
+		// Evaluate button is pressed
 		if (ImGuiSettingsWindow.m_EvaluateBoard)
 		{
 			m_Board.EvaluateBoard();
 			ImGuiSettingsWindow.m_EvaluateBoard = false;
 		}
+
+		// Game is over
+		if (m_Board.GetValidMoves().empty())
+			RequestStackPush(StateID::Gameover);
 
 		return true;
 	}

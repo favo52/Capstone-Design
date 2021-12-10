@@ -99,7 +99,7 @@ namespace Chesster
 		Sleep(150);
 
 		// Specify Elo
-		//CHAR setElo[] = "setoption name UCI_Elo value 1666\n";
+		//CHAR setElo[] = "setoption name UCI_Elo value 1350\n";
 		//WriteFile(m_Pipe_IN_Wr, setElo, strlen(setElo), &m_Written, NULL);
 		//Sleep(150);
 
@@ -249,8 +249,6 @@ namespace Chesster
 
 		return msg;
 	}
-
-
 
 	void Connector::CloseConnections()
 	{

@@ -123,7 +123,7 @@ namespace Chesster
 	{
 		// Draw a semi transparent square
 		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 200u);
-		SDL_SetRenderDrawBlendMode(Window::Renderer, SDL_BLENDMODE_BLEND);
+		//SDL_SetRenderDrawBlendMode(Window::Renderer, SDL_BLENDMODE_BLEND);
 		SDL_RenderFillRect(Window::Renderer, &m_PauseOverlay);
 
 		m_PausedText.Draw();

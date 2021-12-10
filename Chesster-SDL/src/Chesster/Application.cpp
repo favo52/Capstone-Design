@@ -4,6 +4,7 @@
 #include "States/MenuState.h"
 #include "States/GameState.h"
 #include "States/PauseState.h"
+#include "States/GameOverState.h"
 
 #include "SDL.h"
 
@@ -162,6 +163,6 @@ namespace Chesster
 		//m_StateStack.RegisterState<SettingsState>(StateID::Settings);
 		m_StateStack.RegisterState<GameState>(StateID::Gameplay);
 		m_StateStack.RegisterState<PauseState>(StateID::Pause);
-		//m_StateStack.RegisterState<GameOverState>(StateID::Gameover);
+		m_StateStack.RegisterState<GameOverState>(StateID::Gameover);
 	}
 }
