@@ -22,7 +22,7 @@ namespace Chesster
 		};
 
 		auto& colors = ImGui::GetStyle().Colors;
-		colors[ImGuiCol_WindowBg] = ImVec4{ 0.06f, 0.06f, 0.12f, 1.0f };
+		colors[ImGuiCol_WindowBg] = ImVec4{ 0.055f, 0.055f, 0.115f, 1.0f };
 
 		//// Headers
 		colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };

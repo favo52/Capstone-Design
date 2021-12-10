@@ -19,6 +19,8 @@ namespace Chesster
 	Application::Application() :
 		m_Window{ nullptr },
 		m_IsRunning{ true },
+		m_IsFullScreen{ false },
+		m_IsMinimized{ false },
 		m_TextureHolder{},
 		m_FontHolder{},
 		m_StateStack{ State::Context(m_Window, m_TextureHolder, m_FontHolder) }
@@ -90,18 +92,18 @@ namespace Chesster
 			auto frameTime = newTime - currentTime;
 			currentTime = newTime;
 
-			// Update game logic
-			Update(frameTime);
-
 			// Stack might be empty before update() call
 			if (m_StateStack.IsEmpty())
 				Quit();
+
+			// Update game logic
+			Update(frameTime);
 
 			// Start the Dear ImGui frame
 			ImGui_ImplSDLRenderer_NewFrame();
 			ImGui_ImplSDL2_NewFrame(m_Window.get()->GetSDLWindow());
 			ImGui::NewFrame();
-
+			
 			// Draw everything
 			Render();
 		}
@@ -119,9 +121,47 @@ namespace Chesster
 		{
 			ImGui_ImplSDL2_ProcessEvent(&e);
 
-			// User requests quit
-			if (e.type == SDL_QUIT)
-				Quit();
+			switch (e.type)
+			{
+				// User requests quit
+				case SDL_QUIT:
+					Quit();
+					break;
+
+				// Toggle full screen
+				case SDL_KEYDOWN:
+				{
+					if (e.key.keysym.sym == SDLK_f)
+					{
+						if (m_IsFullScreen)
+						{
+							SDL_SetWindowFullscreen(m_Window.get()->GetSDLWindow(), SDL_FALSE);
+							m_IsFullScreen = false;
+						}
+						else
+						{
+							SDL_SetWindowFullscreen(m_Window.get()->GetSDLWindow(), SDL_WINDOW_FULLSCREEN);
+							m_IsFullScreen = true;
+							m_IsMinimized = false;
+						}
+					}
+				} break;
+
+				// Handle window minimize and maximize
+				case SDL_WINDOWEVENT:
+				{
+					if (e.window.event == SDL_WINDOWEVENT_MINIMIZED)
+						m_IsMinimized = true;
+
+					if (e.window.event == SDL_WINDOWEVENT_MAXIMIZED)
+						m_IsMinimized = false;
+
+					if (e.window.event == SDL_WINDOWEVENT_RESTORED)
+						m_IsMinimized = false;
+
+				} break;
+			}
+
 
 			// Handle events from all states
 			m_StateStack.HandleEvent(e);

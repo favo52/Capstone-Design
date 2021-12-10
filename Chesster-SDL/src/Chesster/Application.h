@@ -29,6 +29,8 @@ namespace Chesster
 	private:
 		std::unique_ptr<Window> m_Window;
 		bool m_IsRunning;
+		bool m_IsFullScreen;
+		bool m_IsMinimized;
 
 		// Resource holders
 		TextureHolder m_TextureHolder;
