@@ -1,10 +1,8 @@
 #pragma once
 
-#include "pch.h"
-//#include "Core/Window.h"
 #include "Connector.h"
 #include "Core/Texture.h"
-#include "Core/ResourceHolder.h"
+
 #include "States/PawnPromotionState.h"
 
 namespace Chesster
@@ -13,7 +11,7 @@ namespace Chesster
 	{
 	public:
 		Board(StateStack& stack, Context context);
-		~Board();
+		virtual ~Board() = default;
 
 		bool HandleEvent(SDL_Event& event);
 		bool Update(const std::chrono::duration<double>& dt);
@@ -32,17 +30,12 @@ namespace Chesster
 		std::string ToChessNotation(const Vector2i& position);
 		Vector2i ToCoord(char a, char b);
 
-		/*bool inRange(int low, int high, int x)
-		{
-			return ((x - high) * (x - low) <= 0);
-		}*/
-
 		bool IsWhitePawn(const int& index);
 		bool IsBlackPawn(const int& index);
 		bool IsPawn(const int& index);
 		bool IsRow(const std::string& notation, char row);
 
-		void CheckPromotion(int offset);
+		void CheckPawnPromotion(int offset);
 		void ErasePawn(std::vector<int>& pawns);
 
 		void Move(const std::string& notation);
@@ -75,15 +68,14 @@ namespace Chesster
 		Texture* m_Pieces;	// all 32 pieces
 
 		int m_PieceSize;
-		SDL_Rect m_Bounds;
 		SDL_Rect m_PieceClip[32];
-		SDL_FRect m_ActiveSquares[2];
+		SDL_FRect m_HighlightedSquares[2];
 
 		std::string m_MoveHistory;
 		int m_MoveHistorySize;
 
 		// Piece moving stuff
-		bool m_IsMove;
+		bool m_IsDragging;
 		float m_Dx, m_Dy;
 		Vector2i m_OldPos, m_NewPos;
 		std::string m_CurrentMove;

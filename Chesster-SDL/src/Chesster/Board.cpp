@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Board.h"
 
-#include "Application.h"
-
 namespace Chesster
 {
 	constexpr int TOTAL_PIECES{ 32 };
@@ -13,8 +11,7 @@ namespace Chesster
 		m_BoardTexture{ nullptr },
 		m_Pieces{ new Texture[TOTAL_PIECES] },
 		m_PieceSize{ 80 },
-		m_Bounds{},
-		m_IsMove{ false },
+		m_IsDragging{ false },
 		m_Dx{ 0.0f },
 		m_Dy{ 0.0f },
 		m_OldPos{ -100, -100 },
@@ -46,6 +43,7 @@ namespace Chesster
 		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
 		m_FEN += "\"" + m_Connector.GetFEN(" ") + "\"";
 
+		// Assign textures
 		m_BoardTexture = &context.textures->Get(TextureID::Board);
 		m_BoardTexture->SetPosition(0, 0);
 
@@ -53,17 +51,6 @@ namespace Chesster
 			m_Pieces[i] = context.textures->Get(TextureID::Pieces);
 
 		LoadPositions();
-	}
-
-	Board::~Board()
-	{
-		m_BoardTexture->FreeTexture();
-
-		for (int i = 0; i < TOTAL_PIECES; ++i)
-			m_Pieces[i].FreeTexture();
-
-		delete[] m_Board;
-		delete[] m_Pieces;
 	}
 
 	bool Board::HandleEvent(SDL_Event& event)
@@ -107,7 +94,7 @@ namespace Chesster
 						SDL_Rect pieceBounds = m_Pieces[i].GetBounds();
 						if (SDL_PointInRect(&m_MousePos, &pieceBounds) && !m_HoldingPiece)
 						{
-							m_IsMove = true;
+							m_IsDragging = true;
 							m_HoldingPiece = true;
 							m_PieceIndex = i;
 
@@ -131,7 +118,7 @@ namespace Chesster
 				// Left mouse button
 				if (event.button.button == SDL_BUTTON_LEFT && !m_Promoting)
 				{
-					m_IsMove = false;
+					m_IsDragging = false;
 					Vector2i position = m_Pieces[m_PieceIndex].GetPosition() + Vector2i(m_PieceSize / 2, m_PieceSize / 2);
 					m_NewPos = Vector2i(m_PieceSize * (position.x / m_PieceSize), m_PieceSize * (position.y / m_PieceSize));
 					m_CurrentMove = ToChessNotation(m_OldPos) + ToChessNotation(m_NewPos);
@@ -188,7 +175,7 @@ namespace Chesster
 		}
 
 		// Dragging a piece
-		if (m_IsMove)
+		if (m_IsDragging)
 			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
 
 		// Check if a move was played successfully
@@ -338,7 +325,7 @@ namespace Chesster
 		return false;
 	}
 
-	void Board::CheckPromotion(int offset)
+	void Board::CheckPawnPromotion(int offset)
 	{
 		char c;
 		if (offset > 0) c = '8';
@@ -463,8 +450,8 @@ namespace Chesster
 					== ToChessNotation(m_Pieces[i].GetPosition()))
 				{
 					// Safeguard to only eat the correct pawn
-					if (IsBlackPawn(m_PieceIndex) && !IsBlackPawn(i) && ToChessNotation(m_Pieces[m_PieceIndex].GetPosition())[1] == '3' ||
-						IsWhitePawn(m_PieceIndex) && !IsWhitePawn(i) && ToChessNotation(m_Pieces[m_PieceIndex].GetPosition())[1] == '6')
+					if (IsBlackPawn(m_PieceIndex) && !IsBlackPawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '3') ||
+						IsWhitePawn(m_PieceIndex) && !IsWhitePawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '6'))
 						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
 				}
 			}
@@ -472,7 +459,7 @@ namespace Chesster
 
 		// Pawn promotions
 		if (isPawn)
-			CheckPromotion(offset);
+			CheckPawnPromotion(offset);
 	}
 
 	void Board::ValidateMove()
@@ -501,16 +488,16 @@ namespace Chesster
 	{
 		int posOffset{ 3 }, sizeOffset{ 5 };
 
-		m_ActiveSquares[0] = { (m_OldPos.x + m_BoardOffset.x - posOffset) * m_PieceOffset.x, (m_OldPos.y  + m_BoardOffset.y - posOffset) * m_PieceOffset.y,
+		m_HighlightedSquares[0] = { (m_OldPos.x + m_BoardOffset.x - posOffset) * m_PieceOffset.x, (m_OldPos.y  + m_BoardOffset.y - posOffset) * m_PieceOffset.y,
 								(float)m_PieceSize + sizeOffset, (float)m_PieceSize + sizeOffset };
 
-		m_ActiveSquares[1] = { (m_NewPos.x + m_BoardOffset.x - posOffset) * m_PieceOffset.x, (m_NewPos.y + m_BoardOffset.y - posOffset) * m_PieceOffset.y,
+		m_HighlightedSquares[1] = { (m_NewPos.x + m_BoardOffset.x - posOffset) * m_PieceOffset.x, (m_NewPos.y + m_BoardOffset.y - posOffset) * m_PieceOffset.y,
 								(float)m_PieceSize + sizeOffset, (float)m_PieceSize + sizeOffset };
 
 		SDL_SetRenderDrawColor(Window::Renderer, 200u, 200u, 0u, 100u);
-		SDL_RenderFillRectF(Window::Renderer, &m_ActiveSquares[0]);
+		SDL_RenderFillRectF(Window::Renderer, &m_HighlightedSquares[0]);
 		SDL_SetRenderDrawColor(Window::Renderer, 100u, 100u, 0u, 100u);
-		SDL_RenderFillRectF(Window::Renderer, &m_ActiveSquares[1]);
+		SDL_RenderFillRectF(Window::Renderer, &m_HighlightedSquares[1]);
 		SDL_SetRenderDrawColor(Window::Renderer, 21u, 21u, 255u, 255u);
 	}
 }

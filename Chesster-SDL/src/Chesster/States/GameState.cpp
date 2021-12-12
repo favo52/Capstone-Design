@@ -61,9 +61,6 @@ namespace Chesster
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					RequestStackPush(StateID::Pause);
 
-				if (event.key.keysym.sym == SDLK_e)
-					RequestStackPush(StateID::PawnPromo);
-
 			} break;
 		}
 

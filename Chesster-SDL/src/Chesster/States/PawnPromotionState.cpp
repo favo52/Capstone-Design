@@ -45,25 +45,28 @@ namespace Chesster
 	{
 		switch (event.type)
 		{
-		/*case SDL_KEYDOWN:
+		case SDL_KEYDOWN:
 		{
 			switch (event.key.keysym.sym)
 			{
 
-			case SDLK_RETURN:
-				break;
+				case SDLK_RETURN:
+				{
+					SelectOption();
+					RequestStackPop();
+				} break;
 
-			case SDLK_UP:
-			{
+				case SDLK_UP:
+				{
 
-			} break;
+				} break;
 
-			case SDLK_DOWN:
-			{
+				case SDLK_DOWN:
+				{
 
-			} break;
+				} break;
 			}
-		} break;*/
+		} break;
 
 			case SDL_FINGERMOTION:
 			case SDL_MOUSEMOTION:
@@ -88,27 +91,30 @@ namespace Chesster
 				}
 			} break;
 
-		//case SDL_FINGERUP:
-		//{
-		//	// Get finger touch location in screen coordinates
-		//	m_TouchLocation.x = event.tfinger.x * m_Window->GetWidth();
-		//	m_TouchLocation.y = event.tfinger.y * m_Window->GetHeight();
+		case SDL_FINGERUP:
+		{
+			// Get finger touch location in screen coordinates
+			m_TouchLocation.x = event.tfinger.x * m_Window->GetWidth();
+			m_TouchLocation.y = event.tfinger.y * m_Window->GetHeight();
 
-		//	for (int i = 0; i < m_MenuOptions.size(); ++i)
-		//	{
-		//		SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-		//		if (SDL_PointInRect(&m_TouchLocation, &textBounds))
-		//			SelectOption();
-		//	}
-		//} break;
+			for (int i = 0; i < Piece::Size; ++i)
+			{
+				SDL_Rect figureBounds = m_Figures[i].GetBounds();
+				if (SDL_PointInRect(&m_TouchLocation, &figureBounds))
+				{
+					SelectOption();
+					RequestStackPop();
+				}
+			}
+		} break;
 
 			case SDL_MOUSEBUTTONUP:
 			{
 				if (event.button.button == SDL_BUTTON_LEFT)
 					for (int i = 0; i < Piece::Size; ++i)
 					{
-						SDL_Rect textBounds = m_Figures[i].GetBounds();
-						if (SDL_PointInRect(&m_MousePos, &textBounds))
+						SDL_Rect figureBounds = m_Figures[i].GetBounds();
+						if (SDL_PointInRect(&m_MousePos, &figureBounds))
 						{
 							SelectOption();
 							RequestStackPop();
