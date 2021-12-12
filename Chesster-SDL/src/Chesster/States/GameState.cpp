@@ -10,7 +10,7 @@ namespace Chesster
 
 	GameState::GameState(StateStack& stack, Context context) :
 		State{ stack, context },
-		m_Board{ context.window->get() }
+		m_Board{ stack, context }
 	{
 		m_ImGuiFlags =
 		{
@@ -60,6 +60,9 @@ namespace Chesster
 			{
 				if (event.key.keysym.sym == SDLK_ESCAPE)
 					RequestStackPush(StateID::Pause);
+
+				if (event.key.keysym.sym == SDLK_e)
+					RequestStackPush(StateID::PawnPromo);
 
 			} break;
 		}

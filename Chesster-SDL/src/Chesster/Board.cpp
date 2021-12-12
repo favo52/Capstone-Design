@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "Board.h"
 
+#include "Application.h"
+
 namespace Chesster
 {
 	constexpr int TOTAL_PIECES{ 32 };
 
-	Board::Board(Window* window) :
-		m_Window{ window },
+	Board::Board(StateStack& stack, Context context) :
+		State{ stack, context },
+		m_Window{ context.window->get() },
 		m_BoardTexture{ nullptr },
 		m_Pieces{ new Texture[TOTAL_PIECES] },
 		m_PieceSize{ 80 },
@@ -16,7 +19,7 @@ namespace Chesster
 		m_Dy{ 0.0f },
 		m_OldPos{ -100, -100 },
 		m_NewPos{ -100, -100 },
-		m_Str{ "" },
+		m_CurrentMove{ "" },
 		m_PieceIndex{ 0 },
 		m_MoveHistory{ "" },
 		m_MoveHistorySize{ 0 },
@@ -37,14 +40,18 @@ namespace Chesster
 		wchar_t path_Stockfish14_avx2[] = L"resources/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
 		wchar_t path_Stockfish14_popcnt[] = L"resources/engines/stockfish/stockfish_14.1_win_x64_popcnt/stockfish_14.1_win_x64_popcnt.exe";
 		wchar_t path_Hannibal_x64[] = L"resources/engines/Hannibal1.7/Hannibal1.7x64.exe";
-
+		
 		m_Connector.ConnectToEngine(path_Stockfish14_avx2);
 
 		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
 		m_FEN += "\"" + m_Connector.GetFEN(" ") + "\"";
 
-		LoadTextures();
-		PrepareBoard();
+		m_BoardTexture = &context.textures->Get(TextureID::Board);
+		m_BoardTexture->SetPosition(0, 0);
+
+		for (int i = 0; i < TOTAL_PIECES; ++i)
+			m_Pieces[i] = context.textures->Get(TextureID::Pieces);
+
 		LoadPositions();
 	}
 
@@ -107,7 +114,6 @@ namespace Chesster
 							m_Dx = m_MousePos.x - m_Pieces[i].GetPosition().x;
 							m_Dy = m_MousePos.y - m_Pieces[i].GetPosition().y;
 
-							//m_OldPos = m_Pieces[i].GetPosition();
 							m_OldPos = Vector2i(m_PieceSize * (m_Pieces[i].GetPosition().x / m_PieceSize), m_PieceSize * (m_Pieces[i].GetPosition().y / m_PieceSize));
 						}
 					}
@@ -122,33 +128,25 @@ namespace Chesster
 				m_MousePos.x -= m_BoardOffset.x;
 				m_MousePos.y -= m_BoardOffset.y;
 
-				// Left button
-				if (event.button.button == SDL_BUTTON_LEFT)
+				// Left mouse button
+				if (event.button.button == SDL_BUTTON_LEFT && !m_Promoting)
 				{
 					m_IsMove = false;
 					Vector2i position = m_Pieces[m_PieceIndex].GetPosition() + Vector2i(m_PieceSize / 2, m_PieceSize / 2);
 					m_NewPos = Vector2i(m_PieceSize * (position.x / m_PieceSize), m_PieceSize * (position.y / m_PieceSize));
-					m_Str = ToChessNotation(m_OldPos) + ToChessNotation(m_NewPos);
+					m_CurrentMove = ToChessNotation(m_OldPos) + ToChessNotation(m_NewPos);
+
+					// Check if player is doing a pawn promotion
+					if (IsWhitePawn(m_PieceIndex) && IsRow(ToChessNotation(m_NewPos), '8') && IsRow(ToChessNotation(m_OldPos), '7') ||
+						IsBlackPawn(m_PieceIndex) && IsRow(ToChessNotation(m_NewPos), '1') && IsRow(ToChessNotation(m_OldPos), '2'))
+					{
+						RequestStackPush(StateID::PawnPromo);
+						m_Promoting = true;
+					}
 
 					// Check the list of valid moves
-					for (const std::string& move : m_ValidMoves)
-					{
-						if (move.c_str() == m_Str)
-						{
-							Move(m_Str);
+					ValidateMove();
 
-							// Update move history if piece is dropped in a new square
-							if (ToChessNotation(m_OldPos) != ToChessNotation(m_NewPos))
-								m_MoveHistory += m_Str + " ";
-							++m_MoveHistorySize;
-
-							m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
-							break;
-						}
-						// If not a valid move return piece to original position
-						else if ((move.c_str() != m_Str) && m_HoldingPiece)
-							m_Pieces[m_PieceIndex].SetPosition(m_OldPos.x * m_PieceOffset.x, m_OldPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
-					}
 					m_HoldingPiece = false;
 				}
 
@@ -164,12 +162,12 @@ namespace Chesster
 		if (m_IsComputerTurn)
 		{
 			// Get stockfish's next move
-			m_Str = m_Connector.GetNextMove(m_MoveHistory);
-			if (m_Str == "error")
+			m_CurrentMove = m_Connector.GetNextMove(m_MoveHistory);
+			if (m_CurrentMove == "error")
 				return false;
 
-			m_OldPos = ToCoord(m_Str[0], m_Str[1]);
-			m_NewPos = ToCoord(m_Str[2], m_Str[3]);
+			m_OldPos = ToCoord(m_CurrentMove[0], m_CurrentMove[1]);
+			m_NewPos = ToCoord(m_CurrentMove[2], m_CurrentMove[3]);
 
 			// If a piece on the board has the notation, move it
 			for (int i = 0; i < TOTAL_PIECES; ++i)
@@ -181,20 +179,19 @@ namespace Chesster
 			}
 
 			// Remove any piece it "ate", update move history and piece position
-			Move(m_Str);
-			m_MoveHistory += m_Str + " ";
+			Move(m_CurrentMove);
+			m_MoveHistory += m_CurrentMove + " ";
 
 			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
 
 			m_IsComputerTurn = false;
-
 		}
 
 		// Dragging a piece
 		if (m_IsMove)
 			m_Pieces[m_PieceIndex].SetPosition(m_MousePos.x - m_Dx, m_MousePos.y - m_Dy, &m_PieceClip[m_PieceIndex]);
 
-		// Check if a move was played
+		// Check if a move was played successfully
 		if (m_MoveHistory.size() != m_MoveHistorySize)
 		{
 			// Update move count
@@ -206,7 +203,16 @@ namespace Chesster
 
 			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
 
-			m_WinningColor = !m_WinningColor;
+			m_WinningColor = !m_WinningColor; // TODO: need a better way of checking who won
+		}
+
+		// Update pawn promotion selection
+		if (m_Promoting)
+		{
+			m_CurrentMove.push_back(*PawnPromotionState::GetPiecePromo());
+			*PawnPromotionState::GetPiecePromo() = 'x';
+			ValidateMove();
+			m_Promoting = false;
 		}
 
 		return true;
@@ -241,8 +247,11 @@ namespace Chesster
 		m_OldPos = { -100, -100 },
 		m_NewPos = { -100, -100 },
 
+		WhitePawns = { 16, 17, 18, 19, 20, 21, 22, 23 };
+		BlackPawns = { 8, 9, 10, 11, 12, 13, 14, 15 };
+
 		m_MoveHistory.clear();
-		m_MoveHistorySize = 0;
+		m_MoveHistorySize = m_MoveHistory.size();
 
 		LoadPositions();
 		m_Connector.ResetGame();
@@ -300,7 +309,6 @@ namespace Chesster
 
 	bool Board::IsWhitePawn(const int& index)
 	{
-		int WhitePawns[8] = { 16, 17, 18, 19, 20, 21, 22, 23 };
 		for (const int& i : WhitePawns)
 			if (i == index)
 				return true;
@@ -310,7 +318,6 @@ namespace Chesster
 
 	bool Board::IsBlackPawn(const int& index)
 	{
-		int BlackPawns[8] = { 8, 9, 10, 11, 12, 13, 14, 15 };
 		for (const int& i : BlackPawns)
 			if (i == index)
 				return true;
@@ -323,11 +330,9 @@ namespace Chesster
 		return { IsWhitePawn(index) || IsBlackPawn(index) };
 	}
 
-	bool Board::IsBackRow(const std::string& notation, char c)
+	bool Board::IsRow(const std::string& notation, char row)
 	{
-		//std::vector<std::string> whiteBackRow = { "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1" };
-		CHESSTER_TRACE("notation.back(), c: {0}, {1}", notation.back(), c);
-		if (notation.back() == c)
+		if (notation.back() == row)
 			return true;
 
 		return false;
@@ -339,45 +344,82 @@ namespace Chesster
 		if (offset > 0) c = '8';
 		else c = '1';
 
-		if (IsBackRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), c))
+		if (IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), c))
 		{
-			char piece{ m_Str.back() };
+			char piece{ m_CurrentMove.back() };
 			switch (piece)
 			{
-				case 'n':
+				case 'n': // knight
 				{
 					if (offset > 0) // is white
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 1, m_PieceSize * 1, m_PieceSize, m_PieceSize };
+						ErasePawn(WhitePawns);
+					}
 					else // is black
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 1, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+						ErasePawn(BlackPawns);
+					}
 				} break;
-				
-				case 'b':
+
+				case 'b': // bishop
 				{
-					if (offset > 0) // is white
+					if (offset > 0)
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 2, m_PieceSize * 1, m_PieceSize, m_PieceSize };
-					else // is black
+						ErasePawn(WhitePawns);
+					}
+					else
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 2, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+						ErasePawn(BlackPawns);
+					}
 				} break;
 
-				case 'r':
+				case 'r': // rook
 				{
-					if (offset > 0) // is white
+					if (offset > 0)
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 0, m_PieceSize * 1, m_PieceSize, m_PieceSize };
-					else // is black
+						ErasePawn(WhitePawns);
+					}
+					else
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 0, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+						ErasePawn(BlackPawns);
+					}
 				} break;
 
-				case 'q':
+				case 'q': // queen
 				{
-					if (offset > 0) // is white
+					if (offset > 0)
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 3, m_PieceSize * 1, m_PieceSize, m_PieceSize };
-					else // is black
+						ErasePawn(WhitePawns);
+					}
+					else
+					{
 						m_PieceClip[m_PieceIndex] = { m_PieceSize * 3, m_PieceSize * 0, m_PieceSize, m_PieceSize };
+						ErasePawn(BlackPawns);
+					}
 				} break;
+
 				default:
 					CHESSTER_ERROR("Invalid 5th char");
+					break;
 			}
+		}
+	}
+
+	void Board::ErasePawn(std::vector<int>& pawns)
+	{
+		for (auto itr = pawns.begin(); itr != pawns.end(); )
+		{
+			if (*itr == m_PieceIndex)
+				pawns.erase(itr);
+			else
+				++itr;
 		}
 	}
 
@@ -399,7 +441,7 @@ namespace Chesster
 			if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(OldPos))
 				m_Pieces[i].SetPosition(NewPos.x * m_PieceOffset.x, NewPos.y * m_PieceOffset.y, &m_PieceClip[i]);
 
-		// Castling             // If king has not been moved						   // Move Rook
+		// Castling             // If king has not been moved					   // Move Rook
 		if (notation == "e1g1") if (m_MoveHistory.find("e1") == std::string::npos) Move("h1f1");
 		if (notation == "e8g8") if (m_MoveHistory.find("e8") == std::string::npos) Move("h8f8");
 		if (notation == "e1c1") if (m_MoveHistory.find("e1") == std::string::npos) Move("a1d1");
@@ -410,7 +452,6 @@ namespace Chesster
 		if (IsBlackPawn(m_PieceIndex)) offset = -m_PieceSize;
 
 		bool isPawn{ false };
-		//if (IsWhitePawn(m_PieceIndex) || IsBlackPawn(m_PieceIndex))
 		if (IsPawn(m_PieceIndex))
 		{
 			isPawn = true;
@@ -421,7 +462,7 @@ namespace Chesster
 				if (ToChessNotation(Vector2i(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y + offset))
 					== ToChessNotation(m_Pieces[i].GetPosition()))
 				{
-					// Safeguard to only eat the correct pawns
+					// Safeguard to only eat the correct pawn
 					if (IsBlackPawn(m_PieceIndex) && !IsBlackPawn(i) && ToChessNotation(m_Pieces[m_PieceIndex].GetPosition())[1] == '3' ||
 						IsWhitePawn(m_PieceIndex) && !IsWhitePawn(i) && ToChessNotation(m_Pieces[m_PieceIndex].GetPosition())[1] == '6')
 						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
@@ -432,6 +473,28 @@ namespace Chesster
 		// Pawn promotions
 		if (isPawn)
 			CheckPromotion(offset);
+	}
+
+	void Board::ValidateMove()
+	{
+		for (const std::string& move : m_ValidMoves)
+		{
+			if (move.c_str() == m_CurrentMove)
+			{
+				Move(m_CurrentMove);
+
+				// Update move history if piece is dropped in a new square
+				if (ToChessNotation(m_OldPos) != ToChessNotation(m_NewPos))
+					m_MoveHistory += m_CurrentMove + " ";
+				++m_MoveHistorySize;
+
+				m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
+				break;
+			}
+			// If not a valid move return piece to original position
+			else if ((move.c_str() != m_CurrentMove) && m_HoldingPiece)
+				m_Pieces[m_PieceIndex].SetPosition(m_OldPos.x * m_PieceOffset.x, m_OldPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
+		}
 	}
 
 	void Board::PaintActiveSquares()
@@ -449,20 +512,5 @@ namespace Chesster
 		SDL_SetRenderDrawColor(Window::Renderer, 100u, 100u, 0u, 100u);
 		SDL_RenderFillRectF(Window::Renderer, &m_ActiveSquares[1]);
 		SDL_SetRenderDrawColor(Window::Renderer, 21u, 21u, 255u, 255u);
-	}
-
-	void Board::LoadTextures()
-	{
-		m_TextureHolder.Load(TextureID::Board, "resources/textures/0_DefaultBoard.png");
-		m_TextureHolder.Load(TextureID::Pieces, "resources/textures/ChessPieces.png");
-	}
-
-	void Board::PrepareBoard()
-	{
-		m_BoardTexture = &m_TextureHolder.Get(TextureID::Board);
-		m_BoardTexture->SetPosition(0, 0);
-
-		for (int i = 0; i < TOTAL_PIECES; ++i)
-			m_Pieces[i] = m_TextureHolder.Get(TextureID::Pieces);
 	}
 }

@@ -33,6 +33,7 @@ namespace Chesster
 		SDL_Rect m_PauseOverlay;
 
 		SDL_Point m_MousePos;
+		SDL_Point m_TouchLocation;
 
 		// Text stuff
 		Font m_Font;

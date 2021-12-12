@@ -18,6 +18,10 @@ namespace Chesster
 		void Run();
 		void Quit();
 
+		StateStack* GetStateStack() { return &m_StateStack; }
+
+		static Application& Get() { return *s_Instance; }
+
 	private:
 		void ProcessEvents();
 		void Update(const std::chrono::duration<double>& dt);
@@ -37,5 +41,7 @@ namespace Chesster
 		FontHolder m_FontHolder;
 
 		StateStack m_StateStack;
+
+		static Application* s_Instance;
 	};
 }

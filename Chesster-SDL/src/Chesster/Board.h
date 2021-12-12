@@ -1,17 +1,18 @@
 #pragma once
 
 #include "pch.h"
-#include "Core/Window.h"
+//#include "Core/Window.h"
 #include "Connector.h"
 #include "Core/Texture.h"
 #include "Core/ResourceHolder.h"
+#include "States/PawnPromotionState.h"
 
 namespace Chesster
 {
-	class Board
+	class Board : public State
 	{
 	public:
-		Board(Window* window);
+		Board(StateStack& stack, Context context);
 		~Board();
 
 		bool HandleEvent(SDL_Event& event);
@@ -39,16 +40,15 @@ namespace Chesster
 		bool IsWhitePawn(const int& index);
 		bool IsBlackPawn(const int& index);
 		bool IsPawn(const int& index);
+		bool IsRow(const std::string& notation, char row);
 
-		bool IsBackRow(const std::string& notation, char c);
 		void CheckPromotion(int offset);
+		void ErasePawn(std::vector<int>& pawns);
 
 		void Move(const std::string& notation);
+		void ValidateMove();
 
 		void PaintActiveSquares();
-
-		void LoadTextures();
-		void PrepareBoard();
 
 	private:
 		int* m_Board = new int[8 * 8]
@@ -63,12 +63,14 @@ namespace Chesster
 			 1,  2,  3,  4,  5,  3,  2,  1
 		};
 
+		std::vector<int> WhitePawns = { 16, 17, 18, 19, 20, 21, 22, 23 };
+		std::vector<int> BlackPawns = { 8, 9, 10, 11, 12, 13, 14, 15 };
+
 	private:
 		Window* m_Window;
 		Connector m_Connector;
 
 		// Texture stuff
-		TextureHolder m_TextureHolder;
 		Texture* m_BoardTexture;
 		Texture* m_Pieces;	// all 32 pieces
 
@@ -84,7 +86,7 @@ namespace Chesster
 		bool m_IsMove;
 		float m_Dx, m_Dy;
 		Vector2i m_OldPos, m_NewPos;
-		std::string m_Str;
+		std::string m_CurrentMove;
 		int m_PieceIndex;
 
 		// Mouse stuff
@@ -97,12 +99,12 @@ namespace Chesster
 		bool m_IsComputerTurn;
 		bool m_IsAnimationDone;
 
-		bool m_PrintMoves = false; // testing
 		std::string m_FEN;
 		std::string m_StartPosFEN;
 		std::vector<std::string> m_ValidMoves;
 		std::string m_PathPythonScript;
 
 		bool m_WinningColor = 1;
+		bool m_Promoting = false;
 	};
 }

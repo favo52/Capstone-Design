@@ -83,20 +83,40 @@ namespace Chesster
 				}
 			} break;
 
+			case SDL_FINGERMOTION:
 			case SDL_MOUSEMOTION:
 			{
 				// Get the mouse screen coordinates
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 
+				// Get finger touch location in screen coordinates
+				m_TouchLocation.x = event.tfinger.x * m_Window->GetWidth();
+				m_TouchLocation.y = event.tfinger.y * m_Window->GetHeight();
+
 				// Check if mouse is inside text bounds
 				for (int i = 0; i < m_MenuOptions.size(); ++i)
 				{
 					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-					if (SDL_PointInRect(&m_MousePos, &textBounds))
+					if (SDL_PointInRect(&m_MousePos, &textBounds) ||
+						SDL_PointInRect(&m_TouchLocation, &textBounds))
 					{
 						m_CurrentOption = GameOverOptions(i);
 						UpdateOptionText();
 					}
+				}
+			} break;
+
+			case SDL_FINGERUP:
+			{
+				// Get finger touch location in screen coordinates
+				m_TouchLocation.x = event.tfinger.x * m_Window->GetWidth();
+				m_TouchLocation.y = event.tfinger.y * m_Window->GetHeight();
+
+				for (int i = 0; i < m_MenuOptions.size(); ++i)
+				{
+					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
+					if (SDL_PointInRect(&m_TouchLocation, &textBounds))
+						SelectOption();
 				}
 			} break;
 

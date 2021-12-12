@@ -31,9 +31,10 @@ namespace Chesster
 
 		bool IsEmpty() const;
 
+		void ApplyPendingChanges();
+
 	private:
 		State::StatePtr CreateState(StateID stateID);
-		void ApplyPendingChanges();
 
 	private:
 		struct PendingChange

@@ -16,8 +16,10 @@ namespace Chesster
 		m_ShowReadySetCode{ true },
 		m_ShowChessterLogo{ false }
 	{
-		using namespace std::literals;
-		m_TexEffectTime = 0s;
+		{
+			using namespace std::literals;
+			m_TexEffectTime = 0s;
+		}
 
 		// Prepare text
 		m_Font = context.fonts->Get(FontID::OpenSans_100);

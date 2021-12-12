@@ -20,7 +20,7 @@ namespace Chesster
 	State::~State()
 	{
 	}
-
+	
 	void State::RequestStackPush(StateID stateID)
 	{
 		m_Stack->PushState(stateID);

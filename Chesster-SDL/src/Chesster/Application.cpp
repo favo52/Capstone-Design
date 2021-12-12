@@ -5,6 +5,7 @@
 #include "States/GameState.h"
 #include "States/PauseState.h"
 #include "States/GameOverState.h"
+#include "States/PawnPromotionState.h"
 
 #include "SDL.h"
 
@@ -16,6 +17,8 @@
 
 namespace Chesster
 {
+	Application* Application::s_Instance{ nullptr };
+
 	Application::Application() :
 		m_Window{ nullptr },
 		m_IsRunning{ true },
@@ -32,6 +35,8 @@ namespace Chesster
 			if (SDL_GetCurrentDisplayMode(0, &displayMode) == 0)
 				m_Window = std::unique_ptr<Window>(Window::Create("CHESSTER", displayMode.w, displayMode.h));
 		#endif
+
+		s_Instance = this;
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -61,9 +66,11 @@ namespace Chesster
 		m_FontHolder.Load(FontID::Sansation_10, "resources/fonts/Sansation.ttf", 10);
 		m_FontHolder.Load(FontID::Sansation_100, "resources/fonts/Sansation.ttf", 100);
 		
-		// Prepare logos
+		// Prepare logos, board and pieces
 		m_TextureHolder.Load(TextureID::ReadySetCode, "resources/textures/ReadySetCode.jpeg");
 		m_TextureHolder.Load(TextureID::ChessterLogo, "resources/textures/ChessterLogo.jpeg");
+		m_TextureHolder.Load(TextureID::Board, "resources/textures/0_DefaultBoard.png");
+		m_TextureHolder.Load(TextureID::Pieces, "resources/textures/ChessPieces.png");
 
 		RegisterStates();
 		m_StateStack.PushState(StateID::Title);
@@ -204,5 +211,6 @@ namespace Chesster
 		m_StateStack.RegisterState<GameState>(StateID::Gameplay);
 		m_StateStack.RegisterState<PauseState>(StateID::Pause);
 		m_StateStack.RegisterState<GameOverState>(StateID::Gameover);
+		m_StateStack.RegisterState<PawnPromotionState>(StateID::PawnPromo);
 	}
 }

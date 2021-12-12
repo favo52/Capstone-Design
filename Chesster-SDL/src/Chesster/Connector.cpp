@@ -139,7 +139,7 @@ namespace Chesster
 
 	std::string Connector::GetNextMove(const std::string& moveHistory)
 	{
-		std::string msg = { "position startpos moves " + moveHistory + "\ngo depth 1\n" };
+		std::string msg = { "position startpos moves " + moveHistory + "\ngo depth 10\n" };
 
 		// Send position to engine
 		WriteFile(m_Pipe_IN_Wr, msg.c_str(), msg.length(), &m_Written, NULL);

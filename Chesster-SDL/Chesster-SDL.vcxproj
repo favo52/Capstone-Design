@@ -20,6 +20,7 @@
     <ClCompile Include="src\Chesster\States\GameState.cpp" />
     <ClCompile Include="src\Chesster\States\MenuState.cpp" />
     <ClCompile Include="src\Chesster\States\PauseState.cpp" />
+    <ClCompile Include="src\Chesster\States\PawnPromotionState.cpp" />
     <ClCompile Include="src\Chesster\States\State.cpp" />
     <ClCompile Include="src\Chesster\States\StateStack.cpp" />
     <ClCompile Include="src\Chesster\States\TitleState.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="src\Chesster\States\GameState.h" />
     <ClInclude Include="src\Chesster\States\MenuState.h" />
     <ClInclude Include="src\Chesster\States\PauseState.h" />
+    <ClInclude Include="src\Chesster\States\PawnPromotionState.h" />
     <ClInclude Include="src\Chesster\States\State.h" />
     <ClInclude Include="src\Chesster\States\StateStack.h" />
     <ClInclude Include="src\Chesster\States\TitleState.h" />
@@ -118,7 +120,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -138,7 +140,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

@@ -16,7 +16,8 @@ namespace Chesster
 		Settings,
 		Gameplay,
 		Pause,
-		Gameover
+		Gameover,
+		PawnPromo
 	};
 
 	class State

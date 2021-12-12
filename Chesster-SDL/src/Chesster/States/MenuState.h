@@ -33,6 +33,7 @@ namespace Chesster
 		Texture* m_LogoTexture;
 
 		SDL_Point m_MousePos;
+		SDL_Point m_TouchLocation;
 
 		// Options Text
 		Font m_Font;
