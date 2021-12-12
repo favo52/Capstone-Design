@@ -27,6 +27,7 @@ namespace Chesster
 		Board m_Board;
 		ImGuiWindowFlags m_ImGuiFlags;
 
+		int m_OldDifficulty;
 		static bool m_WinningColor;
 	};
 }

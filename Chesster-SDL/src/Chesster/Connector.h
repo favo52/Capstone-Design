@@ -17,6 +17,8 @@ namespace Chesster
 		void ResetGame();
 		void EvaluateGame();
 
+		void SetDifficulty(const int& difficulty);
+
 		std::string GetNextMove(const std::string& position);
 		std::vector<std::string> GetValidMoves(const std::string& path, const std::string& fen);
 		std::string GetFEN(const std::string& latestMove);

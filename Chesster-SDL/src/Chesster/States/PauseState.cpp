@@ -190,6 +190,7 @@ namespace Chesster
 		else if (m_CurrentOption == PauseOptions::MainMenu)
 		{
 			GameState::ImGuiMainWindow.Clear();
+			GameState::ImGuiSettingsWindow.m_Difficulty = 0;
 			RequestStateClear();
 			RequestStackPush(StateID::Menu);
 		}

@@ -137,6 +137,17 @@ namespace Chesster
 		GameState::ImGuiMainWindow.AddLog(msg.c_str());
 	}
 
+	void Connector::SetDifficulty(const int& difficulty)
+	{
+		// Set difficulty level
+		std::string skill = { "setoption name Skill Level value " + std::to_string(difficulty) + "\n" };
+		WriteFile(m_Pipe_IN_Wr, skill.c_str(), skill.length(), &m_Written, NULL);
+		Sleep(150);
+
+		std::string msg = { "Difficulty set to " + std::to_string(difficulty) + ".\n" };
+		GameState::ImGuiMainWindow.AddLog(msg.c_str());
+	}
+
 	std::string Connector::GetNextMove(const std::string& moveHistory)
 	{
 		std::string msg = { "position startpos moves " + moveHistory + "\ngo depth 10\n" };

@@ -19,6 +19,7 @@ namespace Chesster
 
 		void ResetBoard();
 		void EvaluateBoard();
+		void ChangeDifficulty();
 
 		inline const std::vector<std::string> GetValidMoves() const { return m_ValidMoves; }
 

@@ -6,11 +6,14 @@ namespace Chesster
 	AppLogGUI GameState::ImGuiMainWindow{};
 	AppSettingsGUI GameState::ImGuiSettingsWindow{};
 
+	int AppSettingsGUI::m_Difficulty{ 0 };
+
 	bool GameState::m_WinningColor = 1;
 
 	GameState::GameState(StateStack& stack, Context context) :
 		State{ stack, context },
-		m_Board{ stack, context }
+		m_Board{ stack, context },
+		m_OldDifficulty{ AppSettingsGUI::m_Difficulty }
 	{
 		m_ImGuiFlags =
 		{
@@ -85,6 +88,15 @@ namespace Chesster
 		{
 			m_Board.EvaluateBoard();
 			ImGuiSettingsWindow.m_EvaluateBoard = false;
+		}
+
+		// Difficulty is changed
+		if (ImGuiSettingsWindow.m_ChangeDifficulty ||
+			ImGuiSettingsWindow.m_Difficulty != ImGuiSettingsWindow.m_OldDiff)
+		{
+			m_Board.ChangeDifficulty();
+			ImGuiSettingsWindow.m_OldDiff = ImGuiSettingsWindow.m_Difficulty;
+			ImGuiSettingsWindow.m_ChangeDifficulty = false;
 		}
 
 		// Game is over

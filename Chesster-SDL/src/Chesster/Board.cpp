@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Board.h"
 
+#include "ImGuiWindows.h"
+
 namespace Chesster
 {
 	constexpr int TOTAL_PIECES{ 32 };
@@ -249,6 +251,11 @@ namespace Chesster
 	void Board::EvaluateBoard()
 	{
 		m_Connector.EvaluateGame();
+	}
+
+	void Board::ChangeDifficulty()
+	{
+		m_Connector.SetDifficulty(AppSettingsGUI::m_Difficulty);
 	}
 
 	void Board::LoadPositions()

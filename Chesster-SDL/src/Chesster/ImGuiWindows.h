@@ -6,6 +6,19 @@
 
 namespace Chesster
 {
+	static void HelpMarker(const char* desc)
+	{
+		ImGui::TextDisabled("(?)");
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+			ImGui::TextUnformatted(desc);
+			ImGui::PopTextWrapPos();
+			ImGui::EndTooltip();
+		}
+	}
+
 	struct AppLogGUI
 	{
 		ImGuiTextBuffer Buf;
@@ -92,10 +105,16 @@ namespace Chesster
 	{
 		bool m_ResetBoard;
 		bool m_EvaluateBoard;
+		bool m_ChangeDifficulty;
+
+		int m_OldDiff;
+		static int m_Difficulty;
 
 		AppSettingsGUI() :
 			m_ResetBoard{ false },
-			m_EvaluateBoard{ false }
+			m_EvaluateBoard{ false },
+			m_ChangeDifficulty{ false },
+			m_OldDiff{ 0 }
 		{
 		}
 
@@ -110,12 +129,25 @@ namespace Chesster
 				return;
 			}
 
+			if (ImGui::BeginPopup("Difficulty"))
+			{
+				ImGui::SliderInt("Difficulty", &m_Difficulty, 0, 20);
+				ImGui::SameLine(); HelpMarker("CTRL+click to input value.");
+				if (m_OldDiff != m_Difficulty)
+					m_ChangeDifficulty = true;
+				m_OldDiff = m_Difficulty;
+				ImGui::EndPopup();
+			}
+
 			// Buttons
 			if (ImGui::Button("Reset Game", ImVec2(100, 50)))
 				m_ResetBoard = true;
 			ImGui::SameLine();
 			if (ImGui::Button("Evaluatate\nPosition", ImVec2(100, 50)))
 				m_EvaluateBoard = true;
+			ImGui::SameLine();
+			if (ImGui::Button("Change\nDifficulty", ImVec2(100, 50)))
+				ImGui::OpenPopup("Difficulty");
 
 			// Info area
 			ImGui::Separator();
