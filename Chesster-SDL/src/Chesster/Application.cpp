@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Application.h"
+
 #include "States/TitleState.h"
 #include "States/MenuState.h"
 #include "States/GameState.h"
@@ -12,8 +13,6 @@
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_sdlrenderer.h"
-
-#include "Core/PlatformDetection.h"
 
 namespace Chesster
 {

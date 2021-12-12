@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "PawnPromotionState.h"
 
-#include "imgui.h"
-
 namespace Chesster
 {
 	char PawnPromotionState::m_Piece = 'x';
@@ -35,10 +33,6 @@ namespace Chesster
 		m_Figures[Piece::Queen].SetPosition(m_Background.x + 80, m_Background.y + 80, &m_PieceClip[Piece::Queen]);
 
 		m_SelectionHighlight = { m_Figures[Piece::Queen].GetPosition().x, m_Figures[Piece::Queen].GetPosition().y, m_PieceSize, m_PieceSize };
-	}
-
-	PawnPromotionState::~PawnPromotionState()
-	{
 	}
 
 	bool PawnPromotionState::HandleEvent(SDL_Event& event)

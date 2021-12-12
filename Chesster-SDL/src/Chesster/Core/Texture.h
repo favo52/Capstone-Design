@@ -1,6 +1,5 @@
 #pragma once
 
-#include "pch.h"
 #include "Vector.h"
 
 #include "SDL_ttf.h"

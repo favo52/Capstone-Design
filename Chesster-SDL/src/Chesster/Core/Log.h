@@ -1,6 +1,5 @@
 #pragma once
 
-#include "pch.h"
 #include "spdlog/spdlog.h"
 
 namespace Chesster

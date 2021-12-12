@@ -1,10 +1,11 @@
 #pragma once
 
 #include "State.h"
-#include "Chesster/Core/Texture.h"
 
 namespace Chesster
 {
+	class Texture;
+
 	class TitleState : public State
 	{
 	public:

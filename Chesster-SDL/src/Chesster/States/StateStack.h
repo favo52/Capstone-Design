@@ -1,6 +1,5 @@
 #pragma once
 
-#include "pch.h"
 #include "State.h"
 
 namespace Chesster

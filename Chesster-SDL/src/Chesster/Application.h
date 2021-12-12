@@ -1,10 +1,8 @@
 #pragma once
 
-#include "pch.h"
-
 #include "Core/Window.h"
 #include "Core/Time.h"
-#include "Core/ResourceHolder.h"
+
 #include "States/StateStack.h"
 
 namespace Chesster

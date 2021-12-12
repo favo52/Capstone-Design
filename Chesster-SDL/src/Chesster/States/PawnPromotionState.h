@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Chesster/States/State.h"
+#include "State.h"
 
 namespace Chesster
 {
@@ -8,7 +8,7 @@ namespace Chesster
 	{
 	public:
 		PawnPromotionState(StateStack& stack, Context context);
-		virtual ~PawnPromotionState();
+		virtual ~PawnPromotionState() = default;
 
 		bool HandleEvent(SDL_Event& event) override;
 		bool Update(const std::chrono::duration<double>& dt) override;

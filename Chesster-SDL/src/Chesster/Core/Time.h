@@ -1,8 +1,5 @@
 #pragma once
 
-#include "pch.h"
-#include "Window.h"
-
 #include "SDL_timer.h"
 
 namespace Chesster

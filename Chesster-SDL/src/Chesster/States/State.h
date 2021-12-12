@@ -1,6 +1,5 @@
 #pragma once
 
-#include "pch.h"
 #include "Chesster/Core/Window.h"
 #include "Chesster/Core/ResourceHolder.h"
 
@@ -35,7 +34,7 @@ namespace Chesster
 
 	public:
 		State(StateStack& stack, Context context);
-		virtual ~State();
+		virtual ~State() = default;
 
 		virtual bool HandleEvent(SDL_Event& e) = 0;
 		virtual bool Update(const std::chrono::duration<double>& dt) = 0;

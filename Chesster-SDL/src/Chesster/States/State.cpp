@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "State.h"
+
 #include "StateStack.h"
 
 namespace Chesster
@@ -14,10 +15,6 @@ namespace Chesster
 	State::State(StateStack& stack, Context context) :
 		m_Stack{ &stack },
 		m_Context{ context }
-	{
-	}
-
-	State::~State()
 	{
 	}
 	

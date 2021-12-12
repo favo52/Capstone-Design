@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TitleState.h"
-#include "Chesster/Core/ResourceHolder.h"
+
+#include "Chesster/Core/Texture.h"
 
 namespace Chesster
 {

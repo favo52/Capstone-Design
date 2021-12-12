@@ -1,7 +1,7 @@
 #pragma once
 
-#include "pch.h"
 #include "State.h"
+
 #include "Chesster/Board.h"
 #include "Chesster/ImGuiWindows.h"
 
@@ -15,6 +15,7 @@ namespace Chesster
 
 	public:
 		GameState(StateStack& stack, Context context);
+		virtual ~GameState() = default;
 
 		bool HandleEvent(SDL_Event& event) override;
 		bool Update(const std::chrono::duration<double>& dt) override;

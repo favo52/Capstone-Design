@@ -1,6 +1,7 @@
 #pragma once
 
 // Chesster
+#include "Chesster/Core/PlatformDetection.h"
 #include "Chesster/Core/Log.h"
 
 // General

@@ -1,10 +1,10 @@
 #include "pch.h"
+#include "Connector.h"
+
+#include "Chesster/States/GameState.h"
 
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"
-
-#include "Connector.h"
-#include "Chesster/States/GameState.h"
 
 // "... do as the Romans do."
 

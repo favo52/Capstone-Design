@@ -1,7 +1,5 @@
 #pragma once
 
-#include "pch.h"
-
 // Uses Windows types because "When in Rome..."
 
 namespace Chesster

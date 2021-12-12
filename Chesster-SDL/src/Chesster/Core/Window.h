@@ -1,7 +1,5 @@
 #pragma once
 
-#include "pch.h"
-
 // SDL forward declarations
 struct SDL_Window;
 struct SDL_Renderer;
