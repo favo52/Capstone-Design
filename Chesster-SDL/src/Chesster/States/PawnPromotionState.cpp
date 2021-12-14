@@ -117,7 +117,7 @@ namespace Chesster
 			} break;
 		}
 
-		return true;
+		return false;
 	}
 
 	bool PawnPromotionState::Update(const std::chrono::duration<double>& dt)

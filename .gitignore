@@ -2,7 +2,8 @@
 16_Games/
 
 # Files
-validmoves.txt
+Chesster-SDL/validmoves.txt
+Chesster-SDL/imgui.ini
 
 # User-specific files
 *.rsuser
