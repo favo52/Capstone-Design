@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Connector.h"
+#include "BoostConnector.h"
 #include "Core/Texture.h"
 
 #include "States/PawnPromotionState.h"
@@ -63,6 +64,8 @@ namespace Chesster
 	private:
 		Window* m_Window;
 		Connector m_Connector;
+		BoostConnector m_BoostCon;
+		boost::filesystem::path EnginePath;
 
 		// Texture stuff
 		Texture* m_BoardTexture;

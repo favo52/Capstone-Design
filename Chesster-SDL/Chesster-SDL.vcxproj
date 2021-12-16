@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Chesster\BoostConnector.cpp" />
     <ClCompile Include="src\Chesster\States\GameOverState.cpp" />
     <ClCompile Include="src\Chesster\Application.cpp" />
     <ClCompile Include="src\Chesster\Board.cpp" />
@@ -44,6 +45,7 @@
     <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Chesster\BoostConnector.h" />
     <ClInclude Include="src\Chesster\States\GameOverState.h" />
     <ClInclude Include="src\Chesster\Application.h" />
     <ClInclude Include="src\Chesster\Connector.h" />
@@ -64,6 +66,122 @@
     <ClInclude Include="src\Chesster\Core\Vector.h" />
     <ClInclude Include="src\Chesster\Core\Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="vendor\boost\process\async.hpp" />
+    <ClInclude Include="vendor\boost\process\async_pipe.hpp" />
+    <ClInclude Include="vendor\boost\process\async_system.hpp" />
+    <ClInclude Include="vendor\boost\process\child.hpp" />
+    <ClInclude Include="vendor\boost\process\cmd.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\basic_cmd.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\child_decl.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\config.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\execute_impl.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\handler.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\handler_base.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\on_exit.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\async_handler.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\async_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\async_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\async_pipe.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\basic_cmd.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\basic_pipe.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\child_handle.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\close_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\close_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\cmd.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\compare_handles.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\environment.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\env_init.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\exe.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\executor.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\fd.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\file_descriptor.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\file_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\file_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\group_handle.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\group_ref.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\handler.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\handles.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\io_context_ref.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\is_running.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\null_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\null_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\on_exit.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\pipe_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\pipe_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\search_path.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\shell_path.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\sigchld_service.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\signal.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\start_dir.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\terminate.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\use_vfork.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\wait_for_exit.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\posix\wait_group.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\throw_on_error.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\traits.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\traits\cmd_or_exe.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\traits\decl.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\traits\env.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\traits\error.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\traits\group.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\traits\wchar_t.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\used_handles.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\async_handler.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\async_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\async_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\async_pipe.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\basic_cmd.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\basic_pipe.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\child_handle.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\close_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\close_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\cmd.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\compare_handles.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\environment.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\env_init.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\executor.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\file_descriptor.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\file_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\file_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\group_handle.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\group_ref.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\handler.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\handles.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\handle_workaround.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\io_context_ref.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\is_running.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\job_workaround.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\locale.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\null_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\null_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\on_exit.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\pipe_in.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\pipe_out.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\search_path.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\shell_path.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\show_window.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\start_dir.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\terminate.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\wait_for_exit.hpp" />
+    <ClInclude Include="vendor\boost\process\detail\windows\wait_group.hpp" />
+    <ClInclude Include="vendor\boost\process\env.hpp" />
+    <ClInclude Include="vendor\boost\process\environment.hpp" />
+    <ClInclude Include="vendor\boost\process\error.hpp" />
+    <ClInclude Include="vendor\boost\process\exception.hpp" />
+    <ClInclude Include="vendor\boost\process\exe.hpp" />
+    <ClInclude Include="vendor\boost\process\extend.hpp" />
+    <ClInclude Include="vendor\boost\process\group.hpp" />
+    <ClInclude Include="vendor\boost\process\handles.hpp" />
+    <ClInclude Include="vendor\boost\process\io.hpp" />
+    <ClInclude Include="vendor\boost\process\locale.hpp" />
+    <ClInclude Include="vendor\boost\process\pipe.hpp" />
+    <ClInclude Include="vendor\boost\process\posix.hpp" />
+    <ClInclude Include="vendor\boost\process\search_path.hpp" />
+    <ClInclude Include="vendor\boost\process\shell.hpp" />
+    <ClInclude Include="vendor\boost\process\spawn.hpp" />
+    <ClInclude Include="vendor\boost\process\start_dir.hpp" />
+    <ClInclude Include="vendor\boost\process\system.hpp" />
+    <ClInclude Include="vendor\boost\process\windows.hpp" />
     <ClInclude Include="vendor\imgui\imconfig.h" />
     <ClInclude Include="vendor\imgui\imgui.h" />
     <ClInclude Include="vendor\imgui\imgui_impl_sdl.h" />
@@ -126,15 +244,15 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;vendor\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;vendor\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;libboost_context-vc142-mt-gd-x64-1_78.lib;libboost_context-vc142-mt-x64-1_78.lib;libboost_coroutine-vc142-mt-gd-x64-1_78.lib;libboost_coroutine-vc142-mt-x64-1_78.lib;libboost_filesystem-vc142-mt-gd-x64-1_78.lib;libboost_filesystem-vc142-mt-x64-1_78.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,17 +264,17 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;vendor\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;vendor\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;libboost_context-vc142-mt-gd-x64-1_78.lib;libboost_context-vc142-mt-x64-1_78.lib;libboost_coroutine-vc142-mt-gd-x64-1_78.lib;libboost_coroutine-vc142-mt-x64-1_78.lib;libboost_filesystem-vc142-mt-gd-x64-1_78.lib;libboost_filesystem-vc142-mt-x64-1_78.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

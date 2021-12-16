@@ -32,7 +32,8 @@ namespace Chesster
 		m_FEN{},
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_ValidMoves{},
-		m_PathPythonScript{ "resources/engines/script/__init__.exe" }
+		m_PathPythonScript{ "resources/engines/script/__init__.exe" },
+		m_BoostCon{}
 	{
 		// Connect to executables
 		wchar_t path_Stockfish5[] = L"resources/engines/stockfish/stockfish_5.exe";
@@ -408,12 +409,13 @@ namespace Chesster
 
 	void Board::ErasePawn(std::vector<int>& pawns)
 	{
-		for (auto itr = pawns.begin(); itr != pawns.end(); )
+		for (auto itr = pawns.begin(); itr != pawns.end(); ++itr)
 		{
 			if (*itr == m_PieceIndex)
+			{
 				pawns.erase(itr);
-			else
-				++itr;
+				return;
+			}
 		}
 	}
 

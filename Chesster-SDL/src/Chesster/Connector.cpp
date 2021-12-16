@@ -68,8 +68,6 @@ namespace Chesster
 		ZeroMemory(&m_ProcessInfo_Py, sizeof(PROCESS_INFORMATION));
 
 		Py_Initialize();
-
-		CHESSTER_INFO("Engine connection opened.");
 	}
 
 	Connector::~Connector()
@@ -87,6 +85,7 @@ namespace Chesster
 			CHESSTER_ERROR("CreateProcess failed with error: {0}", GetLastError());
 			return;
 		}
+		CHESSTER_INFO("Engine connection opened.");
 
 		// Check if engine is ready
 		CHAR str[] = "uci\nisready\n";
@@ -160,7 +159,7 @@ namespace Chesster
 		// Read engine's reply
 		msg = GetEngineReply() + '\n';
 		GameState::ImGuiMainWindow.AddLog(msg.c_str());
-
+		
 		// Grab the engine's move
 		int found = msg.find("bestmove");
 		if (found != std::string::npos)
@@ -171,7 +170,7 @@ namespace Chesster
 			iss >> msg; // grab the move
 			return msg;
 		}
-
+		
 		return "error"; // If no bestmove is found
 	}
 
