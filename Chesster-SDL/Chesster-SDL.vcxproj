@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Chesster\ClientTCP.cpp" />
     <ClCompile Include="src\Chesster\BoostConnector.cpp" />
     <ClCompile Include="src\Chesster\States\GameOverState.cpp" />
     <ClCompile Include="src\Chesster\Application.cpp" />
@@ -45,6 +46,7 @@
     <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Chesster\ClientTCP.h" />
     <ClInclude Include="src\Chesster\BoostConnector.h" />
     <ClInclude Include="src\Chesster\States\GameOverState.h" />
     <ClInclude Include="src\Chesster\Application.h" />
@@ -252,7 +254,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;vendor\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;libboost_context-vc142-mt-gd-x64-1_78.lib;libboost_context-vc142-mt-x64-1_78.lib;libboost_coroutine-vc142-mt-gd-x64-1_78.lib;libboost_coroutine-vc142-mt-x64-1_78.lib;libboost_filesystem-vc142-mt-gd-x64-1_78.lib;libboost_filesystem-vc142-mt-x64-1_78.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -274,7 +276,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;vendor\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;libboost_context-vc142-mt-gd-x64-1_78.lib;libboost_context-vc142-mt-x64-1_78.lib;libboost_coroutine-vc142-mt-gd-x64-1_78.lib;libboost_coroutine-vc142-mt-x64-1_78.lib;libboost_filesystem-vc142-mt-gd-x64-1_78.lib;libboost_filesystem-vc142-mt-x64-1_78.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

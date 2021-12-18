@@ -36,4 +36,5 @@
 // Windows API
 #ifdef CHESSTER_PLATFORM_WINDOWS
 	#include <Windows.h>
+	#include <ws2tcpip.h>
 #endif

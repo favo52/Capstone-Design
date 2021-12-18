@@ -13,7 +13,8 @@ namespace Chesster
 	GameState::GameState(StateStack& stack, Context context) :
 		State{ stack, context },
 		m_Board{ stack, context },
-		m_OldDifficulty{ AppSettingsGUI::m_Difficulty }
+		m_OldDifficulty{ AppSettingsGUI::m_Difficulty },
+		m_Client{}
 	{
 		m_ImGuiFlags =
 		{
@@ -27,7 +28,7 @@ namespace Chesster
 		auto& colors = ImGui::GetStyle().Colors;
 		colors[ImGuiCol_WindowBg] = ImVec4{ 0.055f, 0.055f, 0.115f, 1.0f };
 
-		//// Headers
+		// Headers
 		colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
 		colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
 		colors[ImGuiCol_HeaderActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
@@ -49,10 +50,13 @@ namespace Chesster
 		colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 		colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
 
-		//// Title
+		// Title
 		colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 		colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+		// Test camera connection
+		m_Client.ConnectSockets();
 	}
 
 	bool GameState::HandleEvent(SDL_Event& event)
@@ -105,6 +109,8 @@ namespace Chesster
 			m_WinningColor = m_Board.GetWinningColor();
 			RequestStackPush(StateID::Gameover);
 		}
+
+		//CHESSTER_INFO(m_Client.GetData());
 
 		return true;
 	}

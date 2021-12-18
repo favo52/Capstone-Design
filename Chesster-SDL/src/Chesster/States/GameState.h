@@ -4,15 +4,12 @@
 
 #include "Chesster/Board.h"
 #include "Chesster/ImGuiWindows.h"
+#include "Chesster/ClientTCP.h"
 
 namespace Chesster
 {
 	class GameState : public State
 	{
-	public:
-		static AppLogGUI ImGuiMainWindow;
-		static AppSettingsGUI ImGuiSettingsWindow;
-
 	public:
 		GameState(StateStack& stack, Context context);
 		virtual ~GameState() = default;
@@ -23,11 +20,17 @@ namespace Chesster
 
 		inline static const bool GetWinningColor() { return m_WinningColor; }
 
+	public:
+		static AppLogGUI ImGuiMainWindow;
+		static AppSettingsGUI ImGuiSettingsWindow;
+
 	private:
 		Board m_Board;
 		ImGuiWindowFlags m_ImGuiFlags;
 
 		int m_OldDifficulty;
 		static bool m_WinningColor;
+
+		ClientTCP m_Client;
 	};
 }

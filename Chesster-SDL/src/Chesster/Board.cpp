@@ -32,8 +32,7 @@ namespace Chesster
 		m_FEN{},
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_ValidMoves{},
-		m_PathPythonScript{ "resources/engines/script/__init__.exe" },
-		m_BoostCon{}
+		m_PathPythonScript{ "resources/engines/script/__init__.exe" }
 	{
 		// Connect to executables
 		wchar_t path_Stockfish5[] = L"resources/engines/stockfish/stockfish_5.exe";

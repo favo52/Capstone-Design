@@ -90,6 +90,9 @@
     <ClCompile Include="src\Chesster\BoostConnector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Chesster\ClientTCP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Chesster\Application.h">
@@ -525,6 +528,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\BoostConnector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\ClientTCP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
