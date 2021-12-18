@@ -19,20 +19,20 @@ namespace Chesster
 		ClientTCP();
 		virtual ~ClientTCP();
 
-		void ConnectSockets();
-		void DisconnectSockets();
+		void ConnectCamera();
+		void DisconnectCamera();
 
-		bool SendCommand(const std::string command);
+		bool SendCommand(const std::string command = "SE8");
 		inline const std::string GetData() const { return m_Data; }
 
 	private:
 		bool ConnectSocket(SOCKET& m_socket, PCSTR ip, PCSTR port);
-		bool RecvBuffer();
+		bool RecvData();
 
 		void DNSLookup(const SOCKET& m_socket);
 
 		// Multithreading
-		static unsigned int __stdcall ReceiveBuffer(void* data);
+		static unsigned int __stdcall DataStream(void* data);
 
 	private:
 		enum Result

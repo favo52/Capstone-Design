@@ -56,7 +56,7 @@ namespace Chesster
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 
 		// Test camera connection
-		m_Client.ConnectSockets();
+		m_Client.ConnectCamera();
 	}
 
 	bool GameState::HandleEvent(SDL_Event& event)

@@ -24,39 +24,67 @@ namespace Chesster
 
 	ClientTCP::~ClientTCP()
 	{
-		DisconnectSockets();
+		DisconnectCamera();
 
 		// Shut down the socket DLL
 		WSACleanup();
 	}
 
-	void ClientTCP::ConnectSockets()
+	void ClientTCP::ConnectCamera()
 	{
-		// To command the camera to take the picture
-		if (!ConnectSocket(m_CommandSocket, "localhost", "23"))
-			CHESSTER_ERROR("Unable to connect m_CommandSocket. (IP: localhost, Port: 23)");
-
-		DNSLookup(m_CommandSocket);
-
 		// Prepare buffer
-		char Buffer[1024]{};
+		char Buffer[128]{};
 		int BufferLen{ sizeof(Buffer) };
 		ZeroMemory(Buffer, BufferLen);
 
-		recv(m_CommandSocket, Buffer, BufferLen, 0);
+		// For commanding the camera to take the picture
+		if (!ConnectSocket(m_CommandSocket, "localhost", "23"))
+		{
+			CHESSTER_ERROR("Unable to connect m_CommandSocket. (IP: localhost, Port: 23)");
+		}
+		else
+		{
+			DNSLookup(m_CommandSocket);
 
-		// To receive buffer stream of physical board's changes
+			// Receive Cognex welcome message and username prompt
+			recv(m_CommandSocket, Buffer, BufferLen, 0);
+			CHESSTER_INFO(Buffer);
+
+			// Send username
+			std::string msg{ "admin\n" };
+			send(m_CommandSocket, msg.c_str(), msg.length(), 0);
+
+			// Receive password prompt
+			ZeroMemory(Buffer, BufferLen);
+			recv(m_CommandSocket, Buffer, BufferLen, 0);
+			CHESSTER_INFO(Buffer);
+
+			// Send password(no password, thus send \n)
+			msg = { "\n" };
+			send(m_CommandSocket, msg.c_str(), msg.length(), 0);
+
+			// Receive login confirmation
+			ZeroMemory(Buffer, BufferLen);
+			recv(m_CommandSocket, Buffer, BufferLen, 0);
+			CHESSTER_INFO(Buffer);
+		}
+
+		// For receiving data stream of physical board's status
 		if (!ConnectSocket(m_BufferSocket, "localhost", "3000"))
+		{
 			CHESSTER_ERROR("Unable to connect m_BufferSocket. (IP: localhost, Port: 3000)");
+		}
+		else
+		{
+			DNSLookup(m_BufferSocket);
 
-		DNSLookup(m_BufferSocket);
-
-		// Create new thread for receiving data
-		unsigned threadID{};
-		HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::ReceiveBuffer, (void*)&*this, 0, &threadID);
+			// Create new thread for receiving data
+			unsigned threadID{};
+			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::DataStream, (void*)&*this, 0, &threadID);
+		}
 	}
 
-	void ClientTCP::DisconnectSockets()
+	void ClientTCP::DisconnectCamera()
 	{
 		closesocket(m_CommandSocket);
 		closesocket(m_BufferSocket);
@@ -125,23 +153,25 @@ namespace Chesster
 		return true;
 	}
 
-	bool ClientTCP::RecvBuffer()
+	bool ClientTCP::RecvData()
 	{
 		// Prepare buffer
-		char Buffer[1024]{};
+		char Buffer[256]{};
 		int BufferLen{ sizeof(Buffer) };
 		ZeroMemory(Buffer, BufferLen);
 
 		int iRecvResult = recv(m_BufferSocket, Buffer, BufferLen, 0);
 		if (iRecvResult == SOCKET_ERROR)
 		{
-			CHESSTER_ERROR("RecvBuffer failed with error: {0}", WSAGetLastError());
+			CHESSTER_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
+			DisconnectCamera();
 			return false;
 		}
 
 		m_Data = std::string(Buffer);
 		CHESSTER_INFO(m_Data);
 
+		Sleep(1000);
 		return true;
 	}
 
@@ -168,18 +198,14 @@ namespace Chesster
 		}
 	}
 
-	unsigned int __stdcall ClientTCP::ReceiveBuffer(void* data)
+	unsigned int __stdcall ClientTCP::DataStream(void* data)
 	{
 		ClientTCP* clientTCP = static_cast<ClientTCP*>(data);
 
 		while (true)
 		{
-			if (!clientTCP->RecvBuffer())
-			{
-				CHESSTER_ERROR("Failed to receive buffer. Disconnecting BufferSocket...");
-				closesocket(m_BufferSocket);
+			if (!clientTCP->RecvData())
 				return Result::Failure;
-			}
 		}
 
 		return Result::Success;
