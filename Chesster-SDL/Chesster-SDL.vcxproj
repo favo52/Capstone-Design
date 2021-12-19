@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster\ClientTCP.cpp" />
-    <ClCompile Include="src\Chesster\BoostConnector.cpp" />
     <ClCompile Include="src\Chesster\States\GameOverState.cpp" />
     <ClCompile Include="src\Chesster\Application.cpp" />
     <ClCompile Include="src\Chesster\Board.cpp" />
@@ -47,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Chesster\ClientTCP.h" />
-    <ClInclude Include="src\Chesster\BoostConnector.h" />
     <ClInclude Include="src\Chesster\States\GameOverState.h" />
     <ClInclude Include="src\Chesster\Application.h" />
     <ClInclude Include="src\Chesster\Connector.h" />
