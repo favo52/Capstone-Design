@@ -21,8 +21,6 @@ namespace Chesster
 		void EvaluateBoard();
 		void ChangeDifficulty();
 
-		//inline std::vector<std::string>* GetCameraData() { return &m_CameraData; }
-
 		inline const std::vector<std::string> GetValidMoves() const { return m_ValidMoves; }
 
 		inline const bool GetWinningColor() const { return m_WinningColor; }
@@ -32,6 +30,9 @@ namespace Chesster
 
 		std::string ToChessNotation(const Vector2i& position);
 		Vector2i ToCoord(char a, char b);
+
+		std::string GetMissingPiece(const std::vector<std::string>& CameraDataA, const std::vector<std::string>& CameraDataB);
+		bool IsPresent(const std::string& position, const std::vector<std::string>& CameraDataB);
 
 		bool IsWhitePawn(const int& index);
 		bool IsBlackPawn(const int& index);
@@ -84,6 +85,7 @@ namespace Chesster
 		Vector2i m_OldPos, m_NewPos;
 		std::string m_CurrentMove;
 		int m_PieceIndex;
+		Vector2i m_OutOfView;
 
 		// Mouse stuff
 		SDL_Point m_MousePos;

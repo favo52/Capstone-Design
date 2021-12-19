@@ -129,7 +129,7 @@ namespace Chesster
 
 	void GameState::Draw()
 	{
-		SDL_SetRenderDrawColor(Window::Renderer, 21u, 21u, 255u, 255u);
+		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 255u);
 
 		m_Board.Draw();
 

@@ -22,6 +22,7 @@ namespace Chesster
 		m_NewPos{ -100, -100 },
 		m_CurrentMove{ "" },
 		m_PieceIndex{ 0 },
+		m_OutOfView{ -100, -100 },
 		m_MoveHistory{ "" },
 		m_MoveHistorySize{ 0 },
 		m_BoardOffset{ 22, 22 }, // 22, 23
@@ -152,6 +153,7 @@ namespace Chesster
 		// A play was made in the real world
 		if (ClientTCP::DataReceived)
 		{
+			// Save previous data
 			m_CameraOldData = m_CameraNewData;
 
 			// Grab all the new board positions
@@ -160,39 +162,23 @@ namespace Chesster
 			for (std::string data; iss >> data;)
 				m_CameraNewData.push_back(data);
 
-			// Need to:
-			// Grab the piece in OldData that isn't in NewData
-			// OldPos = OldData[n] != NewData[0, 1, ..., n];
-			// 
-			// Grab the piece in NewData that isn't in OldData
-			// NewPos = NewData[n] != OldData[0, 1, ..., n];
+			std::string missingOld = GetMissingPiece(m_CameraOldData, m_CameraNewData);
+			std::string missingNew = GetMissingPiece(m_CameraNewData, m_CameraOldData);
 
-			/*for (int i = 0; i < m_CameraOldData.size(); ++i)
-			{
-				for (int j = 0; j < m_CameraNewData.size(); ++j)
-				{
-					if (m_CameraOldData[i] == m_CameraNewData[j])
-					{
-						continue;
-					}
-					else
-					{
+			m_OldPos = ToCoord(missingOld[1], missingOld[2]);
+			m_NewPos = ToCoord(missingNew[1], missingNew[2]);
 
-					}
-				}
-			}*/
+			// If a piece on the board has the notation, grab its index
+			for (int i = 0; i < TOTAL_PIECES; ++i)
+				if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(m_OldPos))
+					m_PieceIndex = i;
 
-			std::string old{ "old: " };
-			for (std::string str : m_CameraOldData)
-				old += str + " ";
-			old.pop_back();
-			CHESSTER_INFO(old);
+			// Remove any piece that was eaten, update move history and piece position
+			m_CurrentMove = { missingOld[1], missingOld[2], missingNew[1], missingNew[2] };
+			Move(m_CurrentMove);
+			m_MoveHistory += m_CurrentMove + " ";
 
-			std::string newdata{ "new: " };
-			for (std::string str : m_CameraNewData)
-				newdata += str + " ";
-			newdata.pop_back();
-			CHESSTER_INFO(newdata);
+			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
 
 			ClientTCP::DataReceived = false;
 		}
@@ -208,7 +194,7 @@ namespace Chesster
 			m_OldPos = ToCoord(m_CurrentMove[0], m_CurrentMove[1]);
 			m_NewPos = ToCoord(m_CurrentMove[2], m_CurrentMove[3]);
 
-			// If a piece on the board has the notation, move it
+			// If a piece on the board has the notation, grab its index
 			for (int i = 0; i < TOTAL_PIECES; ++i)
 				if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(m_OldPos))
 					m_PieceIndex = i;
@@ -254,7 +240,7 @@ namespace Chesster
 			m_Promoting = false;
 		}
 
-		m_NewPos = { -100, -100 };
+		//m_NewPos = { m_OutOfView.x, m_OutOfView.y };
 
 		return true;
 	}
@@ -285,8 +271,8 @@ namespace Chesster
 
 	void Board::ResetBoard()
 	{
-		m_OldPos = { -100, -100 },
-		m_NewPos = { -100, -100 },
+		m_OldPos = m_OutOfView;
+		m_NewPos = m_OutOfView;
 
 		WhitePawns = { 16, 17, 18, 19, 20, 21, 22, 23 };
 		BlackPawns = { 8, 9, 10, 11, 12, 13, 14, 15 };
@@ -350,6 +336,26 @@ namespace Chesster
 		int y = 7 - int(b) + int('1'); // 7 cuz it's from 0 to 7 (8 files)
 
 		return Vector2i(x * m_PieceSize, y * m_PieceSize);
+	}
+
+	std::string Board::GetMissingPiece(const std::vector<std::string>& CameraDataA, const std::vector<std::string>& CameraDataB)
+	{
+		for (const std::string& positionA : CameraDataA)
+		{
+			if (!IsPresent(positionA, CameraDataB))
+				return positionA;
+		}
+
+		return std::string{ "X00" };
+	}
+
+	bool Board::IsPresent(const std::string& positionA, const std::vector<std::string>& CameraDataB)
+	{
+		for (const std::string& positionB : CameraDataB)
+			if (positionA == positionB)
+				return true;
+
+		return false;
 	}
 
 	bool Board::IsWhitePawn(const int& index)
@@ -479,7 +485,7 @@ namespace Chesster
 		{
 			if (ToChessNotation(m_Pieces[i].GetPosition()) == ToChessNotation(NewPos)
 				&& i != m_PieceIndex) // don't count itself
-				m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
+				m_Pieces[i].SetPosition(m_OutOfView.x, m_OutOfView.y, &m_PieceClip[i]);
 		}
 		
 		// Move rooks when castling
@@ -504,14 +510,14 @@ namespace Chesster
 			// Iterate all 32 pieces to find if a pawn was eaten
 			for (int i = 0; i < TOTAL_PIECES; ++i)
 			{
-				// If a piece is one square behind then it's the pawn that was eaten
+				// If a piece is one square behind then it might be the pawn that was eaten
 				if (ToChessNotation(Vector2i(m_Pieces[m_PieceIndex].GetPosition().x, m_Pieces[m_PieceIndex].GetPosition().y + offset))
 					== ToChessNotation(m_Pieces[i].GetPosition()))
 				{
 					// Safeguard to only eat the correct pawn
 					if (IsBlackPawn(m_PieceIndex) && !IsBlackPawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '3') ||
 						IsWhitePawn(m_PieceIndex) && !IsWhitePawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '6'))
-						m_Pieces[i].SetPosition(-100.0f, -100.0f, &m_PieceClip[i]);
+						m_Pieces[i].SetPosition(m_OutOfView.x, m_OutOfView.y, &m_PieceClip[i]);
 				}
 			}
 		}
@@ -557,6 +563,6 @@ namespace Chesster
 		SDL_RenderFillRectF(Window::Renderer, &m_HighlightedSquares[0]);
 		SDL_SetRenderDrawColor(Window::Renderer, 100u, 100u, 0u, 100u);
 		SDL_RenderFillRectF(Window::Renderer, &m_HighlightedSquares[1]);
-		SDL_SetRenderDrawColor(Window::Renderer, 21u, 21u, 255u, 255u);
+		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 255u);
 	}
 }

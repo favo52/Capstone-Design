@@ -43,7 +43,7 @@ namespace Chesster
 	private:
 		enum Result
 		{
-			Success = 0, Failure
+			Success = 0, Failure = 1
 		};
 
 	private:
