@@ -8,13 +8,14 @@ namespace Chesster
 
 	int AppSettingsGUI::m_Difficulty{ 0 };
 
+	ClientTCP GameState::m_ClientTCP{};
+
 	bool GameState::m_WinningColor = 1;
 
 	GameState::GameState(StateStack& stack, Context context) :
 		State{ stack, context },
 		m_Board{ stack, context },
-		m_OldDifficulty{ AppSettingsGUI::m_Difficulty },
-		m_Client{}
+		m_OldDifficulty{ AppSettingsGUI::m_Difficulty }
 	{
 		m_ImGuiFlags =
 		{
@@ -54,9 +55,6 @@ namespace Chesster
 		colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 		colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-
-		// Test camera connection
-		m_Client.ConnectCamera();
 	}
 
 	bool GameState::HandleEvent(SDL_Event& event)
@@ -81,26 +79,42 @@ namespace Chesster
 		m_Board.Update(dt);
 
 		// Reset button is pressed
-		if (ImGuiSettingsWindow.m_ResetBoard)
+		if (ImGuiSettingsWindow.m_ResetBoardButton)
 		{
 			m_Board.ResetBoard();
-			ImGuiSettingsWindow.m_ResetBoard = false;
+			ImGuiSettingsWindow.m_ResetBoardButton = false;
 		}
 
 		// Evaluate button is pressed
-		if (ImGuiSettingsWindow.m_EvaluateBoard)
+		if (ImGuiSettingsWindow.m_EvaluateBoardButton)
 		{
 			m_Board.EvaluateBoard();
-			ImGuiSettingsWindow.m_EvaluateBoard = false;
+			ImGuiSettingsWindow.m_EvaluateBoardButton = false;
 		}
 
 		// Difficulty is changed
-		if (ImGuiSettingsWindow.m_ChangeDifficulty ||
+		if (ImGuiSettingsWindow.m_ChangeDifficultyButton ||
 			ImGuiSettingsWindow.m_Difficulty != ImGuiSettingsWindow.m_OldDiff)
 		{
 			m_Board.ChangeDifficulty();
 			ImGuiSettingsWindow.m_OldDiff = ImGuiSettingsWindow.m_Difficulty;
-			ImGuiSettingsWindow.m_ChangeDifficulty = false;
+			ImGuiSettingsWindow.m_ChangeDifficultyButton = false;
+		}
+
+		// Camera button is pressed
+		if (ImGuiSettingsWindow.m_ConnectCameraButton)
+		{
+			if (ImGuiSettingsWindow.m_IsCameraConnecting)
+			{
+				m_ClientTCP.ConnectCamera();
+				m_ClientTCP.SendCommand();
+				if (!m_ClientTCP.RecvConfirmation())
+					CHESSTER_WARN("Camera did not respond sucessfully");
+			}
+			else
+				m_ClientTCP.DisconnectCamera();
+
+			ImGuiSettingsWindow.m_ConnectCameraButton = false;
 		}
 
 		// Game is over
@@ -109,8 +123,6 @@ namespace Chesster
 			m_WinningColor = m_Board.GetWinningColor();
 			RequestStackPush(StateID::Gameover);
 		}
-
-		//CHESSTER_INFO(m_Client.GetData());
 
 		return true;
 	}

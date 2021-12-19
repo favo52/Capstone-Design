@@ -103,18 +103,25 @@ namespace Chesster
 
 	struct AppSettingsGUI
 	{
-		bool m_ResetBoard;
-		bool m_EvaluateBoard;
-		bool m_ChangeDifficulty;
+		bool m_ResetBoardButton;
+		bool m_EvaluateBoardButton;
+		bool m_ChangeDifficultyButton;
+		bool m_ConnectCameraButton;
+		bool m_IsCameraConnecting;
 
 		int m_OldDiff;
 		static int m_Difficulty;
 
+		std::string m_CameraButtonMsg;
+
 		AppSettingsGUI() :
-			m_ResetBoard{ false },
-			m_EvaluateBoard{ false },
-			m_ChangeDifficulty{ false },
-			m_OldDiff{ 0 }
+			m_ResetBoardButton{ false },
+			m_EvaluateBoardButton{ false },
+			m_ChangeDifficultyButton{ false },
+			m_ConnectCameraButton{ false },
+			m_IsCameraConnecting{ false },
+			m_OldDiff{ 0 },
+			m_CameraButtonMsg{ "Connect\nCamera" }
 		{
 		}
 
@@ -134,20 +141,30 @@ namespace Chesster
 				ImGui::SliderInt("Difficulty", &m_Difficulty, 0, 20);
 				ImGui::SameLine(); HelpMarker("CTRL+click to input value.");
 				if (m_OldDiff != m_Difficulty)
-					m_ChangeDifficulty = true;
+					m_ChangeDifficultyButton = true;
 				m_OldDiff = m_Difficulty;
 				ImGui::EndPopup();
 			}
 
 			// Buttons
 			if (ImGui::Button("Reset Game", ImVec2(100, 50)))
-				m_ResetBoard = true;
+				m_ResetBoardButton = true;
 			ImGui::SameLine();
 			if (ImGui::Button("Evaluatate\nPosition", ImVec2(100, 50)))
-				m_EvaluateBoard = true;
+				m_EvaluateBoardButton = true;
 			ImGui::SameLine();
 			if (ImGui::Button("Change\nDifficulty", ImVec2(100, 50)))
 				ImGui::OpenPopup("Difficulty");
+			ImGui::SameLine();
+			if (ImGui::Button(m_CameraButtonMsg.c_str(), ImVec2(100, 50)))
+			{
+				m_ConnectCameraButton = true;
+				m_IsCameraConnecting = !m_IsCameraConnecting;
+				if (m_IsCameraConnecting)
+					m_CameraButtonMsg = { "Disconnect\nCamera" };
+				else
+					m_CameraButtonMsg = { "Connect\nCamera" };
+			}
 
 			// Info area
 			ImGui::Separator();

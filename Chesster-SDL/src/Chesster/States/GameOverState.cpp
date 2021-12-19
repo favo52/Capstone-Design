@@ -192,6 +192,11 @@ namespace Chesster
 		}
 		else if (m_CurrentOption == GameOverOptions::MainMenu)
 		{
+			GameState::ImGuiSettingsWindow.m_Difficulty = 0;
+			GameState::ImGuiSettingsWindow.m_IsCameraConnecting = false;
+			GameState::ImGuiSettingsWindow.m_CameraButtonMsg = { "Connect\nCamera" };
+			GameState::m_ClientTCP.DisconnectCamera();
+			GameState::ImGuiMainWindow.Clear();
 			RequestStateClear();
 			RequestStackPush(StateID::Menu);
 		}

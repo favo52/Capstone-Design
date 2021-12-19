@@ -21,6 +21,8 @@ namespace Chesster
 		void EvaluateBoard();
 		void ChangeDifficulty();
 
+		//inline std::vector<std::string>* GetCameraData() { return &m_CameraData; }
+
 		inline const std::vector<std::string> GetValidMoves() const { return m_ValidMoves; }
 
 		inline const bool GetWinningColor() const { return m_WinningColor; }
@@ -72,6 +74,7 @@ namespace Chesster
 		SDL_Rect m_PieceClip[32];
 		SDL_FRect m_HighlightedSquares[2];
 
+		// Game history
 		std::string m_MoveHistory;
 		int m_MoveHistorySize;
 
@@ -96,6 +99,10 @@ namespace Chesster
 		std::string m_StartPosFEN;
 		std::vector<std::string> m_ValidMoves;
 		std::string m_PathPythonScript;
+
+		// Camera stuff
+		std::vector<std::string> m_CameraOldData;
+		std::vector<std::string> m_CameraNewData;
 
 		bool m_WinningColor = 1;
 		bool m_Promoting = false;

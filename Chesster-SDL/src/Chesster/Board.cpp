@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Board.h"
 
+#include "Chesster/States/GameState.h"
+
 #include "ImGuiWindows.h"
 
 namespace Chesster
@@ -147,6 +149,54 @@ namespace Chesster
 
 	bool Board::Update(const std::chrono::duration<double>& dt)
 	{
+		// A play was made in the real world
+		if (ClientTCP::DataReceived)
+		{
+			m_CameraOldData = m_CameraNewData;
+
+			// Grab all the new board positions
+			m_CameraNewData.clear();
+			std::istringstream iss{ GameState::m_ClientTCP.GetData() };
+			for (std::string data; iss >> data;)
+				m_CameraNewData.push_back(data);
+
+			// Need to:
+			// Grab the piece in OldData that isn't in NewData
+			// OldPos = OldData[n] != NewData[0, 1, ..., n];
+			// 
+			// Grab the piece in NewData that isn't in OldData
+			// NewPos = NewData[n] != OldData[0, 1, ..., n];
+
+			/*for (int i = 0; i < m_CameraOldData.size(); ++i)
+			{
+				for (int j = 0; j < m_CameraNewData.size(); ++j)
+				{
+					if (m_CameraOldData[i] == m_CameraNewData[j])
+					{
+						continue;
+					}
+					else
+					{
+
+					}
+				}
+			}*/
+
+			std::string old{ "old: " };
+			for (std::string str : m_CameraOldData)
+				old += str + " ";
+			old.pop_back();
+			CHESSTER_INFO(old);
+
+			std::string newdata{ "new: " };
+			for (std::string str : m_CameraNewData)
+				newdata += str + " ";
+			newdata.pop_back();
+			CHESSTER_INFO(newdata);
+
+			ClientTCP::DataReceived = false;
+		}
+
 		// Computer move
 		if (m_IsComputerTurn)
 		{
@@ -204,6 +254,8 @@ namespace Chesster
 			m_Promoting = false;
 		}
 
+		m_NewPos = { -100, -100 };
+
 		return true;
 	}
 
@@ -245,7 +297,6 @@ namespace Chesster
 		LoadPositions();
 		m_Connector.ResetGame();
 		m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
-
 	}
 
 	void Board::EvaluateBoard()

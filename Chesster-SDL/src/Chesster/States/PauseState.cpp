@@ -3,6 +3,7 @@
 
 #include "GameState.h"
 
+
 namespace Chesster
 {
 	PauseState::PauseState(StateStack& stack, Context context) :
@@ -189,8 +190,11 @@ namespace Chesster
 		}
 		else if (m_CurrentOption == PauseOptions::MainMenu)
 		{
-			GameState::ImGuiMainWindow.Clear();
 			GameState::ImGuiSettingsWindow.m_Difficulty = 0;
+			GameState::ImGuiSettingsWindow.m_IsCameraConnecting = false;
+			GameState::ImGuiSettingsWindow.m_CameraButtonMsg = { "Connect\nCamera" };
+			GameState::m_ClientTCP.DisconnectCamera();
+			GameState::ImGuiMainWindow.Clear();
 			RequestStateClear();
 			RequestStackPush(StateID::Menu);
 		}

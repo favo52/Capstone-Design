@@ -88,7 +88,7 @@ namespace Chesster
 		CHESSTER_INFO("Engine connection opened.");
 
 		// Check if engine is ready
-		CHAR str[] = "uci\nisready\n";
+		CHAR str[] = "uci\nucinewgame\nisready\n";
 		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
 		Sleep(150);
 

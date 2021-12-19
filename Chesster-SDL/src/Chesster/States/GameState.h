@@ -24,13 +24,13 @@ namespace Chesster
 		static AppLogGUI ImGuiMainWindow;
 		static AppSettingsGUI ImGuiSettingsWindow;
 
+		static ClientTCP m_ClientTCP;
+
 	private:
 		Board m_Board;
 		ImGuiWindowFlags m_ImGuiFlags;
 
 		int m_OldDifficulty;
 		static bool m_WinningColor;
-
-		ClientTCP m_Client;
 	};
 }

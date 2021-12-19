@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ClientTCP.h"
 
+#include "Chesster/States/GameState.h"
+
 namespace Chesster
 {
 	// Use Winsock version 2.2
@@ -8,6 +10,8 @@ namespace Chesster
 
 	std::string ClientTCP::m_Data{ "" };
 	SOCKET ClientTCP::m_BufferSocket{ INVALID_SOCKET };
+
+	bool ClientTCP::DataReceived{ false };
 
 	ClientTCP::ClientTCP() :
 		m_WSAData{ NULL },
@@ -38,17 +42,23 @@ namespace Chesster
 		ZeroMemory(Buffer, BufferLen);
 
 		// For commanding the camera to take the picture
-		if (!ConnectSocket(m_CommandSocket, "localhost", "23"))
+		std::string ip = { "localhost" }, port = { "23" };
+		if (!ConnectSocket(m_CommandSocket, ip.c_str(), port.c_str()))
 		{
-			CHESSTER_ERROR("Unable to connect m_CommandSocket. (IP: localhost, Port: 23)");
+			CHESSTER_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", ip, port);
+			std::string str{ "Unable to connect m_CommandSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
+			GameState::ImGuiMainWindow.AddLog(str.c_str());
 		}
-		else
+		else // If successful
 		{
 			DNSLookup(m_CommandSocket);
 
 			// Receive Cognex welcome message and username prompt
 			recv(m_CommandSocket, Buffer, BufferLen, 0);
-			CHESSTER_INFO(Buffer);
+			std::string str{ Buffer };
+			str.erase(str.length() - sizeof("User: "), sizeof("User: ")); // Erase "User: "
+			CHESSTER_INFO(str);
+			GameState::ImGuiMainWindow.AddLog(str.c_str());
 
 			// Send username
 			std::string msg{ "admin\n" };
@@ -57,24 +67,30 @@ namespace Chesster
 			// Receive password prompt
 			ZeroMemory(Buffer, BufferLen);
 			recv(m_CommandSocket, Buffer, BufferLen, 0);
-			CHESSTER_INFO(Buffer);
 
-			// Send password(no password, thus send \n)
+			// Send password (no password, thus send \n)
 			msg = { "\n" };
 			send(m_CommandSocket, msg.c_str(), msg.length(), 0);
 
 			// Receive login confirmation
 			ZeroMemory(Buffer, BufferLen);
 			recv(m_CommandSocket, Buffer, BufferLen, 0);
-			CHESSTER_INFO(Buffer);
+			str = { Buffer }; str.pop_back(); // pop '\n'
+			CHESSTER_INFO(str);
+
+			str.insert(0, "\n"); str += "\n\n";
+			GameState::ImGuiMainWindow.AddLog(str.c_str());
 		}
 
 		// For receiving data stream of physical board's status
-		if (!ConnectSocket(m_BufferSocket, "localhost", "3000"))
+		ip = { "localhost" }, port = { "3000" };
+		if (!ConnectSocket(m_BufferSocket, ip.c_str(), port.c_str()))
 		{
-			CHESSTER_ERROR("Unable to connect m_BufferSocket. (IP: localhost, Port: 3000)");
+			CHESSTER_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", ip, port);
+			std::string str{ "Unable to connect m_BufferSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
+			GameState::ImGuiMainWindow.AddLog(str.c_str());
 		}
-		else
+		else // If successful
 		{
 			DNSLookup(m_BufferSocket);
 
@@ -82,6 +98,8 @@ namespace Chesster
 			unsigned threadID{};
 			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::DataStream, (void*)&*this, 0, &threadID);
 		}
+
+		Sleep(150);
 	}
 
 	void ClientTCP::DisconnectCamera()
@@ -90,7 +108,7 @@ namespace Chesster
 		closesocket(m_BufferSocket);
 	}
 
-	bool ClientTCP::SendCommand(const std::string command)
+	bool ClientTCP::SendCommand(const std::string& command)
 	{
 		int iSendResult = send(m_CommandSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
@@ -102,7 +120,27 @@ namespace Chesster
 		return true;
 	}
 
-	bool ClientTCP::ConnectSocket(SOCKET& m_socket, PCSTR ip, PCSTR port)
+	bool ClientTCP::RecvConfirmation()
+	{
+		// Prepare buffer
+		char Buffer[8]{};
+		int BufferLen{ sizeof(Buffer) };
+		ZeroMemory(Buffer, BufferLen);
+
+		// Receive confirmation from the camera
+		int iRecvResult = recv(m_CommandSocket, Buffer, BufferLen, 0);
+		if (iRecvResult == INVALID_SOCKET)
+		{
+			CHESSTER_ERROR("RecvConfirmation failed with error: {0}", WSAGetLastError());
+			return false;
+		}
+		if (Buffer[0] != '1')
+			return false;
+
+		return true;
+	}
+
+	bool ClientTCP::ConnectSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
 	{
 		// Prepare addrinfo
 		ZeroMemory(&hints, sizeof(hints));
@@ -145,10 +183,7 @@ namespace Chesster
 		freeaddrinfo(result);
 
 		if (m_socket == INVALID_SOCKET)
-		{
-			CHESSTER_ERROR("Unable to connect to server!");
 			return false;
-		}
 
 		return true;
 	}
@@ -165,11 +200,13 @@ namespace Chesster
 		{
 			CHESSTER_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
 			DisconnectCamera();
+			CHESSTER_INFO("Camera disconnected.");
+			GameState::ImGuiMainWindow.AddLog("Camera disconnected.\n\n");
 			return false;
 		}
 
 		m_Data = std::string(Buffer);
-		CHESSTER_INFO(m_Data);
+		DataReceived = true;
 
 		Sleep(1000);
 		return true;
@@ -185,16 +222,20 @@ namespace Chesster
 		// Attempt to get the server's name
 		int iResult = getpeername(m_socket, (sockaddr*)&ServerAddr, &ServerAddrSize);
 		if (iResult == SOCKET_ERROR)
+		{
 			CHESSTER_WARN("Unable to retrieve the server's address.");
-
-		if (getnameinfo((sockaddr*)&ServerAddr, ServerAddrSize, ServerName, NI_MAXHOST, ServerPort, NI_MAXSERV, 0) == 0)
-		{
-			CHESSTER_INFO("Connected to {0} on port {1}", ServerName, ServerPort);
 		}
-		else // if unable to get name then show IP
+		else
 		{
-			inet_ntop(result->ai_family, &ServerAddr.sin_addr, ServerName, NI_MAXHOST);
-			CHESSTER_INFO("Connected to {0} on port {1}", ServerName, ntohs(ServerAddr.sin_port));
+			if (getnameinfo((sockaddr*)&ServerAddr, ServerAddrSize, ServerName, NI_MAXHOST, ServerPort, NI_MAXSERV, 0) == 0)
+			{
+				CHESSTER_INFO("Connected to {0} on port {1}", ServerName, ServerPort);
+			}
+			else // if unable to get name then show IP
+			{
+				inet_ntop(result->ai_family, &ServerAddr.sin_addr, ServerName, NI_MAXHOST);
+				CHESSTER_INFO("Connected to {0} on port {1}", ServerName, ntohs(ServerAddr.sin_port));
+			}
 		}
 	}
 
