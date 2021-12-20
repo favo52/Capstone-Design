@@ -14,7 +14,7 @@ namespace Chesster
 		m_Font_100{ context.fonts->Get(FontID::OpenSans_100) },
 		m_MenuOptions{},
 		m_CurrentOption{ GameOverOptions::PlayAgain },
-		m_WinningColor{ GameState::GetWinningColor() }
+		m_WinningPlayer{ GameState::GetWinningPlayer() }
 	{
 		// Prepare pause text
 		SDL_Color White = { 255u, 255u, 255u, 255u };
@@ -26,7 +26,7 @@ namespace Chesster
 		);
 
 		std::string winner = { "WHITE!" };
-		if (m_WinningColor == 1) winner = "BLACK!";
+		if (m_WinningPlayer == Board::Player::Black) winner = "BLACK!";
 		m_WinningPlayerText.LoadFromRenderedText(m_Font_100, winner, White);
 		m_WinningPlayerText.SetPosition
 		(

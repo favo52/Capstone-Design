@@ -10,7 +10,7 @@ namespace Chesster
 
 	ClientTCP GameState::m_ClientTCP{};
 
-	bool GameState::m_WinningColor = 1;
+	Board::Player GameState::m_WinningPlayer{ Board::Player::White };
 
 	GameState::GameState(StateStack& stack, Context context) :
 		State{ stack, context },
@@ -109,7 +109,7 @@ namespace Chesster
 				m_ClientTCP.ConnectCamera();
 				m_ClientTCP.SendCommand();
 				if (!m_ClientTCP.RecvConfirmation())
-					CHESSTER_WARN("Camera did not respond sucessfully");
+					CHESSTER_WARN("Camera did not respond sucessfully.");
 			}
 			else
 				m_ClientTCP.DisconnectCamera();
@@ -118,9 +118,9 @@ namespace Chesster
 		}
 
 		// Game is over
-		if (m_Board.GetValidMoves().empty())
+		if (m_Board.m_Gameover)
 		{
-			m_WinningColor = m_Board.GetWinningColor();
+			m_WinningPlayer = m_Board.GetWinningPlayer();
 			RequestStackPush(StateID::Gameover);
 		}
 

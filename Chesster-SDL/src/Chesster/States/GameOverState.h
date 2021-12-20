@@ -2,8 +2,12 @@
 
 #include "State.h"
 
+#include "Chesster/Board.h"
+
 namespace Chesster
 {
+	class Player;
+
 	class GameOverState : public State
 	{
 	public:
@@ -47,6 +51,6 @@ namespace Chesster
 		std::vector<Texture*> m_MenuOptions;
 		GameOverOptions m_CurrentOption;
 
-		bool m_WinningColor;
+		Board::Player m_WinningPlayer;
 	};
 }

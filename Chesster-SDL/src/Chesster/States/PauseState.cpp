@@ -3,7 +3,6 @@
 
 #include "GameState.h"
 
-
 namespace Chesster
 {
 	PauseState::PauseState(StateStack& stack, Context context) :

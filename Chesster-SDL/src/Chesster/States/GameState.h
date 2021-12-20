@@ -18,7 +18,7 @@ namespace Chesster
 		bool Update(const std::chrono::duration<double>& dt) override;
 		void Draw() override;
 
-		inline static const bool GetWinningColor() { return m_WinningColor; }
+		inline static const Board::Player GetWinningPlayer() { return m_WinningPlayer; }
 
 	public:
 		static AppLogGUI ImGuiMainWindow;
@@ -31,6 +31,6 @@ namespace Chesster
 		ImGuiWindowFlags m_ImGuiFlags;
 
 		int m_OldDifficulty;
-		static bool m_WinningColor;
+		static Board::Player m_WinningPlayer;
 	};
 }
