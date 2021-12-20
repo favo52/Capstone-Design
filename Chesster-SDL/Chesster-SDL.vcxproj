@@ -45,6 +45,7 @@
     <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\Chesster\ClientTCP.h" />
     <ClInclude Include="src\Chesster\States\GameOverState.h" />
     <ClInclude Include="src\Chesster\Application.h" />
@@ -193,6 +194,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Users\favo5\Downloads\ChessterLogo.ico" />
+    <Image Include="resources\textures\ChessterLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Chesster-SDL.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
