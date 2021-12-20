@@ -83,7 +83,7 @@ namespace Chesster
 		}
 
 		// For receiving data stream of physical board's status
-		ip = { "localhost" }, port = { "3000" };
+		ip = { "localhost" }, port = { "3001" };
 		if (!ConnectSocket(m_BufferSocket, ip.c_str(), port.c_str()))
 		{
 			CHESSTER_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", ip, port);

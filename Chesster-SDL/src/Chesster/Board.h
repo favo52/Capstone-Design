@@ -10,6 +10,16 @@ namespace Chesster
 	class Board : public State
 	{
 	public:
+		enum class Player
+		{
+			Black = 0, White = 1
+		};
+
+		friend Player operator++(Player& menuOption);
+
+		bool m_Gameover;
+
+	public:
 		Board(StateStack& stack, Context context);
 		virtual ~Board() = default;
 
@@ -23,7 +33,7 @@ namespace Chesster
 
 		inline const std::vector<std::string> GetValidMoves() const { return m_ValidMoves; }
 
-		inline const bool GetWinningColor() const { return m_WinningColor; }
+		inline const Board::Player GetWinningPlayer() const { return m_CurrentPlayer; }
 
 	private:
 		void LoadPositions();
@@ -31,6 +41,7 @@ namespace Chesster
 		std::string ToChessNotation(const Vector2i& position);
 		Vector2i ToCoord(char a, char b);
 
+		std::vector<std::string> GetAllMissingPieces(const std::vector<std::string>& CameraDataA, const std::vector<std::string>& CameraDataB);
 		std::string GetMissingPiece(const std::vector<std::string>& CameraDataA, const std::vector<std::string>& CameraDataB);
 		bool IsPresent(const std::string& position, const std::vector<std::string>& CameraDataB);
 
@@ -106,7 +117,8 @@ namespace Chesster
 		std::vector<std::string> m_CameraOldData;
 		std::vector<std::string> m_CameraNewData;
 
-		bool m_WinningColor = 1;
 		bool m_Promoting = false;
+
+		Player m_CurrentPlayer;
 	};
 }

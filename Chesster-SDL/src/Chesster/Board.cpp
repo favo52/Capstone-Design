@@ -25,7 +25,7 @@ namespace Chesster
 		m_OutOfView{ -100, -100 },
 		m_MoveHistory{ "" },
 		m_MoveHistorySize{ 0 },
-		m_BoardOffset{ 22, 22 }, // 22, 23
+		m_BoardOffset{ 22, 22 }, // 22, 22
 		m_PieceOffset{ 1.063f, 1.063f }, // 1.063f, 1.063f
 		m_HoldingPiece{ false },
 		m_MousePos{},
@@ -35,13 +35,17 @@ namespace Chesster
 		m_FEN{},
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_ValidMoves{},
-		m_PathPythonScript{ "resources/engines/script/__init__.exe" }
+		m_PathPythonScript{ "resources/engines/script/__init__.exe" },
+		//m_CameraNewData{ "ke8", "qd8", "bc8", "bf8", "nb8", "ng8", "ra8", "rh8", "pa7", "pb7", "pc7",
+		//				 "pd7", "pe7", "pf7", "pg7", "ph7", "Ke1", "Qd1", "Bc1", "Bf1", "Nb1", "Ng1",
+		//				 "Ra1", "Rh1", "Pa2", "Pb2", "Pc2", "Pd2", "Pe2", "Pf2", "Pg2", "Ph2" },
+		m_CurrentPlayer{ Player::White },
+		m_Gameover{ false }
 	{
-		// Connect to executables
+		// Executable paths
 		wchar_t path_Stockfish5[] = L"resources/engines/stockfish/stockfish_5.exe";
 		wchar_t path_Stockfish14_avx2[] = L"resources/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
 		wchar_t path_Stockfish14_popcnt[] = L"resources/engines/stockfish/stockfish_14.1_win_x64_popcnt/stockfish_14.1_win_x64_popcnt.exe";
-		wchar_t path_Hannibal_x64[] = L"resources/engines/Hannibal1.7/Hannibal1.7x64.exe";
 		
 		m_Connector.ConnectToEngine(path_Stockfish14_avx2);
 
@@ -150,7 +154,7 @@ namespace Chesster
 
 	bool Board::Update(const std::chrono::duration<double>& dt)
 	{
-		// A play was made in the real world
+		// Update internal board status
 		if (ClientTCP::DataReceived)
 		{
 			// Save previous data
@@ -160,13 +164,44 @@ namespace Chesster
 			m_CameraNewData.clear();
 			std::istringstream iss{ GameState::m_ClientTCP.GetData() };
 			for (std::string data; iss >> data;)
-				m_CameraNewData.push_back(data);
+				if (data[1] != '0')
+					m_CameraNewData.push_back(data);
 
-			std::string missingOld = GetMissingPiece(m_CameraOldData, m_CameraNewData);
-			std::string missingNew = GetMissingPiece(m_CameraNewData, m_CameraOldData);
+			std::cout << "\nm_CameraOldData: ";
+			for (std::string str : m_CameraOldData)
+				std::cout << str + ' ';
 
-			m_OldPos = ToCoord(missingOld[1], missingOld[2]);
-			m_NewPos = ToCoord(missingNew[1], missingNew[2]);
+			std::cout << "\nm_CameraNewData: ";
+			for (std::string str : m_CameraNewData)
+				std::cout << str + ' ';
+			std::cout << "\n";
+
+			// A play was made by the human
+			// Get the notation
+			std::vector<std::string> AllMissingOld = GetAllMissingPieces(m_CameraOldData, m_CameraNewData);
+			std::cout << "\nAllMissingOld: ";
+			for (std::string& str : AllMissingOld)
+			{
+				str.pop_back();
+				std::cout << str + ' ';
+			}
+
+			std::vector<std::string> AllMissingNew = GetAllMissingPieces(m_CameraNewData, m_CameraOldData);
+			std::cout << "\nAllMissingNew: ";
+			for (std::string& str : AllMissingNew)
+			{
+				str.pop_back();
+				std::cout << str + ' ';
+			}
+			std::cout << "\n\n";
+
+			std::string missingOld = GetMissingPiece(AllMissingOld, AllMissingNew);
+			CHESSTER_INFO("missingOld: {0}", missingOld);
+			std::string missingNew = GetMissingPiece(AllMissingNew, AllMissingOld);
+			CHESSTER_INFO("missingNew: {0}", missingNew);
+
+			m_OldPos = ToCoord(missingOld[0], missingOld[1]);
+			m_NewPos = ToCoord(missingNew[0], missingNew[1]);
 
 			// If a piece on the board has the notation, grab its index
 			for (int i = 0; i < TOTAL_PIECES; ++i)
@@ -174,11 +209,12 @@ namespace Chesster
 					m_PieceIndex = i;
 
 			// Remove any piece that was eaten, update move history and piece position
-			m_CurrentMove = { missingOld[1], missingOld[2], missingNew[1], missingNew[2] };
-			Move(m_CurrentMove);
-			m_MoveHistory += m_CurrentMove + " ";
+			m_CurrentMove = { missingOld[0], missingOld[1], missingNew[0], missingNew[1] };
+			CHESSTER_INFO("m_CurrentMove: {0}", m_CurrentMove);
 
-			m_Pieces[m_PieceIndex].SetPosition(m_NewPos.x * m_PieceOffset.x, m_NewPos.y * m_PieceOffset.y, &m_PieceClip[m_PieceIndex]);
+			ValidateMove();
+
+			CHESSTER_INFO("m_MoveHistory: {0}", m_MoveHistory);
 
 			ClientTCP::DataReceived = false;
 		}
@@ -227,8 +263,14 @@ namespace Chesster
 			m_FEN += "\"" + m_Connector.GetFEN(m_MoveHistory) + "\"";
 
 			m_ValidMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_FEN);
+			if (m_ValidMoves.empty())
+			{
+				m_Gameover = true;
+				return true; // Keep checking all other stacks;
+			}
 
-			m_WinningColor = !m_WinningColor; // TODO: need a better way of checking who won
+			// Update current player
+			++m_CurrentPlayer;
 		}
 
 		// Update pawn promotion selection
@@ -239,8 +281,6 @@ namespace Chesster
 			ValidateMove();
 			m_Promoting = false;
 		}
-
-		//m_NewPos = { m_OutOfView.x, m_OutOfView.y };
 
 		return true;
 	}
@@ -271,6 +311,13 @@ namespace Chesster
 
 	void Board::ResetBoard()
 	{
+		m_CurrentPlayer = Player::White;
+		m_CameraOldData.clear();
+		m_CameraNewData.clear();
+
+		m_PieceIndex = 0;
+		m_CurrentMove.clear();
+
 		m_OldPos = m_OutOfView;
 		m_NewPos = m_OutOfView;
 
@@ -325,7 +372,7 @@ namespace Chesster
 		std::string notation{ "" };
 
 		notation += char(m_PieceOffset.x * position.x / m_PieceSize + int('a'));
-		notation += char(m_PieceOffset.y * 7 - position.y / m_PieceSize + int('1'));
+		notation += char(m_PieceOffset.y * 7 - static_cast<float>(position.y) / m_PieceSize + int('1'));
 
 		return notation;
 	}
@@ -338,15 +385,30 @@ namespace Chesster
 		return Vector2i(x * m_PieceSize, y * m_PieceSize);
 	}
 
+	std::vector<std::string> Board::GetAllMissingPieces(const std::vector<std::string>& CameraDataA, const std::vector<std::string>& CameraDataB)
+	{
+		std::vector<std::string> MissingPieces;
+		for (const std::string& positionA : CameraDataA)
+		{
+			if (!IsPresent(positionA, CameraDataB))
+				MissingPieces.push_back(positionA);
+		}
+
+		return MissingPieces;
+	}
+
 	std::string Board::GetMissingPiece(const std::vector<std::string>& CameraDataA, const std::vector<std::string>& CameraDataB)
 	{
 		for (const std::string& positionA : CameraDataA)
 		{
-			if (!IsPresent(positionA, CameraDataB))
+			if (CameraDataA.size() == 1)
+				return CameraDataA.front();
+
+			if (!IsPresent(positionA, CameraDataB) && positionA[1] != '0')
 				return positionA;
 		}
 
-		return std::string{ "X00" };
+		return std::string();
 	}
 
 	bool Board::IsPresent(const std::string& positionA, const std::vector<std::string>& CameraDataB)
@@ -515,6 +577,7 @@ namespace Chesster
 					== ToChessNotation(m_Pieces[i].GetPosition()))
 				{
 					// Safeguard to only eat the correct pawn
+					// ***************MISSING: Need to make sure that an opposite pawn moved 2 squares***************
 					if (IsBlackPawn(m_PieceIndex) && !IsBlackPawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '3') ||
 						IsWhitePawn(m_PieceIndex) && !IsWhitePawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '6'))
 						m_Pieces[i].SetPosition(m_OutOfView.x, m_OutOfView.y, &m_PieceClip[i]);
@@ -564,5 +627,14 @@ namespace Chesster
 		SDL_SetRenderDrawColor(Window::Renderer, 100u, 100u, 0u, 100u);
 		SDL_RenderFillRectF(Window::Renderer, &m_HighlightedSquares[1]);
 		SDL_SetRenderDrawColor(Window::Renderer, 0u, 0u, 0u, 255u);
+	}
+
+	Board::Player operator++(Board::Player& player)
+	{
+		return player =
+		(
+			(player == Board::Player::White) ?
+			Board::Player::Black : Board::Player::White
+		);
 	}
 }
