@@ -73,6 +73,7 @@ namespace Chesster
 					// Allows the computer to make a move
 					case SDLK_SPACE:
 						m_IsComputerTurn = true;
+						//ClientTCP::SendCommand();
 						break;
 
 					// Go backwards one move
@@ -580,7 +581,8 @@ namespace Chesster
 					// ***************MISSING: Need to make sure that an opposite pawn moved 2 squares***************
 					if (IsBlackPawn(m_PieceIndex) && !IsBlackPawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '3') ||
 						IsWhitePawn(m_PieceIndex) && !IsWhitePawn(i) && IsRow(ToChessNotation(m_Pieces[m_PieceIndex].GetPosition()), '6'))
-						m_Pieces[i].SetPosition(m_OutOfView.x, m_OutOfView.y, &m_PieceClip[i]);
+						//if (/* Pawn behind moved two spaces last turn*/)
+							m_Pieces[i].SetPosition(m_OutOfView.x, m_OutOfView.y, &m_PieceClip[i]);
 				}
 			}
 		}
