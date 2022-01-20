@@ -17,7 +17,7 @@ namespace Chesster
 		enum class MenuOptions
 		{
 			Play,
-			Settings,
+			//Settings,
 			Exit
 		};
 
@@ -40,7 +40,7 @@ namespace Chesster
 		Font m_fAbsEmp100;
 		Texture m_TitleText;
 		Texture m_playText;
-		Texture m_SettingsText;
+		//Texture m_SettingsText;
 		Texture m_ExitText;
 		std::vector<Texture*> m_MenuOptions;
 		MenuOptions m_CurrentOption;

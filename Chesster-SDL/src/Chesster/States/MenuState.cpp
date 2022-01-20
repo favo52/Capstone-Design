@@ -11,7 +11,6 @@ namespace Chesster
 		m_TouchLocation{},
 		m_TitleText{},
 		m_playText(),
-		m_SettingsText{},
 		m_ExitText{},
 		m_MenuOptions{},
 		m_CurrentOption{ MenuOptions::Play }
@@ -32,12 +31,10 @@ namespace Chesster
 			((m_Window->GetHeight() - m_TitleText.GetHeight()) / 2) - 250);
 
 		m_playText.LoadFromRenderedText(m_Font, "PLAY", Black);
-		m_SettingsText.LoadFromRenderedText(m_Font, "SETTINGS", Black);
 		m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Black);
 
 		// Prepare all the menu text
 		m_MenuOptions.push_back(&m_playText);
-		m_MenuOptions.push_back(&m_SettingsText);
 		m_MenuOptions.push_back(&m_ExitText);
 
 		int y{ 180 };
@@ -156,7 +153,6 @@ namespace Chesster
 
 		// Black all texts
 		m_playText.LoadFromRenderedText(m_Font, "PLAY", Black);
-		m_SettingsText.LoadFromRenderedText(m_Font, "SETTINGS", Black);
 		m_ExitText.LoadFromRenderedText(m_Font, "EXIT", Black);
 
 		// Red the selected text
@@ -164,10 +160,6 @@ namespace Chesster
 		{
 			case MenuOptions::Play:
 				m_playText.LoadFromRenderedText(m_Font, "PLAY", Red);
-				break;
-
-			case MenuOptions::Settings:
-				m_SettingsText.LoadFromRenderedText(m_Font, "SETTINGS", Red);
 				break;
 
 			case MenuOptions::Exit:
@@ -182,13 +174,6 @@ namespace Chesster
 		{
 			RequestStackPop();
 			RequestStackPush(StateID::Gameplay);
-		}
-		else if (m_CurrentOption == MenuOptions::Settings)
-		{
-			// SettingsState allows the user to adjust
-			// the difficulty level of the engine
-
-			//RequestStackPush(States::SettingsState);
 		}
 		else if (m_CurrentOption == MenuOptions::Exit)
 		{
@@ -210,21 +195,18 @@ namespace Chesster
 		m_LogoTexture->FreeTexture();
 		m_TitleText.FreeTexture();
 		m_playText.FreeTexture();
-		m_SettingsText.FreeTexture();
 		m_ExitText.FreeTexture();
 	}
 
 	MenuState::MenuOptions operator++(MenuState::MenuOptions& menuOption)
 	{
 		return menuOption = ((menuOption == MenuState::MenuOptions::Exit) ?
-			MenuState::MenuOptions::Play :
-			MenuState::MenuOptions((int)menuOption + 1));
+			MenuState::MenuOptions::Play : MenuState::MenuOptions::Exit);
 	}
 
 	MenuState::MenuOptions operator--(MenuState::MenuOptions& menuOption)
 	{
 		return menuOption = ((menuOption == MenuState::MenuOptions::Play) ?
-			MenuState::MenuOptions::Exit :
-			MenuState::MenuOptions((int)menuOption - 1));
+			MenuState::MenuOptions::Exit : MenuState::MenuOptions::Play);
 	}
 }
