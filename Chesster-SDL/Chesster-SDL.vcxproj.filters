@@ -1,550 +1,137 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Chesster">
+      <UniqueIdentifier>{46C3918A-3290-EC95-5BA9-DA3D47D52124}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Chesster\Core">
+      <UniqueIdentifier>{5EE3E551-CAA3-6188-93DE-AA05FF5DA664}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Chesster\States">
+      <UniqueIdentifier>{49329088-B5BD-FD4C-BECE-80412AD9594D}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Chesster\Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Core\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Connector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Core\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Board.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\State.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\StateStack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\TitleState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\MenuState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\GameState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\PauseState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Core\Time.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Core\Log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui_impl_sdl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui_impl_sdlrenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\GameOverState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\States\PawnPromotionState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\ClientTCP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Chesster\Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Connector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\ResourceHolder.h">
-      <Filter>Header Files</Filter>
+      <Filter>Chesster</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Board.h">
-      <Filter>Header Files</Filter>
+      <Filter>Chesster</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\States\State.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\States\StateStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\States\TitleState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\States\MenuState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\States\GameState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\States\PauseState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\Time.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imgui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imgui_impl_sdl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imgui_impl_sdlrenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imgui_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imstb_rectpack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imstb_textedit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\imgui\imstb_truetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\ImGuiWindows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\PlatformDetection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\States\GameOverState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\States\PawnPromotionState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\async_handler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\async_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\async_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\async_pipe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\basic_cmd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\basic_pipe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\child_handle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\close_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\close_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\cmd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\compare_handles.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\env_init.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\environment.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\exe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\executor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\fd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\file_descriptor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\file_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\file_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\group_handle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\group_ref.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\handler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\handles.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\io_context_ref.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\is_running.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\null_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\null_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\on_exit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\pipe_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\pipe_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\search_path.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\shell_path.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\sigchld_service.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\signal.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\start_dir.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\terminate.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\use_vfork.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\wait_for_exit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\posix\wait_group.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\traits\cmd_or_exe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\traits\decl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\traits\env.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\traits\error.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\traits\group.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\traits\wchar_t.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\async_handler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\async_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\async_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\async_pipe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\basic_cmd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\basic_pipe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\child_handle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\close_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\close_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\cmd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\compare_handles.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\env_init.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\environment.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\executor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\file_descriptor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\file_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\file_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\group_handle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\group_ref.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\handle_workaround.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\handler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\handles.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\io_context_ref.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\is_running.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\job_workaround.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\locale.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\null_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\null_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\on_exit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\pipe_in.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\pipe_out.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\search_path.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\shell_path.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\show_window.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\start_dir.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\terminate.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\wait_for_exit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\windows\wait_group.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\basic_cmd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\child_decl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\config.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\execute_impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\handler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\handler_base.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\on_exit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\throw_on_error.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\traits.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\detail\used_handles.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\async.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\async_pipe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\async_system.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\child.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\cmd.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\env.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\environment.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\error.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\exception.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\exe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\extend.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\group.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\handles.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\io.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\locale.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\pipe.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\posix.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\search_path.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\shell.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\spawn.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\start_dir.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\system.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\boost\process\windows.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\Chesster\BoostConnector.h">
+      <Filter>Chesster</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\ClientTCP.h">
-      <Filter>Header Files</Filter>
+      <Filter>Chesster</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\Chesster\Connector.h">
+      <Filter>Chesster</Filter>
     </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Log.h">
+      <Filter>Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\PlatformDetection.h">
+      <Filter>Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\ResourceHolder.h">
+      <Filter>Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Texture.h">
+      <Filter>Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Time.h">
+      <Filter>Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Vector.h">
+      <Filter>Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Window.h">
+      <Filter>Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\ImGuiWindows.h">
+      <Filter>Chesster</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\GameOverState.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\GameState.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\MenuState.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\PauseState.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\PawnPromotionState.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\State.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\StateStack.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\States\TitleState.h">
+      <Filter>Chesster\States</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="resources\textures\ChessterLogo.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\..\..\Users\favo5\Downloads\ChessterLogo.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Chesster-SDL.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ClCompile Include="src\Chesster\Application.cpp">
+      <Filter>Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Board.cpp">
+      <Filter>Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\BoostConnector.cpp">
+      <Filter>Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\ClientTCP.cpp">
+      <Filter>Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Connector.cpp">
+      <Filter>Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Log.cpp">
+      <Filter>Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Texture.cpp">
+      <Filter>Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Time.cpp">
+      <Filter>Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Window.cpp">
+      <Filter>Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Main.cpp">
+      <Filter>Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\GameOverState.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\GameState.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\MenuState.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\PauseState.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\PawnPromotionState.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\State.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\StateStack.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\States\TitleState.cpp">
+      <Filter>Chesster\States</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp" />
   </ItemGroup>
 </Project>

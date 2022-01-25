@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Chesster_Unleashed">
+      <UniqueIdentifier>{3EB508E7-2A99-C93C-93F9-C38F7FFCB3BE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chesster_Unleashed\Core">
+      <UniqueIdentifier>{56D0DA55-C207-23ED-CB11-871037C849E6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chesster_Unleashed\Game">
+      <UniqueIdentifier>{A7C5DC55-13FD-24ED-1C07-891088BD4BE6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chesster_Unleashed\ImGui">
+      <UniqueIdentifier>{E8A09F11-D4C5-EE91-FD10-D421E994EDAF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chesster_Unleashed\Layers">
+      <UniqueIdentifier>{3D3AD54B-A9FC-08D6-F2AC-97625EAEE1B3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chesster_Unleashed\Renderer">
+      <UniqueIdentifier>{A4BEBE39-10CC-EC1F-99B2-E80A05BFB8D6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chesster_Unleashed\Renderer\OpenGL">
+      <UniqueIdentifier>{58078630-4443-899A-AD55-A19199B031B5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Chesster_Unleashed\Core\Application.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Core\Clock.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Core\Core.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Core\Layer.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Core\LayerStack.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Core\Logger.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Core\PlatformDetection.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Core\Window.h">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Game\Board.h">
+      <Filter>Chesster_Unleashed\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Game\Piece.h">
+      <Filter>Chesster_Unleashed\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\ImGuiLayer.h">
+      <Filter>Chesster_Unleashed\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Layers\GameLayer.h">
+      <Filter>Chesster_Unleashed\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Layers\MainMenuLayer.h">
+      <Filter>Chesster_Unleashed\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Layers\TitleLayer.h">
+      <Filter>Chesster_Unleashed\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Renderer\Context.h">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Renderer\Framebuffer.h">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Renderer\RenderCommand.h">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Renderer\Renderer.h">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\Renderer\Texture.h">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.h" />
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Chesster_Unleashed\Core\Application.cpp">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Core\Layer.cpp">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Core\LayerStack.cpp">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Core\Logger.cpp">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Core\Window.cpp">
+      <Filter>Chesster_Unleashed\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Game\Board.cpp">
+      <Filter>Chesster_Unleashed\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Game\Piece.cpp">
+      <Filter>Chesster_Unleashed\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\ImGuiBuild.cpp">
+      <Filter>Chesster_Unleashed\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\ImGuiLayer.cpp">
+      <Filter>Chesster_Unleashed\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Layers\GameLayer.cpp">
+      <Filter>Chesster_Unleashed\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Layers\MainMenuLayer.cpp">
+      <Filter>Chesster_Unleashed\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Layers\TitleLayer.cpp">
+      <Filter>Chesster_Unleashed\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Main.cpp">
+      <Filter>Chesster_Unleashed</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Renderer\Context.cpp">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Renderer\Framebuffer.cpp">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Renderer\Renderer.cpp">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\Renderer\Texture.cpp">
+      <Filter>Chesster_Unleashed\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.cpp" />
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.cpp" />
+  </ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -10,223 +10,28 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Chesster\ClientTCP.cpp" />
-    <ClCompile Include="src\Chesster\States\GameOverState.cpp" />
-    <ClCompile Include="src\Chesster\Application.cpp" />
-    <ClCompile Include="src\Chesster\Board.cpp" />
-    <ClCompile Include="src\Chesster\Connector.cpp" />
-    <ClCompile Include="src\Chesster\Core\Log.cpp" />
-    <ClCompile Include="src\Chesster\Main.cpp" />
-    <ClCompile Include="src\Chesster\States\GameState.cpp" />
-    <ClCompile Include="src\Chesster\States\MenuState.cpp" />
-    <ClCompile Include="src\Chesster\States\PauseState.cpp" />
-    <ClCompile Include="src\Chesster\States\PawnPromotionState.cpp" />
-    <ClCompile Include="src\Chesster\States\State.cpp" />
-    <ClCompile Include="src\Chesster\States\StateStack.cpp" />
-    <ClCompile Include="src\Chesster\States\TitleState.cpp" />
-    <ClCompile Include="src\Chesster\Core\Texture.cpp" />
-    <ClCompile Include="src\Chesster\Core\Time.cpp" />
-    <ClCompile Include="src\Chesster\Core\Window.cpp" />
-    <ClCompile Include="src\pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="vendor\imgui\imgui.cpp" />
-    <ClCompile Include="vendor\imgui\imgui_demo.cpp" />
-    <ClCompile Include="vendor\imgui\imgui_draw.cpp" />
-    <ClCompile Include="vendor\imgui\imgui_impl_sdl.cpp" />
-    <ClCompile Include="vendor\imgui\imgui_impl_sdlrenderer.cpp" />
-    <ClCompile Include="vendor\imgui\imgui_tables.cpp" />
-    <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="src\Chesster\ClientTCP.h" />
-    <ClInclude Include="src\Chesster\States\GameOverState.h" />
-    <ClInclude Include="src\Chesster\Application.h" />
-    <ClInclude Include="src\Chesster\Connector.h" />
-    <ClInclude Include="src\Chesster\Board.h" />
-    <ClInclude Include="src\Chesster\ImGuiWindows.h" />
-    <ClInclude Include="src\Chesster\Core\Log.h" />
-    <ClInclude Include="src\Chesster\Core\PlatformDetection.h" />
-    <ClInclude Include="src\Chesster\States\GameState.h" />
-    <ClInclude Include="src\Chesster\States\MenuState.h" />
-    <ClInclude Include="src\Chesster\States\PauseState.h" />
-    <ClInclude Include="src\Chesster\States\PawnPromotionState.h" />
-    <ClInclude Include="src\Chesster\States\State.h" />
-    <ClInclude Include="src\Chesster\States\StateStack.h" />
-    <ClInclude Include="src\Chesster\States\TitleState.h" />
-    <ClInclude Include="src\Chesster\Core\Texture.h" />
-    <ClInclude Include="src\Chesster\Core\ResourceHolder.h" />
-    <ClInclude Include="src\Chesster\Core\Time.h" />
-    <ClInclude Include="src\Chesster\Core\Vector.h" />
-    <ClInclude Include="src\Chesster\Core\Window.h" />
-    <ClInclude Include="src\pch.h" />
-    <ClInclude Include="vendor\boost\process\async.hpp" />
-    <ClInclude Include="vendor\boost\process\async_pipe.hpp" />
-    <ClInclude Include="vendor\boost\process\async_system.hpp" />
-    <ClInclude Include="vendor\boost\process\child.hpp" />
-    <ClInclude Include="vendor\boost\process\cmd.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\basic_cmd.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\child_decl.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\config.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\execute_impl.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\handler.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\handler_base.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\on_exit.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\async_handler.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\async_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\async_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\async_pipe.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\basic_cmd.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\basic_pipe.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\child_handle.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\close_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\close_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\cmd.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\compare_handles.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\environment.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\env_init.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\exe.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\executor.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\fd.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\file_descriptor.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\file_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\file_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\group_handle.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\group_ref.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\handler.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\handles.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\io_context_ref.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\is_running.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\null_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\null_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\on_exit.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\pipe_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\pipe_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\search_path.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\shell_path.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\sigchld_service.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\signal.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\start_dir.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\terminate.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\use_vfork.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\wait_for_exit.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\posix\wait_group.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\throw_on_error.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\traits.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\traits\cmd_or_exe.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\traits\decl.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\traits\env.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\traits\error.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\traits\group.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\traits\wchar_t.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\used_handles.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\async_handler.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\async_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\async_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\async_pipe.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\basic_cmd.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\basic_pipe.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\child_handle.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\close_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\close_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\cmd.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\compare_handles.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\environment.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\env_init.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\executor.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\file_descriptor.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\file_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\file_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\group_handle.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\group_ref.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\handler.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\handles.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\handle_workaround.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\io_context_ref.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\is_running.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\job_workaround.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\locale.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\null_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\null_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\on_exit.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\pipe_in.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\pipe_out.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\search_path.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\shell_path.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\show_window.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\start_dir.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\terminate.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\wait_for_exit.hpp" />
-    <ClInclude Include="vendor\boost\process\detail\windows\wait_group.hpp" />
-    <ClInclude Include="vendor\boost\process\env.hpp" />
-    <ClInclude Include="vendor\boost\process\environment.hpp" />
-    <ClInclude Include="vendor\boost\process\error.hpp" />
-    <ClInclude Include="vendor\boost\process\exception.hpp" />
-    <ClInclude Include="vendor\boost\process\exe.hpp" />
-    <ClInclude Include="vendor\boost\process\extend.hpp" />
-    <ClInclude Include="vendor\boost\process\group.hpp" />
-    <ClInclude Include="vendor\boost\process\handles.hpp" />
-    <ClInclude Include="vendor\boost\process\io.hpp" />
-    <ClInclude Include="vendor\boost\process\locale.hpp" />
-    <ClInclude Include="vendor\boost\process\pipe.hpp" />
-    <ClInclude Include="vendor\boost\process\posix.hpp" />
-    <ClInclude Include="vendor\boost\process\search_path.hpp" />
-    <ClInclude Include="vendor\boost\process\shell.hpp" />
-    <ClInclude Include="vendor\boost\process\spawn.hpp" />
-    <ClInclude Include="vendor\boost\process\start_dir.hpp" />
-    <ClInclude Include="vendor\boost\process\system.hpp" />
-    <ClInclude Include="vendor\boost\process\windows.hpp" />
-    <ClInclude Include="vendor\imgui\imconfig.h" />
-    <ClInclude Include="vendor\imgui\imgui.h" />
-    <ClInclude Include="vendor\imgui\imgui_impl_sdl.h" />
-    <ClInclude Include="vendor\imgui\imgui_impl_sdlrenderer.h" />
-    <ClInclude Include="vendor\imgui\imgui_internal.h" />
-    <ClInclude Include="vendor\imgui\imstb_rectpack.h" />
-    <ClInclude Include="vendor\imgui\imstb_textedit.h" />
-    <ClInclude Include="vendor\imgui\imstb_truetype.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\..\Users\favo5\Downloads\ChessterLogo.ico" />
-    <Image Include="resources\textures\ChessterLogo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Chesster-SDL.rc" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{760DC838-6270-57DD-0BF6-8F93F7372360}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7dbe45b3-20ce-4b63-be0e-f10c72b39f70}</ProjectGuid>
-    <RootNamespace>ChessterSDL</RootNamespace>
+    <RootNamespace>Chesster-SDL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -237,54 +42,118 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>..\bin\Debug-windows-x86_64\Chesster-SDL\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\Chesster-SDL\</IntDir>
+    <TargetName>Chesster-SDL</TargetName>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>..\bin\Release-windows-x86_64\Chesster-SDL\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\Chesster-SDL\</IntDir>
+    <TargetName>Chesster-SDL</TargetName>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;vendor\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CHESSTER_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;vendor\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;opengl32.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\vendor\SDL2_image\lib\x64;..\vendor\SDL2_ttf\lib\x64;..\vendor\Python\libs;..\vendor\SDL2\lib\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>src;vendor\SDL2\include;vendor\SDL2\src;vendor\SDL2_image\include;vendor\SDL2_ttf\include;vendor\Python\include;vendor\spdlog\include;vendor\imgui;vendor\imterm;vendor\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CHESSTER_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>vendor\SDL2\lib\x64;vendor\SDL2_image\lib\x64;vendor\SDL2_ttf\lib\x64;vendor\Python\DLLs;vendor\Python\libs;vendor\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;opengl32.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\vendor\SDL2_image\lib\x64;..\vendor\SDL2_ttf\lib\x64;..\vendor\Python\libs;..\vendor\SDL2\lib\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Chesster\Application.h" />
+    <ClInclude Include="src\Chesster\Board.h" />
+    <ClInclude Include="src\Chesster\BoostConnector.h" />
+    <ClInclude Include="src\Chesster\ClientTCP.h" />
+    <ClInclude Include="src\Chesster\Connector.h" />
+    <ClInclude Include="src\Chesster\Core\Log.h" />
+    <ClInclude Include="src\Chesster\Core\PlatformDetection.h" />
+    <ClInclude Include="src\Chesster\Core\ResourceHolder.h" />
+    <ClInclude Include="src\Chesster\Core\Texture.h" />
+    <ClInclude Include="src\Chesster\Core\Time.h" />
+    <ClInclude Include="src\Chesster\Core\Vector.h" />
+    <ClInclude Include="src\Chesster\Core\Window.h" />
+    <ClInclude Include="src\Chesster\ImGuiWindows.h" />
+    <ClInclude Include="src\Chesster\States\GameOverState.h" />
+    <ClInclude Include="src\Chesster\States\GameState.h" />
+    <ClInclude Include="src\Chesster\States\MenuState.h" />
+    <ClInclude Include="src\Chesster\States\PauseState.h" />
+    <ClInclude Include="src\Chesster\States\PawnPromotionState.h" />
+    <ClInclude Include="src\Chesster\States\State.h" />
+    <ClInclude Include="src\Chesster\States\StateStack.h" />
+    <ClInclude Include="src\Chesster\States\TitleState.h" />
+    <ClInclude Include="src\pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Chesster\Application.cpp" />
+    <ClCompile Include="src\Chesster\Board.cpp" />
+    <ClCompile Include="src\Chesster\BoostConnector.cpp" />
+    <ClCompile Include="src\Chesster\ClientTCP.cpp" />
+    <ClCompile Include="src\Chesster\Connector.cpp" />
+    <ClCompile Include="src\Chesster\Core\Log.cpp" />
+    <ClCompile Include="src\Chesster\Core\Texture.cpp" />
+    <ClCompile Include="src\Chesster\Core\Time.cpp" />
+    <ClCompile Include="src\Chesster\Core\Window.cpp" />
+    <ClCompile Include="src\Chesster\Main.cpp" />
+    <ClCompile Include="src\Chesster\States\GameOverState.cpp" />
+    <ClCompile Include="src\Chesster\States\GameState.cpp" />
+    <ClCompile Include="src\Chesster\States\MenuState.cpp" />
+    <ClCompile Include="src\Chesster\States\PauseState.cpp" />
+    <ClCompile Include="src\Chesster\States\PawnPromotionState.cpp" />
+    <ClCompile Include="src\Chesster\States\State.cpp" />
+    <ClCompile Include="src\Chesster\States\StateStack.cpp" />
+    <ClCompile Include="src\Chesster\States\TitleState.cpp" />
+    <ClCompile Include="src\pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vendor\Glad\Glad.vcxproj">
+      <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\vendor\imgui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
