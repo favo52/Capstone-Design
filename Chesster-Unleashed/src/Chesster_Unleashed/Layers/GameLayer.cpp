@@ -6,10 +6,15 @@
 #include "Chesster_Unleashed/Renderer/RenderCommand.h"
 #include "Chesster_Unleashed/Renderer/Framebuffer.h"
 
-#include <imgui.h>
+#include "Chesster_Unleashed/ImGui/Styles.h"
+
+//#include <imgui.h>
 #include <SDL.h>
+
 namespace Chesster
 {
+	ConsolePanel GameLayer::m_ConsolePanel{};
+
 	GameLayer::GameLayer() :
 		Layer(""),
 		m_Window{ Application::Get().GetWindow() }
@@ -96,7 +101,6 @@ namespace Chesster
 
 		for (const Board::BoardSquare& square : m_Board.GetBoardSquares())
 		{
-			//glm::vec4 bounds = { square.WorldBounds.left, square.WorldBounds.right, square.WorldBounds.bottom, square.WorldBounds.top };
 			if (IsPointInQuad(m_ViewportMousePos, square.WorldBounds))
 				CHESSTER_INFO("{0}", square.Notation);
 		}
@@ -106,7 +110,7 @@ namespace Chesster
 	{
 		m_Framebuffer->Bind();
 
-		RenderCommand::SetClearColor();
+		RenderCommand::SetClearColor(ClearColor);
 		RenderCommand::Clear();
 
 		// Draw here
@@ -141,7 +145,7 @@ namespace Chesster
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
 		float minWinSizeX = style.WindowMinSize.x;
-		style.WindowMinSize.x = 200.0f;
+		style.WindowMinSize.x = 300.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
@@ -169,17 +173,37 @@ namespace Chesster
 			ImGui::EndMenuBar();
 		}
 
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		//// Settings Panel /////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////
 		ImGui::Begin("Settings");
+
+		static glm::vec4 clearColor = { 0.141f, 0.203f, 0.270f, 1.0f };
+		DrawSection<glm::vec4>("Colors", [&]()
+		{
+			if (DrawColorEdit4Control("Border", clearColor, 60.0f))
+				ClearColor = clearColor * 255.0f;
+
+			if (DrawColorEdit4Control("Evens", SquareColor1, 60.0f))
+				UpdateSquareColors();
+
+			if (DrawColorEdit4Control("Odds", SquareColor2, 60.0f))
+				UpdateSquareColors();
+		});
+		
+		ImGui::Separator();
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Separator();
 		ImGui::End(); // End "Stats"
 
-		ImGui::Begin("Stats");
-		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End(); // End "Stats"
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		//// Console Panel //////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		m_ConsolePanel.OnImGuiRender("Console Panel");
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//// Viewport Window ////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////////////////		
+		/////////////////////////////////////////////////////////////////////////////////////////////
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
 
@@ -200,6 +224,15 @@ namespace Chesster
 		ImGui::PopStyleVar();
 
 		ImGui::End(); // End "DockSpace"
+	}
+
+	void GameLayer::UpdateSquareColors()
+	{
+		for (Board::BoardSquare& square : m_Board.GetBoardSquares())
+		{
+			glm::vec4 newColor = ((square.Index + 1) % 2 == 0) ? SquareColor2 : SquareColor1;
+			square.Color = newColor * 255.0f;
+		}
 	}
 
 	bool GameLayer::IsPointInQuad(const glm::vec2& point, const QuadBounds& quad)

@@ -21,7 +21,7 @@ Chesster-SDL/imgui.ini
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
+#[Bb]in/
 [Bb]in-int/
 [Oo]bj/
 [Ll]og/

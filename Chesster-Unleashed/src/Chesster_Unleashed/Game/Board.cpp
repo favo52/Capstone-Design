@@ -33,7 +33,7 @@ namespace Chesster
 				square->Color = CurrentColor * 255.0f;
 				square->Position = { (float)x * square->Size.x + offset.x, (float)y * square->Size.y + offset.y };
 				square->Notation = squareNotation;
-				square->Index = x + y * 8;
+				square->Index = x + y;
 
 				square->UpdateCenter();
 				square->UpdateWorldBounds();

@@ -60,7 +60,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CHESSTER_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;..\vendor\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -81,7 +81,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CHESSTER_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;..\vendor\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -102,7 +102,6 @@
   <ItemGroup>
     <ClInclude Include="src\Chesster\Application.h" />
     <ClInclude Include="src\Chesster\Board.h" />
-    <ClInclude Include="src\Chesster\BoostConnector.h" />
     <ClInclude Include="src\Chesster\ClientTCP.h" />
     <ClInclude Include="src\Chesster\Connector.h" />
     <ClInclude Include="src\Chesster\Core\Log.h" />
@@ -126,13 +125,13 @@
   <ItemGroup>
     <ClCompile Include="src\Chesster\Application.cpp" />
     <ClCompile Include="src\Chesster\Board.cpp" />
-    <ClCompile Include="src\Chesster\BoostConnector.cpp" />
     <ClCompile Include="src\Chesster\ClientTCP.cpp" />
     <ClCompile Include="src\Chesster\Connector.cpp" />
     <ClCompile Include="src\Chesster\Core\Log.cpp" />
     <ClCompile Include="src\Chesster\Core\Texture.cpp" />
     <ClCompile Include="src\Chesster\Core\Time.cpp" />
     <ClCompile Include="src\Chesster\Core\Window.cpp" />
+    <ClCompile Include="src\Chesster\ImGuiBuild.cpp" />
     <ClCompile Include="src\Chesster\Main.cpp" />
     <ClCompile Include="src\Chesster\States\GameOverState.cpp" />
     <ClCompile Include="src\Chesster\States\GameState.cpp" />

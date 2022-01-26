@@ -24,6 +24,7 @@ IncludeDir["Glad"] = "%{wks.location}/vendor/Glad/include"
 IncludeDir["imgui"] = "%{wks.location}/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/vendor/glm"
 IncludeDir["stb_image"] = "%{wks.location}/vendor/stb_image"
+IncludeDir["Python"] = "%{wks.location}/vendor/Python/include"
 
 LibraryDir = {}
 LibraryDir["SDL2_Debug"] = "%{wks.location}/vendor/SDL2/lib/x64/Debug"

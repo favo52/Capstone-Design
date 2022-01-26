@@ -20,6 +20,12 @@ project "Chesster-SDL"
 		"%{wks.location}/%{prj.name}/vendor/glm/glm/**.inl"
 	}
 
+	excludes
+	{
+		"%{wks.location}/%{prj.name}/src/Chesster/BoostConnector.h",
+		"%{wks.location}/%{prj.name}/src/Chesster/BoostConnector.cpp"
+	}
+
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS"
@@ -28,7 +34,7 @@ project "Chesster-SDL"
 	includedirs
 	{
 		"%{wks.location}/%{prj.name}/src",
-		"%{wks.location}/%{prj.name}/vendor/spdlog/include",
+		"%{wks.location}/vendor/spdlog/include",
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.SDL2_image}",
 		"%{IncludeDir.SDL2_ttf}",
@@ -36,6 +42,7 @@ project "Chesster-SDL"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.Python}"
 	}
 
 	libdirs

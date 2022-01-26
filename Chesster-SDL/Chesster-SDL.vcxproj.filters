@@ -18,9 +18,6 @@
     <ClInclude Include="src\Chesster\Board.h">
       <Filter>Chesster</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\BoostConnector.h">
-      <Filter>Chesster</Filter>
-    </ClInclude>
     <ClInclude Include="src\Chesster\ClientTCP.h">
       <Filter>Chesster</Filter>
     </ClInclude>
@@ -84,9 +81,6 @@
     <ClCompile Include="src\Chesster\Board.cpp">
       <Filter>Chesster</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\BoostConnector.cpp">
-      <Filter>Chesster</Filter>
-    </ClCompile>
     <ClCompile Include="src\Chesster\ClientTCP.cpp">
       <Filter>Chesster</Filter>
     </ClCompile>
@@ -133,5 +127,6 @@
       <Filter>Chesster\States</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\Chesster\ImGuiBuild.cpp" />
   </ItemGroup>
 </Project>

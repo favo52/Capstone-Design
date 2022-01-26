@@ -36,6 +36,7 @@ project "Chesster-Unleashed"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.Python}"
 	}
 
 	libdirs

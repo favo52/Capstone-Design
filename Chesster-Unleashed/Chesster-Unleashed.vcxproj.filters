@@ -13,14 +13,14 @@
     <Filter Include="Chesster_Unleashed\ImGui">
       <UniqueIdentifier>{E8A09F11-D4C5-EE91-FD10-D421E994EDAF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Chesster_Unleashed\ImGui\Panels">
+      <UniqueIdentifier>{3ABC1B4D-A69F-2A8D-AFA2-58C91B05F1DD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Chesster_Unleashed\Layers">
       <UniqueIdentifier>{3D3AD54B-A9FC-08D6-F2AC-97625EAEE1B3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Chesster_Unleashed\Renderer">
       <UniqueIdentifier>{A4BEBE39-10CC-EC1F-99B2-E80A05BFB8D6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Chesster_Unleashed\Renderer\OpenGL">
-      <UniqueIdentifier>{58078630-4443-899A-AD55-A19199B031B5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +57,15 @@
     <ClInclude Include="src\Chesster_Unleashed\ImGui\ImGuiLayer.h">
       <Filter>Chesster_Unleashed\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.h">
+      <Filter>Chesster_Unleashed\ImGui\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.h">
+      <Filter>Chesster_Unleashed\ImGui\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Styles.h">
+      <Filter>Chesster_Unleashed\ImGui</Filter>
+    </ClInclude>
     <ClInclude Include="src\Chesster_Unleashed\Layers\GameLayer.h">
       <Filter>Chesster_Unleashed\Layers</Filter>
     </ClInclude>
@@ -82,8 +91,6 @@
       <Filter>Chesster_Unleashed\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.h" />
-    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster_Unleashed\Core\Application.cpp">
@@ -113,6 +120,12 @@
     <ClCompile Include="src\Chesster_Unleashed\ImGui\ImGuiLayer.cpp">
       <Filter>Chesster_Unleashed\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.cpp">
+      <Filter>Chesster_Unleashed\ImGui\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.cpp">
+      <Filter>Chesster_Unleashed\ImGui\Panels</Filter>
+    </ClCompile>
     <ClCompile Include="src\Chesster_Unleashed\Layers\GameLayer.cpp">
       <Filter>Chesster_Unleashed\Layers</Filter>
     </ClCompile>
@@ -138,7 +151,5 @@
       <Filter>Chesster_Unleashed\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.cpp" />
-    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.cpp" />
   </ItemGroup>
 </Project>

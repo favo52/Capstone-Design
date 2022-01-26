@@ -60,7 +60,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CHESSTER_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;..\vendor\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -81,7 +81,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CHESSTER_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\Glad\include;..\vendor\imgui;..\vendor\glm;..\vendor\stb_image;..\vendor\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -100,8 +100,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.h" />
-    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Application.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Clock.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Core.h" />
@@ -113,6 +111,9 @@
     <ClInclude Include="src\Chesster_Unleashed\Game\Board.h" />
     <ClInclude Include="src\Chesster_Unleashed\Game\Piece.h" />
     <ClInclude Include="src\Chesster_Unleashed\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.h" />
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.h" />
+    <ClInclude Include="src\Chesster_Unleashed\ImGui\Styles.h" />
     <ClInclude Include="src\Chesster_Unleashed\Layers\GameLayer.h" />
     <ClInclude Include="src\Chesster_Unleashed\Layers\MainMenuLayer.h" />
     <ClInclude Include="src\Chesster_Unleashed\Layers\TitleLayer.h" />
@@ -124,8 +125,6 @@
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.cpp" />
-    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\Application.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\Layer.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\LayerStack.cpp" />
@@ -135,6 +134,8 @@
     <ClCompile Include="src\Chesster_Unleashed\Game\Piece.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\ImGui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\ConsolePanel.cpp" />
+    <ClCompile Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Layers\GameLayer.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Layers\MainMenuLayer.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Layers\TitleLayer.cpp" />

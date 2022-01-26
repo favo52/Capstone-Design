@@ -141,44 +141,44 @@ namespace Chesster
 
 		switch (sdlEvent.window.event)
 		{
-		case SDL_WINDOWEVENT_CLOSE:
-			if (sdlEvent.window.windowID == windowID)
-				Quit();
-			break;
+			case SDL_WINDOWEVENT_CLOSE:
+				if (sdlEvent.window.windowID == windowID)
+					Quit();
+				break;
 
-		case SDL_WINDOWEVENT_SIZE_CHANGED:
-			if (sdlEvent.window.windowID == windowID)
-			{
-				m_Window->GetWinProps()->Width = sdlEvent.window.data1;
-				m_Window->GetWinProps()->Height = sdlEvent.window.data2;
-				m_Window->OnUpdate();
-			}
-			break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				if (sdlEvent.window.windowID == windowID)
+				{
+					m_Window->GetWinProps()->Width = sdlEvent.window.data1;
+					m_Window->GetWinProps()->Height = sdlEvent.window.data2;
+					m_Window->OnUpdate();
+				}
+				break;
 
-		case SDL_WINDOWEVENT_RESIZED:
-			if (sdlEvent.window.windowID == windowID)
-				Renderer::OnWindowResize(sdlEvent.window.data1, sdlEvent.window.data2);
-			break;
+			case SDL_WINDOWEVENT_RESIZED:
+				if (sdlEvent.window.windowID == windowID)
+					Renderer::OnWindowResize(sdlEvent.window.data1, sdlEvent.window.data2);
+				break;
 
-		case SDL_WINDOWEVENT_EXPOSED:
-			if (sdlEvent.window.windowID == windowID)
-				m_Window->OnUpdate();
-			break;
+			case SDL_WINDOWEVENT_EXPOSED:
+				if (sdlEvent.window.windowID == windowID)
+					m_Window->OnUpdate();
+				break;
 
-		case SDL_WINDOWEVENT_MINIMIZED:
-			m_Minimized = true;
-			break;
+			case SDL_WINDOWEVENT_MINIMIZED:
+				m_Minimized = true;
+				break;
 
-		case SDL_WINDOWEVENT_MAXIMIZED:
-			m_Minimized = false;
-			break;
+			case SDL_WINDOWEVENT_MAXIMIZED:
+				m_Minimized = false;
+				break;
 
-		case SDL_WINDOWEVENT_RESTORED:
-			m_Minimized = false;
-			break;
+			case SDL_WINDOWEVENT_RESTORED:
+				m_Minimized = false;
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 	}
 }
