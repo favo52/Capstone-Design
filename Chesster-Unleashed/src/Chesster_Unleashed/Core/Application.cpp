@@ -22,6 +22,10 @@ namespace Chesster
 
 		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 
+		m_TextureHolder.Load(TextureID::GroupLogo, "assets/textures/ReadySetCode.jpeg");
+		m_TextureHolder.Load(TextureID::ChessterLogo, "assets/textures/ChessterLogo.png");
+		m_TextureHolder.Load(TextureID::Pieces, "assets/textures/ChessPieces.png");
+
 		//PushLayer(new TitleLayer);
 		PushLayer(new GameLayer);
 

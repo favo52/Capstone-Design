@@ -31,7 +31,13 @@ namespace Chesster
 		//io.ConfigViewportsNoTaskBarIcon = true;
 
 		// Set font
-		float fontSize = 18.0f;
+		float fontSize{ 18.0f };
+		ImFontConfig consoleFontConfig;
+		consoleFontConfig.GlyphMinAdvanceX = 7.5;
+		consoleFontConfig.GlyphMaxAdvanceX = 8;
+
+		io.Fonts->AddFontDefault();
+		io.Fonts->AddFontFromFileTTF("assets/fonts/arial.ttf", 14, &consoleFontConfig);
 		io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", fontSize);
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", fontSize);
 

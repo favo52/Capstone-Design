@@ -26,12 +26,12 @@ namespace Chesster
 
 	void Renderer::DrawTexture(const Texture* texture)
 	{
-		SDL_RenderCopy(Context::Renderer, *texture, texture->m_Clip, &texture->GetBounds());
+		SDL_RenderCopy(Context::Renderer, texture->GetSDLTexture(), texture->m_Clip, &texture->GetBounds());
 	}
 
 	void Renderer::DrawTextureEx(const Texture* texture)
 	{
-		SDL_RenderCopyEx(Context::Renderer, *texture, texture->m_Clip,
+		SDL_RenderCopyEx(Context::Renderer, texture->GetSDLTexture(), texture->m_Clip,
 			&texture->m_RenderQuad, texture->m_Angle, texture->m_Center, texture->m_Flip);
 	}
 

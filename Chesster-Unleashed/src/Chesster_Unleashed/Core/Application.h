@@ -3,6 +3,7 @@
 #include "Chesster_Unleashed/Core/Core.h"
 #include "Chesster_Unleashed/Core/Window.h"
 #include "Chesster_Unleashed/Core/LayerStack.h"
+#include "Chesster_Unleashed/Core/ResourceHolder.h"
 
 #include "Chesster_Unleashed/ImGui/ImGuiLayer.h"
 
@@ -26,6 +27,9 @@ namespace Chesster
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
 		static Application& Get() { return *s_Instance; }
+
+	public:
+		TextureHolder m_TextureHolder;
 
 	private:
 		void ToggleFullscreen();

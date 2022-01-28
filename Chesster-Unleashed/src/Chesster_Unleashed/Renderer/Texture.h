@@ -31,6 +31,7 @@ namespace Chesster
 	{
 	public:
 		Texture() = default;
+		Texture(const Texture&) = default;
 		Texture(const std::string& path);
 		virtual ~Texture();
 
@@ -48,6 +49,8 @@ namespace Chesster
 		void SetAlpha(Uint8 alpha);
 
 		void SetPosition(int x, int y) { m_RenderQuad = { x, y, m_Width, m_Height }; }
+		void SetWidth(int width) { m_Width = width; }
+		void SetHeight(int height) { m_Height = height; }
 		void SetClip(SDL_Rect* clip) { m_Clip = clip; }
 		void SetRotation(double angle) { m_Angle = angle; }
 		void SetCenter(SDL_Point* center) { m_Center = center; }
@@ -60,6 +63,7 @@ namespace Chesster
 		const int GetWidth() const { return m_Width; }
 		const int GetHeight() const { return m_Height; }
 		const SDL_Rect& GetBounds() const { return m_RenderQuad; }
+		SDL_Rect& GetBounds() { return m_RenderQuad; }
 
 		// Pixel manipulators
 		bool LockTexture();

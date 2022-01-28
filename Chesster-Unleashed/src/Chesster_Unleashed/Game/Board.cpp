@@ -5,6 +5,8 @@
 
 namespace Chesster
 {
+	std::unordered_map<std::string, Board::BoardSquare*> Board::m_SquaresMap;
+
 	Board::Board()
 	{
 	}
@@ -38,13 +40,14 @@ namespace Chesster
 				square->UpdateCenter();
 				square->UpdateWorldBounds();
 
-				m_SquaresMap[squareNotation] = *square;
+				m_SquaresMap[squareNotation] = square;
 			}
 		}
 	}
 
 	void Board::OnUpdate(const std::chrono::duration<double>& dt)
 	{
+		
 	}
 
 	void Board::OnRender()

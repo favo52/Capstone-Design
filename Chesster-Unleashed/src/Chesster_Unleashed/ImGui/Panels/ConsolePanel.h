@@ -21,6 +21,9 @@ namespace Chesster
 
 		void OnImGuiRender(const char* title, bool* p_open = nullptr);
 
+		void PushFont(int index);
+		void PopFont();
+
 		void ExecCommand(const char* command_line);
 
 		// In C++11 you'd be better off using lambdas for this sort of forwarding callbacks

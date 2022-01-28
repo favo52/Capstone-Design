@@ -126,6 +126,7 @@ namespace Chesster
 		// If your items are of variable height:
 		// - Split them into same height items would be simpler and facilitate random-seeking into your list.
 		// - Consider using manual call to IsRectVisible() and skipping extraneous decoration from your items.
+		PushFont(1);
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 		if (copy_to_clipboard)
 			ImGui::LogToClipboard();
@@ -154,6 +155,7 @@ namespace Chesster
 			ImGui::SetScrollHereY(1.0f);
 		ScrollToBottom = false;
 
+		PopFont();
 		ImGui::PopStyleVar();
 		ImGui::EndChild();
 		ImGui::Separator();
@@ -177,6 +179,18 @@ namespace Chesster
 			ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
 
 		ImGui::End();
+	}
+
+	void ConsolePanel::PushFont(int index)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		auto font = io.Fonts->Fonts[index];
+		ImGui::PushFont(font);
+	}
+
+	void ConsolePanel::PopFont()
+	{
+		ImGui::PopFont();
 	}
 
 	void ConsolePanel::ExecCommand(const char* command_line)

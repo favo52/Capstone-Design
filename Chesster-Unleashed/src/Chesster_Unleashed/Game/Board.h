@@ -38,11 +38,13 @@ namespace Chesster
 		std::array<BoardSquare, 64>& GetBoardSquares() { return m_BoardSquares; }
 		const std::array<BoardSquare, 64>& GetBoardSquares() const { return m_BoardSquares; }
 
-		std::unordered_map<std::string, BoardSquare>& GetSquaresMap() { return m_SquaresMap; }
-		const std::unordered_map<std::string, BoardSquare>& GetSquaresMap() const { return m_SquaresMap; }
+		std::unordered_map<std::string, BoardSquare*>& GetSquaresMap() { return m_SquaresMap; }
+		const std::unordered_map<std::string, BoardSquare*>& GetSquaresMap() const { return m_SquaresMap; }
+
+	public:
+		static std::unordered_map<std::string, BoardSquare*> m_SquaresMap;
 
 	private:
 		std::array<BoardSquare, 64> m_BoardSquares;
-		std::unordered_map<std::string, BoardSquare> m_SquaresMap;
 	};
 }

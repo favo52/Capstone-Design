@@ -100,13 +100,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Application.h" />
+    <ClInclude Include="src\Chesster_Unleashed\Core\ClientTCP.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Clock.h" />
+    <ClInclude Include="src\Chesster_Unleashed\Core\Connector.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Core.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Layer.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\LayerStack.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Logger.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\PlatformDetection.h" />
+    <ClInclude Include="src\Chesster_Unleashed\Core\ResourceHolder.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Window.h" />
     <ClInclude Include="src\Chesster_Unleashed\Game\Board.h" />
     <ClInclude Include="src\Chesster_Unleashed\Game\Piece.h" />
@@ -126,6 +130,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster_Unleashed\Core\Application.cpp" />
+    <ClCompile Include="src\Chesster_Unleashed\Core\ClientTCP.cpp" />
+    <ClCompile Include="src\Chesster_Unleashed\Core\Connector.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\Layer.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\LayerStack.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\Logger.cpp" />
@@ -155,6 +161,12 @@
     <ProjectReference Include="..\vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Chesster-Unleashed.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\ChessterLogo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
