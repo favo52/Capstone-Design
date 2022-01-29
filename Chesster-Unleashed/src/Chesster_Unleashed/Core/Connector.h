@@ -19,6 +19,7 @@ namespace Chesster
 
 		void SetDifficultyLevel(int difficulty = 0);
 		void SetDifficultyELO(int elo = 1350); // Overrides skill level
+		void ToggleELO(bool boolean);
 
 		std::string GetNextMove(const std::string& position);
 		std::vector<std::string> GetValidMoves(const std::string& path, const std::string& fen);

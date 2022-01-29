@@ -6,15 +6,14 @@
 #include "Chesster_Unleashed/Renderer/RenderCommand.h"
 #include "Chesster_Unleashed/Renderer/Framebuffer.h"
 
-#include "Chesster_Unleashed/ImGui/Styles.h"
-
-//#include <imgui.h>
 #include <SDL.h>
 
 namespace Chesster
 {
 	static bool s_IsThreadRunning{ true };
+
 	ConsolePanel GameLayer::m_ConsolePanel{};
+	SettingsPanel GameLayer::m_SettingsPanel{};
 
 	GameLayer::GameLayer() :
 		Layer(""),
@@ -54,7 +53,10 @@ namespace Chesster
 			case SDL_KEYDOWN:
 			{
 				if (sdlEvent.key.keysym.sym == SDLK_SPACE && sdlEvent.key.repeat == 0 && !m_IsRecvComputerMove)
+				{
+					//m_ClientTCP.SendCommand();
 					m_IsComputerTurn = true;
+				}
 				break;
 			}
 
@@ -70,7 +72,7 @@ namespace Chesster
 
 			case SDL_MOUSEBUTTONDOWN:
 			{
-				if (sdlEvent.button.button == SDL_BUTTON_LEFT)
+				if (sdlEvent.button.button == SDL_BUTTON_LEFT && !m_IsComputerTurn && !m_IsRecvComputerMove)
 				{
 					for (const Piece& piece : m_Pieces)
 					{
@@ -139,10 +141,14 @@ namespace Chesster
 		// A new move has been played
 		if (m_MoveHistorySize != m_MoveHistory.size())
 		{
+			m_Board.OnNewMove(m_Pieces, m_CurrentMove, m_MoveHistory);
+
 			m_MoveHistorySize = m_MoveHistory.size();
 			m_IsMovePlayed = true;
 			// TODO: update current player
 		}
+
+		UpdateDifficulty();
 
 		m_Board.OnUpdate(dt);
 	}
@@ -151,7 +157,7 @@ namespace Chesster
 	{
 		m_Framebuffer->Bind();
 
-		RenderCommand::SetClearColor(ClearColor);
+		RenderCommand::SetClearColor(SettingsPanel::ClearColor);
 		RenderCommand::Clear();
 
 		m_Board.OnRender();
@@ -187,7 +193,7 @@ namespace Chesster
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
 		float minWinSizeX = style.WindowMinSize.x;
-		style.WindowMinSize.x = 290.0f;
+		style.WindowMinSize.x = 300.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
@@ -218,30 +224,12 @@ namespace Chesster
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//// Settings Panel /////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////////////////
-		ImGui::Begin("Settings");
-
-		static glm::vec4 clearColor = { 0.141f, 0.203f, 0.270f, 1.0f };
-		DrawSection<glm::vec4>("Colors", [&]()
-		{
-			if (DrawColorEdit4Control("Border", clearColor, 60.0f))
-				ClearColor = clearColor * 255.0f;
-
-			if (DrawColorEdit4Control("Evens", SquareColor1, 60.0f))
-				UpdateSquareColors();
-
-			if (DrawColorEdit4Control("Odds", SquareColor2, 60.0f))
-				UpdateSquareColors();
-		});
-		
-		ImGui::Separator();
-		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::Separator();
-		ImGui::End(); // End "Stats"
+		m_SettingsPanel.OnImGuiRender();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//// Console Panel //////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////////////////
-		m_ConsolePanel.OnImGuiRender("Console Panel");
+		m_ConsolePanel.OnImGuiRender("Chess Engine");
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//// Viewport Window ////////////////////////////////////////////////////////////////////////
@@ -287,7 +275,6 @@ namespace Chesster
 				if (piece.Notation == oldSquare->second->Notation)
 				{
 					m_PieceIndex = piece.Index;
-					m_AnimationPos = newSquare->second->Center - oldSquare->second->Center;
 					m_TargetSquare = *newSquare->second;
 					break;
 				}
@@ -295,7 +282,6 @@ namespace Chesster
 			
 			m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
 			m_Pieces[m_PieceIndex].Notation = m_TargetSquare.Notation;
-			m_Pieces[m_PieceIndex].UpdateWorldBounds();
 			m_MoveHistory += m_CurrentMove + ' ';
 			m_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove).c_str());
 
@@ -315,7 +301,7 @@ namespace Chesster
 		m_IsPieceReleased = false;
 
 		// Find the square where the piece was dropped at
-		for (const Board::BoardSquare& square : m_Board.GetBoardSquares())
+		for (const Board::Square& square : m_Board.GetBoardSquares())
 		{
 			if (IsPointInQuad(m_ViewportMousePos, square.WorldBounds))
 			{
@@ -333,8 +319,6 @@ namespace Chesster
 					// Update position
 					m_Pieces[m_PieceIndex].SetPosition(square.Center.x, square.Center.y);
 					m_Pieces[m_PieceIndex].Notation = square.Notation;
-					m_Pieces[m_PieceIndex].UpdateCenter();
-					m_Pieces[m_PieceIndex].UpdateWorldBounds();
 
 					m_MoveHistory += m_CurrentMove + ' ';
 					m_ConsolePanel.AddLog("Player move: %s", m_CurrentMove);
@@ -355,22 +339,13 @@ namespace Chesster
 					if (UpdateTargetSquare(m_Pieces[m_PieceIndex].Notation))
 					{
 						m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
-						m_ConsolePanel.AddLog("\n Wait... that's illegal!\n");
+						m_ConsolePanel.AddLog(" Wait... that's illegal!\n");
 						CHESSTER_ERROR("Wait... that's illegal!");
 						m_IsOutsideBoard = false;
 						break;
 					}
 				}
 			}
-		}
-	}
-
-	void GameLayer::UpdateSquareColors()
-	{
-		for (Board::BoardSquare& square : m_Board.GetBoardSquares())
-		{
-			glm::vec4 newColor = ((square.Index + 1) % 2 == 0) ? SquareColor2 : SquareColor1;
-			square.Color = newColor * 255.0f;
 		}
 	}
 
@@ -387,26 +362,10 @@ namespace Chesster
 		return false;
 	}
 
-	float whiteCapturedOffset{ 0.0f };
-	float blackCapturedOffset{ 0.0f };
-
 	void GameLayer::RemovePiece(Piece& piece)
 	{
 		piece.Notation = "00";
-		piece.Size = { 10.0f, 10.0f };
-
-		if (piece.Color == PieceColor::Black)
-		{
-			piece.SetPosition(-300.0f + blackCapturedOffset, 900.0f);
-			blackCapturedOffset += 50.0f;
-		}
-		else
-		{
-			piece.SetPosition(-300.0f + whiteCapturedOffset, 10.0f);
-			whiteCapturedOffset += 50.0f;
-		}
-
-		piece.WorldBounds = { -1000.1f, -1000.0f, -1000.1f, -1000.0f };
+		piece.SetPosition(-3000.0f, -3000.0f);
 	}
 
 	void GameLayer::ResetPieces()
@@ -423,7 +382,7 @@ namespace Chesster
 			auto& squares = m_Board.GetBoardSquares();
 
 			// Set up the sprite
-			piece.Texture = app.Get().m_TextureHolder.Get(TextureID::Pieces);			
+			piece.Texture = app.Get().m_TextureHolder.Get(TextureID::Pieces);
 			piece.Texture.SetWidth(piece.Size.x);
 			piece.Texture.SetHeight(piece.Size.y);
 			piece.Texture.SetClip(&m_PieceClips[i]);
@@ -435,6 +394,36 @@ namespace Chesster
 			piece.SetType();
 			piece.Color = color;
 			++i;
+		}
+	}
+
+	void GameLayer::ResetBoard()
+	{
+		
+	}
+
+	void GameLayer::EvaluateBoard()
+	{
+	}
+
+	void GameLayer::UpdateDifficulty()
+	{
+		if (SettingsPanel::IsNewSkillLevel)
+		{
+			m_Connector.SetDifficultyLevel(SettingsPanel::SkillLevel);
+			SettingsPanel::IsNewSkillLevel = false;
+		}
+
+		if (SettingsPanel::IsNewELO)
+		{
+			m_Connector.SetDifficultyELO(SettingsPanel::ELO);
+			SettingsPanel::IsNewELO = false;
+		}
+
+		if (SettingsPanel::IsToggleELO)
+		{
+			m_Connector.ToggleELO(SettingsPanel::IsELOActive);
+			SettingsPanel::IsToggleELO = false;
 		}
 	}
 
@@ -491,17 +480,21 @@ namespace Chesster
 
 			if (game->m_IsComputerTurn)
 			{
+
 				// Get computer's move
 				game->m_CurrentMove = game->m_Connector.GetNextMove(game->m_MoveHistory);
 				if (game->m_CurrentMove == "error")
 				{
-					game->m_ConsolePanel.AddLog("Wait... that's illegal!");
+					game->m_ConsolePanel.AddLog("Failed to get engine move.");
+					game->m_ConsolePanel.AddLog("Enter <spacebar> to try again.");
 					CHESSTER_ERROR("Failed to get engine move.");
-					return 102;
+					game->m_IsRecvComputerMove = false;
 				}
-
-				game->m_IsRecvComputerMove = true;
-				game->m_IsComputerTurn = false;
+				else
+				{
+					game->m_IsRecvComputerMove = true;
+					game->m_IsComputerTurn = false;
+				}
 			}
 		}
 

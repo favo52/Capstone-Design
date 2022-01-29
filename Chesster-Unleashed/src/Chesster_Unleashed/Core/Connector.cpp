@@ -148,11 +148,18 @@ namespace Chesster
 		// Specify ELO
 		std::string setElo = { "setoption name UCI_Elo value " + std::to_string(elo) + "\n" };
 		WriteFile(m_Pipe_IN_Wr, setElo.c_str(), setElo.length(), &m_Written, NULL);
-		Sleep(150);
+		Sleep(100);
+	}
 
-		CHAR setLimit[] = "setoption name UCI_LimitStrength value true\n";
-		WriteFile(m_Pipe_IN_Wr, setLimit, strlen(setLimit), &m_Written, NULL);
-		Sleep(150);
+	void Connector::ToggleELO(bool boolean)
+	{
+		std::string toggle{};
+		if (boolean) toggle = { "true\n" };
+		else toggle = { "false\n" };
+
+		std::string toogleELO = { "setoption name UCI_LimitStrength value " + toggle };
+		WriteFile(m_Pipe_IN_Wr, toogleELO.c_str(), toogleELO.length() , &m_Written, NULL);
+		Sleep(100);
 	}
 
 	std::string Connector::GetNextMove(const std::string& moveHistory)

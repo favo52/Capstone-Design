@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Chesster_Unleashed/Renderer/Renderer.h"
+#include "Chesster_Unleashed/Game/Piece.h"
 
 #include <glm/glm.hpp>
 
@@ -9,7 +10,7 @@ namespace Chesster
 	class Board
 	{
 	public:
-		struct BoardSquare
+		struct Square
 		{
 			glm::vec2 Position = { 0.0f, 0.0f };
 			glm::vec2 Size{ 100.0f, 100.0f };
@@ -33,18 +34,27 @@ namespace Chesster
 		void OnUpdate(const std::chrono::duration<double>& dt);
 		void OnRender();
 
+		void OnNewMove(std::array<Piece, 32>& pieces, const std::string& currentMove, const std::string& moveHistory);
 		void OnViewportResize(const glm::vec2& viewportSize);
 
-		std::array<BoardSquare, 64>& GetBoardSquares() { return m_BoardSquares; }
-		const std::array<BoardSquare, 64>& GetBoardSquares() const { return m_BoardSquares; }
+		static std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
 
-		std::unordered_map<std::string, BoardSquare*>& GetSquaresMap() { return m_SquaresMap; }
-		const std::unordered_map<std::string, BoardSquare*>& GetSquaresMap() const { return m_SquaresMap; }
-
-	public:
-		static std::unordered_map<std::string, BoardSquare*> m_SquaresMap;
+		std::unordered_map<std::string, Square*>& GetSquaresMap() { return m_SquaresMap; }
+		const std::unordered_map<std::string, Square*>& GetSquaresMap() const { return m_SquaresMap; }
 
 	private:
-		std::array<BoardSquare, 64> m_BoardSquares;
+		void Castle(const std::string& notation);
+		void PaintActiveSquares();
+
+	public:
+		static std::unordered_map<std::string, Square*> m_SquaresMap;
+
+	private:
+		static std::array<Square, 64> m_BoardSquares;
+		std::array<Piece, 32>* m_Pieces{ nullptr };
+
+		std::array<Square, 2> m_ActiveSquares{};
+
+		std::string m_CurrentMove{ "0000" };
 	};
 }

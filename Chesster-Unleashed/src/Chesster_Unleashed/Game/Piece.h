@@ -8,7 +8,7 @@
 
 namespace Chesster
 {
-	struct BoardSquare;
+	struct Square;
 
 	enum class PieceType
 	{
@@ -35,11 +35,13 @@ namespace Chesster
 
 		void SetPosition(int x, int y);
 
-		static void SetPieceClips(std::array<SDL_Rect, 32>& pieceClips);
 		void SetType();
 
 		void UpdateCenter();
 		void UpdateWorldBounds();
+
+	public:
+		static void SetPieceClips(std::array<SDL_Rect, 32>& pieceClips);
 
 	public:
 		Texture Texture;

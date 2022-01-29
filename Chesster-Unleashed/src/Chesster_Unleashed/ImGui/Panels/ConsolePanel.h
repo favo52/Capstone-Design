@@ -4,6 +4,14 @@
 
 namespace Chesster
 {
+	struct ConsoleButtons
+	{
+		bool ResetBoardButton{ false };
+		bool EvaluateBoardButton{ false };
+
+		void Draw();
+	};
+
 	class ConsolePanel
 	{
 	public:
@@ -47,5 +55,7 @@ namespace Chesster
 		
 		bool AutoScroll;
 		bool ScrollToBottom;
+
+		ConsoleButtons m_Buttons;
 	};
 }

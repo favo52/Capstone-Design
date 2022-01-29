@@ -53,25 +53,9 @@ namespace Chesster
 			return;
 		}
 
-		// As a specific feature guaranteed by the library, after calling Begin() the last Item represent the title bar.
-		// So e.g. IsItemHovered() will return true when hovering the title bar.
-		// Here we create a context menu only available from the title bar.
-		if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem("Close Console"))
-				*p_open = false;
-			ImGui::EndPopup();
-		}
-
-		ImGui::TextWrapped("Stockfish writes in this console.");
+		ImGui::TextWrapped("This console is used to interact with the Chess Engine.");
 		ImGui::TextWrapped("Enter 'HELP' for help.");
 
-		// TODO: display items starting from the bottom
-
-		if (ImGui::SmallButton("Add Debug Text")) { AddLog("%d some text", Items.Size); AddLog("some more text"); AddLog("display very important message here!"); }
-		ImGui::SameLine();
-		if (ImGui::SmallButton("Add Debug Error")) { AddLog("[error] something went wrong"); }
-		ImGui::SameLine();
 		if (ImGui::SmallButton("Clear")) { ClearLog(); }
 		ImGui::SameLine();
 		bool copy_to_clipboard = ImGui::SmallButton("Copy");
@@ -90,12 +74,12 @@ namespace Chesster
 		if (ImGui::Button("Options"))
 			ImGui::OpenPopup("Options");
 		ImGui::SameLine();
-		Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
+		Filter.Draw("Filter (\"move\") (\"error\")", 180);
 		ImGui::Separator();
 
 		// Reserve enough left-over height for 1 separator + 1 input text
-		const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
-		ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
+		const float footer_height_to_reserve = (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetFrameHeightWithSpacing();
+		ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve - 54), false, ImGuiWindowFlags_HorizontalScrollbar);
 		if (ImGui::BeginPopupContextWindow())
 		{
 			if (ImGui::Selectable("Clear")) ClearLog();
@@ -177,6 +161,12 @@ namespace Chesster
 		ImGui::SetItemDefaultFocus();
 		if (reclaim_focus)
 			ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
+
+		ImGui::Separator();
+		PushFont(2);
+		m_Buttons.Draw();
+		PopFont();
+		ImGui::Separator();
 
 		ImGui::End();
 	}
@@ -335,6 +325,13 @@ namespace Chesster
 		}
 		return 0;
 	}
-
 	
+	void ConsoleButtons::Draw()
+	{
+		if (ImGui::Button("Reset Game", ImVec2(100, 50)))
+			ResetBoardButton = true;
+		ImGui::SameLine();
+		if (ImGui::Button("Evaluate", ImVec2(100, 50)))
+			EvaluateBoardButton = true;
+	}
 }

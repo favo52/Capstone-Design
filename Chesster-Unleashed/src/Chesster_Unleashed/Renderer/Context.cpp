@@ -39,7 +39,8 @@ namespace Chesster
 		CHESSTER_INFO("Current SDL_Renderer: {0} | Texture formats: {1}", info.name, info.num_texture_formats);
 		
 		// Initialize renderer color
-		SDL_SetRenderDrawColor(Renderer, 25u, 25u, 25u, 255u);
+		SDL_SetRenderDrawColor(Renderer, 255u, 255u, 255u, 255u);
+		SDL_SetRenderDrawBlendMode(Renderer, SDL_BLENDMODE_BLEND);
 	}
 
 	void Context::SwapBuffers()

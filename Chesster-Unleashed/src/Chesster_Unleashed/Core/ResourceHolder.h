@@ -86,7 +86,9 @@ namespace Chesster
 
 	enum class FontID
 	{
-		OpenSans
+		OpenSans,
+		OpenSans_Bold_100,
+		AbsEmpire
 	};
 
 	// A few type definitions

@@ -63,13 +63,10 @@
     <ClInclude Include="src\Chesster_Unleashed\ImGui\Panels\SettingsPanel.h">
       <Filter>Chesster_Unleashed\ImGui\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster_Unleashed\ImGui\Styles.h">
-      <Filter>Chesster_Unleashed\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="src\Chesster_Unleashed\Layers\GameLayer.h">
       <Filter>Chesster_Unleashed\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster_Unleashed\Layers\MainMenuLayer.h">
+    <ClInclude Include="src\Chesster_Unleashed\Layers\ChessterAppLayer.h">
       <Filter>Chesster_Unleashed\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster_Unleashed\Layers\TitleLayer.h">
@@ -133,7 +130,7 @@
     <ClCompile Include="src\Chesster_Unleashed\Layers\GameLayer.cpp">
       <Filter>Chesster_Unleashed\Layers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster_Unleashed\Layers\MainMenuLayer.cpp">
+    <ClCompile Include="src\Chesster_Unleashed\Layers\ChessterAppLayer.cpp">
       <Filter>Chesster_Unleashed\Layers</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster_Unleashed\Layers\TitleLayer.cpp">

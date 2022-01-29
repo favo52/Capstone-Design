@@ -3,8 +3,8 @@
 
 #include "Chesster_Unleashed/Core/Clock.h"
 #include "Chesster_Unleashed/Renderer/Renderer.h"
+
 #include "Chesster_Unleashed/Layers/TitleLayer.h"
-#include "Chesster_Unleashed/Layers/GameLayer.h"
 
 #include <backends/imgui_impl_sdl.h>
 
@@ -26,8 +26,11 @@ namespace Chesster
 		m_TextureHolder.Load(TextureID::ChessterLogo, "assets/textures/ChessterLogo.png");
 		m_TextureHolder.Load(TextureID::Pieces, "assets/textures/ChessPieces.png");
 
-		//PushLayer(new TitleLayer);
-		PushLayer(new GameLayer);
+		m_FontHolder.Load(FontID::OpenSans, "assets/fonts/opensans/OpenSans-Regular.ttf");
+		m_FontHolder.Load(FontID::OpenSans_Bold_100, "assets/fonts/opensans/OpenSans-Bold.ttf");
+		m_FontHolder.Load(FontID::AbsEmpire, "assets/fonts/aAbsoluteEmpire.ttf", 100);
+
+		PushLayer(new TitleLayer);
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
@@ -108,6 +111,12 @@ namespace Chesster
 	{
 		m_LayerStack.PushOverlay(layer);
 		layer->OnAttach();
+	}
+
+	void Application::PopLayer(Layer* layer)
+	{
+		m_LayerStack.PopLayer(layer);
+		layer->OnDetach();
 	}
 
 	void Application::ToggleFullscreen()

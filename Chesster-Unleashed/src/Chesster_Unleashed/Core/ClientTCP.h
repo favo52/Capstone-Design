@@ -26,7 +26,7 @@ namespace Chesster
 		bool SendCommand(const std::string& command = "SE8\n");
 		bool RecvConfirmation();
 
-		inline const std::string& GetData() const { return m_Data; }
+		const std::string& GetData() const { return m_Data; }
 
 	public:
 		static bool DataReceived;

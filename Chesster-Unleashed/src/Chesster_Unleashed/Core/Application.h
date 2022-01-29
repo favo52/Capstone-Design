@@ -23,6 +23,8 @@ namespace Chesster
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 
+		void PopLayer(Layer* layer);
+
 		Window& GetWindow() { return *m_Window; }
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
@@ -30,6 +32,7 @@ namespace Chesster
 
 	public:
 		TextureHolder m_TextureHolder;
+		FontHolder m_FontHolder;
 
 	private:
 		void ToggleFullscreen();
