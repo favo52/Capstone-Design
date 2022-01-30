@@ -107,8 +107,9 @@ namespace Chesster
 			const char* button = (!IsCameraConnected) ? "Connect" : "Disconnect";
 			if (ImGui::Button(button, { 100, 50 }))
 			{
-				if (!IsCameraConnected) IsCameraButton = true;
-				if (IsCameraConnected) IsCameraConnected = false;
+				IsCameraButton = true;
+				//if (!IsCameraConnected) IsCameraButton = true;
+				//if (IsCameraConnected) IsCameraConnected = false;
 			}
 			ImGui::PopFont();
 		});

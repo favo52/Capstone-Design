@@ -14,14 +14,6 @@ namespace Chesster
 		Renderer::DrawTextureEx(&Texture);
 	}
 
-	void Piece::SetPosition(int x, int y)
-	{
-		Position = { x - (Size.x * 0.5f), y - (Size.y * 0.5f), 0.0f };
-		Texture.SetPosition(Position.x, Position.y);
-		UpdateCenter();
-		UpdateWorldBounds();
-	}
-
 	void Piece::OnViewportResize()
 	{
 		auto x = Board::m_SquaresMap.find(Notation);
@@ -32,26 +24,12 @@ namespace Chesster
 		}
 	}
 
-	void Piece::UpdateCenter()
+	void Piece::SetPosition(int x, int y)
 	{
-		Center = { (Position.x + (Size.x * 0.5f)),
-			(Position.y + (Size.y * 0.5f)) };
-	}
-
-	void Piece::UpdateWorldBounds()
-	{
-		WorldBounds.left = Center.x - (Size.x * 0.5f);
-		WorldBounds.right = Center.x + (Size.x * 0.5f);
-		WorldBounds.bottom = Center.y - (Size.y * 0.5f);
-		WorldBounds.top = Center.y + (Size.y * 0.5f);
-	}
-
-	bool Piece::IsPawn()
-	{
-		if (Type == PieceType::Pawn)
-			return true;
-
-		return false;
+		Position = { x - (Size.x * 0.5f), y - (Size.y * 0.5f), 0.0f };
+		Texture.SetPosition(Position.x, Position.y);
+		UpdateCenter();
+		UpdateWorldBounds();
 	}
 
 	void Piece::SetPieceClips(std::array<SDL_Rect, 32>& pieceClips)
@@ -138,5 +116,87 @@ namespace Chesster
 			if (((oldPos[1] - '0') + (Notation[1] - '0')) % 2 == 0)
 				EnPassant = true;
 		}
+	}
+
+	void Piece::UpdateCenter()
+	{
+		Center = { (Position.x + (Size.x * 0.5f)),
+			(Position.y + (Size.y * 0.5f)) };
+	}
+
+	void Piece::UpdateWorldBounds()
+	{
+		WorldBounds.left = Center.x - (Size.x * 0.5f);
+		WorldBounds.right = Center.x + (Size.x * 0.5f);
+		WorldBounds.bottom = Center.y - (Size.y * 0.5f);
+		WorldBounds.top = Center.y + (Size.y * 0.5f);
+	}
+
+	void Piece::UpdateTextureClip(std::string notation, std::array<SDL_Rect, 32>& pieceClips)
+	{
+		int color = (Color == PieceColor::White) ? 1 : 0;
+		constexpr int pieceSize{ 80 };
+
+		char upgrade{ notation.back() };
+		CHESSTER_INFO("notation.back()", upgrade);
+		SDL_Rect clip{};
+		switch (upgrade)
+		{
+			case 'r':
+			{
+				pieceClips[Index] = { pieceSize * 0, pieceSize * color, pieceSize, pieceSize };
+				Type = PieceType::Rook;
+				break;
+			}
+
+			case 'n':
+			{
+				pieceClips[Index] = { pieceSize * 1, pieceSize * color, pieceSize, pieceSize };
+				Type = PieceType::Knight;
+				break;
+			}
+
+			case 'b':
+			{
+				pieceClips[Index] = { pieceSize * 2, pieceSize * color, pieceSize, pieceSize };
+				Type = PieceType::Bishop;
+				break;
+			}
+
+			case 'q':
+			{
+				pieceClips[Index] = { pieceSize * 3, pieceSize * color, pieceSize, pieceSize };
+				Type = PieceType::Queen;
+				break;
+			}
+
+			default:
+				return;
+
+		}
+
+		Texture.SetClip(&pieceClips[Index]);
+	}
+
+	bool Piece::IsPawn()
+	{
+		if (Type == PieceType::Pawn)
+			return true;
+
+		return false;
+	}
+
+	bool Piece::IsPromotion(std::string notation)
+	{
+		if (IsPawn())
+		{
+			if (Color == PieceColor::Black && notation[1] == '2' && notation[3] == '1' ||
+				Color == PieceColor::White && notation[1] == '7' && notation[3] == '8')
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

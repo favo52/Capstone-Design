@@ -86,7 +86,9 @@ namespace Chesster
 		Piece* currentPiece{ &pieces[pieceIndex] };
 		if (currentPiece->IsPawn())
 		{
-			// En Passant
+			/////////////////////////////////////////////////////////////////
+			//// En Passant /////////////////////////////////////////////////
+			/////////////////////////////////////////////////////////////////
 			PieceColor currentPawnColor{ pieces[pieceIndex].Color };
 
 			int offset{ 100 };
@@ -104,7 +106,8 @@ namespace Chesster
 				}
 			}
 
-			if (pieceBehind != nullptr)
+			// Capture the correct pawn
+			if (pieceBehind)
 			{
 				CHESSTER_INFO(pieceBehind->EnPassant);
 				if (pieceBehind->IsPawn() && pieceBehind->Color != currentPiece->Color &&
@@ -114,11 +117,7 @@ namespace Chesster
 					pieceBehind->SetPosition(-3000.0f, -3000.0f);
 				}
 			}
-
-			// Pawn Promotions
-
 		}
-
 	}
 
 	void Board::OnViewportResize(const glm::vec2& viewportSize)

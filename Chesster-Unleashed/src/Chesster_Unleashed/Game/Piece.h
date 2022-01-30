@@ -35,12 +35,15 @@ namespace Chesster
 
 		void SetPosition(int x, int y);
 		void SetType();
+
 		void CheckEnPassant(std::string oldPos);
 
 		void UpdateCenter();
 		void UpdateWorldBounds();
+		void UpdateTextureClip(std::string notation, std::array<SDL_Rect, 32>& pieceClips);
 
 		bool IsPawn();
+		bool IsPromotion(std::string notation);
 
 	public:
 		static void SetPieceClips(std::array<SDL_Rect, 32>& pieceClips);

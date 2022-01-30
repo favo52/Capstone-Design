@@ -40,17 +40,22 @@ namespace Chesster
 	private:
 		void UpdateComputerMove();
 		void UpdatePlayerMove();
-		bool UpdateTargetSquare(const std::string& notation);
 		
 		void RemovePiece(Piece& piece);
 		void ResetPieces();
+
+		void PromotePawn();
 
 		void ResetBoard();
 		void EvaluateBoard();
 		void UpdateDifficulty();
 
 		bool IsPointInQuad(const glm::vec2& point, const QuadBounds& quad);
+		bool IsNotationValid(const std::string& notation);
 		bool IsCurrentMoveLegal();
+
+		void GameoverPopup();
+		void PawnPromotionPopup();
 
 	private:
 		// Multithread
@@ -105,7 +110,7 @@ namespace Chesster
 		enum class Player { White, Black };
 		friend Player operator++(Player& player);
 
-		enum class GameState { Gameplay, Gameover };
+		enum class GameState { Gameplay, Gameover, PawnPromotion };
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
