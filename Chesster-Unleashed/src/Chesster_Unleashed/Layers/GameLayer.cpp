@@ -15,6 +15,8 @@ namespace Chesster
 	ConsolePanel GameLayer::m_ConsolePanel{};
 	SettingsPanel GameLayer::m_SettingsPanel{};
 
+	ClientTCP GameLayer::m_ClientTCP{};
+
 	GameLayer::GameLayer() :
 		Layer(""),
 		m_Window{ Application::Get().GetWindow() },
@@ -48,56 +50,59 @@ namespace Chesster
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
 	{
-		switch (sdlEvent.type)
+		if (m_CurrentGameState == GameState::Gameplay)
 		{
-			case SDL_KEYDOWN:
+			switch (sdlEvent.type)
 			{
-				if (sdlEvent.key.keysym.sym == SDLK_SPACE && sdlEvent.key.repeat == 0 && !m_IsRecvComputerMove)
+				case SDL_KEYDOWN:
 				{
-					//m_ClientTCP.SendCommand();
-					m_IsComputerTurn = true;
-				}
-				break;
-			}
-
-			case SDL_MOUSEMOTION:
-			{
-				int MouseX{ 0 }, MouseY{ 0 };
-				m_MouseButton = SDL_GetMouseState(&MouseX, &MouseY);
-				m_MouseCoords = { MouseX, MouseY };
-				
-				//CHESSTER_TRACE("mouseCoords({0}, {1})", m_MouseCoords.x, m_MouseCoords.y);
-				break;
-			}
-
-			case SDL_MOUSEBUTTONDOWN:
-			{
-				if (sdlEvent.button.button == SDL_BUTTON_LEFT && !m_IsComputerTurn && !m_IsRecvComputerMove)
-				{
-					for (const Piece& piece : m_Pieces)
+					if (sdlEvent.key.keysym.sym == SDLK_SPACE && sdlEvent.key.repeat == 0 && !m_IsRecvComputerMove)
 					{
-						if (IsPointInQuad(m_ViewportMousePos, piece.WorldBounds) && !m_IsHoldingPiece)
+						//m_ClientTCP.SendCommand();
+						m_IsComputerTurn = true;
+					}
+					break;
+				}
+
+				case SDL_MOUSEMOTION:
+				{
+					int MouseX{ 0 }, MouseY{ 0 };
+					m_MouseButton = SDL_GetMouseState(&MouseX, &MouseY);
+					m_MouseCoords = { MouseX, MouseY };
+
+					//CHESSTER_TRACE("mouseCoords({0}, {1})", m_MouseCoords.x, m_MouseCoords.y);
+					break;
+				}
+
+				case SDL_MOUSEBUTTONDOWN:
+				{
+					if (sdlEvent.button.button == SDL_BUTTON_LEFT && !m_IsComputerTurn && !m_IsRecvComputerMove)
+					{
+						for (const Piece& piece : m_Pieces)
 						{
-							m_PieceIndex = piece.Index;
-							m_IsHoldingPiece = true;
+							if (IsPointInQuad(m_ViewportMousePos, piece.WorldBounds) && !m_IsHoldingPiece)
+							{
+								m_PieceIndex = piece.Index;
+								m_IsHoldingPiece = true;
+							}
 						}
 					}
+					break;
 				}
-				break;
-			}
 
-			case SDL_MOUSEBUTTONUP:
-			{
-				if (sdlEvent.button.button == SDL_BUTTON_LEFT && m_IsHoldingPiece)
+				case SDL_MOUSEBUTTONUP:
 				{
-					m_IsPieceReleased = true;
-					m_IsHoldingPiece = false;
+					if (sdlEvent.button.button == SDL_BUTTON_LEFT && m_IsHoldingPiece)
+					{
+						m_IsPieceReleased = true;
+						m_IsHoldingPiece = false;
+					}
+					break;
 				}
-				break;
-			}
 
-			default:
-				break;
+				default:
+					break;
+			}
 		}
 	}
 
@@ -141,11 +146,39 @@ namespace Chesster
 		// A new move has been played
 		if (m_MoveHistorySize != m_MoveHistory.size())
 		{
-			m_Board.OnNewMove(m_Pieces, m_CurrentMove, m_MoveHistory);
+			m_Board.OnNewMove(m_Pieces, m_CurrentMove, m_PieceIndex);
 
 			m_MoveHistorySize = m_MoveHistory.size();
 			m_IsMovePlayed = true;
-			// TODO: update current player
+
+			// Update current player
+			++m_CurrentPlayer;
+		}
+
+		if (ConsoleButtons::ResetBoardButton)
+		{
+			ResetBoard();
+			ConsoleButtons::ResetBoardButton = false;
+		}
+
+		if (ConsoleButtons::EvaluateBoardButton)
+		{
+			EvaluateBoard();
+			ConsoleButtons::EvaluateBoardButton = false;
+		}
+
+		if (SettingsPanel::IsCameraButton)
+		{
+			SettingsPanel::IsCameraConnected = true;
+			m_ClientTCP.ConnectCamera();
+			m_ClientTCP.SendCommand();
+			if (!m_ClientTCP.RecvConfirmation())
+			{
+				CHESSTER_WARN("Camera did not respond sucessfully.");
+				SettingsPanel::IsCameraConnected = false;
+			}
+
+			SettingsPanel::IsCameraButton = false;
 		}
 
 		UpdateDifficulty();
@@ -167,6 +200,13 @@ namespace Chesster
 
 		// Draw selected piece on top of all others
 		Renderer::DrawTextureEx(&m_Pieces[m_PieceIndex].Texture);
+
+		if (m_CurrentGameState == GameState::Gameover)
+		{
+			SDL_Rect blackOverlay = { 0, 0, m_Framebuffer->GetSpec().Width, m_Framebuffer->GetSpec().Height };
+			glm::vec4 blackOverlayColor = { 0, 0, 0, 150 };
+			Renderer::DrawFilledRect(blackOverlay, blackOverlayColor);
+		}
 
 		m_Framebuffer->Unbind();
 	}
@@ -249,7 +289,36 @@ namespace Chesster
 		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 		SDL_Texture* textureID = m_Framebuffer->GetSDLTexture();
 		ImGui::Image((ImTextureID*)(intptr_t)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y });
-		
+
+		// Gameover window
+		if (m_CurrentGameState == GameState::Gameover)
+		{
+			ImGui::SetNextWindowPos({ (m_ViewportSize.x / 2.0f) - 100, m_ViewportSize.y / 2.0f });
+			ImGui::SetNextWindowSize({ 200, 80 });
+			ImGuiWindowFlags winFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav;
+			ImGui::Begin("Gameover", nullptr, winFlags);
+
+			std::string winner{};
+			if (m_CurrentPlayer == Player::Black)
+				winner = { "White Won!" };
+			else
+				winner = { "Black Won!" };
+
+			ImGuiIO& io = ImGui::GetIO();
+			auto boldFont = io.Fonts->Fonts[2];
+
+			ImGui::PushFont(boldFont);
+			ImGui::Text(winner.c_str());
+			if (ImGui::Button("Play Again", { 200, 50 }))
+			{
+				ResetBoard();
+				m_CurrentGameState = GameState::Gameplay();
+			}
+			ImGui::PopFont();
+
+			ImGui::End();
+		}
+
 		ImGui::End(); // End "Viewport"
 		ImGui::PopStyleVar();
 
@@ -282,6 +351,7 @@ namespace Chesster
 			
 			m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
 			m_Pieces[m_PieceIndex].Notation = m_TargetSquare.Notation;
+			m_Pieces[m_PieceIndex].CheckEnPassant(oldPos);
 			m_MoveHistory += m_CurrentMove + ' ';
 			m_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove).c_str());
 
@@ -318,7 +388,9 @@ namespace Chesster
 				{
 					// Update position
 					m_Pieces[m_PieceIndex].SetPosition(square.Center.x, square.Center.y);
+					std::string oldPos = m_Pieces[m_PieceIndex].Notation;
 					m_Pieces[m_PieceIndex].Notation = square.Notation;
+					m_Pieces[m_PieceIndex].CheckEnPassant(oldPos);
 
 					m_MoveHistory += m_CurrentMove + ' ';
 					m_ConsolePanel.AddLog("Player move: %s", m_CurrentMove);
@@ -399,11 +471,24 @@ namespace Chesster
 
 	void GameLayer::ResetBoard()
 	{
-		
+		m_CurrentPlayer = Player::White;
+		//m_CameraOldData.clear();
+		//m_CameraNewData.clear();
+
+		m_PieceIndex = 0;
+		m_CurrentMove.clear();
+		m_MoveHistory.clear();
+		m_MoveHistorySize = m_MoveHistory.size();
+		m_Board.Reset();
+
+		ResetPieces();
+		m_Connector.ResetGame();
+		m_LegalMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
 	}
 
 	void GameLayer::EvaluateBoard()
 	{
+		m_Connector.EvaluateGame();
 	}
 
 	void GameLayer::UpdateDifficulty()
@@ -464,14 +549,14 @@ namespace Chesster
 				game->m_LegalMoves = game->m_Connector.GetValidMoves(game->m_PathPythonScript, game->m_CurrentFEN);
 				if (game->m_LegalMoves.empty())
 				{
-					// TODO: gameover = true;
-					return 101;
+					game->m_CurrentGameState = GameState::Gameover;
+					//return 101;
 				}
 
 				// Make computer play automatically after player
 				if (game->m_IsPlayerPlayed)
 				{
-					game->m_IsComputerTurn = true;
+					//game->m_IsComputerTurn = true;
 					game->m_IsPlayerPlayed = false;
 				}
 
@@ -499,5 +584,14 @@ namespace Chesster
 		}
 
 		return 100;
+	}
+
+	GameLayer::Player operator++(GameLayer::Player& player)
+	{
+		return player =
+		{
+			(player == GameLayer::Player::White) ?
+			GameLayer::Player::Black : GameLayer::Player::White
+		};
 	}
 }

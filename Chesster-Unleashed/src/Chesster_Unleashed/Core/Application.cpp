@@ -27,11 +27,11 @@ namespace Chesster
 		m_TextureHolder.Load(TextureID::Pieces, "assets/textures/ChessPieces.png");
 
 		m_FontHolder.Load(FontID::OpenSans, "assets/fonts/opensans/OpenSans-Regular.ttf");
-		m_FontHolder.Load(FontID::OpenSans_Bold_100, "assets/fonts/opensans/OpenSans-Bold.ttf");
+		m_FontHolder.Load(FontID::OpenSans_Bold, "assets/fonts/opensans/OpenSans-Bold.ttf");
 		m_FontHolder.Load(FontID::AbsEmpire, "assets/fonts/aAbsoluteEmpire.ttf", 100);
 
 		PushLayer(new TitleLayer);
-
+		 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}

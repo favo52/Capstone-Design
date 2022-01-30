@@ -3,6 +3,9 @@
 
 namespace Chesster
 {
+	bool ConsoleButtons::ResetBoardButton{ false };
+	bool ConsoleButtons::EvaluateBoardButton{ false };
+
 	ConsolePanel::ConsolePanel()
 	{
 		ClearLog();
@@ -35,7 +38,7 @@ namespace Chesster
 	void ConsolePanel::AddLog(const char* fmt, ...)
 	{
 		// FIXME-OPT
-		char buf[1024];
+		char buf[4096];
 		va_list args;
 		va_start(args, fmt);
 		vsnprintf(buf, IM_ARRAYSIZE(buf), fmt, args);

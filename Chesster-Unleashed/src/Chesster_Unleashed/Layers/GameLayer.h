@@ -2,7 +2,9 @@
 
 #include "Chesster_Unleashed/Core/Layer.h"
 #include "Chesster_Unleashed/Core/Window.h"
-#include "Chesster_Unleashed/Core/Connector.h"
+
+#include "Chesster_Unleashed/Connections/Connector.h"
+#include "Chesster_Unleashed/Connections/ClientTCP.h"
 
 #include "Chesster_Unleashed/Renderer/Framebuffer.h"
 
@@ -31,6 +33,9 @@ namespace Chesster
 
 	public:
 		static ConsolePanel* GetConsolePanel() { return &m_ConsolePanel; }
+
+		// Cognex Camera
+		static ClientTCP m_ClientTCP;
 
 	private:
 		void UpdateComputerMove();
@@ -97,17 +102,12 @@ namespace Chesster
 		static ConsolePanel m_ConsolePanel;
 		static SettingsPanel m_SettingsPanel;
 
-		enum class Player
-		{
-			White = 0, Black
-		};
+		enum class Player { White, Black };
+		friend Player operator++(Player& player);
 
-		enum class GameState
-		{
-			Title = 0, Gameplay, Gameover
-		};
+		enum class GameState { Gameplay, Gameover };
 
 		Player m_CurrentPlayer{ Player::White };
-		GameState m_CurrentGameState{ GameState::Title };
+		GameState m_CurrentGameState{ GameState::Gameplay };
 	};
 }

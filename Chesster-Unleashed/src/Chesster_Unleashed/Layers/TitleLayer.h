@@ -21,15 +21,15 @@ namespace Chesster
 
 	private:
 		void OnWindowResize();
-		void RepositionTexture(Texture& texture, float value);
+		void RepositionTexture(Texture* texture, float value);
 
 		void SelectMenuOption();
 		void UpdateMenuOptionText();
 
 	private:
 		Window& m_Window;
-		Texture m_GroupNameTexture;
-		Texture m_LogoTexture;
+		Texture* m_GroupNameTexture{ nullptr };
+		Texture* m_LogoTexture{ nullptr };
 
 		Font m_OpenSansFont;
 		Font m_AbsEmpireFont;

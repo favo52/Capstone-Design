@@ -6,8 +6,8 @@ namespace Chesster
 {
 	struct ConsoleButtons
 	{
-		bool ResetBoardButton{ false };
-		bool EvaluateBoardButton{ false };
+		static bool ResetBoardButton;
+		static bool EvaluateBoardButton;
 
 		void Draw();
 	};

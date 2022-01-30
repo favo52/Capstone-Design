@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Chesster_Unleashed/Core/ClientTCP.h"
+#include "Chesster_Unleashed/Connections/ClientTCP.h"
 
 #include "Chesster_Unleashed/Layers/GameLayer.h"
 

@@ -48,6 +48,7 @@ namespace Chesster
 
 	void Board::OnUpdate(const std::chrono::duration<double>& dt)
 	{
+		//if (m_CurrentMove != "0000")
 		PaintActiveSquares();
 	}
 
@@ -68,7 +69,7 @@ namespace Chesster
 		Renderer::DrawFilledRect(newSq, m_ActiveSquares[1].Color);
 	}
 
-	void Board::OnNewMove(std::array<Piece, 32>& pieces, const std::string& currentMove, const std::string& moveHistory)
+	void Board::OnNewMove(std::array<Piece, 32>& pieces, const std::string& currentMove, int pieceIndex)
 	{
 		m_Pieces = &pieces;
 		m_CurrentMove = currentMove;
@@ -82,10 +83,41 @@ namespace Chesster
 		if (currentMove == "e1c1") Castle("a1d1");
 		if (currentMove == "e8c8") Castle("a8d8");
 
-		// En Passant
+		Piece* currentPiece{ &pieces[pieceIndex] };
+		if (currentPiece->IsPawn())
+		{
+			// En Passant
+			PieceColor currentPawnColor{ pieces[pieceIndex].Color };
 
+			int offset{ 100 };
+			if (currentPawnColor == PieceColor::Black)
+				offset *= -1;
 
-		// Pawn Promotions
+			// Grab the piece behind
+			Piece* pieceBehind{ nullptr };
+			for (auto& piece : pieces)
+			{
+				if (piece.Notation[0] == currentPiece->Notation[0] &&
+					piece.Center.y == currentPiece->Center.y + offset)
+				{
+					pieceBehind = &piece;
+				}
+			}
+
+			if (pieceBehind != nullptr)
+			{
+				CHESSTER_INFO(pieceBehind->EnPassant);
+				if (pieceBehind->IsPawn() && pieceBehind->Color != currentPiece->Color &&
+					pieceBehind->EnPassant)
+				{
+					pieceBehind->Notation = "00";
+					pieceBehind->SetPosition(-3000.0f, -3000.0f);
+				}
+			}
+
+			// Pawn Promotions
+
+		}
 
 	}
 
@@ -105,6 +137,13 @@ namespace Chesster
 				square->UpdateWorldBounds();
 			}
 		}
+	}
+
+	void Board::Reset()
+	{
+		m_CurrentMove = "0000";
+		m_ActiveSquares[0].Color = { 0, 0, 0, 0 };
+		m_ActiveSquares[1].Color = { 0, 0, 0, 0 };
 	}
 
 	void Board::Castle(const std::string& notation)

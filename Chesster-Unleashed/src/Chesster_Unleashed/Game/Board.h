@@ -34,8 +34,10 @@ namespace Chesster
 		void OnUpdate(const std::chrono::duration<double>& dt);
 		void OnRender();
 
-		void OnNewMove(std::array<Piece, 32>& pieces, const std::string& currentMove, const std::string& moveHistory);
+		void OnNewMove(std::array<Piece, 32>& pieces, const std::string& currentMove, int pieceIndex);
 		void OnViewportResize(const glm::vec2& viewportSize);
+
+		void Reset();
 
 		static std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
 

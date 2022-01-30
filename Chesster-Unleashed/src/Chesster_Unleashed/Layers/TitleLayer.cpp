@@ -20,12 +20,12 @@ namespace Chesster
 		Application& app = Application::Get();
 
 		// Prepare images
-		m_GroupNameTexture = app.Get().m_TextureHolder.Get(TextureID::GroupLogo);
-		m_LogoTexture = app.Get().m_TextureHolder.Get(TextureID::ChessterLogo);
+		m_GroupNameTexture = &app.Get().m_TextureHolder.Get(TextureID::GroupLogo);
+		m_LogoTexture = &app.Get().m_TextureHolder.Get(TextureID::ChessterLogo);
 
 		// Prepare fonts
 		m_AbsEmpireFont = app.Get().m_FontHolder.Get(FontID::AbsEmpire);
-		m_OpenSansFont = app.Get().m_FontHolder.Get(FontID::OpenSans_Bold_100);
+		m_OpenSansFont = app.Get().m_FontHolder.Get(FontID::OpenSans_Bold);
 
 		// Set up text
 		SDL_Color Black = { 0u, 0u, 0u, 255u };
@@ -133,7 +133,7 @@ namespace Chesster
 			{
 				SDL_Rect background = { 0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() };
 				Renderer::DrawFilledRect(background, { 255, 255, 255, 255 });
-				Renderer::DrawTexture(&m_GroupNameTexture);
+				Renderer::DrawTexture(m_GroupNameTexture);
 				break;
 			}
 
@@ -141,7 +141,7 @@ namespace Chesster
 			{
 				SDL_Rect background = { 0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() };
 				Renderer::DrawFilledRect(background, { 255, 255, 255, 255 });
-				Renderer::DrawTexture(&m_LogoTexture);
+				Renderer::DrawTexture(m_LogoTexture);
 				Renderer::DrawTexture(&m_TitleText);
 				Renderer::DrawTexture(&m_StartText);
 				Renderer::DrawTexture(&m_ExitText);
@@ -154,19 +154,19 @@ namespace Chesster
 	{
 		RepositionTexture(m_GroupNameTexture, 0.0f);
 		RepositionTexture(m_LogoTexture, 0.0f);
-		RepositionTexture(m_TitleText, -250.0f);
-		RepositionTexture(m_StartText, 200.0f);
-		RepositionTexture(m_ExitText, 250.0f);
+		RepositionTexture(&m_TitleText, -250.0f);
+		RepositionTexture(&m_StartText, 200.0f);
+		RepositionTexture(&m_ExitText, 250.0f);
 	}
 
-	void TitleLayer::RepositionTexture(Texture& texture, float value)
+	void TitleLayer::RepositionTexture(Texture* texture, float value)
 	{
 		int width = Application::Get().GetWindow().GetWidth();
 		int height = Application::Get().GetWindow().GetHeight();
 
-		int offsetX = texture.GetWidth() / 2.0f;
-		int offsetY = texture.GetHeight() / 2.0f;
-		texture.SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY) + value);
+		int offsetX = texture->GetWidth() / 2.0f;
+		int offsetY = texture->GetHeight() / 2.0f;
+		texture->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY) + value);
 	}
 
 	void TitleLayer::SelectMenuOption()

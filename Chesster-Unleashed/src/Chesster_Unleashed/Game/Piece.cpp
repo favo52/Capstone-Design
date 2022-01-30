@@ -46,6 +46,14 @@ namespace Chesster
 		WorldBounds.top = Center.y + (Size.y * 0.5f);
 	}
 
+	bool Piece::IsPawn()
+	{
+		if (Type == PieceType::Pawn)
+			return true;
+
+		return false;
+	}
+
 	void Piece::SetPieceClips(std::array<SDL_Rect, 32>& pieceClips)
 	{
 		int* pieceLocations = new int[8 * 8]
@@ -117,6 +125,18 @@ namespace Chesster
 				Type = PieceType::Queen; break;
 			case 28:
 				Type = PieceType::King; break;
+		}
+	}
+
+	void Piece::CheckEnPassant(std::string oldPos)
+	{
+		if (IsPawn())
+		{
+			if (EnPassant)
+				EnPassant = false;
+
+			if (((oldPos[1] - '0') + (Notation[1] - '0')) % 2 == 0)
+				EnPassant = true;
 		}
 	}
 }

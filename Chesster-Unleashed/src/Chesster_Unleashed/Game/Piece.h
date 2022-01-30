@@ -34,11 +34,13 @@ namespace Chesster
 		void OnViewportResize();
 
 		void SetPosition(int x, int y);
-
 		void SetType();
+		void CheckEnPassant(std::string oldPos);
 
 		void UpdateCenter();
 		void UpdateWorldBounds();
+
+		bool IsPawn();
 
 	public:
 		static void SetPieceClips(std::array<SDL_Rect, 32>& pieceClips);
@@ -53,5 +55,6 @@ namespace Chesster
 		uint32_t Index{ 0 };
 		PieceType Type{ PieceType::None };
 		PieceColor Color{ PieceColor::None };
+		bool EnPassant{ false };
 	};
 }

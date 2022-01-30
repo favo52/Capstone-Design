@@ -67,7 +67,7 @@ namespace Chesster
 					RequestStackPush(StateID::Pause);
 
 				//if (event.key.keysym.sym == SDLK_SPACE)
-				//	m_ClientTCP.SendCommand();
+					//m_ClientTCP.SendCommand();
 
 			} break;
 		}

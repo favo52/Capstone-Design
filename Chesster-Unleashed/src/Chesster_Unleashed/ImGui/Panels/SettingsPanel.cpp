@@ -21,6 +21,9 @@ namespace Chesster
 	bool SettingsPanel::IsToggleELO{ false };
 	bool SettingsPanel::IsELOActive{ false };
 
+	bool SettingsPanel::IsCameraButton{ false };
+	bool SettingsPanel::IsCameraConnected{ false };
+
 	static void DrawIntControl(const std::string& label, int& value, bool& button, int min, int max, float columnWidth = 100.0f)
 	{
 		ImGui::PushID(label.c_str());
@@ -94,10 +97,20 @@ namespace Chesster
     {
 		ImGui::Begin("Settings");
 
-		class Cognex {};
-		DrawSection<Cognex>("Cognex Camera", []()
-		{
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[2];
 
+		class Cognex {};
+		DrawSection<Cognex>("Cognex Camera", [boldFont]()
+		{
+			ImGui::PushFont(boldFont); 
+			const char* button = (!IsCameraConnected) ? "Connect" : "Disconnect";
+			if (ImGui::Button(button, { 100, 50 }))
+			{
+				if (!IsCameraConnected) IsCameraButton = true;
+				if (IsCameraConnected) IsCameraConnected = false;
+			}
+			ImGui::PopFont();
 		});
 
 		class Staubli {};
@@ -132,7 +145,7 @@ namespace Chesster
 		ImGui::Separator();
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
-		ImGui::End(); // End "Stats"
+		ImGui::End(); // End "Settings"
     }
 
 	void SettingsPanel::UpdateSquareColors()

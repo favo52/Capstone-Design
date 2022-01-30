@@ -18,10 +18,15 @@ namespace Chesster
 		static int SkillLevel;
 		static int ELO;
 
+		// Difficulty toggles
 		static bool IsNewSkillLevel;
 		static bool IsNewELO;
 		static bool IsToggleELO;
 		static bool IsELOActive;
+
+		// Camera toggles
+		static bool IsCameraButton;
+		static bool IsCameraConnected;
 
 	private:
 		void UpdateSquareColors();
