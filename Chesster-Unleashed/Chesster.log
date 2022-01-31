@@ -1,10 +1,10 @@
-[Jan/30/2022][03:29:36 PM][info] CHESSTER: Welcome to the Chesster UCI!
-[Jan/30/2022][03:29:36 PM][info] CHESSTER: Creating SDL Window: CHESSTER UNLEASHED (1600, 900)
-[Jan/30/2022][03:29:36 PM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
-[Jan/30/2022][03:29:37 PM][info] CHESSTER: Engine connection opened.
-[Jan/30/2022][03:29:37 PM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
+[Jan/30/2022][04:04:50 PM][info] CHESSTER: Welcome to the Chesster UCI!
+[Jan/30/2022][04:04:50 PM][info] CHESSTER: Creating SDL Window: CHESSTER UNLEASHED (1600, 900)
+[Jan/30/2022][04:04:51 PM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
+[Jan/30/2022][04:04:52 PM][info] CHESSTER: Engine connection opened.
+[Jan/30/2022][04:04:52 PM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
 
-[Jan/30/2022][03:29:37 PM][info] CHESSTER: 
+[Jan/30/2022][04:04:52 PM][info] CHESSTER: 
 id name Stockfish 14.1
 id author the Stockfish developers (see AUTHORS file)
 
@@ -32,7 +32,7 @@ option name EvalFile type string default nn-13406b1dcbe0.nnue
 uciok
 readyok
 
-[Jan/30/2022][03:29:38 PM][info] CHESSTER: 
+[Jan/30/2022][04:04:53 PM][info] CHESSTER: 
  +---+---+---+---+---+---+---+---+
  | r | n | b | q | k | b | n | r | 8
  +---+---+---+---+---+---+---+---+
@@ -57,17 +57,322 @@ Key: 8F8F01D4562F59FB
 Checkers: 
 
 
-[Jan/30/2022][03:29:40 PM][info] CHESSTER: Connected to DESKTOP-SB394PM on port telnet
-[Jan/30/2022][03:29:40 PM][info] CHESSTER: Welcome to In-Sight(tm)  PCHOST Session 0
-[Jan/30/2022][03:29:40 PM][info] CHESSTER: User Logged In
-[Jan/30/2022][03:29:40 PM][info] CHESSTER: Connected to DESKTOP-SB394PM on port 3000
-[Jan/30/2022][03:29:41 PM][error] CHESSTER: RecvBuffer failed with error: 10053. Disconnecting...
-[Jan/30/2022][03:29:41 PM][info] CHESSTER: Camera disconnected.
-[Jan/30/2022][03:29:45 PM][info] CHESSTER: Connected to DESKTOP-SB394PM on port telnet
-[Jan/30/2022][03:29:45 PM][info] CHESSTER: Welcome to In-Sight(tm)  PCHOST Session 0
-[Jan/30/2022][03:29:45 PM][info] CHESSTER: User Logged In
-[Jan/30/2022][03:29:45 PM][info] CHESSTER: Connected to DESKTOP-SB394PM on port 3000
-[Jan/30/2022][03:29:46 PM][error] CHESSTER: RecvBuffer failed with error: 10053. Disconnecting...
-[Jan/30/2022][03:29:46 PM][info] CHESSTER: Camera disconnected.
-[Jan/30/2022][03:29:59 PM][info] CHESSTER: Engine connection closed.
-[Jan/30/2022][03:29:59 PM][info] CHESSTER: SDL closed successfully.
+[Jan/30/2022][04:05:09 PM][info] CHESSTER: Player move: d2d4
+[Jan/30/2022][04:05:09 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p | p | p | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | P |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P | P |   | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1
+Key: 942378D43D772AB7
+Checkers: 
+
+
+[Jan/30/2022][04:05:11 PM][info] CHESSTER: Player move: d7d5
+[Jan/30/2022][04:05:12 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p |   | p | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | p |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | P |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P | P |   | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2
+Key: B6645043224F3E24
+Checkers: 
+
+
+[Jan/30/2022][04:05:12 PM][info] CHESSTER: Player move: c2c3
+[Jan/30/2022][04:05:13 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p |   | p | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | p |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | P |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   | P |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P |   |   | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/ppp1pppp/8/3p4/3P4/2P5/PP2PPPP/RNBQKBNR b KQkq - 0 2
+Key: C7BFC6D307597BDF
+Checkers: 
+
+
+[Jan/30/2022][04:05:14 PM][error] CHESSTER: Wait... that's illegal!
+[Jan/30/2022][04:05:15 PM][error] CHESSTER: Wait... that's illegal!
+[Jan/30/2022][04:05:17 PM][info] CHESSTER: Player move: e7e5
+[Jan/30/2022][04:05:17 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p |   |   | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | p | p |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | P |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   | P |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P |   |   | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/ppp2ppp/8/3pp3/3P4/2P5/PP2PPPP/RNBQKBNR w KQkq - 0 3
+Key: 62031F22DE757A99
+Checkers: 
+
+
+[Jan/30/2022][04:05:19 PM][info] CHESSTER: Player move: c3c4
+[Jan/30/2022][04:05:19 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p |   |   | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | p | p |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   | P | P |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P |   |   | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/ppp2ppp/8/3pp3/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 3
+Key: 562EA330408C129A
+Checkers: 
+
+
+[Jan/30/2022][04:05:20 PM][info] CHESSTER: Player move: e5e4
+[Jan/30/2022][04:05:20 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p |   |   | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | p |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   | P | P | p |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P |   |   | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/ppp2ppp/8/3p4/2PPp3/8/PP2PPPP/RNBQKBNR w KQkq - 0 4
+Key: 81556ACB47BC68A7
+Checkers: 
+
+
+[Jan/30/2022][04:05:21 PM][info] CHESSTER: Player move: f2f4
+[Jan/30/2022][04:05:21 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p |   |   | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | p |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   | P | P | p | P |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P |   |   | P |   | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/ppp2ppp/8/3p4/2PPpP2/8/PP2P1PP/RNBQKBNR b KQkq f3 0 4
+Key: 0AB86FDCE04C7048
+Checkers: 
+
+
+[Jan/30/2022][04:05:21 PM][info] CHESSTER: Player move: e4f3
+[Jan/30/2022][04:05:21 PM][info] CHESSTER: true
+[Jan/30/2022][04:05:21 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p |   |   | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   | p |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   | P | P |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   | p |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P |   |   | P |   | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/ppp2ppp/8/3p4/2PP4/5p2/PP2P1PP/RNBQKBNR w KQkq - 0 5
+Key: E94F8DA53AE7FEC7
+Checkers: 
+
+
+[Jan/30/2022][04:05:24 PM][info] CHESSTER: GAME RESET
+
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p | p | p | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P | P | P | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+Key: 8F8F01D4562F59FB
+Checkers: 
+readyok
+
+
+[Jan/30/2022][04:05:25 PM][info] CHESSTER: Player move: e2e4
+[Jan/30/2022][04:05:26 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p | p | p | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   | P |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P | P | P |   | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1
+Key: B46022469E3DD31B
+Checkers: 
+
+
+[Jan/30/2022][04:05:30 PM][info] CHESSTER: GAME RESET
+
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p | p | p | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P | P | P | P | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+Key: 8F8F01D4562F59FB
+Checkers: 
+readyok
+
+
+[Jan/30/2022][04:05:31 PM][info] CHESSTER: Player move: e2e4
+[Jan/30/2022][04:05:31 PM][info] CHESSTER: 
+ +---+---+---+---+---+---+---+---+
+ | r | n | b | q | k | b | n | r | 8
+ +---+---+---+---+---+---+---+---+
+ | p | p | p | p | p | p | p | p | 7
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 6
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 5
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   | P |   |   |   | 4
+ +---+---+---+---+---+---+---+---+
+ |   |   |   |   |   |   |   |   | 3
+ +---+---+---+---+---+---+---+---+
+ | P | P | P | P |   | P | P | P | 2
+ +---+---+---+---+---+---+---+---+
+ | R | N | B | Q | K | B | N | R | 1
+ +---+---+---+---+---+---+---+---+
+   a   b   c   d   e   f   g   h
+
+Fen: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1
+Key: B46022469E3DD31B
+Checkers: 
+
+
+[Jan/30/2022][04:05:54 PM][info] CHESSTER: Engine connection closed.
+[Jan/30/2022][04:05:54 PM][info] CHESSTER: SDL closed successfully.
