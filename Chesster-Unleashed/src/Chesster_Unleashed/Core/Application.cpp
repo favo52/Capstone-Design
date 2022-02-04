@@ -4,7 +4,7 @@
 #include "Chesster_Unleashed/Core/Clock.h"
 #include "Chesster_Unleashed/Renderer/Renderer.h"
 
-#include "Chesster_Unleashed/Layers/TitleLayer.h"
+#include "Chesster_Unleashed/Layers/Gamelayer.h"
 
 #include <backends/imgui_impl_sdl.h>
 
@@ -30,8 +30,9 @@ namespace Chesster
 		m_FontHolder.Load(FontID::OpenSans_Bold, "assets/fonts/opensans/OpenSans-Bold.ttf");
 		m_FontHolder.Load(FontID::AbsEmpire, "assets/fonts/aAbsoluteEmpire.ttf", 100);
 
-		PushLayer(new TitleLayer);
-		 
+		m_TitleLayer = new TitleLayer();
+		PushLayer(m_TitleLayer);
+		
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}
@@ -73,10 +74,10 @@ namespace Chesster
 						layer->OnImGuiRender();
 				}
 				m_ImGuiLayer->End();
-			}
 
-			// Update screen
-			m_Window->OnUpdate();
+				// Update screen
+				m_Window->OnUpdate();
+			}
 		}
 	}
 
@@ -96,6 +97,14 @@ namespace Chesster
 		if (sdlEvent.type == SDL_WINDOWEVENT)
 			OnWindowEvent(sdlEvent);
 
+		// Handle layer pop/push
+		if (TitleLayer::IsStart)
+		{
+			PopLayer(m_TitleLayer);
+			PushLayer(new GameLayer);
+			TitleLayer::IsStart = false;
+		}
+
 		// Handle layer events
 		for (auto itr = m_LayerStack.rbegin(); itr != m_LayerStack.rend(); ++itr)
 			(*itr)->OnEvent(sdlEvent);
@@ -107,16 +116,22 @@ namespace Chesster
 		layer->OnAttach();
 	}
 
-	void Application::PushOverlay(Layer* layer)
+	void Application::PushOverlay(Layer* overlay)
 	{
-		m_LayerStack.PushOverlay(layer);
-		layer->OnAttach();
+		m_LayerStack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 
 	void Application::PopLayer(Layer* layer)
 	{
 		m_LayerStack.PopLayer(layer);
 		layer->OnDetach();
+	}
+
+	void Application::PopOverlay(Layer* overlay)
+	{
+		m_LayerStack.PopOverlay(overlay);
+		overlay->OnDetach();
 	}
 
 	void Application::ToggleFullscreen()

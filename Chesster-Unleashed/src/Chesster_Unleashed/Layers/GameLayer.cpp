@@ -18,7 +18,7 @@ namespace Chesster
 	ClientTCP GameLayer::m_ClientTCP{};
 
 	GameLayer::GameLayer() :
-		Layer(""),
+		Layer("GameLayer"),
 		m_Window{ Application::Get().GetWindow() },
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_PathPythonScript{ "assets/script/__init__.exe" }

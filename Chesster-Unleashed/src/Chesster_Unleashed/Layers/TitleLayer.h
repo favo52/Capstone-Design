@@ -19,6 +19,9 @@ namespace Chesster
 		virtual void OnUpdate(const std::chrono::duration<double>& dt) override;
 		virtual void OnRender() override;
 
+	public:
+		static bool IsStart;
+
 	private:
 		void OnWindowResize();
 		void RepositionTexture(Texture* texture, float value);

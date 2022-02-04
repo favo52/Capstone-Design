@@ -5,6 +5,7 @@
 #include "Chesster_Unleashed/Core/LayerStack.h"
 #include "Chesster_Unleashed/Core/ResourceHolder.h"
 
+#include "Chesster_Unleashed/Layers/TitleLayer.h"
 #include "Chesster_Unleashed/ImGui/ImGuiLayer.h"
 
 namespace Chesster
@@ -24,6 +25,7 @@ namespace Chesster
 		void PushOverlay(Layer* layer);
 
 		void PopLayer(Layer* layer);
+		void PopOverlay(Layer* layer);
 
 		Window& GetWindow() { return *m_Window; }
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
@@ -46,6 +48,7 @@ namespace Chesster
 
 		LayerStack m_LayerStack;
 
+		TitleLayer* m_TitleLayer;
 		ImGuiLayer* m_ImGuiLayer;
 
 	private:

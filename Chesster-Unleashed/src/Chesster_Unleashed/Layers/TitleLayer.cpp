@@ -9,6 +9,8 @@
 
 namespace Chesster
 {
+	bool TitleLayer::IsStart{ false };
+
 	TitleLayer::TitleLayer() :
 		Layer{ "TitleLayer" },
 		m_Window{ Application::Get().GetWindow() }
@@ -47,6 +49,12 @@ namespace Chesster
 
 	void TitleLayer::OnDetach()
 	{
+		m_GroupNameTexture->FreeTexture();
+		m_LogoTexture->FreeTexture();
+
+		m_TitleText.FreeTexture();
+		m_StartText.FreeTexture();
+		m_ExitText.FreeTexture();
 	}
 
 	void TitleLayer::OnEvent(SDL_Event& sdlEvent)
@@ -175,8 +183,7 @@ namespace Chesster
 
 		if (m_CurrentMenuOption == MenuOptions::Start)
 		{
-			app.Get().PopLayer(this);
-			app.Get().PushLayer(new GameLayer);
+			IsStart = true;
 		}
 		else
 		{

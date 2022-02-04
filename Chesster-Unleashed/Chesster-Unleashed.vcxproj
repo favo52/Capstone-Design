@@ -101,10 +101,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\Chesster_Unleashed\Core\Application.h" />
     <ClInclude Include="src\Chesster_Unleashed\Connections\ClientTCP.h" />
-    <ClInclude Include="src\Chesster_Unleashed\Core\Clock.h" />
     <ClInclude Include="src\Chesster_Unleashed\Connections\Connector.h" />
+    <ClInclude Include="src\Chesster_Unleashed\Core\Application.h" />
+    <ClInclude Include="src\Chesster_Unleashed\Core\Clock.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Core.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\Layer.h" />
     <ClInclude Include="src\Chesster_Unleashed\Core\LayerStack.h" />
@@ -127,9 +127,9 @@
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Chesster_Unleashed\Core\Application.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Connections\ClientTCP.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Connections\Connector.cpp" />
+    <ClCompile Include="src\Chesster_Unleashed\Core\Application.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\Layer.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\LayerStack.cpp" />
     <ClCompile Include="src\Chesster_Unleashed\Core\Logger.cpp" />
@@ -163,7 +163,7 @@
     <ResourceCompile Include="Chesster-Unleashed.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\ChessterLogo.ico" />
+    <None Include="Chesster-Unleashed.aps" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

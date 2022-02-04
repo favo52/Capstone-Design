@@ -9,6 +9,7 @@ namespace Chesster
 		{
 			layer->OnDetach();
 			delete layer;
+			layer = nullptr;
 		}
 	}
 

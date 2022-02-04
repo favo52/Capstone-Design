@@ -12,6 +12,9 @@ project "Chesster-Unleashed"
 
 	files
 	{
+		"%{wks.location}/%{prj.name}/resource.h",
+		"%{wks.location}/%{prj.name}/Chesster-Unleashed.rc",
+		"%{wks.location}/%{prj.name}/Chesster-Unleashed.aps",
 		"%{wks.location}/%{prj.name}/src/**.h",
 		"%{wks.location}/%{prj.name}/src/**.cpp",
 		"%{wks.location}/%{prj.name}/vendor/stb_image/**.h",
