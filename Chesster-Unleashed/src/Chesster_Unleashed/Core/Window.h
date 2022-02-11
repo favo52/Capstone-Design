@@ -15,7 +15,7 @@ namespace Chesster
 		uint32_t Width;
 		uint32_t Height;
 
-		WindowProps(const std::string& title = "Gem Engine", uint32_t width = 1600, uint32_t height = 900) :
+		WindowProps(const std::string& title, uint32_t width, uint32_t height) :
 			Title(title),
 			Width(width),
 			Height(height)
@@ -34,13 +34,13 @@ namespace Chesster
 		const uint32_t& GetWidth() const { return m_WinProps.Width; }
 		const uint32_t& GetHeight() const { return m_WinProps.Height; }
 
-		static Window* Create(const WindowProps& props = WindowProps());
+		static Window* Create(const WindowProps& props);
 
 		virtual void* GetNativeWindow() const { return m_Window; }
 		WindowProps* GetWinProps() { return &m_WinProps; }
 
 	private:
-		bool Init(const WindowProps& props);
+		bool Init();
 
 	private:
 		SDL_Window* m_Window;

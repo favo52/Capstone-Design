@@ -13,7 +13,7 @@ namespace Chesster
 	class Application
 	{
 	public:
-		Application(const std::string& name = "CHESSTER UNLEASHED");
+		Application(const std::string& name = "CHESSTER!");
 		virtual ~Application() = default;
 
 		void Run();

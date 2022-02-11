@@ -20,7 +20,7 @@ namespace Chesster
 		CHESSTER_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
+		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name, 1600, 900)));
 
 		m_TextureHolder.Load(TextureID::GroupLogo, "assets/textures/ReadySetCode.jpeg");
 		m_TextureHolder.Load(TextureID::ChessterLogo, "assets/textures/ChessterLogo.png");
@@ -51,6 +51,8 @@ namespace Chesster
 			SDL_Event e;
 			while (SDL_PollEvent(&e))
 				OnEvent(e);
+
+			if (m_Minimized) SDL_WaitEvent(&e);
 
 			if (!m_Minimized)
 			{
@@ -103,6 +105,7 @@ namespace Chesster
 			PopLayer(m_TitleLayer);
 			PushLayer(new GameLayer);
 			TitleLayer::IsStart = false;
+			delete m_TitleLayer;
 		}
 
 		// Handle layer events

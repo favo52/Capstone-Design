@@ -14,7 +14,7 @@ namespace Chesster
 		m_Context{ nullptr },
 		m_WinProps{ props }
 	{
-		if (!Init(props)) throw std::runtime_error("Failed to initialize the Window!\n");
+		if (!Init()) throw std::runtime_error("Failed to initialize the Window!\n");
 	}
 
 	Window::~Window()
@@ -40,7 +40,7 @@ namespace Chesster
 		return new Window(props);
 	}
 
-	bool Window::Init(const WindowProps& props)
+	bool Window::Init()
 	{
 		// Initialize SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0)
@@ -54,11 +54,19 @@ namespace Chesster
 			CHESSTER_WARN("Warning: Linear texture filtering not enabled!");
 
 		SDL_WindowFlags WindowFlags = (SDL_WindowFlags)
-			(SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+			(SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+				| SDL_WINDOW_MAXIMIZED | SDL_WINDOW_ALLOW_HIGHDPI);
 
 		// Create window with OpenGL graphics context
-		CHESSTER_INFO("Creating SDL Window: {0} ({1}, {2})", props.Title, props.Width, props.Height);
-		m_Window = SDL_CreateWindow(props.Title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, props.Width, props.Height, WindowFlags);
+		CHESSTER_INFO("Creating SDL Window: {0} ({1}, {2})", m_WinProps.Title, m_WinProps.Width, m_WinProps.Height);
+		m_Window = SDL_CreateWindow(
+			m_WinProps.Title.c_str(),	// Window title
+			SDL_WINDOWPOS_CENTERED,		// Initial x position
+			SDL_WINDOWPOS_CENTERED,		// Initial y position
+			m_WinProps.Width,			// Width, in pixels
+			m_WinProps.Height,			// Height, in pixels
+			WindowFlags					// Flags
+		);
 		if (m_Window == nullptr)
 		{
 			CHESSTER_ERROR("SDL_CreateWindow failed with error: {0}", SDL_GetError());
@@ -66,7 +74,7 @@ namespace Chesster
 		}
 
 		// Initialize context
-		m_Context = std::make_unique<Context>(static_cast<SDL_Window*>(m_Window));
+		m_Context = std::make_unique<Context>(m_Window);
 		m_Context->Init();
 
 		// Initialize PNG and JPG loading

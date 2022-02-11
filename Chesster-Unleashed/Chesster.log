@@ -1,10 +1,10 @@
-[Feb/03/2022][10:16:46 PM][info] CHESSTER: Welcome to the Chesster UCI!
-[Feb/03/2022][10:16:46 PM][info] CHESSTER: Creating SDL Window: CHESSTER UNLEASHED (1600, 900)
-[Feb/03/2022][10:16:47 PM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
-[Feb/03/2022][10:16:48 PM][info] CHESSTER: Engine connection opened.
-[Feb/03/2022][10:16:48 PM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
+[Feb/11/2022][03:10:41 AM][info] CHESSTER: Welcome to the Chesster UCI!
+[Feb/11/2022][03:10:41 AM][info] CHESSTER: Creating SDL Window: CHESSTER! (1600, 900)
+[Feb/11/2022][03:10:41 AM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
+[Feb/11/2022][03:10:46 AM][info] CHESSTER: Engine connection opened.
+[Feb/11/2022][03:10:46 AM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
 
-[Feb/03/2022][10:16:49 PM][info] CHESSTER: 
+[Feb/11/2022][03:10:46 AM][info] CHESSTER: 
 id name Stockfish 14.1
 id author the Stockfish developers (see AUTHORS file)
 
@@ -32,7 +32,7 @@ option name EvalFile type string default nn-13406b1dcbe0.nnue
 uciok
 readyok
 
-[Feb/03/2022][10:16:49 PM][info] CHESSTER: 
+[Feb/11/2022][03:10:46 AM][info] CHESSTER: 
  +---+---+---+---+---+---+---+---+
  | r | n | b | q | k | b | n | r | 8
  +---+---+---+---+---+---+---+---+
@@ -57,31 +57,5 @@ Key: 8F8F01D4562F59FB
 Checkers: 
 
 
-[Feb/03/2022][10:16:51 PM][info] CHESSTER: Player move: b2b4
-[Feb/03/2022][10:16:51 PM][info] CHESSTER: 
- +---+---+---+---+---+---+---+---+
- | r | n | b | q | k | b | n | r | 8
- +---+---+---+---+---+---+---+---+
- | p | p | p | p | p | p | p | p | 7
- +---+---+---+---+---+---+---+---+
- |   |   |   |   |   |   |   |   | 6
- +---+---+---+---+---+---+---+---+
- |   |   |   |   |   |   |   |   | 5
- +---+---+---+---+---+---+---+---+
- |   | P |   |   |   |   |   |   | 4
- +---+---+---+---+---+---+---+---+
- |   |   |   |   |   |   |   |   | 3
- +---+---+---+---+---+---+---+---+
- | P |   | P | P | P | P | P | P | 2
- +---+---+---+---+---+---+---+---+
- | R | N | B | Q | K | B | N | R | 1
- +---+---+---+---+---+---+---+---+
-   a   b   c   d   e   f   g   h
-
-Fen: rnbqkbnr/pppppppp/8/8/1P6/8/P1PPPPPP/RNBQKBNR b KQkq - 0 1
-Key: 2F38DFFC89C4E3F1
-Checkers: 
-
-
-[Feb/03/2022][10:16:55 PM][info] CHESSTER: Engine connection closed.
-[Feb/03/2022][10:16:55 PM][info] CHESSTER: SDL closed successfully.
+[Feb/11/2022][03:10:55 AM][info] CHESSTER: Engine connection closed.
+[Feb/11/2022][03:10:55 AM][info] CHESSTER: SDL closed successfully.

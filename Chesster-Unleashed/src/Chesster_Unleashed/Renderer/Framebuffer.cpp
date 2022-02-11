@@ -2,9 +2,6 @@
 #include "Chesster_Unleashed/Renderer/Framebuffer.h"
 
 #include "Chesster_Unleashed/Renderer/RenderCommand.h"
-#include "Chesster_Unleashed/Renderer/Context.h"
-
-#include <SDL.h>
 
 namespace Chesster
 {

@@ -99,6 +99,9 @@
     <ClCompile Include="src\Chesster\Core\Window.cpp">
       <Filter>Chesster\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Chesster\ImGuiBuild.cpp">
+      <Filter>Chesster</Filter>
+    </ClCompile>
     <ClCompile Include="src\Chesster\Main.cpp">
       <Filter>Chesster</Filter>
     </ClCompile>
@@ -127,6 +130,5 @@
       <Filter>Chesster\States</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\Chesster\ImGuiBuild.cpp" />
   </ItemGroup>
 </Project>
