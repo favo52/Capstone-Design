@@ -13,7 +13,8 @@ namespace Chesster
 	SOCKET ClientTCP::m_CameraBufferSocket{ INVALID_SOCKET };
 	SOCKET ClientTCP::m_RobotLogSocket{ INVALID_SOCKET };
 
-	bool ClientTCP::DataReceived{ false };
+	bool ClientTCP::CameraDataReceived{ false };
+	bool ClientTCP::RobotDataReceived{ false };
 
 	ClientTCP::ClientTCP() :
 		m_WSAData{ NULL },
@@ -100,7 +101,7 @@ namespace Chesster
 
 			// Create new thread for receiving data
 			unsigned threadID{};
-			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::DataStream, (void*)&*this, 0, &threadID);
+			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::CameraDataStream, (void*)&*this, 0, &threadID);
 		}
 
 		Sleep(150);
@@ -134,10 +135,15 @@ namespace Chesster
 
 			// Code here
 			
+			// Examples
+			//std::string myMessage = { "Hello Robot" };
+			//send(m_RobotCommandSocket, myMessage.c_str(), myMessage.length(), 0);
+			//recv(m_RobotCommandSocket, Buffer, BufferLen, 0);
+			//CHESSTER_INFO(Buffer); // print
 		}
 
 		// Robot log socket
-		//ip = { "localhost" }, port = { "3000" };
+		//ip = { "" }, port = { "" }; // Need to figure out IP and PORT
 		//if (!ConnectSocket(m_RobotLogSocket, ip.c_str(), port.c_str()))
 		//{
 		//	CHESSTER_ERROR("Unable to connect m_RobotLogSocket. (IP: {0}, Port: {1})", ip, port);
@@ -150,7 +156,7 @@ namespace Chesster
 		//
 		//	// Create new thread for receiving data
 		//	//unsigned threadID{};
-		//	//HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::DataStream, (void*)&*this, 0, &threadID);
+		//	//HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::RobotDataStream, (void*)&*this, 0, &threadID);
 		//}
 
 		Sleep(150);
@@ -163,12 +169,12 @@ namespace Chesster
 		closesocket(m_RobotLogSocket);
 	}
 
-	bool ClientTCP::SendCommand(const std::string& command)
+	bool ClientTCP::SendCameraCommand(const std::string& command)
 	{
 		int iSendResult = send(m_CameraCommandSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
 		{
-			CHESSTER_ERROR("SendCommand failed with error: {0}", WSAGetLastError());
+			CHESSTER_ERROR("SendCameraCommand failed with error: {0}", WSAGetLastError());
 			return false;
 		}
 
@@ -193,6 +199,23 @@ namespace Chesster
 			return false;
 
 		return true;
+	}
+
+	bool ClientTCP::SendRobotCommand(const std::string& command)
+	{
+		int iSendResult = send(m_RobotCommandSocket, command.c_str(), command.length(), 0);
+		if (iSendResult == INVALID_SOCKET)
+		{
+			CHESSTER_ERROR("SendRobotCommand failed with error: {0}", WSAGetLastError());
+			return false;
+		}
+
+		return true;
+	}
+
+	bool ClientTCP::RecvRobotConfirmation()
+	{
+		return false;
 	}
 
 	bool ClientTCP::ConnectSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
@@ -288,19 +311,56 @@ namespace Chesster
 		}
 
 		m_CameraData = std::string(Buffer);
-		DataReceived = true;
+		CameraDataReceived = true;
 
 		Sleep(1000);
 		return true;
 	}
 
-	unsigned int __stdcall ClientTCP::DataStream(void* data)
+	bool ClientTCP::RecvRobotData()
+	{
+		// Prepare buffer
+		char Buffer[256]{};
+		int BufferLen{ sizeof(Buffer) };
+		ZeroMemory(Buffer, BufferLen);
+
+		int iRecvResult = recv(m_CameraBufferSocket, Buffer, BufferLen, 0);
+		if (iRecvResult == SOCKET_ERROR)
+		{
+			CHESSTER_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
+			DisconnectCamera();
+			CHESSTER_INFO("Robot disconnected.");
+			GameLayer::GetConsolePanel()->AddLog("Robot disconnected.\n\n");
+			return false;
+		}
+
+		m_RobotData = std::string(Buffer);
+		CameraDataReceived = true;
+
+		Sleep(1000);
+		return true;
+	}
+
+	unsigned int __stdcall ClientTCP::CameraDataStream(void* data)
 	{
 		ClientTCP* clientTCP = static_cast<ClientTCP*>(data);
 
 		while (true)
 		{
 			if (!clientTCP->RecvCameraData())
+				return Result::Failure;
+		}
+
+		return Result::Success;
+	}
+
+	unsigned int __stdcall ClientTCP::RobotDataStream(void* data)
+	{
+		ClientTCP* clientTCP = static_cast<ClientTCP*>(data);
+
+		while (true)
+		{
+			if (!clientTCP->RecvRobotData())
 				return Result::Failure;
 		}
 

@@ -179,7 +179,7 @@ namespace Chesster
 			{
 				SettingsPanel::IsCameraConnected = true;
 				m_ClientTCP.ConnectCamera();
-				m_ClientTCP.SendCommand("SE8");
+				m_ClientTCP.SendCameraCommand("SE8");
 				if (!m_ClientTCP.RecvCameraConfirmation())
 				{
 					m_ConsolePanel.AddLog("Camera did not connect sucessfully.");

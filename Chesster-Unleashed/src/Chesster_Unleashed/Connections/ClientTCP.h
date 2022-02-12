@@ -26,23 +26,29 @@ namespace Chesster
 		bool ConnectRobot();
 		void DisconnectRobot();
 
-		bool SendCommand(const std::string& command);
+		bool SendCameraCommand(const std::string& command);
 		bool RecvCameraConfirmation();
+
+		bool SendRobotCommand(const std::string& command);
+		bool RecvRobotConfirmation();
 
 		const std::string& GetCameraData() const { return m_CameraData; }
 		const std::string& GetRobotData() const { return m_RobotData; }
 
 	public:
-		static bool DataReceived;
+		static bool CameraDataReceived;
+		static bool RobotDataReceived;
 
 	private:
 		bool ConnectSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port);
 		void DNSLookup(const SOCKET& m_socket);
 
 		bool RecvCameraData();
+		bool RecvRobotData();
 
 		// Multithreading
-		static unsigned int __stdcall DataStream(void* data);
+		static unsigned int __stdcall CameraDataStream(void* data);
+		static unsigned int __stdcall RobotDataStream(void* data);
 
 	private:
 		enum Result
