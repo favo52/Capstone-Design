@@ -1,10 +1,10 @@
-[Feb/11/2022][03:10:41 AM][info] CHESSTER: Welcome to the Chesster UCI!
-[Feb/11/2022][03:10:41 AM][info] CHESSTER: Creating SDL Window: CHESSTER! (1600, 900)
-[Feb/11/2022][03:10:41 AM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
-[Feb/11/2022][03:10:46 AM][info] CHESSTER: Engine connection opened.
-[Feb/11/2022][03:10:46 AM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
+[Feb/12/2022][05:14:51 PM][info] CHESSTER: Welcome to the Chesster UCI!
+[Feb/12/2022][05:14:51 PM][info] CHESSTER: Creating SDL Window: CHESSTER! (1600, 900)
+[Feb/12/2022][05:14:51 PM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
+[Feb/12/2022][05:14:52 PM][info] CHESSTER: Engine connection opened.
+[Feb/12/2022][05:14:52 PM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
 
-[Feb/11/2022][03:10:46 AM][info] CHESSTER: 
+[Feb/12/2022][05:14:53 PM][info] CHESSTER: 
 id name Stockfish 14.1
 id author the Stockfish developers (see AUTHORS file)
 
@@ -30,9 +30,9 @@ option name SyzygyProbeLimit type spin default 7 min 0 max 7
 option name Use NNUE type check default true
 option name EvalFile type string default nn-13406b1dcbe0.nnue
 uciok
-readyok
 
-[Feb/11/2022][03:10:46 AM][info] CHESSTER: 
+[Feb/12/2022][05:14:53 PM][info] CHESSTER: readyok
+
  +---+---+---+---+---+---+---+---+
  | r | n | b | q | k | b | n | r | 8
  +---+---+---+---+---+---+---+---+
@@ -57,5 +57,5 @@ Key: 8F8F01D4562F59FB
 Checkers: 
 
 
-[Feb/11/2022][03:10:55 AM][info] CHESSTER: Engine connection closed.
-[Feb/11/2022][03:10:55 AM][info] CHESSTER: SDL closed successfully.
+[Feb/12/2022][05:15:17 PM][error] CHESSTER: Unable to connect m_RobotCommandSocket. (IP: 192.168.128.201, Port: 1122)
+[Feb/12/2022][05:15:17 PM][warning] CHESSTER: Program did not connect to Staubli Robot sucessfully.

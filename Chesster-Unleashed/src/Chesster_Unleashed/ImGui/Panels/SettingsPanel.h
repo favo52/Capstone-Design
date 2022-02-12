@@ -28,6 +28,10 @@ namespace Chesster
 		static bool IsCameraButton;
 		static bool IsCameraConnected;
 
+		// Robot toggles
+		static bool IsRobotButton;
+		static bool IsRobotConnected;
+
 	private:
 		void UpdateSquareColors();
 

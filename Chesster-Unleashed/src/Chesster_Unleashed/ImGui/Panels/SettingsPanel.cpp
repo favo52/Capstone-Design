@@ -24,6 +24,9 @@ namespace Chesster
 	bool SettingsPanel::IsCameraButton{ false };
 	bool SettingsPanel::IsCameraConnected{ false };
 
+	bool SettingsPanel::IsRobotButton{ false };
+	bool SettingsPanel::IsRobotConnected{ false };
+
 	static void DrawIntControl(const std::string& label, int& value, bool& button, int min, int max, float columnWidth = 100.0f)
 	{
 		ImGui::PushID(label.c_str());
@@ -111,9 +114,13 @@ namespace Chesster
 		});
 
 		class Staubli {};
-		DrawSection<Staubli>("Staubli Robotic Arm", []()
+		DrawSection<Staubli>("Staubli Robotic Arm", [boldFont]()
 		{
-
+			ImGui::PushFont(boldFont);
+			const char* button = (!IsRobotConnected) ? "Connect" : "Disconnect";
+			if (ImGui::Button(button, { 100, 50 }))
+				IsRobotButton = true;
+			ImGui::PopFont();
 		});
 
 		class DifficultySlider {};

@@ -54,32 +54,29 @@ namespace Chesster
 
 			if (m_Minimized) SDL_WaitEvent(&e);
 
-			if (!m_Minimized)
+			// Variable delta time
+			TimePoint newTime = Clock::Now();
+			auto frameTime = newTime - currentTime;
+			currentTime = newTime;
+
+			// Update game logic
+			for (Layer* layer : m_LayerStack)
+				layer->OnUpdate(frameTime);
+
+			// Draw everything
+			for (Layer* layer : m_LayerStack)
+				layer->OnRender();
+
+			// Render ImGui on top
+			m_ImGuiLayer->Begin();
 			{
-				// Variable delta time
-				TimePoint newTime = Clock::Now();
-				auto frameTime = newTime - currentTime;
-				currentTime = newTime;
-
-				// Update game logic
 				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate(frameTime);
-
-				// Draw everything
-				for (Layer* layer : m_LayerStack)
-					layer->OnRender();
-
-				// Render ImGui on top
-				m_ImGuiLayer->Begin();
-				{
-					for (Layer* layer : m_LayerStack)
-						layer->OnImGuiRender();
-				}
-				m_ImGuiLayer->End();
-
-				// Update screen
-				m_Window->OnUpdate();
+					layer->OnImGuiRender();
 			}
+			m_ImGuiLayer->End();
+
+			// Update screen
+			m_Window->OnUpdate();
 		}
 	}
 

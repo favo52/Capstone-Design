@@ -23,19 +23,23 @@ namespace Chesster
 		void ConnectCamera();
 		void DisconnectCamera();
 
-		bool SendCommand(const std::string& command = "SE8\n");
-		bool RecvConfirmation();
+		bool ConnectRobot();
+		void DisconnectRobot();
 
-		const std::string& GetData() const { return m_Data; }
+		bool SendCommand(const std::string& command);
+		bool RecvCameraConfirmation();
+
+		const std::string& GetCameraData() const { return m_CameraData; }
+		const std::string& GetRobotData() const { return m_RobotData; }
 
 	public:
 		static bool DataReceived;
 
 	private:
 		bool ConnectSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port);
-		bool RecvData();
-
 		void DNSLookup(const SOCKET& m_socket);
+
+		bool RecvCameraData();
 
 		// Multithreading
 		static unsigned int __stdcall DataStream(void* data);
@@ -49,10 +53,14 @@ namespace Chesster
 	private:
 		WSADATA m_WSAData;
 
-		static std::string m_Data;
+		static std::string m_CameraData;
+		static std::string m_RobotData;
 
-		SOCKET m_CommandSocket; // Command the camera to take a pic
-		static SOCKET m_BufferSocket; // Receive the camera's data
+		SOCKET m_CameraCommandSocket; // Command the camera to take a pic
+		static SOCKET m_CameraBufferSocket; // Receive the camera's data
+
+		SOCKET m_RobotCommandSocket;
+		static SOCKET m_RobotLogSocket;
 
 		// Declare an addrinfo object that contains a
 		// sockaddr structure and initialize these values

@@ -59,5 +59,6 @@ namespace Chesster
 		PieceType Type{ PieceType::None };
 		PieceColor Color{ PieceColor::None };
 		bool EnPassant{ false };
+		bool IsCaptured{ false };
 	};
 }

@@ -179,8 +179,8 @@ namespace Chesster
 			{
 				SettingsPanel::IsCameraConnected = true;
 				m_ClientTCP.ConnectCamera();
-				m_ClientTCP.SendCommand();
-				if (!m_ClientTCP.RecvConfirmation())
+				m_ClientTCP.SendCommand("SE8");
+				if (!m_ClientTCP.RecvCameraConfirmation())
 				{
 					m_ConsolePanel.AddLog("Camera did not connect sucessfully.");
 					CHESSTER_WARN("Camera did not connect sucessfully.");
@@ -189,6 +189,29 @@ namespace Chesster
 			}
 
 			SettingsPanel::IsCameraButton = false;
+		}
+
+		if (SettingsPanel::IsRobotButton)
+		{
+			if (SettingsPanel::IsRobotConnected)
+			{
+				m_ClientTCP.DisconnectRobot();
+				SettingsPanel::IsRobotConnected = false;
+			}
+			else
+			{
+				SettingsPanel::IsRobotConnected = true;
+				if (!m_ClientTCP.ConnectRobot())
+				{
+					m_ConsolePanel.AddLog("Program did not connect to Staubli Robot sucessfully.");
+					CHESSTER_WARN("Program did not connect to Staubli Robot sucessfully.");
+					SettingsPanel::IsRobotConnected = false;
+				}
+
+				//m_ClientTCP.SendCommand("SE8");
+			}
+
+			SettingsPanel::IsRobotButton = false;
 		}
 
 		UpdateDifficulty();
@@ -425,8 +448,11 @@ namespace Chesster
 
 	void GameLayer::RemovePiece(Piece& piece)
 	{
+		std::string wasCapturedAt = piece.Notation;
+
 		piece.Notation = "00";
 		piece.SetPosition(-3000.0f, -3000.0f);
+		piece.IsCaptured = true;
 	}
 
 	void GameLayer::ResetPieces()
