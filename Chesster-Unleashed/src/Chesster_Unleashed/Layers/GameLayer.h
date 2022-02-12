@@ -94,6 +94,11 @@ namespace Chesster
 		std::string m_CurrentFEN;
 		std::vector<std::string> m_LegalMoves;
 
+		std::string m_OldData;
+		std::string m_NewData;
+		std::string m_TempData;
+		std::string m_NewGameData;
+
 		// Boolean switches
 		bool m_IsHoldingPiece{ false };
 		bool m_IsPieceReleased{ false };

@@ -324,7 +324,7 @@ namespace Chesster
 		int BufferLen{ sizeof(Buffer) };
 		ZeroMemory(Buffer, BufferLen);
 
-		int iRecvResult = recv(m_CameraBufferSocket, Buffer, BufferLen, 0);
+		int iRecvResult = recv(m_RobotLogSocket, Buffer, BufferLen, 0);
 		if (iRecvResult == SOCKET_ERROR)
 		{
 			CHESSTER_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
@@ -334,8 +334,8 @@ namespace Chesster
 			return false;
 		}
 
-		m_RobotData = std::string(Buffer);
-		CameraDataReceived = true;
+		//m_RobotData = std::string(Buffer);
+		RobotDataReceived = true;
 
 		Sleep(1000);
 		return true;

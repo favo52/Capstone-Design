@@ -208,11 +208,14 @@ namespace Chesster
 					SettingsPanel::IsRobotConnected = false;
 				}
 
-				//m_ClientTCP.SendCommand("SE8");
+				//m_ClientTCP.SendCommand("");
 			}
 
 			SettingsPanel::IsRobotButton = false;
 		}
+
+		// Check for New Game (take pic and compare, etc)
+		m_NewGameData = m_ClientTCP.GetCameraData();
 
 		UpdateDifficulty();
 
@@ -526,6 +529,11 @@ namespace Chesster
 		ResetPieces();
 		m_Connector.ResetGame();
 		m_LegalMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
+
+		m_TempData.clear();
+		m_OldData.clear();
+		m_NewData.clear();
+		m_NewGameData.clear();
 	}
 
 	void GameLayer::EvaluateBoard()
