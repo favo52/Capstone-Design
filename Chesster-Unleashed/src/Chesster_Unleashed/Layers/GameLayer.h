@@ -33,8 +33,9 @@ namespace Chesster
 
 	public:
 		static ConsolePanel* GetConsolePanel() { return &m_ConsolePanel; }
+		static ClientTCP* GetTCP() { return &m_ClientTCP; }
 
-		// Cognex Camera
+		// TCP Connections
 		static ClientTCP m_ClientTCP;
 
 	private:

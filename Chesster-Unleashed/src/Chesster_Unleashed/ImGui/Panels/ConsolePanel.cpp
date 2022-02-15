@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Chesster_Unleashed/ImGui/Panels/ConsolePanel.h"
 
+#include "Chesster_Unleashed/Layers/GameLayer.h"
+
 namespace Chesster
 {
 	bool ConsoleButtons::ResetBoardButton{ false };
@@ -218,6 +220,10 @@ namespace Chesster
 			int first = History.Size - 10;
 			for (int i = first > 0 ? first : 0; i < History.Size; i++)
 				AddLog("%3d: %s\n", i, History[i]);
+		}
+		else if (Stricmp(command_line, "Hello") == 0)
+		{
+			GameLayer::GetTCP()->SendToRobot("Hello");
 		}
 		else
 		{

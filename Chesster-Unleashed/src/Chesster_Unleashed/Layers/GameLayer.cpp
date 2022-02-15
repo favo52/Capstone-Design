@@ -201,14 +201,17 @@ namespace Chesster
 			else
 			{
 				SettingsPanel::IsRobotConnected = true;
-				if (!m_ClientTCP.ConnectRobot())
+
+				unsigned threadID{};
+				HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::ConnectRobot, &ClientTCP::Get(), 0, &threadID);
+				
+				
+				/*if (!m_ClientTCP.ConnectRobot())
 				{
 					m_ConsolePanel.AddLog("Program did not connect to Staubli Robot sucessfully.");
 					CHESSTER_WARN("Program did not connect to Staubli Robot sucessfully.");
 					SettingsPanel::IsRobotConnected = false;
-				}
-
-				//m_ClientTCP.SendCommand("");
+				}*/
 			}
 
 			SettingsPanel::IsRobotButton = false;
