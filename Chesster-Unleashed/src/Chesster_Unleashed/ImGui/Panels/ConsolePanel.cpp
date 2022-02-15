@@ -221,9 +221,9 @@ namespace Chesster
 			for (int i = first > 0 ? first : 0; i < History.Size; i++)
 				AddLog("%3d: %s\n", i, History[i]);
 		}
-		else if (Stricmp(command_line, "Hello") == 0)
+		else if (Stricmp(command_line, command_line) == 0)
 		{
-			GameLayer::GetTCP()->SendToRobot("Hello");
+			GameLayer::GetTCP()->SendToRobot(command_line);
 		}
 		else
 		{

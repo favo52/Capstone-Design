@@ -23,7 +23,7 @@ namespace Chesster
 		void ConnectCamera();
 		void DisconnectCamera();
 
-		bool ConnectRobot();
+		//bool ConnectRobot();
 		void DisconnectRobot();
 
 		bool SendCameraCommand(const std::string& command);
@@ -51,11 +51,11 @@ namespace Chesster
 		void DNSLookup(const SOCKET& m_socket);
 
 		bool RecvCameraData();
-		bool RecvRobotData();
+		//bool RecvRobotData();
 
 		// Multithreading
 		static unsigned int __stdcall CameraDataStream(void* data);
-		static unsigned int __stdcall RobotDataStream(void* data);
+		//static unsigned int __stdcall RobotDataStream(void* data);
 
 	private:
 		enum Result
@@ -75,8 +75,8 @@ namespace Chesster
 		SOCKET m_RobotListenSocket; // SOCKET for Server to listen for Client connections
 		SOCKET m_RobotClientSocket; // SOCKET for accepting connections from clients
 
-		SOCKET m_RobotCommandSocket;
-		static SOCKET m_RobotLogSocket;
+		//SOCKET m_RobotCommandSocket;
+		//static SOCKET m_RobotLogSocket;
 
 		sockaddr_in m_SockAddr{ NULL };
 		int m_SockAddrSize{ sizeof(m_SockAddr) };
