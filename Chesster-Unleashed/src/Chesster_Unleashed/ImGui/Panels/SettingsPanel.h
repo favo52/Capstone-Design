@@ -25,11 +25,11 @@ namespace Chesster
 		static bool IsELOActive;
 
 		// Camera toggles
-		static bool IsCameraButton;
+		static bool IsCameraButtonPressed;
 		static bool IsCameraConnected;
 
 		// Robot toggles
-		static bool IsRobotButton;
+		static bool IsRobotButtonPressed;
 		static bool IsRobotConnected;
 
 	private:

@@ -15,7 +15,7 @@ namespace Chesster
 	ConsolePanel GameLayer::m_ConsolePanel{};
 	SettingsPanel GameLayer::m_SettingsPanel{};
 
-	ClientTCP GameLayer::m_ClientTCP{};
+	TCPConnection GameLayer::m_TCPConnection{};
 
 	GameLayer::GameLayer() :
 		Layer("GameLayer"),
@@ -56,9 +56,9 @@ namespace Chesster
 			{
 				case SDL_KEYDOWN:
 				{
-					if (sdlEvent.key.keysym.sym == SDLK_SPACE && sdlEvent.key.repeat == 0 && !m_IsRecvComputerMove)
+					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !m_IsRecvComputerMove)
 					{
-						//m_ClientTCP.SendCommand();
+						//m_TCPConnection.SendCommand();
 						m_IsComputerTurn = true;
 					}
 					break;
@@ -168,19 +168,19 @@ namespace Chesster
 			ConsoleButtons::EvaluateBoardButton = false;
 		}
 
-		if (SettingsPanel::IsCameraButton)
+		if (SettingsPanel::IsCameraButtonPressed)
 		{
 			if (SettingsPanel::IsCameraConnected)
 			{
-				m_ClientTCP.DisconnectCamera();
+				m_TCPConnection.DisconnectCamera();
 				SettingsPanel::IsCameraConnected = false;
 			}
 			else
 			{
 				SettingsPanel::IsCameraConnected = true;
-				m_ClientTCP.ConnectCamera();
-				m_ClientTCP.SendCameraCommand("SE8");
-				if (!m_ClientTCP.RecvCameraConfirmation())
+				m_TCPConnection.ConnectCamera();
+				m_TCPConnection.SendCameraCommand("SE8");
+				if (!m_TCPConnection.RecvCameraConfirmation())
 				{
 					m_ConsolePanel.AddLog("Camera did not connect sucessfully.");
 					CHESSTER_WARN("Camera did not connect sucessfully.");
@@ -188,14 +188,14 @@ namespace Chesster
 				}
 			}
 
-			SettingsPanel::IsCameraButton = false;
+			SettingsPanel::IsCameraButtonPressed = false;
 		}
 
-		if (SettingsPanel::IsRobotButton)
+		if (SettingsPanel::IsRobotButtonPressed)
 		{
 			if (SettingsPanel::IsRobotConnected)
 			{
-				m_ClientTCP.DisconnectRobot();
+				m_TCPConnection.DisconnectRobot();
 				SettingsPanel::IsRobotConnected = false;
 			}
 			else
@@ -203,22 +203,14 @@ namespace Chesster
 				SettingsPanel::IsRobotConnected = true;
 
 				unsigned threadID{};
-				HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::ConnectRobot, &ClientTCP::Get(), 0, &threadID);
-				
-				
-				/*if (!m_ClientTCP.ConnectRobot())
-				{
-					m_ConsolePanel.AddLog("Program did not connect to Staubli Robot sucessfully.");
-					CHESSTER_WARN("Program did not connect to Staubli Robot sucessfully.");
-					SettingsPanel::IsRobotConnected = false;
-				}*/
+				HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &TCPConnection::ConnectRobotThread, &TCPConnection::Get(), 0, &threadID);
 			}
 
-			SettingsPanel::IsRobotButton = false;
+			SettingsPanel::IsRobotButtonPressed = false;
 		}
 
 		// Check for New Game (take pic and compare, etc)
-		m_NewGameData = m_ClientTCP.GetCameraData();
+		m_NewGameData = m_TCPConnection.GetCameraData();
 
 		UpdateDifficulty();
 
@@ -286,7 +278,7 @@ namespace Chesster
 		{
 			if (ImGui::BeginMenu("Options"))
 			{
-				if (ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen))
+				if (ImGui::MenuItem("Fullscreen (F5)", NULL, &opt_fullscreen))
 				{
 					SDL_Event e{};
 					e.type = SDL_KEYDOWN;
@@ -486,6 +478,8 @@ namespace Chesster
 			piece.Index = i;
 			piece.SetType();
 			piece.Color = color;
+			piece.EnPassant = false;
+			piece.IsCaptured = false;
 			++i;
 		}
 	}
@@ -529,6 +523,7 @@ namespace Chesster
 		m_MoveHistorySize = m_MoveHistory.size();
 		m_Board.Reset();
 
+		Piece::SetPieceClips(m_PieceClips);
 		ResetPieces();
 		m_Connector.ResetGame();
 		m_LegalMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
@@ -713,6 +708,8 @@ namespace Chesster
 					game->m_IsComputerTurn = false;
 				}
 			}
+
+			Sleep(150);
 		}
 
 		return 100;

@@ -5,7 +5,6 @@
 
 #include <glm/glm.hpp>
 
-
 namespace Chesster
 {
 	struct Square;

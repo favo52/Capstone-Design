@@ -14,16 +14,18 @@
 
 namespace Chesster
 {
-	class ClientTCP
+	class TCPConnection
 	{
 	public:
-		ClientTCP();
-		virtual ~ClientTCP();
+		TCPConnection();
+		virtual ~TCPConnection();
 
+		// Camera connection
 		void ConnectCamera();
 		void DisconnectCamera();
 
-		//bool ConnectRobot();
+		// Robot connection
+		static unsigned int __stdcall ConnectRobotThread(void* data);
 		void DisconnectRobot();
 
 		bool SendCameraCommand(const std::string& command);
@@ -35,14 +37,14 @@ namespace Chesster
 		const std::string& GetCameraData() const { return m_CameraData; }
 		const std::string& GetRobotData() const { return m_RobotData; }
 
-		static ClientTCP& Get() { return *s_Instance; }
-		static unsigned int __stdcall ConnectRobot(void* data);
+		static TCPConnection& Get() { return *s_Instance; }
 
 	public:
 		static bool CameraDataReceived;
 		static bool RobotDataReceived;
 
-		static bool IsListening;
+		static bool IsCameraStreaming;
+		static bool IsServerListening;
 
 	private:
 		bool CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port);
@@ -51,11 +53,7 @@ namespace Chesster
 		void DNSLookup(const SOCKET& m_socket);
 
 		bool RecvCameraData();
-		//bool RecvRobotData();
-
-		// Multithreading
-		static unsigned int __stdcall CameraDataStream(void* data);
-		//static unsigned int __stdcall RobotDataStream(void* data);
+		static unsigned int __stdcall CameraDataStreamThread(void* data);
 
 	private:
 		enum Result
@@ -70,14 +68,12 @@ namespace Chesster
 		static std::string m_RobotData;
 
 		SOCKET m_CameraCommandSocket; // Command the camera to take a pic
-		static SOCKET m_CameraBufferSocket; // Receive the camera's data
+		SOCKET m_CameraBufferSocket; // Receive the camera's data
 
 		SOCKET m_RobotListenSocket; // SOCKET for Server to listen for Client connections
 		SOCKET m_RobotClientSocket; // SOCKET for accepting connections from clients
 
-		//SOCKET m_RobotCommandSocket;
-		//static SOCKET m_RobotLogSocket;
-
+		// Socket information
 		sockaddr_in m_SockAddr{ NULL };
 		int m_SockAddrSize{ sizeof(m_SockAddr) };
 
@@ -85,6 +81,7 @@ namespace Chesster
 		// sockaddr structure and initialize these values
 		struct addrinfo* result{ nullptr }, *ptr{ nullptr }, hints;
 
-		static ClientTCP* s_Instance;
+		// Pointer to this
+		static TCPConnection* s_Instance;
 	};
 }

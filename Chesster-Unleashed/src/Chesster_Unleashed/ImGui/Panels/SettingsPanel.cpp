@@ -21,10 +21,10 @@ namespace Chesster
 	bool SettingsPanel::IsToggleELO{ false };
 	bool SettingsPanel::IsELOActive{ false };
 
-	bool SettingsPanel::IsCameraButton{ false };
+	bool SettingsPanel::IsCameraButtonPressed{ false };
 	bool SettingsPanel::IsCameraConnected{ false };
 
-	bool SettingsPanel::IsRobotButton{ false };
+	bool SettingsPanel::IsRobotButtonPressed{ false };
 	bool SettingsPanel::IsRobotConnected{ false };
 
 	static void DrawIntControl(const std::string& label, int& value, bool& button, int min, int max, float columnWidth = 100.0f)
@@ -109,7 +109,7 @@ namespace Chesster
 			ImGui::PushFont(boldFont); 
 			const char* button = (!IsCameraConnected) ? "Connect" : "Disconnect";
 			if (ImGui::Button(button, { 100, 50 }))
-				IsCameraButton = true;
+				IsCameraButtonPressed = true;
 			ImGui::PopFont();
 		});
 
@@ -119,7 +119,7 @@ namespace Chesster
 			ImGui::PushFont(boldFont);
 			const char* button = (!IsRobotConnected) ? "Connect" : "Disconnect";
 			if (ImGui::Button(button, { 100, 50 }))
-				IsRobotButton = true;
+				IsRobotButtonPressed = true;
 			ImGui::PopFont();
 		});
 

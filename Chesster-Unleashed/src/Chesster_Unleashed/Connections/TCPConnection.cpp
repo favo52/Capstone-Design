@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Chesster_Unleashed/Connections/ClientTCP.h"
+#include "Chesster_Unleashed/Connections/TCPConnection.h"
 
 #include "Chesster_Unleashed/Layers/GameLayer.h"
 
@@ -8,23 +8,23 @@ namespace Chesster
 	// Use Winsock version 2.2
 	constexpr WORD WINSOCK_VER{ MAKEWORD(2, 2) };
 
-	std::string ClientTCP::m_CameraData{ "" };
-	std::string ClientTCP::m_RobotData{ "" };
-	SOCKET ClientTCP::m_CameraBufferSocket{ INVALID_SOCKET };
-	//SOCKET ClientTCP::m_RobotLogSocket{ INVALID_SOCKET };
+	std::string TCPConnection::m_CameraData{ "" };
+	std::string TCPConnection::m_RobotData{ "" };
 
-	bool ClientTCP::CameraDataReceived{ false };
-	bool ClientTCP::RobotDataReceived{ false };
+	bool TCPConnection::CameraDataReceived{ false };
+	bool TCPConnection::RobotDataReceived{ false };
 
-	bool ClientTCP::IsListening{ false };
+	bool TCPConnection::IsCameraStreaming{ false };
+	bool TCPConnection::IsServerListening{ false };
 
-	ClientTCP* ClientTCP::s_Instance{ nullptr };
+	TCPConnection* TCPConnection::s_Instance{ nullptr };
 
-	ClientTCP::ClientTCP() :
+	TCPConnection::TCPConnection() :
 		m_WSAData{ NULL },
 		m_CameraCommandSocket{ INVALID_SOCKET },
-		m_RobotListenSocket{ INVALID_SOCKET }
-		//m_RobotCommandSocket{ INVALID_SOCKET }
+		m_CameraBufferSocket{ INVALID_SOCKET },
+		m_RobotListenSocket{ INVALID_SOCKET },
+		m_RobotClientSocket{ INVALID_SOCKET }
 	{
 		s_Instance = this;
 
@@ -37,7 +37,7 @@ namespace Chesster
 		}
 	}
 
-	ClientTCP::~ClientTCP()
+	TCPConnection::~TCPConnection()
 	{
 		DisconnectCamera();
 		DisconnectRobot();
@@ -46,7 +46,7 @@ namespace Chesster
 		WSACleanup();
 	}
 
-	void ClientTCP::ConnectCamera()
+	void TCPConnection::ConnectCamera()
 	{
 		// Prepare buffer
 		char Buffer[128]{};
@@ -108,83 +108,84 @@ namespace Chesster
 
 			// Create new thread for receiving data
 			unsigned threadID{};
-			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::CameraDataStream, (void*)&*this, 0, &threadID);
+			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &TCPConnection::CameraDataStreamThread, (void*)this, 0, &threadID);
 		}
 
 		Sleep(150);
 	}
 
-	void ClientTCP::DisconnectCamera()
+	void TCPConnection::DisconnectCamera()
 	{
+		IsCameraStreaming = false;
+
 		closesocket(m_CameraCommandSocket);
 		closesocket(m_CameraBufferSocket);
 	}
 
-	//bool ClientTCP::ConnectRobot()
-	//{
-	//	// Prepare buffer
-	//	char Buffer[128]{};
-	//	int BufferLen{ sizeof(Buffer) };
-	//	ZeroMemory(Buffer, BufferLen);
-	//	
-	//	//// Robot command socket
-	//	//std::string ip = { "192.168.7.61" }, port = { "5653" };
-	//	//if (!CreateClientSocket(m_RobotCommandSocket, ip.c_str(), port.c_str()))
-	//	//{
-	//	//	CHESSTER_ERROR("Unable to connect m_RobotCommandSocket. (IP: {0}, Port: {1})", ip, port);
-	//	//	std::string str{ "Unable to connect m_RobotCommandSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
-	//	//	GameLayer::GetConsolePanel()->AddLog(str.c_str());
-	//	//	return false;
-	//	//}
-	//	//else
-	//	//{
-	//	//	DNSLookup(m_RobotCommandSocket);
-
-	//	//	// Code here
-	//	//	
-	//	//	// Examples
-	//	//	//std::string myMessage = { "Hello Robot" };
-	//	//	//send(m_RobotCommandSocket, myMessage.c_str(), myMessage.length(), 0);
-	//	//	//recv(m_RobotCommandSocket, Buffer, BufferLen, 0);
-	//	//	//CHESSTER_INFO(Buffer); // print
-	//	//}
-
-	//	// Robot log socket
-	//	//ip = { "" }, port = { "" }; // Need to figure out IP and PORT
-	//	//if (!ConnectSocket(m_RobotLogSocket, ip.c_str(), port.c_str()))
-	//	//{
-	//	//	CHESSTER_ERROR("Unable to connect m_RobotLogSocket. (IP: {0}, Port: {1})", ip, port);
-	//	//	std::string str{ "Unable to connect m_RobotLogSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
-	//	//	GameLayer::GetConsolePanel()->AddLog(str.c_str());
-	//	//}
-	//	//else // If successful
-	//	//{
-	//	//	DNSLookup(m_RobotLogSocket);
-	//	//
-	//	//	// Create new thread for receiving data
-	//	//	//unsigned threadID{};
-	//	//	//HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientTCP::RobotDataStream, (void*)&*this, 0, &threadID);
-	//	//}
-
-	//	Sleep(150);
-	//	return true;
-	//}
-
-	void ClientTCP::DisconnectRobot()
+	unsigned int __stdcall TCPConnection::ConnectRobotThread(void* data)
 	{
-		IsListening = false;
+		TCPConnection* TCP = static_cast<TCPConnection*>(data);
 
-		//closesocket(m_RobotCommandSocket);
-		//closesocket(m_RobotLogSocket);
+		// Prepare buffer
+		char Buffer[128]{};
+		int BufferLen{ sizeof(Buffer) };
+		ZeroMemory(Buffer, BufferLen);
+
+		std::string ip = { "192.168.7.10" }, port = { "15000" };
+		if (!TCP->CreateServerSocket(TCP->m_RobotListenSocket, ip.c_str(), port.c_str()))
+		{
+			std::string str{ "Unable to connect m_RobotListenSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
+			CHESSTER_ERROR(str);
+			GameLayer::GetConsolePanel()->AddLog(str.c_str());
+			SettingsPanel::IsRobotConnected = false;
+			return false;
+		}
+		else
+		{
+			std::string str{ "Chesster server is ready." };
+			CHESSTER_INFO(str);
+			GameLayer::GetConsolePanel()->AddLog(str.c_str());
+
+			// Accept a client socket
+			TCP->m_RobotClientSocket = accept(TCP->m_RobotListenSocket, (sockaddr*)&TCP->m_SockAddr, &TCP->m_SockAddrSize);
+			if (TCP->m_RobotClientSocket == INVALID_SOCKET)
+			{
+				CHESSTER_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
+				closesocket(TCP->m_RobotClientSocket);
+				SettingsPanel::IsRobotConnected = false;
+				return false;
+			}
+
+			CHESSTER_INFO("CS8C Connected.");
+
+			IsServerListening = true;
+			while (IsServerListening)
+			{
+				if (!TCP->RecvFromRobot())
+				{
+					closesocket(TCP->m_RobotClientSocket);
+					SettingsPanel::IsRobotConnected = false;
+					break;
+				}
+			}
+		}
+
+		return 0;
+	}
+
+	void TCPConnection::DisconnectRobot()
+	{
+		IsServerListening = false;
 
 		closesocket(m_RobotListenSocket);
+		closesocket(m_RobotClientSocket);
 
-		std::string msg{ "Chesster server shut down" };
+		std::string msg{ "Chesster server shut down." };
 		CHESSTER_INFO(msg);
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 	}
 
-	bool ClientTCP::SendCameraCommand(const std::string& command)
+	bool TCPConnection::SendCameraCommand(const std::string& command)
 	{
 		int iSendResult = send(m_CameraCommandSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
@@ -196,7 +197,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool ClientTCP::RecvCameraConfirmation()
+	bool TCPConnection::RecvCameraConfirmation()
 	{
 		// Prepare buffer
 		char Buffer[8]{};
@@ -216,7 +217,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool ClientTCP::SendToRobot(const std::string& command)
+	bool TCPConnection::SendToRobot(const std::string& command)
 	{
 		int iSendResult = send(m_RobotClientSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
@@ -228,25 +229,28 @@ namespace Chesster
 		return true;
 	}
 
-	bool ClientTCP::RecvFromRobot()
+	bool TCPConnection::RecvFromRobot()
 	{
 		// Prepare buffer
 		char Buffer[128]{};
 		int BufferLen{ sizeof(Buffer) };
 		ZeroMemory(Buffer, BufferLen);
 
-		//CHESSTER_INFO("Waiting to receive...");
+		CHESSTER_INFO("Waiting to receive...");
 		int iResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
 		if (iResult > 0)
 		{
+			m_RobotData = Buffer;
 			CHESSTER_INFO(Buffer);
 			GameLayer::GetConsolePanel()->AddLog(Buffer);
+			RobotDataReceived = true;
 		}
 
+		Sleep(1000);
 		return true;
 	}
 
-	bool ClientTCP::CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
+	bool TCPConnection::CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
 	{
 		// Prepare addrinfo
 		ZeroMemory(&hints, sizeof(hints));
@@ -294,7 +298,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool ClientTCP::CreateServerSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
+	bool TCPConnection::CreateServerSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
 	{
 		// Prepare addrinfo
 		ZeroMemory(&hints, sizeof(hints));	// ZeroMemory fills the hints with zeros, prepares the memory to be used
@@ -329,7 +333,7 @@ namespace Chesster
 		if (iResult == SOCKET_ERROR) // Error checking
 		{
 			CHESSTER_ERROR("WINSOCK: bind() failed with error: {0}", WSAGetLastError());
-			freeaddrinfo(result); // Called to free the memory allocated by the getaddrinfo function for this address information
+			freeaddrinfo(result);
 			closesocket(m_RobotListenSocket);
 			return false;
 		}
@@ -350,10 +354,8 @@ namespace Chesster
 		return true;
 	}
 
-	void ClientTCP::DNSLookup(const SOCKET& m_socket)
+	void TCPConnection::DNSLookup(const SOCKET& m_socket)
 	{
-		//sockaddr_in ServerAddr{ NULL };
-		//int ServerAddrSize{ sizeof(ServerAddr) };
 		char ServerName[NI_MAXHOST];
 		char ServerPort[NI_MAXHOST];
 
@@ -377,7 +379,7 @@ namespace Chesster
 		}
 	}
 
-	bool ClientTCP::RecvCameraData()
+	bool TCPConnection::RecvCameraData()
 	{
 		// Prepare buffer
 		char Buffer[256]{};
@@ -389,6 +391,7 @@ namespace Chesster
 		{
 			CHESSTER_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
 			DisconnectCamera();
+			
 			CHESSTER_INFO("Camera disconnected.");
 			GameLayer::GetConsolePanel()->AddLog("Camera disconnected.\n\n");
 			return false;
@@ -399,91 +402,14 @@ namespace Chesster
 
 		Sleep(1000);
 		return true;
-	}
+	}	
 
-	//bool ClientTCP::RecvRobotData()
-	//{
-	//	// Prepare buffer
-	//	char Buffer[256]{};
-	//	int BufferLen{ sizeof(Buffer) };
-	//	ZeroMemory(Buffer, BufferLen);
-
-	//	int iRecvResult = recv(m_RobotLogSocket, Buffer, BufferLen, 0);
-	//	if (iRecvResult == SOCKET_ERROR)
-	//	{
-	//		CHESSTER_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
-	//		DisconnectCamera();
-	//		CHESSTER_INFO("Robot disconnected.");
-	//		GameLayer::GetConsolePanel()->AddLog("Robot disconnected.\n\n");
-	//		return false;
-	//	}
-
-	//	//m_RobotData = std::string(Buffer);
-	//	RobotDataReceived = true;
-
-	//	Sleep(1000);
-	//	return true;
-	//}
-
-	unsigned int __stdcall ClientTCP::ConnectRobot(void* data)
+	unsigned int __stdcall TCPConnection::CameraDataStreamThread(void* data)
 	{
-		ClientTCP* TCP = static_cast<ClientTCP*>(data);
+		TCPConnection* clientTCP = static_cast<TCPConnection*>(data);
 
-		// Prepare buffer
-		char Buffer[128]{};
-		int BufferLen{ sizeof(Buffer) };
-		ZeroMemory(Buffer, BufferLen);
-
-		std::string ip = { "192.168.7.10" }, port = { "15000" };
-		if (!TCP->CreateServerSocket(TCP->m_RobotListenSocket, ip.c_str(), port.c_str()))
-		{
-			std::string str{ "Unable to connect m_RobotListenSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
-			CHESSTER_ERROR(str);
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
-			SettingsPanel::IsRobotConnected = false;
-			return false;
-		}
-		else
-		{
-			CHESSTER_INFO("Chesster server is ready.");
-			std::string str{ "Chesster server is ready." };
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
-
-			// Accept a client socket
-			TCP->m_RobotClientSocket = accept(TCP->m_RobotListenSocket, (sockaddr*)&TCP->m_SockAddr, &TCP->m_SockAddrSize);
-			if (TCP->m_RobotClientSocket == INVALID_SOCKET)
-			{
-				CHESSTER_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
-				closesocket(TCP->m_RobotClientSocket);
-				SettingsPanel::IsRobotConnected = false;
-				return false;
-			}
-
-			// DNS Lookup
-			//TCP->DNSLookup(TCP->m_RobotClientSocket);
-
-			CHESSTER_INFO("CS8C Connected.");
-
-			IsListening = true;
-			while (IsListening)
-			{
-				if (!TCP->RecvFromRobot())
-				{
-					closesocket(TCP->m_RobotClientSocket);
-					SettingsPanel::IsRobotConnected = false;
-					break;
-				}
-			}
-		}
-
-		return 0;
-	}
-
-	unsigned int __stdcall ClientTCP::CameraDataStream(void* data)
-	{
-		ClientTCP* clientTCP = static_cast<ClientTCP*>(data);
-
-		while (true)
+		IsCameraStreaming = true;
+		while (IsCameraStreaming)
 		{
 			if (!clientTCP->RecvCameraData())
 				return Result::Failure;
@@ -491,17 +417,4 @@ namespace Chesster
 
 		return Result::Success;
 	}
-
-	/*unsigned int __stdcall ClientTCP::RobotDataStream(void* data)
-	{
-		ClientTCP* clientTCP = static_cast<ClientTCP*>(data);
-
-		while (true)
-		{
-			if (!clientTCP->RecvRobotData())
-				return Result::Failure;
-		}
-
-		return Result::Success;
-	}*/
 }

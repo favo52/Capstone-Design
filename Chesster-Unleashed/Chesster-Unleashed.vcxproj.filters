@@ -27,7 +27,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Chesster_Unleashed\Connections\ClientTCP.h">
+    <ClInclude Include="src\Chesster_Unleashed\Connections\TCPConnection.h">
       <Filter>Chesster_Unleashed\Connections</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster_Unleashed\Connections\Connector.h">
@@ -100,7 +100,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Chesster_Unleashed\Connections\ClientTCP.cpp">
+    <ClCompile Include="src\Chesster_Unleashed\Connections\TCPConnection.cpp">
       <Filter>Chesster_Unleashed\Connections</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster_Unleashed\Connections\Connector.cpp">

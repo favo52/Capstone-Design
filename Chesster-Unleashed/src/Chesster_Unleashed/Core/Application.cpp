@@ -52,6 +52,7 @@ namespace Chesster
 			while (SDL_PollEvent(&e))
 				OnEvent(e);
 
+			// Hold loop if minimized
 			if (m_Minimized) SDL_WaitEvent(&e);
 
 			// Variable delta time
@@ -89,7 +90,7 @@ namespace Chesster
 			Quit();
 
 		// Fullscreen
-		if (sdlEvent.type == SDL_KEYDOWN && sdlEvent.key.keysym.sym == SDLK_F5)
+		if (sdlEvent.type == SDL_KEYDOWN && sdlEvent.key.keysym.sym == SDLK_F5 && sdlEvent.key.repeat == 0)
 			ToggleFullscreen();
 
 		// Window events

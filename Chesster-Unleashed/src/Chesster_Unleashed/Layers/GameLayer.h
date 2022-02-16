@@ -4,7 +4,7 @@
 #include "Chesster_Unleashed/Core/Window.h"
 
 #include "Chesster_Unleashed/Connections/Connector.h"
-#include "Chesster_Unleashed/Connections/ClientTCP.h"
+#include "Chesster_Unleashed/Connections/TCPConnection.h"
 
 #include "Chesster_Unleashed/Renderer/Framebuffer.h"
 
@@ -33,10 +33,7 @@ namespace Chesster
 
 	public:
 		static ConsolePanel* GetConsolePanel() { return &m_ConsolePanel; }
-		static ClientTCP* GetTCP() { return &m_ClientTCP; }
-
-		// TCP Connections
-		static ClientTCP m_ClientTCP;
+		static TCPConnection* GetTCP() { return &m_TCPConnection; }
 
 	private:
 		void UpdateComputerMove();
@@ -120,5 +117,7 @@ namespace Chesster
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
+
+		static TCPConnection m_TCPConnection;
 	};
 }
