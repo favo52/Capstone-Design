@@ -5,6 +5,11 @@
 
 namespace Chesster
 {
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <typeparam name="Resource"></typeparam>
+	/// <typeparam name="Identifier"></typeparam>
 	template<typename Resource, typename Identifier>
 	class ResourceHolder
 	{

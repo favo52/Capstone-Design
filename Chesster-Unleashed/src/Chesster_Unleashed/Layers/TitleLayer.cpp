@@ -4,7 +4,6 @@
 #include "Chesster_Unleashed/Core/Application.h"
 #include "Chesster_Unleashed/Renderer/Renderer.h"
 #include "Chesster_Unleashed/Renderer/RenderCommand.h"
-
 #include "Chesster_Unleashed/Layers/GameLayer.h"
 
 namespace Chesster

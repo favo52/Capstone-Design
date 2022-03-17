@@ -14,6 +14,9 @@
 
 namespace Chesster
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	class TCPConnection
 	{
 	public:
@@ -81,7 +84,6 @@ namespace Chesster
 		// sockaddr structure and initialize these values
 		struct addrinfo* result{ nullptr }, *ptr{ nullptr }, hints;
 
-		// Pointer to this
-		static TCPConnection* s_Instance;
+		static TCPConnection* s_Instance; // Pointer to this
 	};
 }

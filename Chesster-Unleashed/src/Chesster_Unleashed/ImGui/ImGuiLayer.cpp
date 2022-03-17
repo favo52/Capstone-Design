@@ -6,7 +6,7 @@
 
 #include <imgui.h>
 #include <backends/imgui_impl_sdl.h>
-#include "backends/imgui_impl_sdlrenderer.h"
+#include <backends/imgui_impl_sdlrenderer.h>
 
 #include <SDL.h>
 
@@ -55,7 +55,7 @@ namespace Chesster
 		SetDarkTheme();
 
 		// Setup Platform/Renderer backends
-		SDL_Window* windowSDL = static_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeWindow());
+		SDL_Window* windowSDL = Application::Get().GetWindow().GetSDLWindow();
 		ImGui_ImplSDL2_InitForSDLRenderer(windowSDL);
 		ImGui_ImplSDLRenderer_Init(Context::Renderer);
 	}

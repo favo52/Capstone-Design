@@ -5,13 +5,27 @@ struct SDL_Renderer;
 
 namespace Chesster
 {
+	/// <summary>
+	/// Abstraction of the SDL Renderer.
+	/// 
+	/// </summary>
 	class Context
 	{
 	public:
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="windowHandle"></param>
 		Context(SDL_Window* windowHandle);
+
+		/// <summary>
+		/// 
+		/// </summary>
 		virtual ~Context();
 
-		void Init();
+		/// <summary>
+		/// 
+		/// </summary>
 		void SwapBuffers();
 
 	public:

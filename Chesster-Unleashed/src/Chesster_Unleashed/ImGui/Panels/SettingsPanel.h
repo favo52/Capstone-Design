@@ -4,6 +4,9 @@
 
 namespace Chesster
 {
+	/// <summary>
+	/// The settings panel holds all the buttons to
+	/// </summary>
 	class SettingsPanel
 	{
 	public:

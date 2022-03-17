@@ -9,6 +9,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <string>
+#include <array>
+
 namespace Chesster
 {
 	glm::vec4 SettingsPanel::ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f }; // Black

@@ -30,7 +30,7 @@ namespace Chesster
 		void UpdateMenuOptionText();
 
 	private:
-		Window& m_Window;
+		Window& m_Window; // Reference of the window
 		Texture* m_GroupNameTexture{ nullptr };
 		Texture* m_LogoTexture{ nullptr };
 

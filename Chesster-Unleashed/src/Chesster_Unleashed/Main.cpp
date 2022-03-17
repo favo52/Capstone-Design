@@ -1,5 +1,15 @@
 // Chesster's Entry-point
 
+/*
+* README
+* 
+* 
+* 
+* 
+* 
+* 
+*/
+
 #include "pch.h"
 #include "Chesster_Unleashed/Core/Application.h"
 
@@ -9,10 +19,8 @@ int main(int argc, char* args[])
 {
 	try
 	{
-		Chesster::Logger::Init();
-		CHESSTER_INFO("Welcome to the Chesster UCI!");
-
-		Chesster::Application* App = new Chesster::Application();
+		// Instantiate the application, run it, and delete everything when closed
+		Chesster::Application* App = new Chesster::Application("CHESSTER!");
 		App->Run();
 		delete App;
 	}

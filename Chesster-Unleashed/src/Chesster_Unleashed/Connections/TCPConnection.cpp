@@ -32,7 +32,7 @@ namespace Chesster
 		int iResult = WSAStartup(WINSOCK_VER, &m_WSAData);
 		if (iResult != Result::Success) // Ensure system supports Winsock
 		{
-			CHESSTER_ERROR("WSAStartup failed with error: {0}", iResult);
+			LOG_ERROR("WSAStartup failed with error: {0}", iResult);
 			throw std::runtime_error("Unable to initialize Winsock!");
 		}
 	}
@@ -57,7 +57,7 @@ namespace Chesster
 		std::string ip = { "localhost" }, port = { "23" };
 		if (!CreateClientSocket(m_CameraCommandSocket, ip.c_str(), port.c_str()))
 		{
-			CHESSTER_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", ip, port);
+			LOG_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", ip, port);
 			std::string str{ "Unable to connect m_CommandSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 		}
@@ -69,7 +69,7 @@ namespace Chesster
 			recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
 			std::string str{ Buffer };
 			str.erase(str.length() - sizeof("User: "), sizeof("User: ")); // Erase "User: "
-			CHESSTER_INFO(str);
+			LOG_INFO(str);
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 
 			// Send username
@@ -88,7 +88,7 @@ namespace Chesster
 			ZeroMemory(Buffer, BufferLen);
 			recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
 			str = { Buffer }; str.pop_back(); // pop '\n'
-			CHESSTER_INFO(str);
+			LOG_INFO(str);
 
 			str.insert(0, "\n"); str += "\n\n";
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
@@ -98,7 +98,7 @@ namespace Chesster
 		ip = { "localhost" }, port = { "3000" };
 		if (!CreateClientSocket(m_CameraBufferSocket, ip.c_str(), port.c_str()))
 		{
-			CHESSTER_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", ip, port);
+			LOG_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", ip, port);
 			std::string str{ "Unable to connect m_BufferSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 		}
@@ -135,7 +135,7 @@ namespace Chesster
 		if (!TCP->CreateServerSocket(TCP->m_RobotListenSocket, ip.c_str(), port.c_str()))
 		{
 			std::string str{ "Unable to connect m_RobotListenSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
-			CHESSTER_ERROR(str);
+			LOG_ERROR(str);
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 			SettingsPanel::IsRobotConnected = false;
 			return false;
@@ -143,20 +143,20 @@ namespace Chesster
 		else
 		{
 			std::string str{ "Chesster server is ready." };
-			CHESSTER_INFO(str);
+			LOG_INFO(str);
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 
 			// Accept a client socket
 			TCP->m_RobotClientSocket = accept(TCP->m_RobotListenSocket, (sockaddr*)&TCP->m_SockAddr, &TCP->m_SockAddrSize);
 			if (TCP->m_RobotClientSocket == INVALID_SOCKET)
 			{
-				CHESSTER_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
+				LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
 				closesocket(TCP->m_RobotClientSocket);
 				SettingsPanel::IsRobotConnected = false;
 				return false;
 			}
 
-			CHESSTER_INFO("CS8C Connected.");
+			LOG_INFO("CS8C Connected.");
 
 			IsServerListening = true;
 			while (IsServerListening)
@@ -181,7 +181,7 @@ namespace Chesster
 		closesocket(m_RobotClientSocket);
 
 		std::string msg{ "Chesster server shut down." };
-		CHESSTER_INFO(msg);
+		LOG_INFO(msg);
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 	}
 
@@ -190,7 +190,7 @@ namespace Chesster
 		int iSendResult = send(m_CameraCommandSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
 		{
-			CHESSTER_ERROR("SendCameraCommand failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("SendCameraCommand failed with error: {0}", WSAGetLastError());
 			return false;
 		}
 
@@ -208,7 +208,7 @@ namespace Chesster
 		int iRecvResult = recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
 		if (iRecvResult == INVALID_SOCKET)
 		{
-			CHESSTER_ERROR("RecvConfirmation failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("RecvConfirmation failed with error: {0}", WSAGetLastError());
 			return false;
 		}
 		if (Buffer[0] != '1')
@@ -222,7 +222,7 @@ namespace Chesster
 		int iSendResult = send(m_RobotClientSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
 		{
-			CHESSTER_ERROR("SendToRobot failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("SendToRobot failed with error: {0}", WSAGetLastError());
 			return false;
 		}
 
@@ -236,12 +236,12 @@ namespace Chesster
 		int BufferLen{ sizeof(Buffer) };
 		ZeroMemory(Buffer, BufferLen);
 
-		CHESSTER_INFO("Waiting to receive...");
+		LOG_INFO("Waiting to receive...");
 		int iResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
 		if (iResult > 0)
 		{
 			m_RobotData = Buffer;
-			CHESSTER_INFO(Buffer);
+			LOG_INFO(Buffer);
 			GameLayer::GetConsolePanel()->AddLog(Buffer);
 			RobotDataReceived = true;
 		}
@@ -262,7 +262,7 @@ namespace Chesster
 		int iResult = getaddrinfo(ip, port, &hints, &result);
 		if (iResult == Result::Failure)
 		{
-			CHESSTER_ERROR("WINSOCK: getaddrinfo failed with error: {0}", iResult);
+			LOG_ERROR("WINSOCK: getaddrinfo failed with error: {0}", iResult);
 			return false;
 		}
 
@@ -273,7 +273,7 @@ namespace Chesster
 			m_socket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 			if (m_socket == INVALID_SOCKET) // Ensure that the socket is a valid socket.
 			{
-				CHESSTER_ERROR("WINSOCK: socket failed with error: {0}", WSAGetLastError());
+				LOG_ERROR("WINSOCK: socket failed with error: {0}", WSAGetLastError());
 				freeaddrinfo(result);
 				return false;
 			}
@@ -312,7 +312,7 @@ namespace Chesster
 		int iResult = getaddrinfo(ip, port, &hints, &result);
 		if (iResult != Result::Success) // Error checking: ensure an address was received
 		{
-			CHESSTER_ERROR("WINSOCK: getaddrinfo() failed with error: {0}", iResult);
+			LOG_ERROR("WINSOCK: getaddrinfo() failed with error: {0}", iResult);
 			return false;
 		}
 
@@ -320,7 +320,7 @@ namespace Chesster
 		m_RobotListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 		if (m_RobotListenSocket == INVALID_SOCKET) // Error checking: ensure the socket is valid.
 		{
-			CHESSTER_ERROR("WINSOCK: socket() failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("WINSOCK: socket() failed with error: {0}", WSAGetLastError());
 			freeaddrinfo(result);
 			return false;
 		}
@@ -332,7 +332,7 @@ namespace Chesster
 		iResult = bind(m_RobotListenSocket, result->ai_addr, (int)result->ai_addrlen);
 		if (iResult == SOCKET_ERROR) // Error checking
 		{
-			CHESSTER_ERROR("WINSOCK: bind() failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("WINSOCK: bind() failed with error: {0}", WSAGetLastError());
 			freeaddrinfo(result);
 			closesocket(m_RobotListenSocket);
 			return false;
@@ -346,7 +346,7 @@ namespace Chesster
 		// must then listen on that IP address and port for incoming connection requests.
 		if (listen(m_RobotListenSocket, SOMAXCONN) == SOCKET_ERROR)
 		{
-			CHESSTER_ERROR("WINSOCK: listen() failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("WINSOCK: listen() failed with error: {0}", WSAGetLastError());
 			closesocket(m_RobotListenSocket);
 			return false;
 		}
@@ -363,18 +363,18 @@ namespace Chesster
 		int iResult = getpeername(m_socket, (sockaddr*)&m_SockAddr, &m_SockAddrSize);
 		if (iResult == SOCKET_ERROR)
 		{
-			CHESSTER_WARN("Unable to retrieve the server's address.");
+			LOG_WARN("Unable to retrieve the server's address.");
 		}
 		else
 		{
 			if (getnameinfo((sockaddr*)&m_SockAddr, m_SockAddrSize, ServerName, NI_MAXHOST, ServerPort, NI_MAXSERV, 0) == 0)
 			{
-				CHESSTER_INFO("Connected to {0} on port {1}", ServerName, ServerPort);
+				LOG_INFO("Connected to {0} on port {1}", ServerName, ServerPort);
 			}
 			else // if unable to get name then show IP
 			{
 				inet_ntop(result->ai_family, &m_SockAddr.sin_addr, ServerName, NI_MAXHOST);
-				CHESSTER_INFO("Connected to {0} on port {1}", ServerName, ntohs(m_SockAddr.sin_port));
+				LOG_INFO("Connected to {0} on port {1}", ServerName, ntohs(m_SockAddr.sin_port));
 			}
 		}
 	}
@@ -389,10 +389,10 @@ namespace Chesster
 		int iRecvResult = recv(m_CameraBufferSocket, Buffer, BufferLen, 0);
 		if (iRecvResult == SOCKET_ERROR)
 		{
-			CHESSTER_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
+			LOG_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
 			DisconnectCamera();
 			
-			CHESSTER_INFO("Camera disconnected.");
+			LOG_INFO("Camera disconnected.");
 			GameLayer::GetConsolePanel()->AddLog("Camera disconnected.\n\n");
 			return false;
 		}

@@ -8,10 +8,6 @@ namespace Chesster
 	std::array<Board::Square, 64> Board::m_BoardSquares{};
 	std::unordered_map<std::string, Board::Square*> Board::m_SquaresMap;
 
-	Board::Board()
-	{
-	}
-
 	void Board::Init(const glm::vec2& viewportSize)
 	{
 		glm::vec4 BlackColor = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -48,7 +44,6 @@ namespace Chesster
 
 	void Board::OnUpdate(const std::chrono::duration<double>& dt)
 	{
-		//if (m_CurrentMove != "0000")
 		PaintActiveSquares();
 	}
 
@@ -109,7 +104,7 @@ namespace Chesster
 			// Capture the correct pawn
 			if (pieceBehind)
 			{
-				CHESSTER_INFO(pieceBehind->EnPassant);
+				LOG_INFO(pieceBehind->EnPassant);
 				if (pieceBehind->IsPawn() && pieceBehind->Color != currentPiece->Color &&
 					pieceBehind->EnPassant)
 				{
@@ -185,7 +180,7 @@ namespace Chesster
 			// Color
 			glm::vec4 highlightColor = { 255.0f, 215.0f, 0.0f, 80.0f };
 			m_ActiveSquares[0].Color = highlightColor;
-			m_ActiveSquares[1].Color = highlightColor;			
+			m_ActiveSquares[1].Color = highlightColor;
 		}
 	}
 

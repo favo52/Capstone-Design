@@ -20,8 +20,14 @@ namespace Chesster
 		CHESSTER_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name, 1600, 900)));
+		// Initialize the logger
+		Chesster::Logger::Init();
+		LOG_INFO("Welcome to the Chesster Universal Chess Interface!");
 
+		// Create the window
+		m_Window = Window::Create(WindowProps(name, 1600, 900));
+
+		// Load the resources
 		m_TextureHolder.Load(TextureID::GroupLogo, "assets/textures/ReadySetCode.jpeg");
 		m_TextureHolder.Load(TextureID::ChessterLogo, "assets/textures/ChessterLogo.png");
 		m_TextureHolder.Load(TextureID::Pieces, "assets/textures/ChessPieces.png");
@@ -30,6 +36,7 @@ namespace Chesster
 		m_FontHolder.Load(FontID::OpenSans_Bold, "assets/fonts/opensans/OpenSans-Bold.ttf");
 		m_FontHolder.Load(FontID::AbsEmpire, "assets/fonts/aAbsoluteEmpire.ttf", 100);
 
+		// Create the layers
 		m_TitleLayer = new TitleLayer();
 		PushLayer(m_TitleLayer);
 		
@@ -137,7 +144,7 @@ namespace Chesster
 
 	void Application::ToggleFullscreen()
 	{
-		SDL_Window* window = (SDL_Window*)m_Window->GetNativeWindow();
+		SDL_Window* window = m_Window->GetSDLWindow();
 
 		if (m_Fullscreen)
 		{
@@ -154,7 +161,7 @@ namespace Chesster
 			int displayIndex = SDL_GetWindowDisplayIndex(window);
 			SDL_DisplayMode displayMode = { (uint32_t)0, (int)m_Window->GetWidth(), (int)m_Window->GetHeight(), 0, nullptr };
 			if (SDL_GetDesktopDisplayMode(displayIndex, &displayMode) < 0)
-				CHESSTER_WARN("SDL_GetDesktopDisplayMode failed with error: {0}", SDL_GetError());
+				LOG_WARN("SDL_GetDesktopDisplayMode failed with error: {0}", SDL_GetError());
 
 			SDL_SetWindowDisplayMode(window, &displayMode);
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
@@ -165,49 +172,49 @@ namespace Chesster
 
 	void Application::OnWindowEvent(SDL_Event& sdlEvent)
 	{
-		uint32_t windowID = SDL_GetWindowID(static_cast<SDL_Window*>(m_Window->GetNativeWindow()));
-		if (windowID == 0) CHESSTER_ERROR("Application::OnWindowEvent(SDL_Event&) - SDL_GetWindowID failed with error: {0}", SDL_GetError());
+		// Get the window ID, display error if failed
+		uint32_t windowID = SDL_GetWindowID(m_Window->GetSDLWindow());
+		if (windowID == 0) LOG_ERROR("Application::OnWindowEvent(SDL_Event&) - SDL_GetWindowID failed with error: {0}", SDL_GetError());
 
-		switch (sdlEvent.window.event)
+		if (sdlEvent.window.windowID == windowID)
 		{
-			case SDL_WINDOWEVENT_CLOSE:
-				if (sdlEvent.window.windowID == windowID)
+			// Handle the window events
+			switch (sdlEvent.window.event)
+			{
+				case SDL_WINDOWEVENT_CLOSE:
 					Quit();
-				break;
+					break;
 
-			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				if (sdlEvent.window.windowID == windowID)
+				case SDL_WINDOWEVENT_SIZE_CHANGED:
 				{
 					m_Window->GetWinProps()->Width = sdlEvent.window.data1;
 					m_Window->GetWinProps()->Height = sdlEvent.window.data2;
-					m_Window->OnUpdate();
+					break;
 				}
-				break;
 
-			case SDL_WINDOWEVENT_RESIZED:
-				if (sdlEvent.window.windowID == windowID)
+				case SDL_WINDOWEVENT_RESIZED:
 					Renderer::OnWindowResize(sdlEvent.window.data1, sdlEvent.window.data2);
-				break;
+					break;
 
-			case SDL_WINDOWEVENT_EXPOSED:
-				if (sdlEvent.window.windowID == windowID)
+				case SDL_WINDOWEVENT_EXPOSED:
 					m_Window->OnUpdate();
-				break;
+					break;
 
-			case SDL_WINDOWEVENT_MINIMIZED:
-				m_Minimized = true;
-				break;
+				case SDL_WINDOWEVENT_MINIMIZED:
+					m_Minimized = true;
+					break;
 
-			case SDL_WINDOWEVENT_MAXIMIZED:
-				m_Minimized = false;
-				break;
+				case SDL_WINDOWEVENT_MAXIMIZED:
+					m_Minimized = false;
+					break;
 
-			case SDL_WINDOWEVENT_RESTORED:
-				m_Minimized = false;
-				break;
+				case SDL_WINDOWEVENT_RESTORED:
+					m_Minimized = false;
+					break;
 
-			default:
-				break;
+				default:
+					break;
+			}
 		}
 	}
 }

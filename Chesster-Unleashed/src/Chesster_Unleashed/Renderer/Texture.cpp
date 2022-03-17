@@ -29,7 +29,7 @@ namespace Chesster
 		SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 		if (loadedSurface == nullptr)
 		{
-			CHESSTER_ERROR("Unable to load image '{0}'! SDL_image Error: {1}", path.c_str(), IMG_GetError());
+			LOG_ERROR("Unable to load image '{0}'! SDL_image Error: {1}", path.c_str(), IMG_GetError());
 		}
 		else
 		{
@@ -37,7 +37,7 @@ namespace Chesster
 			SDL_Surface* formattedSurface = SDL_ConvertSurfaceFormat(loadedSurface, SDL_PIXELFORMAT_RGBA8888, 0);
 			if (formattedSurface == nullptr)
 			{
-				CHESSTER_ERROR("Unable to convert loaded surface to display format! SDL Error: {0}", SDL_GetError());
+				LOG_ERROR("Unable to convert loaded surface to display format! SDL Error: {0}", SDL_GetError());
 			}
 			else
 			{
@@ -45,7 +45,7 @@ namespace Chesster
 				newTexture = SDL_CreateTexture(Context::Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, formattedSurface->w, formattedSurface->h);
 				if (newTexture == nullptr)
 				{
-					CHESSTER_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
+					LOG_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
 				}
 				else
 				{
@@ -105,7 +105,7 @@ namespace Chesster
 		SDL_Surface* textSurface = TTF_RenderText_Solid(font.m_Font, textureText.c_str(), color);
 		if (textSurface == nullptr)
 		{
-			CHESSTER_ERROR("Unable to render text surface! SDL_ttf Error: {0}", TTF_GetError());
+			LOG_ERROR("Unable to render text surface! SDL_ttf Error: {0}", TTF_GetError());
 		}
 		else
 		{
@@ -113,7 +113,7 @@ namespace Chesster
 			m_Texture = SDL_CreateTextureFromSurface(Context::Renderer, textSurface);
 			if (m_Texture == nullptr)
 			{
-				CHESSTER_ERROR("Unable to create texture from rendered text! SDL Error: {0}", SDL_GetError());
+				LOG_ERROR("Unable to create texture from rendered text! SDL Error: {0}", SDL_GetError());
 			}
 			else
 			{
@@ -136,7 +136,7 @@ namespace Chesster
 		m_Texture = SDL_CreateTexture(Context::Renderer, SDL_PIXELFORMAT_RGBA32, access, width, height);
 		if (m_Texture == nullptr)
 		{
-			CHESSTER_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
+			LOG_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
 		}
 		else
 		{
@@ -197,7 +197,7 @@ namespace Chesster
 		// Texture is already locked
 		if (m_Pixels != nullptr)
 		{
-			CHESSTER_WARN("Texture is already locked!");
+			LOG_WARN("Texture is already locked!");
 			success = false;
 		}
 		// Lock texture
@@ -205,7 +205,7 @@ namespace Chesster
 		{
 			if (SDL_LockTexture(m_Texture, nullptr, &m_Pixels, &m_Pitch) != 0)
 			{
-				CHESSTER_ERROR("Unable to lock texture! SDL Error: {0}", SDL_GetError());
+				LOG_ERROR("Unable to lock texture! SDL Error: {0}", SDL_GetError());
 				success = false;
 			}
 		}
@@ -220,7 +220,7 @@ namespace Chesster
 		// Texture is not locked
 		if (m_Pixels == nullptr)
 		{
-			CHESSTER_WARN("Texture is not locked!");
+			LOG_WARN("Texture is not locked!");
 			success = false;
 		}
 		// Unlock texture

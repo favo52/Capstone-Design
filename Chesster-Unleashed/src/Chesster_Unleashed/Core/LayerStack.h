@@ -4,15 +4,44 @@
 
 namespace Chesster
 {
+	/// <summary>
+	/// Holds and manages all the Layer objects used in the Application.
+	/// </summary>
 	class LayerStack
 	{
 	public:
+		/// <summary>
+		/// Default constructor.
+		/// </summary>
 		LayerStack() = default;
-		~LayerStack();
 
+		/// <summary>
+		/// Empties the layer stack and releases the memory.
+		/// </summary>
+		~LayerStack();
+		
+		/// <summary>
+		/// Inserts a Layer to the layer stack.
+		/// </summary>
+		/// <param name="layer">A pointer to the Layer to be inserted.</param>
 		void PushLayer(Layer* layer);
+
+		/// <summary>
+		/// Inserts a Layer to the back of the layer stack.
+		/// </summary>
+		/// <param name="overlay">A pointer to the Layer to be inserted.</param>
 		void PushOverlay(Layer* overlay);
+
+		/// <summary>
+		/// Removes the Layer from the layer stack.
+		/// </summary>
+		/// <param name="layer">A pointer to the Layer to be removed.</param>
 		void PopLayer(Layer* layer);
+
+		/// <summary>
+		/// Removes the Layer from the back of the layer stack.
+		/// </summary>
+		/// <param name="overlay">A pointer to the Layer to be removed.</param>
 		void PopOverlay(Layer* overlay);
 
 		std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }

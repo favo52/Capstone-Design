@@ -5,21 +5,34 @@
 
 namespace Chesster
 {
+	/// <summary>
+	/// Abstraction of the SDL_ttf addon.
+	/// Loads fonts from ttf files. Closes fonts when not wanted anymore.
+	/// </summary>
 	struct Font
 	{
-		TTF_Font* m_Font{ nullptr };
+		TTF_Font* m_Font{ nullptr }; // Holds the font information.
 
-		bool LoadFromFile(const std::string& filename, const int& size = 30)
+		/// <summary>
+		/// Loads a ttf file.
+		/// </summary>
+		/// <param name="filename">The filepath of the ttf file.</param>
+		/// <param name="size">The size to be set to the font.</param>
+		/// <returns>True if font loaded successfully, False otherwise.</returns>
+		bool LoadFromFile(const std::string& filename, int size = 30)
 		{
 			m_Font = TTF_OpenFont(filename.c_str(), size);
 			if (m_Font == nullptr)
 			{
-				CHESSTER_ERROR("Failed to load '{0}'! SDL_ttf error: {1}", filename, TTF_GetError());
+				LOG_ERROR("Failed to load '{0}'! SDL_ttf error: {1}", filename, TTF_GetError());
 				return false;
 			}
 			return true;
 		}
 
+		/// <summary>
+		/// Releases all the font's resources.
+		/// </summary>
 		void CloseFont()
 		{
 			if (m_Font != nullptr)
@@ -27,6 +40,9 @@ namespace Chesster
 		}
 	};
 
+	/// <summary>
+	/// Texture wrapper class.
+	/// </summary>
 	class Texture
 	{
 	public:
@@ -35,17 +51,46 @@ namespace Chesster
 		Texture(const std::string& path);
 		virtual ~Texture();
 
+		/// <summary>
+		/// Loads image at specified path.
+		/// </summary>
+		/// <param name="path">The filepath of the image.</param>
+		/// <returns>True if image loaded successfully, False otherwise.</returns>
 		bool LoadFromFile(const std::string& path);
 		bool LoadFromRenderedText(Font font, const std::string& textureText, SDL_Color color);
 
-		bool CreateBlank(int width, int height, SDL_TextureAccess = SDL_TEXTUREACCESS_TARGET);
+		/// <summary>
+		/// Creates a blank texture.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name=""></param>
+		/// <returns>True if blank texture was created successfully, False otherwise.</returns>
+		bool CreateBlank(int width, int height, SDL_TextureAccess access = SDL_TEXTUREACCESS_TARGET);
 
-		// Deallocates texture
+		/// <summary>
+		/// Deallocates texture.
+		/// </summary>		
 		void FreeTexture();
 
-		// Change properties
+		/// <summary>
+		/// Sets the texture's color modulation. It uses RGB values.
+		/// </summary>
+		/// <param name="red">The red value of the color.</param>
+		/// <param name="green">The green value of the color.</param>
+		/// <param name="blue">The blue value of the color.</param>
 		void SetColor(Uint8 red, Uint8 green, Uint8 blue);
+
+		/// <summary>
+		/// Sets blending. See SDL documentation for blending modes.
+		/// </summary>
+		/// <param name="blending">The blending mode.</param>
 		void SetBlendMode(SDL_BlendMode blending);
+
+		/// <summary>
+		/// Sets the alpha modulation. It affects the opacity.
+		/// </summary>
+		/// <param name="alpha">The alpha value.</param>
 		void SetAlpha(Uint8 alpha);
 
 		void SetPosition(int x, int y) { m_RenderQuad = { x, y, m_Width, m_Height }; }
@@ -80,7 +125,7 @@ namespace Chesster
 		operator SDL_Texture*() const { return m_Texture; }
 
 	private:
-		SDL_Texture* m_Texture{ nullptr };
+		SDL_Texture* m_Texture{ nullptr }; // The actual hardware texture
 		int m_Width{ 0 }, m_Height{ 0 };
 		void* m_Pixels{ nullptr };
 		int m_Pitch{ 0 };
@@ -91,6 +136,6 @@ namespace Chesster
 		SDL_Point* m_Center{ nullptr };
 		SDL_RendererFlip m_Flip{ SDL_FLIP_NONE };
 
-		friend class Renderer;
+		friend class Renderer; // Allows access to private
 	};
 }

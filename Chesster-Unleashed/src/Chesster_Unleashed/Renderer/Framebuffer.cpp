@@ -33,7 +33,7 @@ namespace Chesster
 	{
 		if (width == 0 || height == 0 || width > s_MaxFrameBufferSize || height > s_MaxFrameBufferSize)
 		{
-			CHESSTER_WARN("Attempted to resize framebuffer to ({0}, {1}).", width, height);
+			LOG_WARN("Attempted to resize framebuffer to ({0}, {1}).", width, height);
 			return;
 		}
 

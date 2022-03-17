@@ -138,7 +138,7 @@ namespace Chesster
 		constexpr int pieceSize{ 80 };
 
 		char upgrade{ notation.back() };
-		CHESSTER_INFO("notation.back()", upgrade);
+		LOG_INFO("notation.back()", upgrade);
 		SDL_Rect clip{};
 		switch (upgrade)
 		{

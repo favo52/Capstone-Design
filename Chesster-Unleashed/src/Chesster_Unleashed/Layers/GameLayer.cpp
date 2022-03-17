@@ -6,8 +6,6 @@
 #include "Chesster_Unleashed/Renderer/RenderCommand.h"
 #include "Chesster_Unleashed/Renderer/Framebuffer.h"
 
-#include <SDL.h>
-
 namespace Chesster
 {
 	static bool s_IsThreadRunning{ true };
@@ -23,7 +21,7 @@ namespace Chesster
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_PathPythonScript{ "assets/script/__init__.exe" }
 	{
-		hThread = (HANDLE)_beginthreadex(nullptr, 0, &GameLayer::EngineThread, (void*)&*this, 0, &threadID);
+		hThread = (HANDLE)_beginthreadex(nullptr, 0, &EngineThread, (void*)this, 0, &threadID);
 	}
 
 	void GameLayer::OnAttach()
@@ -70,7 +68,7 @@ namespace Chesster
 					m_MouseButton = SDL_GetMouseState(&MouseX, &MouseY);
 					m_MouseCoords = { MouseX, MouseY };
 
-					//CHESSTER_TRACE("mouseCoords({0}, {1})", m_MouseCoords.x, m_MouseCoords.y);
+					//LOG_TRACE("mouseCoords({0}, {1})", m_MouseCoords.x, m_MouseCoords.y);
 					break;
 				}
 
@@ -127,6 +125,7 @@ namespace Chesster
 		if (m_IsHoldingPiece)
 			m_Pieces[m_PieceIndex].SetPosition(m_ViewportMousePos.x, m_ViewportMousePos.y);
 
+		// Player released piece held by mouse click
 		if (m_IsPieceReleased)
 		{
 			UpdatePlayerMove();
@@ -138,7 +137,7 @@ namespace Chesster
 				{
 					m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
 					m_ConsolePanel.AddLog("Hey! The board is over there!\n\n");
-					CHESSTER_ERROR("Hey! The board is over there!");
+					LOG_ERROR("Hey! The board is over there!");
 				}
 			}
 		}
@@ -182,8 +181,9 @@ namespace Chesster
 				m_TCPConnection.SendCameraCommand("SE8");
 				if (!m_TCPConnection.RecvCameraConfirmation())
 				{
-					m_ConsolePanel.AddLog("Camera did not connect sucessfully.");
-					CHESSTER_WARN("Camera did not connect sucessfully.");
+					std::string msg{ "Camera did not connect sucessfully." };
+					LOG_WARN(msg);
+					m_ConsolePanel.AddLog(msg.c_str());
 					SettingsPanel::IsCameraConnected = false;
 				}
 			}
@@ -224,14 +224,17 @@ namespace Chesster
 		RenderCommand::SetClearColor(SettingsPanel::ClearColor);
 		RenderCommand::Clear();
 
+		// Draw all the chess board squares
 		m_Board.OnRender();
 		
+		// Draw all the chess pieces
 		for (auto& piece : m_Pieces)
 			piece.OnRender();
 
-		// Draw selected piece on top of all others
+		// Draw selected chess piece on top of all other chess pieces
 		Renderer::DrawTextureEx(&m_Pieces[m_PieceIndex].Texture);
 
+		// Draw a faded black screen when gameover
 		if (m_CurrentGameState == GameState::Gameover)
 		{
 			SDL_Rect blackOverlay = { 0, 0, m_Framebuffer->GetSpec().Width, m_Framebuffer->GetSpec().Height };
@@ -286,7 +289,9 @@ namespace Chesster
 					SDL_PushEvent(&e);
 				}
 
-				if (ImGui::MenuItem("Exit")) Application::Get().Quit();
+				if (ImGui::MenuItem("Exit"))
+					Application::Get().Quit();
+
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -310,7 +315,6 @@ namespace Chesster
 
 		m_ViewportMousePos.x = m_MouseCoords.x - ImGui::GetCursorScreenPos().x - ImGui::GetScrollX();
 		m_ViewportMousePos.y = m_MouseCoords.y - ImGui::GetCursorScreenPos().y - ImGui::GetScrollY();
-		//CHESSTER_TRACE("{0}, {1}", m_ViewportMousePos.x, m_ViewportMousePos.y);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -334,8 +338,9 @@ namespace Chesster
 	void GameLayer::UpdateComputerMove()
 	{
 		m_ConsolePanel.AddLog("Computer is playing...");
-		CHESSTER_INFO("Computer is playing...");
+		LOG_INFO("Computer is playing...");
 
+		// Grab the selected chess piece's old and new positions
 		std::string oldPos{ m_CurrentMove[0], m_CurrentMove[1] };
 		std::string newPos{ m_CurrentMove[2], m_CurrentMove[3] };
 
@@ -359,6 +364,7 @@ namespace Chesster
 			if (m_Pieces[m_PieceIndex].IsPromotion(m_CurrentMove))
 				m_Pieces[m_PieceIndex].UpdateTextureClip(m_CurrentMove, m_PieceClips);
 			
+			// Update chess piece
 			m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
 			m_Pieces[m_PieceIndex].Notation = m_TargetSquare.Notation;
 			m_Pieces[m_PieceIndex].CheckEnPassant(oldPos);
@@ -420,9 +426,9 @@ namespace Chesster
 						// Update move history
 						m_MoveHistory += m_CurrentMove + ' ';
 						m_ConsolePanel.AddLog("Player move: %s", m_CurrentMove);
-						CHESSTER_INFO(std::string("Player move: " + m_CurrentMove).c_str());
+						LOG_INFO(std::string("Player move: " + m_CurrentMove).c_str());
 
-
+						// Update states
 						m_IsPlayerPlayed = true;
 						m_IsOutsideBoard = false;
 						break;
@@ -434,7 +440,7 @@ namespace Chesster
 						{
 							m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
 							m_ConsolePanel.AddLog(" Wait... that's illegal!\n");
-							CHESSTER_ERROR("Wait... that's illegal!");
+							LOG_ERROR("Wait... that's illegal!");
 							m_IsOutsideBoard = false;
 							break;
 						}
@@ -446,7 +452,7 @@ namespace Chesster
 
 	void GameLayer::RemovePiece(Piece& piece)
 	{
-		std::string wasCapturedAt = piece.Notation;
+		std::string capturedAtNotation = piece.Notation;
 
 		piece.Notation = "00";
 		piece.SetPosition(-3000.0f, -3000.0f);
@@ -466,13 +472,13 @@ namespace Chesster
 			if (i > 15) { offset = 32; color = PieceColor::White; }
 			auto& squares = m_Board.GetBoardSquares();
 
-			// Set up the sprite
+			// Set up the piece sprite
 			piece.Texture = app.Get().m_TextureHolder.Get(TextureID::Pieces);
 			piece.Texture.SetWidth(piece.Size.x);
 			piece.Texture.SetHeight(piece.Size.y);
 			piece.Texture.SetClip(&m_PieceClips[i]);
 
-			// Set up the properties
+			// Set up the piece properties
 			piece.SetPosition(squares[i + offset].Center.x, squares[i + offset].Center.y);
 			piece.Notation = squares[i + offset].Notation;
 			piece.Index = i;
@@ -493,7 +499,7 @@ namespace Chesster
 			m_Pieces[m_PieceIndex].UpdateTextureClip(m_CurrentMove, m_PieceClips);
 			m_Pieces[m_PieceIndex].SetPosition(x->second->Center.x, x->second->Center.y);
 			m_Pieces[m_PieceIndex].Notation = x->second->Notation;
-			CHESSTER_INFO("type {0}", m_Pieces[m_PieceIndex].Type);
+
 			// Capture a piece (if any)
 			for (Piece& piece : m_Pieces)
 				if (m_Pieces[m_PieceIndex].Notation == piece.Notation &&
@@ -502,8 +508,10 @@ namespace Chesster
 
 			// Update move history
 			m_MoveHistory += m_CurrentMove + ' ';
+
+			// Print message to consoles
 			m_ConsolePanel.AddLog("Player move: %s", m_CurrentMove);
-			CHESSTER_INFO(std::string("Player move: " + m_CurrentMove).c_str());
+			LOG_INFO(std::string("Player move: " + m_CurrentMove).c_str());
 
 			m_IsPlayerPlayed = true;
 		}
@@ -581,6 +589,7 @@ namespace Chesster
 
 	bool GameLayer::IsCurrentMoveLegal()
 	{
+		// Compare current move to all the legal moves
 		for (const std::string& move : m_LegalMoves)
 			if (m_CurrentMove == move)
 				return true;
@@ -699,7 +708,7 @@ namespace Chesster
 				{
 					game->m_ConsolePanel.AddLog("Failed to get engine move.");
 					game->m_ConsolePanel.AddLog("Enter <spacebar> to try again.");
-					CHESSTER_ERROR("Failed to get engine move.");
+					LOG_ERROR("Failed to get engine move.");
 					game->m_IsRecvComputerMove = false;
 				}
 				else

@@ -1,14 +1,12 @@
 #pragma once
 
-#include <string>
-#include <chrono>
-
-#include "Chesster_Unleashed/Core/Core.h"
-
 #include "SDL_events.h"
 
 namespace Chesster
 {
+	/// <summary>
+	/// Base class to be inherited by the Title, Game, and ImGui layers.
+	/// </summary>
 	class Layer
 	{
 	public:
@@ -26,6 +24,6 @@ namespace Chesster
 		const std::string& GetName() const { return m_DebugName; }
 
 	protected:
-		std::string m_DebugName;
+		std::string m_DebugName; // Used to identify the layer while debugging
 	};
 }

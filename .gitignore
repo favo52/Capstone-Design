@@ -1,10 +1,5 @@
 # Directories
-16_Games/
-Chesster/
-
-# Files
-Chesster-SDL/validmoves.txt
-Chesster-SDL/imgui.ini
+documentation/
 
 # User-specific files
 *.rsuser
@@ -14,18 +9,8 @@ Chesster-SDL/imgui.ini
 *.sln.docstates
 
 # Build results
-#[Dd]ebug/
-#[Dd]ebugPublic/
-#[Rr]elease/
-#[Rr]eleases/
-#[Aa][Rr][Mm]/
-#[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Bb]in-int/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+bin/
+bin-int/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

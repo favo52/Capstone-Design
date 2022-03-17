@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chesster-Unleashed", "Chesster-Unleashed\Chesster-Unleashed.vcxproj", "{CC5CF81C-B840-B972-21A1-B3C50DA4A3F4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chesster-SDL", "Chesster-SDL\Chesster-SDL.vcxproj", "{760DC838-6270-57DD-0BF6-8F93F7372360}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{53E47842-3FC8-3998-A828-34EB942B241A}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glad", "vendor\Glad\Glad.vcxproj", "{BDD6857C-A90D-870D-52FA-6C103E10030F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "vendor\imgui\ImGui.vcxproj", "{C0FF640D-2C14-8DBE-F595-301E616989EF}"
 EndProject
@@ -21,14 +17,6 @@ Global
 		{CC5CF81C-B840-B972-21A1-B3C50DA4A3F4}.Debug|x64.Build.0 = Debug|x64
 		{CC5CF81C-B840-B972-21A1-B3C50DA4A3F4}.Release|x64.ActiveCfg = Release|x64
 		{CC5CF81C-B840-B972-21A1-B3C50DA4A3F4}.Release|x64.Build.0 = Release|x64
-		{760DC838-6270-57DD-0BF6-8F93F7372360}.Debug|x64.ActiveCfg = Debug|x64
-		{760DC838-6270-57DD-0BF6-8F93F7372360}.Debug|x64.Build.0 = Debug|x64
-		{760DC838-6270-57DD-0BF6-8F93F7372360}.Release|x64.ActiveCfg = Release|x64
-		{760DC838-6270-57DD-0BF6-8F93F7372360}.Release|x64.Build.0 = Release|x64
-		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Debug|x64.ActiveCfg = Debug|x64
-		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Debug|x64.Build.0 = Debug|x64
-		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Release|x64.ActiveCfg = Release|x64
-		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Release|x64.Build.0 = Release|x64
 		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Debug|x64.ActiveCfg = Debug|x64
 		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Debug|x64.Build.0 = Debug|x64
 		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Release|x64.ActiveCfg = Release|x64
@@ -38,7 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BDD6857C-A90D-870D-52FA-6C103E10030F} = {53E47842-3FC8-3998-A828-34EB942B241A}
 		{C0FF640D-2C14-8DBE-F595-301E616989EF} = {53E47842-3FC8-3998-A828-34EB942B241A}
 	EndGlobalSection
 EndGlobal

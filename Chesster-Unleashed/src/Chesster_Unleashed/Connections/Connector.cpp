@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Chesster_Unleashed/Connections/Connector.h"
 
+#include "Chesster_Unleashed/Core/Logger.h"
 #include "Chesster_Unleashed/Layers/GameLayer.h"
 
 #define PY_SSIZE_T_CLEAN
@@ -72,7 +73,7 @@ namespace Chesster
 
 	Connector::~Connector()
 	{
-		CloseConnections();
+		CloseAllConnections();
 		Py_Finalize();
 	}
 
@@ -82,13 +83,13 @@ namespace Chesster
 		m_Success = CreateProcess(NULL, path, NULL, NULL, TRUE, 0, NULL, NULL, &m_StartInfo, &m_ProcessInfo);
 		if (!m_Success)
 		{
-			CHESSTER_ERROR("CreateProcess failed with error: {0}", GetLastError());
+			LOG_ERROR("CreateProcess failed with error: {0}", GetLastError());
 			return;
 		}
-		CHESSTER_INFO("Engine connection opened.");
+		LOG_INFO("Engine connection opened.");
 		std::string msg = GetEngineReply();
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
-		CHESSTER_INFO(msg);
+		LOG_INFO(msg);
 
 		// Check if engine is ready
 		CHAR str[] = "uci\nucinewgame\nisready\n";
@@ -102,7 +103,7 @@ namespace Chesster
 
 		msg = { "\n" + GetEngineReply() };
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
-		CHESSTER_INFO(msg);
+		LOG_INFO(msg);
 	}
 
 	void Connector::ResetGame()
@@ -115,7 +116,7 @@ namespace Chesster
 		std::string msg{ "GAME RESET\n" };
 		msg += GetEngineReply() + '\n';
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
-		CHESSTER_INFO(msg);
+		LOG_INFO(msg);
 	}
 
 	void Connector::EvaluateGame()
@@ -128,7 +129,7 @@ namespace Chesster
 		std::string msg{ "GAME EVALUATION\n" };
 		msg += GetEngineReply() + '\n';
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
-		CHESSTER_INFO(msg);
+		LOG_INFO(msg);
 	}
 
 	void Connector::SetDifficultyLevel(int difficulty)
@@ -203,7 +204,7 @@ namespace Chesster
 		m_Success_Py = CreateProcessA(lpPath, lpPathArg, NULL, NULL, FALSE, 0, NULL, NULL, &m_StartInfo_Py, &m_ProcessInfo_Py);
 		if (!m_Success_Py)
 		{
-			CHESSTER_ERROR("CreateProcessA failed with error: {0}", GetLastError());
+			LOG_ERROR("CreateProcessA failed with error: {0}", GetLastError());
 			throw std::runtime_error("Unable to run Python script");
 		}
 
@@ -239,7 +240,7 @@ namespace Chesster
 		// Read engine's reply
 		msg = GetEngineReply() + '\n';
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
-		CHESSTER_INFO(msg);
+		LOG_INFO(msg);
 		msg.pop_back();
 
 		// Grab the FEN string
@@ -283,7 +284,7 @@ namespace Chesster
 		return msg;
 	}
 
-	void Connector::CloseConnections()
+	void Connector::CloseAllConnections()
 	{
 		// Quit chess engine
 		CHAR str[] = "quit\n";
@@ -297,6 +298,6 @@ namespace Chesster
 		CloseHandle(m_ProcessInfo.hProcess);
 		CloseHandle(m_ProcessInfo.hThread);
 
-		CHESSTER_INFO("Engine connection closed.");
+		LOG_INFO("Engine connection closed.");
 	}
 }

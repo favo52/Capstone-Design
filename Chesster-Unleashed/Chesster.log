@@ -1,10 +1,10 @@
-[Feb/16/2022][00:34:39 AM][info] CHESSTER: Welcome to the Chesster UCI!
-[Feb/16/2022][00:34:39 AM][info] CHESSTER: Creating SDL Window: CHESSTER! (1600, 900)
-[Feb/16/2022][00:34:40 AM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
-[Feb/16/2022][00:34:41 AM][info] CHESSTER: Engine connection opened.
-[Feb/16/2022][00:34:41 AM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
+[Mar/17/2022][03:20:54 AM][info] CHESSTER: Welcome to the Chesster Universal Chess Interface!
+[Mar/17/2022][03:20:54 AM][info] CHESSTER: Created SDL Window: CHESSTER! (1600, 900)
+[Mar/17/2022][03:20:54 AM][info] CHESSTER: Current SDL_Renderer: direct3d | Texture formats: 3
+[Mar/17/2022][03:20:55 AM][info] CHESSTER: Engine connection opened.
+[Mar/17/2022][03:20:55 AM][info] CHESSTER: Stockfish 14.1 by the Stockfish developers (see AUTHORS file)
 
-[Feb/16/2022][00:34:41 AM][info] CHESSTER: 
+[Mar/17/2022][03:20:56 AM][info] CHESSTER: 
 id name Stockfish 14.1
 id author the Stockfish developers (see AUTHORS file)
 
@@ -32,7 +32,7 @@ option name EvalFile type string default nn-13406b1dcbe0.nnue
 uciok
 readyok
 
-[Feb/16/2022][00:34:42 AM][info] CHESSTER: 
+[Mar/17/2022][03:20:56 AM][info] CHESSTER: 
  +---+---+---+---+---+---+---+---+
  | r | n | b | q | k | b | n | r | 8
  +---+---+---+---+---+---+---+---+
@@ -57,6 +57,6 @@ Key: 8F8F01D4562F59FB
 Checkers: 
 
 
-[Feb/16/2022][00:38:53 AM][info] CHESSTER: Engine connection closed.
-[Feb/16/2022][00:38:53 AM][info] CHESSTER: SDL closed successfully.
-[Feb/16/2022][00:38:53 AM][info] CHESSTER: Chesster server shut down.
+[Mar/17/2022][03:20:57 AM][info] CHESSTER: Engine connection closed.
+[Mar/17/2022][03:20:57 AM][info] CHESSTER: SDL closed successfully.
+[Mar/17/2022][03:20:57 AM][info] CHESSTER: Chesster server shut down.

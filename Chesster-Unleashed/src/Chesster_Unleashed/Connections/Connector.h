@@ -4,8 +4,12 @@
 
 namespace Chesster
 {
+	// The maximum size of the buffer
 	constexpr DWORD BUFSIZE{ 2048 };
 
+	/// <summary>
+	/// 
+	/// </summary>
 	class Connector
 	{
 	public:
@@ -28,7 +32,7 @@ namespace Chesster
 		const std::string GetEngineReply();
 
 	private:
-		void CloseConnections();
+		void CloseAllConnections();
 
 	private:
 		// Chess engine

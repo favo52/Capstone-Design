@@ -1,20 +1,23 @@
 #pragma once
 
 #include "Chesster_Unleashed/Renderer/Renderer.h"
-#include "Chesster_Unleashed/Renderer/Texture.h"
-
-#include <glm/glm.hpp>
 
 namespace Chesster
 {
 	struct Square;
 
+	/// <summary>
+	/// 
+	/// </summary>
 	enum class PieceType
 	{
 		None = 0,
 		King, Queen, Rook, Bishop, Knight, Pawn
 	};
 
+	/// <summary>
+	/// 
+	/// </summary>
 	enum class PieceColor
 	{
 		None = 0,

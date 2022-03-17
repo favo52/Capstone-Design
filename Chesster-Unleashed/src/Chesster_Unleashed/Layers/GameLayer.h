@@ -13,8 +13,6 @@
 #include "Chesster_Unleashed/ImGui/Panels/ConsolePanel.h"
 #include "Chesster_Unleashed/ImGui/Panels/SettingsPanel.h"
 
-#include <glm/glm.hpp>
-
 namespace Chesster
 {
 	class GameLayer : public Layer
@@ -71,7 +69,7 @@ namespace Chesster
 		Connector m_Connector{};
 		unsigned threadID{ 0 };
 		HANDLE hThread{ nullptr };
-		std::string m_PathPythonScript;
+		const std::string m_PathPythonScript;
 
 		// Chess board
 		Board m_Board{};
@@ -88,7 +86,7 @@ namespace Chesster
 		std::string m_CurrentMove{ "0000" };
 		std::string m_MoveHistory;
 		size_t m_MoveHistorySize{ m_MoveHistory.size() };
-		std::string m_StartPosFEN;
+		const std::string m_StartPosFEN;
 		std::string m_CurrentFEN;
 		std::vector<std::string> m_LegalMoves;
 

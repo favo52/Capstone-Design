@@ -15,9 +15,7 @@
 #endif // CHESSTER_DEBUG
 
 #ifdef CHESSTER_ENABLE_ASSERTS
-	#define CHESSTER_ASSERT(x, ...) { if(!(x)) { CHESSTER_ERROR("Assertion Failed: {0}", __VA_ARGS__); CHESSTER_DEBUGBREAK(); } }
-	#define APP_ASSERT(x, ...) { if(!(x)) { LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); CHESSTER_DEBUGBREAK(); } }
+	#define CHESSTER_ASSERT(x, ...) { if(!(x)) { LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); CHESSTER_DEBUGBREAK(); } }
 #else
 	#define CHESSTER_ASSERT(x, ...)
-	#define APP_ASSERT(x, ...)
 #endif // CHESSTER_ENABLE_ASSERTS

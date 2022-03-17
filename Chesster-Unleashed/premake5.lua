@@ -12,13 +12,11 @@ project "Chesster-Unleashed"
 
 	files
 	{
+		"%{wks.location}/%{prj.name}/src/**.h",
+		"%{wks.location}/%{prj.name}/src/**.cpp",
 		"%{wks.location}/%{prj.name}/resource.h",
 		"%{wks.location}/%{prj.name}/Chesster-Unleashed.rc",
 		"%{wks.location}/%{prj.name}/Chesster-Unleashed.aps",
-		"%{wks.location}/%{prj.name}/src/**.h",
-		"%{wks.location}/%{prj.name}/src/**.cpp",
-		"%{wks.location}/%{prj.name}/vendor/stb_image/**.h",
-		"%{wks.location}/%{prj.name}/vendor/stb_image/**.cpp",
 		"%{wks.location}/%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{wks.location}/%{prj.name}/vendor/glm/glm/**.inl"
 	}
@@ -35,10 +33,8 @@ project "Chesster-Unleashed"
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.SDL2_image}",
 		"%{IncludeDir.SDL2_ttf}",
-		"%{IncludeDir.Glad}",
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.Python}"
 	}
 
@@ -57,7 +53,6 @@ project "Chesster-Unleashed"
 		"SDL2_ttf.lib",
 		"opengl32.lib",
 		"python310.lib",
-		"Glad",
 		"ImGui",
 	}
 

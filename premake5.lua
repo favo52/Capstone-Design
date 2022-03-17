@@ -20,10 +20,8 @@ IncludeDir = {}
 IncludeDir["SDL2"] = "%{wks.location}/vendor/SDL2/include"
 IncludeDir["SDL2_image"] = "%{wks.location}/vendor/SDL2_image/include"
 IncludeDir["SDL2_ttf"] = "%{wks.location}/vendor/SDL2_ttf/include"
-IncludeDir["Glad"] = "%{wks.location}/vendor/Glad/include"
 IncludeDir["imgui"] = "%{wks.location}/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/vendor/glm"
-IncludeDir["stb_image"] = "%{wks.location}/vendor/stb_image"
 IncludeDir["Python"] = "%{wks.location}/vendor/Python/include"
 
 LibraryDir = {}
@@ -34,9 +32,7 @@ LibraryDir["SDL2_ttf"] = "%{wks.location}/vendor/SDL2_ttf/lib/x64"
 LibraryDir["Python"] = "%{wks.location}/vendor/Python/libs"
 
 group "Dependencies"
-	include "vendor/Glad"
 	include "vendor/imgui"
 group ""
 
-include "Chesster-SDL"
 include "Chesster-Unleashed"
