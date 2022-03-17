@@ -9,7 +9,7 @@ documentation/
 *.sln.docstates
 
 # Build results
-#bin/
+bin/
 bin-int/
 
 # Visual Studio 2015/2017 cache/options directory
