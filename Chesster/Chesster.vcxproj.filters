@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster">
+      <UniqueIdentifier>{3DC60BBB-2929-9B5F-D2AE-D315BEF066E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\Connections">
+      <UniqueIdentifier>{6FD6E992-5BFB-3813-8446-1EA370CA3731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\Core">
+      <UniqueIdentifier>{B5581BC9-216F-195F-6AE6-A480D63BEAE6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\Game">
+      <UniqueIdentifier>{064E1DC9-7264-1B5F-BBDB-A6802731ECE6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\ImGui">
+      <UniqueIdentifier>{2735F1EC-1319-B242-7C79-AC95687C9CC4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\ImGui\Panels">
+      <UniqueIdentifier>{99339256-05F6-C5E0-4EA6-546DBAA79EBE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\Layers">
+      <UniqueIdentifier>{5C565991-C8B7-369F-5125-7D51BD856D5E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\Renderer">
+      <UniqueIdentifier>{835EBAF0-EFCA-75EB-B8BE-0D4924EA9753}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\Chesster\Connections\Connector.h">
+      <Filter>src\Chesster\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Connections\TCPConnection.h">
+      <Filter>src\Chesster\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Application.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Clock.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Core.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Layer.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\LayerStack.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Logger.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\PlatformDetection.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\ResourceHolder.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Core\Window.h">
+      <Filter>src\Chesster\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Game\Board.h">
+      <Filter>src\Chesster\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Game\Piece.h">
+      <Filter>src\Chesster\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\ImGui\ImGuiLayer.h">
+      <Filter>src\Chesster\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\ImGui\Panels\ConsolePanel.h">
+      <Filter>src\Chesster\ImGui\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\ImGui\Panels\SettingsPanel.h">
+      <Filter>src\Chesster\ImGui\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Layers\GameLayer.h">
+      <Filter>src\Chesster\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Layers\TitleLayer.h">
+      <Filter>src\Chesster\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Renderer\Context.h">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Renderer\Framebuffer.h">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Renderer\RenderCommand.h">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Renderer\Renderer.h">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Renderer\Texture.h">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Chesster\Connections\Connector.cpp">
+      <Filter>src\Chesster\Connections</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Connections\TCPConnection.cpp">
+      <Filter>src\Chesster\Connections</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Application.cpp">
+      <Filter>src\Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Layer.cpp">
+      <Filter>src\Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\LayerStack.cpp">
+      <Filter>src\Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Logger.cpp">
+      <Filter>src\Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Core\Window.cpp">
+      <Filter>src\Chesster\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Game\Board.cpp">
+      <Filter>src\Chesster\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Game\Piece.cpp">
+      <Filter>src\Chesster\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\ImGui\ImGuiBuild.cpp">
+      <Filter>src\Chesster\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\ImGui\ImGuiLayer.cpp">
+      <Filter>src\Chesster\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\ImGui\Panels\ConsolePanel.cpp">
+      <Filter>src\Chesster\ImGui\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\ImGui\Panels\SettingsPanel.cpp">
+      <Filter>src\Chesster\ImGui\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Layers\GameLayer.cpp">
+      <Filter>src\Chesster\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Layers\TitleLayer.cpp">
+      <Filter>src\Chesster\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Main.cpp">
+      <Filter>src\Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Renderer\Context.cpp">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Renderer\Framebuffer.cpp">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Renderer\Renderer.cpp">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Renderer\Texture.cpp">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Chesster.aps" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Chesster.rc" />
+  </ItemGroup>
+</Project>

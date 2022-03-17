@@ -1,6 +1,6 @@
 workspace "Capstone-Design" -- Solution name
 	architecture "x86_64"
-	startproject "Chesster-Unleashed"
+	startproject "Chesster"
 
 	configurations
 	{
@@ -35,4 +35,4 @@ group "Dependencies"
 	include "vendor/imgui"
 group ""
 
-include "Chesster-Unleashed"
+include "Chesster"
