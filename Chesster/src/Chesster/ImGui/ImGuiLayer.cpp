@@ -2,7 +2,7 @@
 #include "ImGuiLayer.h"
 
 #include "Chesster/Core/Application.h"
-#include "Chesster/Renderer/Context.h"
+#include "Chesster/Renderer/GraphicsContext.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_sdl.h>
@@ -57,7 +57,7 @@ namespace Chesster
 		// Setup Platform/Renderer backends
 		SDL_Window* windowSDL = Application::Get().GetWindow().GetSDLWindow();
 		ImGui_ImplSDL2_InitForSDLRenderer(windowSDL);
-		ImGui_ImplSDLRenderer_Init(Context::Renderer);
+		ImGui_ImplSDLRenderer_Init(GraphicsContext::Renderer);
 	}
 
 	void ImGuiLayer::OnDetach()

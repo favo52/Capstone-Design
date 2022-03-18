@@ -85,7 +85,7 @@
     <ClInclude Include="src\Chesster\Layers\TitleLayer.h">
       <Filter>src\Chesster\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Renderer\Context.h">
+    <ClInclude Include="src\Chesster\Renderer\GraphicsContext.h">
       <Filter>src\Chesster\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Renderer\Framebuffer.h">
@@ -153,7 +153,7 @@
     <ClCompile Include="src\Chesster\Main.cpp">
       <Filter>src\Chesster</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\Renderer\Context.cpp">
+    <ClCompile Include="src\Chesster\Renderer\GraphicsContext.cpp">
       <Filter>src\Chesster\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Renderer\Framebuffer.cpp">

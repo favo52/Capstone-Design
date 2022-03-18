@@ -4,16 +4,10 @@
 
 namespace Chesster
 {
-	struct FramebufferSpecification
-	{
-		uint32_t Width{ 0 }, Height{ 0 };
-		uint32_t Samples{ 1 };
-	};
-
 	class Framebuffer
 	{
 	public:
-		Framebuffer(const FramebufferSpecification& spec);
+		Framebuffer(uint32_t width, uint32_t height);
 		virtual ~Framebuffer();
 
 		void Bind();
@@ -23,10 +17,12 @@ namespace Chesster
 
 		Texture GetTexture() const { return m_Framebuffer; }
 		SDL_Texture* GetSDLTexture() const { return m_Framebuffer.GetSDLTexture(); }
-		const FramebufferSpecification& GetSpec() const { return m_Specification; };
+
+		const uint32_t& GetWidth() const { return m_Width; }
+		const uint32_t& GetHeight() const { return m_Height; }
 
 	private:
 		Texture m_Framebuffer;
-		FramebufferSpecification m_Specification;
+		uint32_t m_Width{ 0 }, m_Height{ 0 };
 	};
 }

@@ -127,7 +127,7 @@
     <ClInclude Include="src\Chesster\ImGui\Panels\SettingsPanel.h" />
     <ClInclude Include="src\Chesster\Layers\GameLayer.h" />
     <ClInclude Include="src\Chesster\Layers\TitleLayer.h" />
-    <ClInclude Include="src\Chesster\Renderer\Context.h" />
+    <ClInclude Include="src\Chesster\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Chesster\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Chesster\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Chesster\Renderer\Renderer.h" />
@@ -151,7 +151,7 @@
     <ClCompile Include="src\Chesster\Layers\GameLayer.cpp" />
     <ClCompile Include="src\Chesster\Layers\TitleLayer.cpp" />
     <ClCompile Include="src\Chesster\Main.cpp" />
-    <ClCompile Include="src\Chesster\Renderer\Context.cpp" />
+    <ClCompile Include="src\Chesster\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\Chesster\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Chesster\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Chesster\Renderer\Texture.cpp" />

@@ -27,13 +27,10 @@ namespace Chesster
 	void GameLayer::OnAttach()
 	{
 		// Frambuffer init
-		FramebufferSpecification framebufferSpec;
-		framebufferSpec.Width = m_Window.GetWidth();
-		framebufferSpec.Height = m_Window.GetHeight();
-		m_Framebuffer = std::make_shared<Framebuffer>(framebufferSpec);
+		m_Framebuffer = std::make_shared<Framebuffer>(m_Window.GetWidth(), m_Window.GetHeight());
 		
 		// Board init
-		m_Board.Init(glm::vec2(m_Framebuffer->GetSpec().Width, m_Framebuffer->GetSpec().Height));
+		m_Board.Init(glm::vec2(m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight()));
 
 		// Pieces init
 		Piece::SetPieceClips(m_PieceClips);
@@ -68,7 +65,6 @@ namespace Chesster
 					m_MouseButton = SDL_GetMouseState(&MouseX, &MouseY);
 					m_MouseCoords = { MouseX, MouseY };
 
-					//LOG_TRACE("mouseCoords({0}, {1})", m_MouseCoords.x, m_MouseCoords.y);
 					break;
 				}
 
@@ -107,12 +103,11 @@ namespace Chesster
 	void GameLayer::OnUpdate(const std::chrono::duration<double>& dt)
 	{
 		// On ImGui window resize
-		FramebufferSpecification spec = m_Framebuffer->GetSpec();
 		if (m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
-			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+			(m_Framebuffer->GetWidth() != m_ViewportSize.x || m_Framebuffer->GetHeight() != m_ViewportSize.y))
 		{
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_Board.OnViewportResize({m_Framebuffer->GetSpec().Width, m_Framebuffer->GetSpec().Height});
+			m_Board.OnViewportResize({ m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight() });
 
 			for (auto& p : m_Pieces) p.OnViewportResize();
 		}
@@ -237,9 +232,9 @@ namespace Chesster
 		// Draw a faded black screen when gameover
 		if (m_CurrentGameState == GameState::Gameover)
 		{
-			SDL_Rect blackOverlay = { 0, 0, m_Framebuffer->GetSpec().Width, m_Framebuffer->GetSpec().Height };
+			SDL_Rect blackOverlayRect = { 0, 0, m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight() };
 			glm::vec4 blackOverlayColor = { 0, 0, 0, 150 };
-			Renderer::DrawFilledRect(blackOverlay, blackOverlayColor);
+			Renderer::DrawFilledRect(blackOverlayRect, blackOverlayColor);
 		}
 
 		m_Framebuffer->Unbind();
@@ -670,8 +665,6 @@ namespace Chesster
 	{
 		GameLayer* game = static_cast<GameLayer*>(data);
 
-		//wchar_t path_Stockfish5[] = L"assets/engines/stockfish/stockfish_5.exe";
-		//wchar_t path_Stockfish14_popcnt[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_popcnt/stockfish_14.1_win_x64_popcnt.exe";
 		wchar_t path_Stockfish14_avx2[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
 
 		game->m_Connector.ConnectToEngine(path_Stockfish14_avx2);

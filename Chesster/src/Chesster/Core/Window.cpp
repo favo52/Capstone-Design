@@ -48,8 +48,8 @@ namespace Chesster
 		LOG_INFO("Created SDL Window: {0} ({1}, {2})", m_WinProps.Title, m_WinProps.Width, m_WinProps.Height);
 
 		// Initialize context
-		m_Context = std::make_unique<Context>(m_Window);
-
+		m_Context = std::make_unique<GraphicsContext>(m_Window);
+		
 		// Initialize IMG_Init with PNG and JPG loading
 		int imgFlagsPNG = IMG_INIT_PNG;
 		int imgFlagsJPG = IMG_INIT_JPG;

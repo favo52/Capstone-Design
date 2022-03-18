@@ -8,29 +8,29 @@ namespace Chesster
 	void Renderer::DrawRect(const SDL_Rect& rect, const glm::vec4& color)
 	{
 		RenderCommand::SetClearColor(color);
-		SDL_RenderDrawRect(Context::Renderer, &rect);
+		SDL_RenderDrawRect(GraphicsContext::Renderer, &rect);
 	}
 
 	void Renderer::DrawFilledRect(const SDL_Rect& rect, const glm::vec4& color)
 	{
 		RenderCommand::SetClearColor(color);
-		SDL_RenderFillRect(Context::Renderer, &rect);
+		SDL_RenderFillRect(GraphicsContext::Renderer, &rect);
 	}
 
 	void Renderer::DrawLine(const SDL_Point& start, const SDL_Point& end, const glm::vec4& color)
 	{
 		RenderCommand::SetClearColor(color);
-		SDL_RenderDrawLine(Context::Renderer, start.x, start.y, end.x, end.y);
+		SDL_RenderDrawLine(GraphicsContext::Renderer, start.x, start.y, end.x, end.y);
 	}
 
 	void Renderer::DrawTexture(const Texture* texture)
 	{
-		SDL_RenderCopy(Context::Renderer, texture->GetSDLTexture(), texture->m_Clip, &texture->GetBounds());
+		SDL_RenderCopy(GraphicsContext::Renderer, texture->GetSDLTexture(), texture->m_Clip, &texture->GetBounds());
 	}
 
 	void Renderer::DrawTextureEx(const Texture* texture)
 	{
-		SDL_RenderCopyEx(Context::Renderer, texture->GetSDLTexture(), texture->m_Clip,
+		SDL_RenderCopyEx(GraphicsContext::Renderer, texture->GetSDLTexture(), texture->m_Clip,
 			&texture->m_RenderQuad, texture->m_Angle, texture->m_Center, texture->m_Flip);
 	}
 

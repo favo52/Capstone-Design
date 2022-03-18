@@ -21,12 +21,12 @@ namespace Chesster
 		Application& app = Application::Get();
 
 		// Prepare images
-		m_GroupNameTexture = &app.Get().m_TextureHolder.Get(TextureID::GroupLogo);
-		m_LogoTexture = &app.Get().m_TextureHolder.Get(TextureID::ChessterLogo);
+		m_GroupNameTexture = &app.m_TextureHolder.Get(TextureID::GroupLogo);
+		m_LogoTexture = &app.m_TextureHolder.Get(TextureID::ChessterLogo);
 
 		// Prepare fonts
-		m_AbsEmpireFont = app.Get().m_FontHolder.Get(FontID::AbsEmpire);
-		m_OpenSansFont = app.Get().m_FontHolder.Get(FontID::OpenSans_Bold);
+		m_AbsEmpireFont = app.m_FontHolder.Get(FontID::AbsEmpire);
+		m_OpenSansFont = app.m_FontHolder.Get(FontID::OpenSans_Bold);
 
 		// Set up text
 		SDL_Color Black = { 0u, 0u, 0u, 255u };
@@ -90,7 +90,7 @@ namespace Chesster
 				// Get the mouse screen coordinates
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 
-				// Check if mouse or finger is inside text bounds
+				// Check if mouse
 				for (int i = 0; i < m_MenuOptions.size(); ++i)
 				{
 					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
@@ -127,27 +127,26 @@ namespace Chesster
 
 		{
 			using namespace std::literals;
-			if (m_SplashDuration >= 2s)
+			if (m_SplashDuration >= 2s) // 2 seconds
 				m_CurrentTitleState = TitleState::MainMenu;
 		}
 	}
 
 	void TitleLayer::OnRender()
 	{
+		SDL_Rect background = { 0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() };
+		Renderer::DrawFilledRect(background, { 255, 255, 255, 255 });
+
 		switch (m_CurrentTitleState)
 		{
 			case TitleState::Splashscreen:
 			{
-				SDL_Rect background = { 0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() };
-				Renderer::DrawFilledRect(background, { 255, 255, 255, 255 });
 				Renderer::DrawTexture(m_GroupNameTexture);
 				break;
 			}
 
 			case TitleState::MainMenu:
 			{
-				SDL_Rect background = { 0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() };
-				Renderer::DrawFilledRect(background, { 255, 255, 255, 255 });
 				Renderer::DrawTexture(m_LogoTexture);
 				Renderer::DrawTexture(&m_TitleText);
 				Renderer::DrawTexture(&m_StartText);
@@ -168,25 +167,20 @@ namespace Chesster
 
 	void TitleLayer::RepositionTexture(Texture* texture, float value)
 	{
-		int width = Application::Get().GetWindow().GetWidth();
-		int height = Application::Get().GetWindow().GetHeight();
-
 		int offsetX = texture->GetWidth() / 2.0f;
 		int offsetY = texture->GetHeight() / 2.0f;
-		texture->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY) + value);
+		texture->SetPosition((m_Window.GetWidth() / 2.0f) - offsetX, ((m_Window.GetHeight() / 2.0f) - offsetY) + value);
 	}
 
 	void TitleLayer::SelectMenuOption()
 	{
-		Application& app = Application::Get();
-
 		if (m_CurrentMenuOption == MenuOptions::Start)
 		{
 			IsStart = true;
 		}
 		else
 		{
-			app.Get().Quit();
+			Application::Get().Quit();
 		}
 	}
 

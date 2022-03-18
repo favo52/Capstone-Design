@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "Context.h"
+#include "GraphicsContext.h"
 
 #include <SDL_render.h>
 #include <SDL_hints.h>
 
 namespace Chesster
 {
-	SDL_Renderer* Context::Renderer{ nullptr };
+	SDL_Renderer* GraphicsContext::Renderer{ nullptr };
 
-	Context::Context(SDL_Window* windowHandle) :
+	GraphicsContext::GraphicsContext(SDL_Window* windowHandle) :
 		m_WindowHandle{ windowHandle }
 	{
 		// Create vsynced renderer for window
@@ -18,16 +18,16 @@ namespace Chesster
 			LOG_ERROR("SDL_CreateRenderer failed with error: {0}", SDL_GetError());
 			throw std::runtime_error("SDL_CreateRenderer failed with error: " + std::string(SDL_GetError()));
 		}
-		SDL_RendererInfo info;
+		SDL_RendererInfo info{};
 		SDL_GetRendererInfo(Renderer, &info);
 		LOG_INFO("Current SDL_Renderer: {0} | Texture formats: {1}", info.name, info.num_texture_formats);
 
-		// Initialize renderer color
+		// Set renderer settings
 		SDL_SetRenderDrawColor(Renderer, 255u, 255u, 255u, 255u);
 		SDL_SetRenderDrawBlendMode(Renderer, SDL_BLENDMODE_BLEND);
 	}
 
-	Context::~Context()
+	GraphicsContext::~GraphicsContext()
 	{
 		// Destroy renderer and window
 		SDL_DestroyRenderer(Renderer);
@@ -37,7 +37,7 @@ namespace Chesster
 		m_WindowHandle = nullptr;
 	}
 
-	void Context::SwapBuffers()
+	void GraphicsContext::SwapBuffers()
 	{
 		SDL_RenderPresent(Renderer);
 	}

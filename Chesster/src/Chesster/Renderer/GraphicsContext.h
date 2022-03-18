@@ -9,22 +9,22 @@ namespace Chesster
 	/// Abstraction of the SDL Renderer.
 	/// 
 	/// </summary>
-	class Context
+	class GraphicsContext
 	{
 	public:
 		/// <summary>
-		/// 
+		/// Creates a 2D renderering context for the given window.
 		/// </summary>
-		/// <param name="windowHandle"></param>
-		Context(SDL_Window* windowHandle);
+		/// <param name="windowHandle">The window where rendering is displayed.</param>
+		GraphicsContext(SDL_Window* windowHandle);
 
 		/// <summary>
-		/// 
+		/// Destroys the SDL renderer and SDL window handle.
 		/// </summary>
-		virtual ~Context();
+		virtual ~GraphicsContext();
 
 		/// <summary>
-		/// 
+		/// Update the screen with any rendering performed since the previous call.
 		/// </summary>
 		void SwapBuffers();
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Chesster/Renderer/Context.h"
+#include "Chesster/Renderer/GraphicsContext.h"
 
 namespace Chesster
 {
@@ -73,7 +73,7 @@ namespace Chesster
 
 	private:
 		SDL_Window* m_Window;
-		std::unique_ptr<Context> m_Context;
+		std::unique_ptr<GraphicsContext> m_Context;
 		WindowProps m_WinProps;
 	};
 }

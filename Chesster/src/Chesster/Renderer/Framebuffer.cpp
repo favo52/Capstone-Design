@@ -7,10 +7,11 @@ namespace Chesster
 {
 	static const uint32_t s_MaxFrameBufferSize{ 8192 };
 
-	Framebuffer::Framebuffer(const FramebufferSpecification& spec) :
-		m_Specification{ spec }
+	Framebuffer::Framebuffer(uint32_t width, uint32_t height) :
+		m_Width{ width },
+		m_Height{ height }
 	{
-		m_Framebuffer.CreateBlank(spec.Width, spec.Height);
+		m_Framebuffer.CreateBlank(width, height);
 	}
 
 	Framebuffer::~Framebuffer()
@@ -21,7 +22,7 @@ namespace Chesster
 	void Framebuffer::Bind()
 	{
 		m_Framebuffer.SetAsRenderTarget();
-		RenderCommand::SetViewport(0, 0, m_Specification.Width, m_Specification.Height);
+		RenderCommand::SetViewport(0, 0, m_Width, m_Height);
 	}
 
 	void Framebuffer::Unbind()
@@ -37,8 +38,8 @@ namespace Chesster
 			return;
 		}
 
-		m_Specification.Width = width;
-		m_Specification.Height = height;
+		m_Width = width;
+		m_Height = height;
 
 		m_Framebuffer.FreeTexture();
 		m_Framebuffer.CreateBlank(width, height);
