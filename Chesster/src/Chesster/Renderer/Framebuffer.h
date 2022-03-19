@@ -4,6 +4,9 @@
 
 namespace Chesster
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	class Framebuffer
 	{
 	public:

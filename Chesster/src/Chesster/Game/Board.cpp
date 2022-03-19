@@ -8,13 +8,14 @@ namespace Chesster
 	std::array<Board::Square, 64> Board::m_BoardSquares{};
 	std::unordered_map<std::string, Board::Square*> Board::m_SquaresMap;
 
-	void Board::Init(const glm::vec2& viewportSize)
+	Board::Board(const glm::vec2& viewportSize)
 	{
 		glm::vec4 BlackColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		glm::vec4 BlueColor = { 0.084f, 0.342f, 0.517f, 1.0f };
 		glm::vec4 WhiteColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		glm::vec2 offset{ (viewportSize.x * 0.5) - 600.0f , (viewportSize.y * 0.5f) - 425.0f };
+		glm::vec2 offset{ (viewportSize.x * 0.5) - (m_BoardSquares[0].Size * 8.0f) * 0.5f ,
+						(viewportSize.y * 0.5f) - (m_BoardSquares[0].Size * 8.0f) * 0.5f };
 
 		// Iterate all 64 squares
 		for (size_t x = 0; x < 8; ++x)
@@ -30,7 +31,7 @@ namespace Chesster
 				Square* square = &m_BoardSquares[x + y * 8];
 				glm::vec4 CurrentColor = (x + y) % 2 == 0 ? WhiteColor : BlueColor;
 				square->Color = CurrentColor * 255.0f;
-				square->Position = { (float)x * square->Size.x + offset.x, (float)y * square->Size.y + offset.y };
+				square->Position = { (float)x * square->Size + offset.x, (float)y * square->Size + offset.y };
 				square->Notation = squareNotation;
 				square->Index = x + y;
 
@@ -52,7 +53,7 @@ namespace Chesster
 		// Draw board
 		for (const Square& square : m_BoardSquares)
 		{
-			SDL_Rect rect = { square.Position.x, square.Position.y, square.Size.x, square.Size.y };
+			SDL_Rect rect = { square.Position.x, square.Position.y, square.Size, square.Size };
 			Renderer::DrawFilledRect(rect, square.Color);
 		}
 
@@ -118,15 +119,15 @@ namespace Chesster
 	void Board::OnViewportResize(const glm::vec2& viewportSize)
 	{
 		// Offset is half of viewport size minus half of entire board's size
-		glm::vec2 offset{ (viewportSize.x * 0.5) - (m_BoardSquares[0].Size.x * 8.0f) * 0.5f ,
-						(viewportSize.y * 0.5f) - (m_BoardSquares[0].Size.x * 8.0f) * 0.5f};
+		glm::vec2 offset{ (viewportSize.x * 0.5) - (m_BoardSquares[0].Size * 8.0f) * 0.5f ,
+						(viewportSize.y * 0.5f) - (m_BoardSquares[0].Size * 8.0f) * 0.5f};
 
 		for (size_t x = 0; x < 8; ++x)
 		{
 			for (size_t y = 0; y < 8; ++y)
 			{
 				Square* square = &m_BoardSquares[x + y * 8];
-				square->Position = { (float)x * square->Size.x + offset.x, (float)y * square->Size.y + offset.y };
+				square->Position = { (float)x * square->Size + offset.x, (float)y * square->Size + offset.y };
 				square->UpdateCenter();
 				square->UpdateWorldBounds();
 			}
@@ -186,15 +187,15 @@ namespace Chesster
 
 	void Board::Square::UpdateCenter()
 	{
-		Center = { (Position.x + (Size.x * 0.5f)),
-			(Position.y + (Size.y * 0.5f)) };
+		Center = { (Position.x + (Size * 0.5f)),
+			(Position.y + (Size * 0.5f)) };
 	}
 
 	void Board::Square::UpdateWorldBounds()
 	{
-		WorldBounds.left = Center.x - (Size.x * 0.5f);
-		WorldBounds.right = Center.x + (Size.x * 0.5f);
-		WorldBounds.bottom = Center.y - (Size.y * 0.5f);
-		WorldBounds.top = Center.y + (Size.y * 0.5f);
+		WorldBounds.left = Center.x - (Size * 0.5f);
+		WorldBounds.right = Center.x + (Size * 0.5f);
+		WorldBounds.bottom = Center.y - (Size * 0.5f);
+		WorldBounds.top = Center.y + (Size * 0.5f);
 	}
 }

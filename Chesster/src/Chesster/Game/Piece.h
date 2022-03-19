@@ -30,9 +30,6 @@ namespace Chesster
 		Piece() = default;
 		virtual ~Piece() = default;
 
-		void OnUpdate(const std::chrono::duration<double>&dt);
-		void OnRender() const; 
-
 		void OnViewportResize();
 
 		void SetPosition(int x, int y);
@@ -42,19 +39,16 @@ namespace Chesster
 
 		void UpdateCenter();
 		void UpdateWorldBounds();
-		void UpdateTextureClip(std::string notation, std::array<SDL_Rect, 32>& pieceClips);
+		void UpdateTextureClip(std::string notation);
 
 		bool IsPawn();
 		bool IsPromotion(std::string notation);
 
 	public:
-		static void SetPieceClips(std::array<SDL_Rect, 32>& pieceClips);
-
-	public:
-		Texture Texture;
-		glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
-		glm::vec2 Size{ 80.0f, 80.0f };
+		SDL_Rect m_TextureClip{ 0, 0, 0, 0 };
+		glm::vec2 Position = { 0.0f, 0.0f };
 		glm::vec2 Center{ 0.0f, 0.0f };
+		const float Size{ 80.0f };
 		QuadBounds WorldBounds{};
 		std::string Notation{};
 		uint32_t Index{ 0 };

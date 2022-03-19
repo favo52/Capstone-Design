@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Chesster/Core/Window.h"
 
+#include "Chesster/Core/Application.h"
+#include "Chesster/Renderer/Renderer.h"
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -85,8 +88,51 @@ namespace Chesster
 		m_Context->SwapBuffers();
 	}
 
-	std::unique_ptr<Window> Window::Create(const WindowProps& props)
+	void Window::OnWindowEvent(SDL_Event& sdlEvent)
 	{
-		return std::make_unique<Window>(props);
+		// Get the window ID, display error if failed
+		uint32_t windowID = SDL_GetWindowID(m_Window);
+		if (windowID == 0) LOG_ERROR("Application::OnWindowEvent(SDL_Event&) - SDL_GetWindowID failed with error: {0}", SDL_GetError());
+
+		if (sdlEvent.window.windowID == windowID)
+		{
+			// Handle the window events
+			switch (sdlEvent.window.event)
+			{
+			case SDL_WINDOWEVENT_CLOSE:
+				Application::Get().Quit();
+				break;
+
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+			{
+				m_WinProps.Width = sdlEvent.window.data1;
+				m_WinProps.Height = sdlEvent.window.data2;
+				break;
+			}
+
+			case SDL_WINDOWEVENT_RESIZED:
+				Renderer::OnWindowResize(sdlEvent.window.data1, sdlEvent.window.data2);
+				break;
+
+			case SDL_WINDOWEVENT_EXPOSED:
+				OnUpdate();
+				break;
+
+			case SDL_WINDOWEVENT_MINIMIZED:
+				m_Minimized = true;
+				break;
+
+			case SDL_WINDOWEVENT_MAXIMIZED:
+				m_Minimized = false;
+				break;
+
+			case SDL_WINDOWEVENT_RESTORED:
+				m_Minimized = false;
+				break;
+
+			default:
+				break;
+			}
+		}
 	}
 }

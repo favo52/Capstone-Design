@@ -18,25 +18,23 @@ namespace Chesster
 
 	void TitleLayer::OnAttach()
 	{
-		Application& app = Application::Get();
+		// Prepare fonts
+		m_AbsEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 100);
+		m_OpenSansFont = std::make_shared<Font>("assets/fonts/opensans/OpenSans-Bold.ttf");
 
 		// Prepare images
-		m_GroupNameTexture = &app.m_TextureHolder.Get(TextureID::GroupLogo);
-		m_LogoTexture = &app.m_TextureHolder.Get(TextureID::ChessterLogo);
-
-		// Prepare fonts
-		m_AbsEmpireFont = app.m_FontHolder.Get(FontID::AbsEmpire);
-		m_OpenSansFont = app.m_FontHolder.Get(FontID::OpenSans_Bold);
+		m_GroupNameTexture = std::make_unique<Texture>("assets/textures/ReadySetCode.jpeg");
+		m_LogoTexture = std::make_unique<Texture>("assets/textures/ChessterLogo.png");
 
 		// Set up text
 		SDL_Color Black = { 0u, 0u, 0u, 255u };
 		SDL_Color Red = { 255u, 0u, 0u, 255u };
-		m_TitleText.LoadFromRenderedText(m_AbsEmpireFont, "CHESSTER", Black);
-		m_StartText.LoadFromRenderedText(m_OpenSansFont, "START", Red);
-		m_ExitText.LoadFromRenderedText(m_OpenSansFont, "EXIT", Black);
+		m_TitleText = std::make_unique<Texture>(m_AbsEmpireFont, "CHESSTER", Black);
+		m_StartText = std::make_unique<Texture>(m_OpenSansFont, "START", Red);
+		m_ExitText = std::make_unique<Texture>(m_OpenSansFont, "EXIT", Black);
 
-		m_MenuOptions.push_back(&m_StartText);
-		m_MenuOptions.push_back(&m_ExitText);
+		m_MenuOptionsBounds.push_back(&m_StartText->GetBounds());
+		m_MenuOptionsBounds.push_back(&m_ExitText->GetBounds());
 
 		OnWindowResize();
 
@@ -51,9 +49,12 @@ namespace Chesster
 		m_GroupNameTexture->FreeTexture();
 		m_LogoTexture->FreeTexture();
 
-		m_TitleText.FreeTexture();
-		m_StartText.FreeTexture();
-		m_ExitText.FreeTexture();
+		m_TitleText->FreeTexture();
+		m_StartText->FreeTexture();
+		m_ExitText->FreeTexture();
+
+		m_AbsEmpireFont->CloseFont();
+		m_OpenSansFont->CloseFont();
 	}
 
 	void TitleLayer::OnEvent(SDL_Event& sdlEvent)
@@ -91,10 +92,9 @@ namespace Chesster
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 
 				// Check if mouse
-				for (int i = 0; i < m_MenuOptions.size(); ++i)
+				for (int i = 0; i < m_MenuOptionsBounds.size(); ++i)
 				{
-					SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-					if (SDL_PointInRect(&m_MousePos, &textBounds))
+					if (SDL_PointInRect(&m_MousePos, m_MenuOptionsBounds[i]))
 					{
 						m_CurrentMenuOption = MenuOptions(i);
 						UpdateMenuOptionText();
@@ -108,10 +108,9 @@ namespace Chesster
 			{
 				if (sdlEvent.button.button == SDL_BUTTON_LEFT)
 				{
-					for (int i = 0; i < m_MenuOptions.size(); ++i)
+					for (int i = 0; i < m_MenuOptionsBounds.size(); ++i)
 					{
-						SDL_Rect textBounds = m_MenuOptions[i]->GetBounds();
-						if (SDL_PointInRect(&m_MousePos, &textBounds))
+						if (SDL_PointInRect(&m_MousePos, m_MenuOptionsBounds[i]))
 							SelectMenuOption();
 					}
 				}
@@ -134,23 +133,23 @@ namespace Chesster
 
 	void TitleLayer::OnRender()
 	{
-		SDL_Rect background = { 0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() };
+		SDL_Rect background = { 0, 0, m_Window.GetWidth(), m_Window.GetHeight() };
 		Renderer::DrawFilledRect(background, { 255, 255, 255, 255 });
 
 		switch (m_CurrentTitleState)
 		{
 			case TitleState::Splashscreen:
 			{
-				Renderer::DrawTexture(m_GroupNameTexture);
+				Renderer::DrawTexture(m_GroupNameTexture.get());
 				break;
 			}
 
 			case TitleState::MainMenu:
 			{
-				Renderer::DrawTexture(m_LogoTexture);
-				Renderer::DrawTexture(&m_TitleText);
-				Renderer::DrawTexture(&m_StartText);
-				Renderer::DrawTexture(&m_ExitText);
+				Renderer::DrawTexture(m_LogoTexture.get());
+				Renderer::DrawTexture(m_TitleText.get());
+				Renderer::DrawTexture(m_StartText.get());
+				Renderer::DrawTexture(m_ExitText.get());
 				break;
 			}
 		}
@@ -158,11 +157,11 @@ namespace Chesster
 
 	void TitleLayer::OnWindowResize()
 	{
-		RepositionTexture(m_GroupNameTexture, 0.0f);
-		RepositionTexture(m_LogoTexture, 0.0f);
-		RepositionTexture(&m_TitleText, -250.0f);
-		RepositionTexture(&m_StartText, 200.0f);
-		RepositionTexture(&m_ExitText, 250.0f);
+		RepositionTexture(m_GroupNameTexture.get(), 0.0f);
+		RepositionTexture(m_LogoTexture.get(), 0.0f);
+		RepositionTexture(m_TitleText.get(), -250.0f);
+		RepositionTexture(m_StartText.get(), 200.0f);
+		RepositionTexture(m_ExitText.get(), 250.0f);
 	}
 
 	void TitleLayer::RepositionTexture(Texture* texture, float value)
@@ -175,38 +174,40 @@ namespace Chesster
 	void TitleLayer::SelectMenuOption()
 	{
 		if (m_CurrentMenuOption == MenuOptions::Start)
-		{
 			IsStart = true;
-		}
 		else
-		{
 			Application::Get().Quit();
-		}
 	}
 
 	void TitleLayer::UpdateMenuOptionText()
 	{
-		if (m_MenuOptions.empty())
+		if (m_MenuOptionsBounds.empty())
 			return;
 
 		SDL_Color Black = { 0u, 0u, 0u, 255u };
 		SDL_Color Red = { 255u, 0u, 0u, 255u };
 
 		// Black all texts
-		m_StartText.LoadFromRenderedText(m_OpenSansFont, "START", Black);
-		m_ExitText.LoadFromRenderedText(m_OpenSansFont, "EXIT", Black);
+		m_StartText = std::make_unique<Texture>(m_OpenSansFont, "START", Black);
+		m_ExitText = std::make_unique<Texture>(m_OpenSansFont, "EXIT", Black);
 
 		// Red the selected text
 		switch (m_CurrentMenuOption)
 		{
 			case MenuOptions::Start:
-				m_StartText.LoadFromRenderedText(m_OpenSansFont, "START", Red);
+				m_StartText = std::make_unique<Texture>(m_OpenSansFont, "START", Red);
 				break;
-
+		
 			case MenuOptions::Exit:
-				m_ExitText.LoadFromRenderedText(m_OpenSansFont, "EXIT", Red);
+				m_ExitText = std::make_unique<Texture>(m_OpenSansFont, "EXIT", Red);
 				break;
 		}
+
+		m_MenuOptionsBounds[0] = &m_StartText->GetBounds();
+		m_MenuOptionsBounds[1] = &m_ExitText->GetBounds();
+
+		RepositionTexture(m_StartText.get(), 200.0f);
+		RepositionTexture(m_ExitText.get(), 250.0f);
 	}
 
 	TitleLayer::MenuOptions operator++(TitleLayer::MenuOptions& menuOption)

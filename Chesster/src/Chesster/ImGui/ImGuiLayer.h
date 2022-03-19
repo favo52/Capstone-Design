@@ -16,8 +16,8 @@ namespace Chesster
 		void Begin();
 		void End();
 
-		bool IsEventsBlocked() { return m_BlockEvents; }
-		void BlockEvents(bool block) { m_BlockEvents = block; }
+		//bool IsEventsBlocked() { return m_BlockEvents; }
+		//void BlockEvents(bool block) { m_BlockEvents = block; }
 
 		void SetDarkTheme();
 

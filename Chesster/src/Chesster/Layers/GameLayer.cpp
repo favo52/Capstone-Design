@@ -21,26 +21,29 @@ namespace Chesster
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_PathPythonScript{ "assets/script/__init__.exe" }
 	{
-		hThread = (HANDLE)_beginthreadex(nullptr, 0, &EngineThread, (void*)this, 0, &threadID);
+		unsigned threadID{};
+		_beginthreadex(nullptr, 0, &EngineThread, (void*)this, 0, &threadID);
 	}
 
 	void GameLayer::OnAttach()
 	{
 		// Frambuffer init
 		m_Framebuffer = std::make_shared<Framebuffer>(m_Window.GetWidth(), m_Window.GetHeight());
-		
+
 		// Board init
-		m_Board.Init(glm::vec2(m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight()));
+		m_Board = Board(glm::vec2(m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight()));
 
 		// Pieces init
-		Piece::SetPieceClips(m_PieceClips);
+		m_PieceTexture = std::make_shared<Texture>("assets/textures/ChessPieces.png");
+		m_PieceTexture->SetWidth(m_Pieces[0].Size);
+		m_PieceTexture->SetHeight(m_Pieces[0].Size);
+		SetPieceClips();
 		ResetPieces();
 	}
 
 	void GameLayer::OnDetach()
 	{
 		s_IsThreadRunning = false;
-		CloseHandle(hThread);
 	}
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
@@ -51,7 +54,7 @@ namespace Chesster
 			{
 				case SDL_KEYDOWN:
 				{
-					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !m_IsRecvComputerMove)
+					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !m_IsComputerTurn && !m_IsRecvComputerMove)
 					{
 						//m_TCPConnection.SendCommand();
 						m_IsComputerTurn = true;
@@ -62,7 +65,7 @@ namespace Chesster
 				case SDL_MOUSEMOTION:
 				{
 					int MouseX{ 0 }, MouseY{ 0 };
-					m_MouseButton = SDL_GetMouseState(&MouseX, &MouseY);
+					SDL_GetMouseState(&MouseX, &MouseY);
 					m_MouseCoords = { MouseX, MouseY };
 
 					break;
@@ -198,7 +201,7 @@ namespace Chesster
 				SettingsPanel::IsRobotConnected = true;
 
 				unsigned threadID{};
-				HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &TCPConnection::ConnectRobotThread, &TCPConnection::Get(), 0, &threadID);
+				_beginthreadex(NULL, 0, &TCPConnection::ConnectRobotThread, &TCPConnection::Get(), 0, &threadID);
 			}
 
 			SettingsPanel::IsRobotButtonPressed = false;
@@ -224,10 +227,16 @@ namespace Chesster
 		
 		// Draw all the chess pieces
 		for (auto& piece : m_Pieces)
-			piece.OnRender();
+		{
+			m_PieceTexture->SetClip(&piece.m_TextureClip);
+			m_PieceTexture->SetPosition(piece.Position.x, piece.Position.y);
+			Renderer::DrawTextureEx(m_PieceTexture.get());
+		}
 
 		// Draw selected chess piece on top of all other chess pieces
-		Renderer::DrawTextureEx(&m_Pieces[m_PieceIndex].Texture);
+		m_PieceTexture->SetClip(&m_Pieces[m_PieceIndex].m_TextureClip);
+		m_PieceTexture->SetPosition(m_Pieces[m_PieceIndex].Position.x, m_Pieces[m_PieceIndex].Position.y);
+		Renderer::DrawTextureEx(m_PieceTexture.get());
 
 		// Draw a faded black screen when gameover
 		if (m_CurrentGameState == GameState::Gameover)
@@ -243,7 +252,7 @@ namespace Chesster
 	void GameLayer::OnImGuiRender()
 	{
 		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
 
 		const ImGuiViewport* viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->WorkPos);
@@ -271,27 +280,6 @@ namespace Chesster
 
 		style.WindowMinSize.x = minWinSizeX;
 
-		static bool opt_fullscreen{ false };
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("Options"))
-			{
-				if (ImGui::MenuItem("Fullscreen (F5)", NULL, &opt_fullscreen))
-				{
-					SDL_Event e{};
-					e.type = SDL_KEYDOWN;
-					e.key.keysym.sym = SDLK_F5;
-					SDL_PushEvent(&e);
-				}
-
-				if (ImGui::MenuItem("Exit"))
-					Application::Get().Quit();
-
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenuBar();
-		}
-
 		// Settings Panel
 		m_SettingsPanel.OnImGuiRender();
 
@@ -303,10 +291,6 @@ namespace Chesster
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
-
-		m_ViewportFocused = ImGui::IsWindowFocused();
-		m_ViewportHovered = ImGui::IsWindowHovered();
-		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
 		m_ViewportMousePos.x = m_MouseCoords.x - ImGui::GetCursorScreenPos().x - ImGui::GetScrollX();
 		m_ViewportMousePos.y = m_MouseCoords.y - ImGui::GetCursorScreenPos().y - ImGui::GetScrollY();
@@ -357,7 +341,7 @@ namespace Chesster
 
 			// Pawn Promotions
 			if (m_Pieces[m_PieceIndex].IsPromotion(m_CurrentMove))
-				m_Pieces[m_PieceIndex].UpdateTextureClip(m_CurrentMove, m_PieceClips);
+				m_Pieces[m_PieceIndex].UpdateTextureClip(m_CurrentMove);
 			
 			// Update chess piece
 			m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
@@ -445,6 +429,44 @@ namespace Chesster
 		}
 	}
 
+	void GameLayer::SetPieceClips()
+	{
+		int* pieceLocations = new int[8 * 8]
+		{
+			-1, -2, -3, -4, -5, -3, -2, -1,
+			-6, -6, -6, -6, -6, -6, -6, -6,
+			 0,  0,  0,  0,  0,  0,  0,  0,
+			 0,  0,  0,  0,  0,  0,  0,  0,
+			 0,  0,  0,  0,  0,  0,  0,  0,
+			 0,  0,  0,  0,  0,  0,  0,  0,
+			 6,  6,  6,  6,  6,  6,  6,  6,
+			 1,  2,  3,  4,  5,  3,  2,  1
+		};
+
+		constexpr int RANK{ 8 };
+		constexpr int SIZE{ 80 };
+
+		int pieceIndex{ 0 };
+		for (int y = 0; y < RANK; y++)
+		{
+			for (int x = 0; x < RANK; x++)
+			{
+				int boardSquare = pieceLocations[x + y * RANK];
+				if (!boardSquare)
+					continue;
+
+				int xPos = abs(boardSquare) - 1;
+				int yPos = (boardSquare > 0) ? 1 : 0;
+
+				// Prepare piece clipping and position
+				m_Pieces[pieceIndex].m_TextureClip = { SIZE * xPos, SIZE * yPos, SIZE, SIZE };
+				++pieceIndex;
+			}
+		}
+
+		delete[] pieceLocations;
+	}
+
 	void GameLayer::RemovePiece(Piece& piece)
 	{
 		std::string capturedAtNotation = piece.Notation;
@@ -468,10 +490,10 @@ namespace Chesster
 			auto& squares = m_Board.GetBoardSquares();
 
 			// Set up the piece sprite
-			piece.Texture = app.Get().m_TextureHolder.Get(TextureID::Pieces);
-			piece.Texture.SetWidth(piece.Size.x);
-			piece.Texture.SetHeight(piece.Size.y);
-			piece.Texture.SetClip(&m_PieceClips[i]);
+			//piece.Texture = m_PieceTexture;
+			//piece.Texture->SetWidth(piece.Size.x);
+			//piece.Texture->SetHeight(piece.Size.y);
+			//piece.Texture->SetClip(&m_PieceClips[i]);
 
 			// Set up the piece properties
 			piece.SetPosition(squares[i + offset].Center.x, squares[i + offset].Center.y);
@@ -491,7 +513,7 @@ namespace Chesster
 		auto& x = m_Board.m_SquaresMap.find(move);
 		if (x != m_Board.m_SquaresMap.end())
 		{
-			m_Pieces[m_PieceIndex].UpdateTextureClip(m_CurrentMove, m_PieceClips);
+			m_Pieces[m_PieceIndex].UpdateTextureClip(m_CurrentMove);
 			m_Pieces[m_PieceIndex].SetPosition(x->second->Center.x, x->second->Center.y);
 			m_Pieces[m_PieceIndex].Notation = x->second->Notation;
 
@@ -526,7 +548,7 @@ namespace Chesster
 		m_MoveHistorySize = m_MoveHistory.size();
 		m_Board.Reset();
 
-		Piece::SetPieceClips(m_PieceClips);
+		SetPieceClips();
 		ResetPieces();
 		m_Connector.ResetGame();
 		m_LegalMoves = m_Connector.GetValidMoves(m_PathPythonScript, m_StartPosFEN);
@@ -711,7 +733,7 @@ namespace Chesster
 				}
 			}
 
-			Sleep(150);
+			//Sleep(150);
 		}
 
 		return 100;

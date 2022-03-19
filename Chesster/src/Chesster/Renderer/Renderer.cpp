@@ -31,7 +31,7 @@ namespace Chesster
 	void Renderer::DrawTextureEx(const Texture* texture)
 	{
 		SDL_RenderCopyEx(GraphicsContext::Renderer, texture->GetSDLTexture(), texture->m_Clip,
-			&texture->m_RenderQuad, texture->m_Angle, texture->m_Center, texture->m_Flip);
+			&texture->m_RenderRect, texture->m_Angle, texture->m_Center, texture->m_Flip);
 	}
 
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height)

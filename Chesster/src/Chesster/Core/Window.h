@@ -2,6 +2,8 @@
 
 #include "Chesster/Renderer/GraphicsContext.h"
 
+#include <SDL_events.h>
+
 namespace Chesster
 {
 	/// <summary>
@@ -53,13 +55,6 @@ namespace Chesster
 		const uint32_t& GetHeight() const { return m_WinProps.Height; }
 
 		/// <summary>
-		/// Creates a new Window object with the specified properties.
-		/// </summary>
-		/// <param name="props">The WindowProps object containing the window properties.</param>
-		/// <returns>A unique pointer of the created Window. It uses Window's constructor.</returns>
-		static std::unique_ptr<Window> Create(const WindowProps& props);
-
-		/// <summary>
 		/// Used to retrieve the SDL_Window object.
 		/// </summary>
 		/// <returns>A pointer to the m_Window member variable.</returns>
@@ -71,9 +66,20 @@ namespace Chesster
 		/// <returns>A pointer to the m_WinProps member variable.</returns>
 		WindowProps* GetWinProps() { return &m_WinProps; }
 
+		/// <summary>
+		/// Handles all window events i.e. window closing, window resize,
+		/// window minimize, window maximize.
+		/// </summary>
+		/// <param name="sdlEvent">The SDL window event.</param>
+		void OnWindowEvent(SDL_Event& sdlEvent);
+
+		bool IsMinimized() const { return m_Minimized; }
+
 	private:
 		SDL_Window* m_Window;
 		std::unique_ptr<GraphicsContext> m_Context;
 		WindowProps m_WinProps;
+
+		bool m_Minimized;
 	};
 }

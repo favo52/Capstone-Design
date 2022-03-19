@@ -108,17 +108,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Chesster\Renderer\Font.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\Chesster\Connections\Connector.h" />
     <ClInclude Include="src\Chesster\Connections\TCPConnection.h" />
     <ClInclude Include="src\Chesster\Core\Application.h" />
     <ClInclude Include="src\Chesster\Core\Clock.h" />
-    <ClInclude Include="src\Chesster\Core\Core.h" />
     <ClInclude Include="src\Chesster\Core\Layer.h" />
     <ClInclude Include="src\Chesster\Core\LayerStack.h" />
     <ClInclude Include="src\Chesster\Core\Logger.h" />
-    <ClInclude Include="src\Chesster\Core\PlatformDetection.h" />
-    <ClInclude Include="src\Chesster\Core\ResourceHolder.h" />
     <ClInclude Include="src\Chesster\Core\Window.h" />
     <ClInclude Include="src\Chesster\Game\Board.h" />
     <ClInclude Include="src\Chesster\Game\Piece.h" />
@@ -135,6 +133,7 @@
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Chesster\Renderer\Font.cpp" />
     <ClCompile Include="src\Chesster\Connections\Connector.cpp" />
     <ClCompile Include="src\Chesster\Connections\TCPConnection.cpp" />
     <ClCompile Include="src\Chesster\Core\Application.cpp" />

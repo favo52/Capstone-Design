@@ -37,6 +37,7 @@ namespace Chesster
 		void UpdateComputerMove();
 		void UpdatePlayerMove();
 		
+		void SetPieceClips();
 		void RemovePiece(Piece& piece);
 		void ResetPieces();
 
@@ -62,30 +63,27 @@ namespace Chesster
 		Window& m_Window;
 		std::shared_ptr<Framebuffer> m_Framebuffer;
 
-		bool m_ViewportFocused{ false }, m_ViewportHovered{ false };
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 
 		// Chess Engine
 		Connector m_Connector{};
-		unsigned threadID{ 0 };
-		HANDLE hThread{ nullptr };
 		const std::string m_PathPythonScript;
 
 		// Chess board
-		Board m_Board{};
+		Board m_Board;
+		std::shared_ptr<Texture> m_PieceTexture;
 		std::array<Piece, 32> m_Pieces;
-		std::array<SDL_Rect, 32> m_PieceClips{};
 		uint32_t m_PieceIndex{ 0 };
 		Board::Square m_TargetSquare;
 
 		glm::vec2 m_MouseCoords{ 0.0f, 0.0f };
 		glm::vec2 m_ViewportMousePos{ 0.0f, 0.0f };
-		uint32_t m_MouseButton{ 0 };
 
 		// Moves/Notations
 		std::string m_CurrentMove{ "0000" };
 		std::string m_MoveHistory;
 		size_t m_MoveHistorySize{ m_MoveHistory.size() };
+
 		const std::string m_StartPosFEN;
 		std::string m_CurrentFEN;
 		std::vector<std::string> m_LegalMoves;

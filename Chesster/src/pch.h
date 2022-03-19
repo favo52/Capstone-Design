@@ -1,7 +1,6 @@
 #pragma once
 
 // Chesster files
-#include "Chesster/Core/Core.h"
 #include "Chesster/Core/Logger.h"
 
 // C++ standard library
@@ -13,7 +12,7 @@
 #include <memory>
 
 // Microsoft
-#ifdef CHESSTER_PLATFORM_WINDOWS
+#ifdef _WIN32
 	#include <Windows.h>
 	#include <ws2tcpip.h>
 #endif

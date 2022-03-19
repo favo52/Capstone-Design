@@ -17,7 +17,7 @@ namespace Chesster
 		struct Square
 		{
 			glm::vec2 Position = { 0.0f, 0.0f };
-			glm::vec2 Size{ 100.0f, 100.0f };
+			float Size{ 100.0f };
 			glm::vec4 Color = { 0.0f, 0.0f, 0.0f, 1.0f };
 			glm::vec2 Center{ 0.0f, 0.0f };
 			QuadBounds WorldBounds{};
@@ -31,9 +31,8 @@ namespace Chesster
 
 	public:
 		Board() = default;
+		Board(const glm::vec2& viewportSize);
 		virtual ~Board() = default;
-
-		void Init(const glm::vec2& viewportSize);
 
 		void OnUpdate(const std::chrono::duration<double>& dt);
 
