@@ -11,7 +11,7 @@ namespace Chesster
 	{
 	public:
 		Framebuffer(uint32_t width, uint32_t height);
-		virtual ~Framebuffer();
+		virtual ~Framebuffer() = default;
 
 		void Bind();
 		void Unbind();

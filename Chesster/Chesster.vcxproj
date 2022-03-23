@@ -100,7 +100,7 @@
       <AdditionalIncludeDirectories>src;..\vendor\spdlog\include;..\vendor\SDL2\include;..\vendor\SDL2_image\include;..\vendor\SDL2_ttf\include;..\vendor\imgui;..\vendor\glm;..\vendor\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;opengl32.lib;python310.lib;%(AdditionalDependencies)</AdditionalDependencies>

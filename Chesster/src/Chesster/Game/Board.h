@@ -8,6 +8,9 @@
 
 namespace Chesster
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	class Board
 	{
 	public:
@@ -16,9 +19,9 @@ namespace Chesster
 		/// </summary>
 		struct Square
 		{
-			glm::vec2 Position = { 0.0f, 0.0f };
+			glm::vec2 Position{ 0.0f, 0.0f };
 			float Size{ 100.0f };
-			glm::vec4 Color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			glm::vec4 Color{ 0.0f, 0.0f, 0.0f, 1.0f };
 			glm::vec2 Center{ 0.0f, 0.0f };
 			QuadBounds WorldBounds{};
 			std::string Notation{};

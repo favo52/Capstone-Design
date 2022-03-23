@@ -14,11 +14,6 @@ namespace Chesster
 		m_Framebuffer.CreateBlank(width, height);
 	}
 
-	Framebuffer::~Framebuffer()
-	{
-		m_Framebuffer.FreeTexture();
-	}
-
 	void Framebuffer::Bind()
 	{
 		m_Framebuffer.SetAsRenderTarget();

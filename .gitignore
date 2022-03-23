@@ -1,6 +1,10 @@
 # Directories
 documentation/
 
+# Program files
+Chesster/Chesster.log
+Chesster/validmoves.txt
+
 # User-specific files
 *.rsuser
 *.suo

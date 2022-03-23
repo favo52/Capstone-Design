@@ -86,11 +86,10 @@ namespace Chesster
 
 	void Piece::UpdateTextureClip(std::string notation)
 	{
-		int color = (Color == PieceColor::White) ? 1 : 0;
+		const int color = (Color == PieceColor::White) ? 1 : 0;
 		constexpr int pieceSize{ 80 };
 
-		char upgrade{ notation.back() };
-		switch (upgrade)
+		switch (notation.back())
 		{
 			case 'r':
 			{
@@ -122,7 +121,6 @@ namespace Chesster
 
 			default:
 				return;
-
 		}
 	}
 
