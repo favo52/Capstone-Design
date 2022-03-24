@@ -29,10 +29,9 @@ namespace Chesster
 		std::vector<std::string> GetValidMoves(const std::string& path, const std::string& fen);
 		std::string GetFEN(const std::string& latestMove);
 
-		const std::string GetEngineReply();
-
 	private:
 		void CloseAllConnections();
+		const std::string GetEngineReply();
 
 	private:
 		// Chess engine

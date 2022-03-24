@@ -73,6 +73,7 @@ namespace Chesster
 	Window::~Window()
 	{
 		SDL_DestroyWindow(m_Window);
+		LOG_ERROR("Window::~Window() - SDL_DestroyWindow failed with error: {0}", SDL_GetError());
 		m_Window = nullptr;
 
 		// Quit SDL subsystems

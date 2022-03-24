@@ -18,7 +18,6 @@ namespace Chesster
 
 		void Resize(uint32_t width, uint32_t height);
 
-		Texture GetTexture() const { return m_Framebuffer; }
 		SDL_Texture* GetSDLTexture() const { return m_Framebuffer.GetSDLTexture(); }
 
 		const uint32_t& GetWidth() const { return m_Width; }

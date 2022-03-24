@@ -203,6 +203,7 @@ namespace Chesster
 				break;
 		}
 
+		// Update text rendering status
 		m_MenuOptionsBounds[0] = &m_StartText->GetBounds();
 		m_MenuOptionsBounds[1] = &m_ExitText->GetBounds();
 

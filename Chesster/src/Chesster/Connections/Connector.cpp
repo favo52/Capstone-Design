@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Chesster/Connections/Connector.h"
 
-#include "Chesster/Core/Logger.h"
 #include "Chesster/Layers/GameLayer.h"
 
 #define PY_SSIZE_T_CLEAN

@@ -29,22 +29,7 @@ namespace Chesster
 		/// </summary>
 		/// <param name="rect">The dimensions of the rectangle.</param>
 		/// <param name="color">The color of the rectangle.</param>
-		static void DrawRect(const SDL_Rect& rect, const glm::vec4& color);
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="rect">The dimensions of the rectangle.</param>
-		/// <param name="color">The color of the rectangle.</param>
 		static void DrawFilledRect(const SDL_Rect& rect, const glm::vec4& color);
-
-		/// <summary>
-		/// Draws a line.
-		/// </summary>
-		/// <param name="x">The starting point of the line.</param>
-		/// <param name="y">The ending point of the line.</param>
-		/// <param name="color">The color of the line</param>
-		static void DrawLine(const SDL_Point& x, const SDL_Point& y, const glm::vec4& color);
 
 		/// <summary>
 		/// Draws a fixed texture to the render target.

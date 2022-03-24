@@ -154,6 +154,10 @@ namespace Chesster
 			m_Width = 0;
 			m_Height = 0;
 			m_RenderRect = { 0, 0, 0, 0 };
+			m_Angle = 0.0f;
+			m_Clip = nullptr;
+			m_Center = nullptr;
+			m_Flip = SDL_FLIP_NONE;
 		}
 	}
 

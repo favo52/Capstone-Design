@@ -10,7 +10,6 @@ namespace Chesster
 
 	Board::Board(const glm::vec2& viewportSize)
 	{
-		glm::vec4 BlackColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 		glm::vec4 BlueColor = { 0.084f, 0.342f, 0.517f, 1.0f };
 		glm::vec4 WhiteColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -20,16 +19,19 @@ namespace Chesster
 		// Iterate all 64 squares
 		for (size_t x = 0; x < 8; ++x)
 		{
-			char file = 'a' + x;
+			const char file = 'a' + x;
 			for (size_t y = 0; y < 8; ++y)
 			{
-				char rank = '8' - y;
+				// Set corresponding notation
+				const char rank = '8' - y;
 				std::string squareNotation{ file };
 				squareNotation += rank;
 
+				// Set corresponding color
+				const glm::vec4 CurrentColor = (x + y) % 2 == 0 ? WhiteColor : BlueColor;
+
 				// Set each square's properties
 				Square* square = &m_BoardSquares[x + y * 8];
-				glm::vec4 CurrentColor = (x + y) % 2 == 0 ? WhiteColor : BlueColor;
 				square->Color = CurrentColor * 255.0f;
 				square->Position = { (float)x * square->Size + offset.x, (float)y * square->Size + offset.y };
 				square->Notation = squareNotation;
@@ -38,6 +40,7 @@ namespace Chesster
 				square->UpdateCenter();
 				square->UpdateWorldBounds();
 
+				// Insert to square notation hash map
 				m_SquaresMap[squareNotation] = square;
 			}
 		}
@@ -58,10 +61,11 @@ namespace Chesster
 		}
 
 		// Draw active squares
-		SDL_Rect oldSq = { m_ActiveSquares[0].Position.x, m_ActiveSquares[0].Position.y, 100, 100 };
+		constexpr int squareSize{ 100 };
+		SDL_Rect oldSq = { m_ActiveSquares[0].Position.x, m_ActiveSquares[0].Position.y, squareSize , squareSize };
 		Renderer::DrawFilledRect(oldSq, m_ActiveSquares[0].Color);
 
-		SDL_Rect newSq = { m_ActiveSquares[1].Position.x, m_ActiveSquares[1].Position.y, 100, 100 };
+		SDL_Rect newSq = { m_ActiveSquares[1].Position.x, m_ActiveSquares[1].Position.y, squareSize, squareSize };
 		Renderer::DrawFilledRect(newSq, m_ActiveSquares[1].Color);
 	}
 

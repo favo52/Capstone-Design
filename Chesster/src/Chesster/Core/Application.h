@@ -86,7 +86,7 @@ namespace Chesster
 
 	private:
 		std::unique_ptr<Window> m_Window;
-		bool m_Running;		
+		bool m_Running;
 
 		LayerStack m_LayerStack;
 
