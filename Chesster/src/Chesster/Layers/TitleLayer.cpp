@@ -3,8 +3,6 @@
 
 #include "Chesster/Core/Application.h"
 #include "Chesster/Renderer/Renderer.h"
-#include "Chesster/Renderer/RenderCommand.h"
-#include "Chesster/Layers/GameLayer.h"
 
 namespace Chesster
 {
@@ -38,10 +36,8 @@ namespace Chesster
 
 		OnWindowResize();
 
-		{
-			using namespace std::literals;
-			m_SplashDuration = 0s;
-		}
+		using namespace std::literals;
+		m_SplashDuration = 0s;
 	}
 
 	void TitleLayer::OnDetach()
@@ -124,17 +120,16 @@ namespace Chesster
 	{
 		m_SplashDuration += dt;
 
-		{
-			using namespace std::literals;
-			if (m_SplashDuration >= 2s) // 2 seconds
-				m_CurrentTitleState = TitleState::MainMenu;
-		}
+		using namespace std::literals;
+		if (m_SplashDuration >= 2s) // 2 seconds
+			m_CurrentTitleState = TitleState::MainMenu;
 	}
 
 	void TitleLayer::OnRender()
 	{
-		SDL_Rect background = { 0, 0, m_Window.GetWidth(), m_Window.GetHeight() };
-		Renderer::DrawFilledRect(background, { 255, 255, 255, 255 });
+		const glm::vec4 clearColor = { 255, 255, 255, 255 };
+		Renderer::SetClearColor(clearColor);
+		Renderer::Clear();
 
 		switch (m_CurrentTitleState)
 		{

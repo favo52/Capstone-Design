@@ -30,8 +30,8 @@ namespace Chesster
 		virtual void OnImGuiRender() override;
 
 	public:
-		static ConsolePanel* GetConsolePanel() { return &m_ConsolePanel; }
-		static TCPConnection* GetTCP() { return &m_TCPConnection; }
+		static ConsolePanel* GetConsolePanel() { return &s_ConsolePanel; }
+		static TCPConnection* GetTCP() { return &s_TCPConnection; }
 
 	private:
 		void UpdateComputerMove();
@@ -103,8 +103,8 @@ namespace Chesster
 		bool m_IsOutsideBoard{ false };
 
 		// Panels
-		static ConsolePanel m_ConsolePanel;
-		static SettingsPanel m_SettingsPanel;
+		static ConsolePanel s_ConsolePanel;
+		static SettingsPanel s_SettingsPanel;
 
 		enum class Player { White, Black };
 		friend Player operator++(Player& player);
@@ -114,6 +114,6 @@ namespace Chesster
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
-		static TCPConnection m_TCPConnection;
+		static TCPConnection s_TCPConnection;
 	};
 }

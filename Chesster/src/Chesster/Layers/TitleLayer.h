@@ -42,7 +42,7 @@ namespace Chesster
 		std::unique_ptr<Texture> m_StartText;
 		std::unique_ptr<Texture> m_ExitText;
 
-		std::vector<SDL_Rect*> m_MenuOptionsBounds;
+		std::vector<const SDL_Rect*> m_MenuOptionsBounds;
 
 		SDL_Point m_MousePos{ 0, 0 };
 

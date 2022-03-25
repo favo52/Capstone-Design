@@ -37,7 +37,7 @@ namespace Chesster
 		{
 			// Create blank streamable texture
 			SDL_Texture* texture{ nullptr };
-			texture = SDL_CreateTexture(GraphicsContext::Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, formattedSurface->w, formattedSurface->h);
+			texture = SDL_CreateTexture(GraphicsContext::Renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, formattedSurface->w, formattedSurface->h);
 			if (texture == nullptr)
 			{
 				LOG_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
@@ -56,26 +56,7 @@ namespace Chesster
 			memcpy(pixelData, formattedSurface->pixels, static_cast<size_t>(formattedSurface->pitch) * formattedSurface->h);
 
 			// Get image dimensions
-			m_Width = formattedSurface->w;
-			m_Height = formattedSurface->h;
-			m_RenderRect = { 0, 0, m_Width, m_Height };
-
-			// Get pixel data in editable format
-			Uint32* pixels = (Uint32*)pixelData;
-			int pixelCount = (pitch / 4) * m_Height;
-
-			// Map colors				
-			Uint32 colorKey = SDL_MapRGB(formattedSurface->format, 0, 0xFF, 0xFF);
-			Uint32 transparent = SDL_MapRGBA(formattedSurface->format, 0x00, 0xFF, 0xFF, 0x00);
-
-			// Color key pixels
-			for (int i = 0; i < pixelCount; ++i)
-			{
-				if (pixels[i] == colorKey)
-				{
-					pixels[i] = transparent;
-				}
-			}
+			m_RenderRect = { 0, 0, formattedSurface->w, formattedSurface->h };
 
 			// Unlock texture to update
 			SDL_UnlockTexture(texture);
@@ -98,23 +79,23 @@ namespace Chesster
 		if (textSurface == nullptr)
 		{
 			LOG_ERROR("Unable to render text surface! SDL_ttf error: {0}", TTF_GetError());
-			RuntimeError("Unable to create load text!");
+			RuntimeError("Unable to create load text! Verify Chesster.log for more info.");
 		}
 		else
 		{
 			// Create texture from surface pixels
-			m_Texture = SDL_CreateTextureFromSurface(GraphicsContext::Renderer, textSurface);
+			m_Texture = SDL_CreateTextureFromSurface(GraphicsContext::Renderer(), textSurface);
 			if (m_Texture == nullptr)
 			{
 				SDL_FreeSurface(textSurface);
 				LOG_ERROR("Unable to create texture from rendered text! SDL error: {0}", SDL_GetError());
-				RuntimeError("Unable to create load text!");
+				RuntimeError("Unable to create load text! Verify Chesster.log for more info.");
 			}
 			else
 			{
 				// Get image dimensions
-				m_Width = textSurface->w;
-				m_Height = textSurface->h;
+				m_RenderRect.w = textSurface->w;
+				m_RenderRect.h = textSurface->h;
 			}
 
 			// Get rid of old surface
@@ -130,15 +111,15 @@ namespace Chesster
 	bool Texture::CreateBlank(int width, int height)
 	{
 		// Create uninitialized texture
-		m_Texture = SDL_CreateTexture(GraphicsContext::Renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
+		m_Texture = SDL_CreateTexture(GraphicsContext::Renderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
 		if (m_Texture == nullptr)
 		{
 			LOG_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
 		}
 		else
 		{
-			m_Width = width;
-			m_Height = height;
+			m_RenderRect.w = width;
+			m_RenderRect.h = height;
 		}
 
 		return m_Texture != nullptr;
@@ -151,24 +132,8 @@ namespace Chesster
 		{
 			SDL_DestroyTexture(m_Texture);
 			m_Texture = nullptr;
-			m_Width = 0;
-			m_Height = 0;
 			m_RenderRect = { 0, 0, 0, 0 };
-			m_Angle = 0.0f;
-			m_Clip = nullptr;
-			m_Center = nullptr;
-			m_Flip = SDL_FLIP_NONE;
+			m_RenderClip = nullptr;
 		}
-	}
-
-	void Texture::SetAsRenderTarget()
-	{
-		// Make self render target
-		SDL_SetRenderTarget(GraphicsContext::Renderer, m_Texture);
-	}
-
-	void Texture::RemoveAsRenderTarget()
-	{
-		SDL_SetRenderTarget(GraphicsContext::Renderer, nullptr);
 	}
 }

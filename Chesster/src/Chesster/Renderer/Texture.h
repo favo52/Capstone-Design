@@ -29,6 +29,9 @@ namespace Chesster
 		/// <param name="color"></param>
 		Texture(std::shared_ptr<Font> font, const std::string& textureText, SDL_Color color);
 
+		/// <summary>
+		/// 
+		/// </summary>
 		virtual ~Texture();
 
 		/// <summary>
@@ -44,38 +47,26 @@ namespace Chesster
 		/// </summary>		
 		void FreeTexture();
 
-		void SetPosition(int x, int y) { m_RenderRect = { x, y, m_Width, m_Height }; }
-		void SetWidth(int width) { m_Width = width; }
-		void SetHeight(int height) { m_Height = height; }
-		void SetClip(SDL_Rect* clip) { m_Clip = clip; }
-		void SetRotation(float angle) { m_Angle = angle; }
-		void SetCenter(SDL_Point* center) { m_Center = center; }
-		void SetFlip(SDL_RendererFlip flip) { m_Flip = flip; }
-
-		void SetAsRenderTarget();
-		void RemoveAsRenderTarget();
+		void SetPosition(int x, int y) { m_RenderRect = { x, y, m_RenderRect.w, m_RenderRect.h }; }
+		void SetWidth(int width) { m_RenderRect.w = width; }
+		void SetHeight(int height) { m_RenderRect.h = height; }
+		void SetClip(SDL_Rect* renderClip) { m_RenderClip = renderClip; }
 
 		// Get image dimensions
-		const int GetWidth() const { return m_Width; }
-		const int GetHeight() const { return m_Height; }
+		const int GetWidth() const { return m_RenderRect.w; }
+		const int GetHeight() const { return m_RenderRect.h; }
 
 		const SDL_Rect& GetBounds() const { return m_RenderRect; }
-		SDL_Rect& GetBounds() { return m_RenderRect; }
+
+		const SDL_Rect* GetRenderClip() const { return m_RenderClip; }
 
 		SDL_Texture* GetSDLTexture() const { return m_Texture; }
-
 		operator SDL_Texture*() const { return m_Texture; }
 
 	private:
 		SDL_Texture* m_Texture{ nullptr }; // The actual hardware texture
-		int m_Width{ 0 }, m_Height{ 0 };
 
 		SDL_Rect m_RenderRect{ 0, 0, 0, 0 };
-		float m_Angle{ 0.0f };
-		SDL_Rect* m_Clip{ nullptr };
-		SDL_Point* m_Center{ nullptr };
-		SDL_RendererFlip m_Flip{ SDL_FLIP_NONE };
-
-		friend class Renderer; // Allows access to private
+		SDL_Rect* m_RenderClip{ nullptr };
 	};
 }

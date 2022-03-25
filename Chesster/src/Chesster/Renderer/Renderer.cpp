@@ -1,30 +1,35 @@
 #include "pch.h"
 #include "Chesster/Renderer/Renderer.h"
 
-#include "Chesster/Renderer/RenderCommand.h"
+#include "Chesster/Renderer/GraphicsContext.h"
 
 namespace Chesster
 {
 	void Renderer::DrawFilledRect(const SDL_Rect& rect, const glm::vec4& color)
 	{
-		RenderCommand::SetClearColor(color);
-		SDL_RenderFillRect(GraphicsContext::Renderer, &rect);
+		SetClearColor(color);
+		SDL_RenderFillRect(GraphicsContext::Renderer(), &rect);
 	}
 
 	void Renderer::DrawTexture(const Texture* texture)
 	{
-		SDL_RenderCopy(GraphicsContext::Renderer, texture->GetSDLTexture(), texture->m_Clip, &texture->GetBounds());
+		SDL_RenderCopy(GraphicsContext::Renderer(), texture->GetSDLTexture(), texture->GetRenderClip(), &texture->GetBounds());
 	}
 
-	void Renderer::DrawTextureEx(const Texture* texture)
+	void Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
-		SDL_RenderCopyEx(GraphicsContext::Renderer, texture->GetSDLTexture(), texture->m_Clip,
-			&texture->m_RenderRect, texture->m_Angle, texture->m_Center, texture->m_Flip);
+		const SDL_Rect viewport = { (int)x, (int)y, (int)width, (int)height };
+		SDL_RenderSetViewport(GraphicsContext::Renderer(), &viewport);
 	}
 
-	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+	void Renderer::SetClearColor(const glm::vec4& color)
 	{
-		RenderCommand::SetViewport(0, 0, width, height);
+		SDL_SetRenderDrawColor(GraphicsContext::Renderer(), (Uint8)color.r, (Uint8)color.g, (Uint8)color.b, (Uint8)color.a);
+	}
+
+	void Renderer::Clear()
+	{
+		SDL_RenderClear(GraphicsContext::Renderer());
 	}
 
 	QuadBounds QuadBounds::operator+(const float& value) const

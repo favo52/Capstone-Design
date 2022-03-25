@@ -21,6 +21,10 @@ namespace Chesster
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns>A std::string of the name of the layer.</returns>
 		const std::string& GetName() const { return m_DebugName; }
 
 	protected:

@@ -28,6 +28,6 @@ namespace Chesster
 		TTF_Font* GetTTF() const { return m_Font; }
 
 	private:
-		TTF_Font* m_Font{ nullptr }; // Holds the font information.
+		TTF_Font* m_Font; // Holds the font information.
 	};
 }

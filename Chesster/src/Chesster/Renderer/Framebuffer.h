@@ -20,11 +20,10 @@ namespace Chesster
 
 		SDL_Texture* GetSDLTexture() const { return m_Framebuffer.GetSDLTexture(); }
 
-		const uint32_t& GetWidth() const { return m_Width; }
-		const uint32_t& GetHeight() const { return m_Height; }
+		const uint32_t& GetWidth() const { return m_Framebuffer.GetWidth(); }
+		const uint32_t& GetHeight() const { return m_Framebuffer.GetHeight(); }
 
 	private:
 		Texture m_Framebuffer;
-		uint32_t m_Width{ 0 }, m_Height{ 0 };
 	};
 }

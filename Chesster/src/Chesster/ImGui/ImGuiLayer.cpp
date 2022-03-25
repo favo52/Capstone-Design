@@ -30,8 +30,8 @@ namespace Chesster
 		// Set fonts
 		float fontSize{ 18.0f };
 		ImFontConfig consoleFontConfig;
-		consoleFontConfig.GlyphMinAdvanceX = 7.5;
-		consoleFontConfig.GlyphMaxAdvanceX = 8;
+		consoleFontConfig.GlyphMinAdvanceX = 7.5f;
+		consoleFontConfig.GlyphMaxAdvanceX = 8.0f;
 
 		io.Fonts->AddFontDefault();
 		io.Fonts->AddFontFromFileTTF("assets/fonts/arial.ttf", 14, &consoleFontConfig);
@@ -54,7 +54,7 @@ namespace Chesster
 		// Setup Platform/Renderer backends
 		SDL_Window* windowSDL = Application::Get().GetWindow().GetSDLWindow();
 		ImGui_ImplSDL2_InitForSDLRenderer(windowSDL);
-		ImGui_ImplSDLRenderer_Init(GraphicsContext::Renderer);
+		ImGui_ImplSDLRenderer_Init(GraphicsContext::Renderer());
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -75,8 +75,8 @@ namespace Chesster
 	void ImGuiLayer::End()
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::Get();
-		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+		Window& window = Application::Get().GetWindow();
+		io.DisplaySize = ImVec2((float)window.GetWidth(), (float)window.GetHeight());
 
 		// Rendering
 		ImGui::Render();

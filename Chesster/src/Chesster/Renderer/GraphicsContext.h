@@ -24,14 +24,12 @@ namespace Chesster
 		virtual ~GraphicsContext();
 
 		/// <summary>
-		/// Update the screen with any rendering performed since the previous call.
+		/// 
 		/// </summary>
-		void SwapBuffers();
-
-	public:
-		static SDL_Renderer* Renderer;
+		/// <returns></returns>
+		static SDL_Renderer* Renderer() { return s_Renderer; }
 
 	private:
-		SDL_Window* m_WindowHandle;
+		static SDL_Renderer* s_Renderer;
 	};
 }

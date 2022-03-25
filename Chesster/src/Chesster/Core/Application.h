@@ -17,7 +17,7 @@ namespace Chesster
 {
 	/// <summary>
 	/// The main application class. Creates a Window,
-	/// loads all the required resources, and manages the layers.
+	/// handles all the events, and manages the layers.
 	/// </summary>
 	class Application
 	{

@@ -82,9 +82,6 @@
     <ClInclude Include="src\Chesster\Renderer\Framebuffer.h">
       <Filter>src\Chesster\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Renderer\RenderCommand.h">
-      <Filter>src\Chesster\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Chesster\Renderer\Renderer.h">
       <Filter>src\Chesster\Renderer</Filter>
     </ClInclude>

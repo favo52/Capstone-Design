@@ -38,9 +38,16 @@ namespace Chesster
 		virtual ~Window();
 
 		/// <summary>
-		/// Updates the Window by swapping the buffers.
+		/// Update the screen with any rendering performed since the previous call.
 		/// </summary>
-		void OnUpdate();
+		void SwapBuffers();
+
+		/// <summary>
+		/// Handles all window events i.e. window closing, window resize,
+		/// window minimize, window maximize.
+		/// </summary>
+		/// <param name="sdlEvent">The SDL window event.</param>
+		void OnWindowEvent(SDL_Event& sdlEvent);
 
 		/// <summary>
 		/// Retrieves the Width from the WindowProps.
@@ -66,20 +73,10 @@ namespace Chesster
 		/// <returns>A pointer to the m_WinProps member variable.</returns>
 		WindowProps* GetWinProps() { return &m_WinProps; }
 
-		/// <summary>
-		/// Handles all window events i.e. window closing, window resize,
-		/// window minimize, window maximize.
-		/// </summary>
-		/// <param name="sdlEvent">The SDL window event.</param>
-		void OnWindowEvent(SDL_Event& sdlEvent);
-
-		bool IsMinimized() const { return m_Minimized; }
-
 	private:
 		SDL_Window* m_Window;
-		std::unique_ptr<GraphicsContext> m_Context;
 		WindowProps m_WinProps;
 
-		bool m_Minimized;
+		std::unique_ptr<GraphicsContext> m_Context;
 	};
 }

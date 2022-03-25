@@ -127,7 +127,6 @@
     <ClInclude Include="src\Chesster\Layers\TitleLayer.h" />
     <ClInclude Include="src\Chesster\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Chesster\Renderer\Framebuffer.h" />
-    <ClInclude Include="src\Chesster\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Chesster\Renderer\Renderer.h" />
     <ClInclude Include="src\Chesster\Renderer\Texture.h" />
     <ClInclude Include="src\pch.h" />

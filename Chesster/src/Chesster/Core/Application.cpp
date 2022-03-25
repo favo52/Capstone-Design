@@ -16,7 +16,7 @@ namespace Chesster
 		s_Instance = this;
 
 		// Initialize the logger
-		Chesster::Logger::Init();
+		Logger::Init();
 		LOG_INFO("Welcome to the Chesster Universal Chess Interface!");
 
 		// Create the window
@@ -45,9 +45,6 @@ namespace Chesster
 			while (SDL_PollEvent(&e))
 				OnEvent(e);
 
-			if (m_Window->IsMinimized())
-				SDL_WaitEvent(&e);
-
 			// Variable delta time
 			TimePoint newTime = Clock::Now();
 			auto frameTime = newTime - currentTime;
@@ -70,7 +67,7 @@ namespace Chesster
 			m_ImGuiLayer->End();
 
 			// Update screen
-			m_Window->OnUpdate();
+			m_Window->SwapBuffers();
 		}
 	}
 
@@ -92,6 +89,7 @@ namespace Chesster
 			TitleLayer::IsStart = false;
 			m_LayerStack.PopLayer(m_TitleLayer);
 			delete m_TitleLayer;
+			m_TitleLayer = nullptr;
 
 			PushLayer(new GameLayer);
 		}
@@ -111,5 +109,5 @@ namespace Chesster
 	{
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
-	}	
+	}
 }

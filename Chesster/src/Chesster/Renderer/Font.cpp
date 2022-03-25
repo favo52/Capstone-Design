@@ -3,7 +3,8 @@
 
 namespace Chesster
 {
-	Font::Font(const std::string& filename, int size)
+	Font::Font(const std::string& filename, int size) :
+		m_Font{ nullptr }
 	{
 		m_Font = TTF_OpenFont(filename.c_str(), size);
 		if (m_Font == nullptr)
