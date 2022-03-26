@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Chesster/Renderer/Texture.h"
 
-#include "Chesster/Renderer/GraphicsContext.h"
+#include "Chesster/Renderer/Renderer.h"
 
 #include <SDL_image.h>
 
@@ -37,7 +37,7 @@ namespace Chesster
 		{
 			// Create blank streamable texture
 			SDL_Texture* texture{ nullptr };
-			texture = SDL_CreateTexture(GraphicsContext::Renderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, formattedSurface->w, formattedSurface->h);
+			texture = SDL_CreateTexture(Renderer::Get(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, formattedSurface->w, formattedSurface->h);
 			if (texture == nullptr)
 			{
 				LOG_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
@@ -84,7 +84,7 @@ namespace Chesster
 		else
 		{
 			// Create texture from surface pixels
-			m_Texture = SDL_CreateTextureFromSurface(GraphicsContext::Renderer(), textSurface);
+			m_Texture = SDL_CreateTextureFromSurface(Renderer::Get(), textSurface);
 			if (m_Texture == nullptr)
 			{
 				SDL_FreeSurface(textSurface);
@@ -111,7 +111,7 @@ namespace Chesster
 	bool Texture::CreateBlank(int width, int height)
 	{
 		// Create uninitialized texture
-		m_Texture = SDL_CreateTexture(GraphicsContext::Renderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
+		m_Texture = SDL_CreateTexture(Renderer::Get(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
 		if (m_Texture == nullptr)
 		{
 			LOG_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());

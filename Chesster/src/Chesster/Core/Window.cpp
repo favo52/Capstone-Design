@@ -2,7 +2,6 @@
 #include "Chesster/Core/Window.h"
 
 #include "Chesster/Core/Application.h"
-#include "Chesster/Renderer/Renderer.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -15,7 +14,7 @@ namespace Chesster
 
 	Window::Window(const WindowProps& props) :
 		m_Window{ nullptr },
-		m_Context{ nullptr },
+		m_GraphicsContext{ nullptr },
 		m_WinProps{ props }
 	{
 		// Initialize SDL
@@ -51,9 +50,9 @@ namespace Chesster
 		LOG_INFO("Created SDL Window: {0} ({1}, {2})", m_WinProps.Title, m_WinProps.Width, m_WinProps.Height);
 
 		// Initialize graphics context (SDL_Renderer)
-		m_Context = std::make_unique<GraphicsContext>(m_Window);
+		m_GraphicsContext = std::make_unique<Renderer>(m_Window);
 		
-		// Initialize IMG_Init with PNG and JPG loading
+		// Initialize SDL_image with PNG and JPG loading
 		int imgFlagsPNG = IMG_INIT_PNG;
 		int imgFlagsJPG = IMG_INIT_JPG;
 		if (!(IMG_Init(imgFlagsPNG) & imgFlagsPNG) || !(IMG_Init(imgFlagsJPG) & imgFlagsJPG))
@@ -85,7 +84,7 @@ namespace Chesster
 
 	void Window::SwapBuffers()
 	{
-		SDL_RenderPresent(m_Context->Renderer());
+		SDL_RenderPresent(m_GraphicsContext->Get());
 	}
 
 	void Window::OnWindowEvent(SDL_Event& sdlEvent)
@@ -111,7 +110,7 @@ namespace Chesster
 				}
 
 				case SDL_WINDOWEVENT_RESIZED:
-					Renderer::SetViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
+					m_GraphicsContext->SetViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
 					break;
 
 				case SDL_WINDOWEVENT_EXPOSED:

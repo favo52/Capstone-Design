@@ -2,8 +2,6 @@
 
 #include "Chesster/Renderer/Font.h"
 
-#include <SDL_render.h>
-
 namespace Chesster
 {
 	/// <summary>
@@ -64,9 +62,9 @@ namespace Chesster
 		operator SDL_Texture*() const { return m_Texture; }
 
 	private:
-		SDL_Texture* m_Texture{ nullptr }; // The actual hardware texture
+		SDL_Texture* m_Texture{ nullptr };		// The actual hardware texture
 
-		SDL_Rect m_RenderRect{ 0, 0, 0, 0 };
-		SDL_Rect* m_RenderClip{ nullptr };
+		SDL_Rect m_RenderRect{ 0, 0, 0, 0 };	// The dimensions of the texture
+		SDL_Rect* m_RenderClip{ nullptr };		// The SDL_Texture clip
 	};
 }

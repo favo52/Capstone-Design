@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "Chesster/Renderer/Framebuffer.h"
 
-//#include "Chesster/Renderer/Renderer.h"
-#include "Chesster/Renderer/GraphicsContext.h"
+#include "Chesster/Renderer/Renderer.h"
 
 namespace Chesster
 {
@@ -16,13 +15,13 @@ namespace Chesster
 	void Framebuffer::Bind()
 	{
 		// Make self render target
-		SDL_SetRenderTarget(GraphicsContext::Renderer(), m_Framebuffer);
-		//Renderer::SetViewport(0, 0, m_Width, m_Height);
+		SDL_SetRenderTarget(Renderer::Get(), m_Framebuffer);
+		Renderer::SetViewport(0, 0, m_Framebuffer.GetWidth(), m_Framebuffer.GetHeight());
 	}
 
 	void Framebuffer::Unbind()
 	{
-		SDL_SetRenderTarget(GraphicsContext::Renderer(), nullptr);
+		SDL_SetRenderTarget(Renderer::Get(), nullptr);
 	}
 
 	void Framebuffer::Resize(uint32_t width, uint32_t height)

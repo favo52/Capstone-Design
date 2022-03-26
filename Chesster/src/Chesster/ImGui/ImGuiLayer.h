@@ -8,7 +8,7 @@ namespace Chesster
 	{
 	public:
 		ImGuiLayer();
-		~ImGuiLayer() = default;
+		virtual ~ImGuiLayer() = default;
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

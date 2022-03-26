@@ -4,6 +4,9 @@
 
 #include <glm/glm.hpp>
 
+struct SDL_Window;
+struct SDL_Renderer;
+
 namespace Chesster
 {
 	/// <summary>
@@ -18,12 +21,24 @@ namespace Chesster
 	};
 
 	/// <summary>
+	/// Abstraction of the SDL Renderer.
 	/// The Renderer class draws rectangles and textures to the screen.
-	/// There's no need to create a Renderer object, as all functions are static.
 	/// </summary>
 	class Renderer
 	{
 	public:
+		/// <summary>
+		/// Renderer Constructor.
+		/// Creates a 2D renderering context for the given window.
+		/// </summary>
+		/// <param name="windowHandle">The window where rendering is displayed.</param>
+		Renderer(SDL_Window* windowHandle);
+
+		/// <summary>
+		/// Destroys the SDL renderer.
+		/// </summary>
+		virtual ~Renderer();
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -50,11 +65,20 @@ namespace Chesster
 		/// Set the color used for drawing operations (Rect, Line and Clear).
 		/// </summary>
 		/// <param name="color">The color to be used.</param>
-		static void SetClearColor(const glm::vec4& color = { 25, 25, 25, 255 });
+		static void SetClearColor(const glm::vec4& color);
 
 		/// <summary>
 		/// Clear the current rendering target with the drawing color.
 		/// </summary>
 		static void Clear();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		static SDL_Renderer* Get() { return s_Renderer; }
+
+	private:
+		static SDL_Renderer* s_Renderer;
 	};
 }

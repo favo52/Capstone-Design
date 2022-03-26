@@ -14,9 +14,17 @@ namespace Chesster
 		}
 	}
 
+	Font::~Font()
+	{
+		CloseFont();
+	}
+
 	void Font::CloseFont()
 	{
 		if (m_Font != nullptr)
+		{
 			TTF_CloseFont(m_Font);
+			m_Font = nullptr;
+		}
 	}
 }

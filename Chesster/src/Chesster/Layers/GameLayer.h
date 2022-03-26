@@ -61,7 +61,7 @@ namespace Chesster
 	private:
 		// Rendering
 		Window& m_Window;
-		std::shared_ptr<Framebuffer> m_Framebuffer;
+		std::unique_ptr<Framebuffer> m_Framebuffer;
 
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 
@@ -71,7 +71,7 @@ namespace Chesster
 
 		// Chess board
 		Board m_Board;
-		std::shared_ptr<Texture> m_PieceTexture;
+		std::unique_ptr<Texture> m_PieceTexture;
 		std::array<Piece, 32> m_Pieces;
 		uint32_t m_PieceIndex{ 0 };
 		Board::Square m_TargetSquare;

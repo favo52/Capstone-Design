@@ -2,13 +2,10 @@
 #include "Chesster/ImGui/ImGuiLayer.h"
 
 #include "Chesster/Core/Application.h"
-#include "Chesster/Renderer/GraphicsContext.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_sdlrenderer.h>
-
-#include <SDL.h>
 
 namespace Chesster
 {
@@ -23,9 +20,9 @@ namespace Chesster
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;	// Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;		// Enable Docking
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;		// Enable Multi-Viewport / Platform Windows
 
 		// Set fonts
 		float fontSize{ 18.0f };
@@ -54,7 +51,7 @@ namespace Chesster
 		// Setup Platform/Renderer backends
 		SDL_Window* windowSDL = Application::Get().GetWindow().GetSDLWindow();
 		ImGui_ImplSDL2_InitForSDLRenderer(windowSDL);
-		ImGui_ImplSDLRenderer_Init(GraphicsContext::Renderer());
+		ImGui_ImplSDLRenderer_Init(Renderer::Get());
 	}
 
 	void ImGuiLayer::OnDetach()

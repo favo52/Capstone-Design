@@ -11,7 +11,17 @@ namespace Chesster
 	class Font
 	{
 	public:
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <param name="size"></param>
 		Font(const std::string& filename, int size = 30);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		virtual ~Font();
 
 		/// <summary>
 		/// Loads a ttf file.
@@ -25,6 +35,10 @@ namespace Chesster
 		/// </summary>
 		void CloseFont();
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		TTF_Font* GetTTF() const { return m_Font; }
 
 	private:

@@ -14,5 +14,5 @@
 // Microsoft
 #ifdef _WIN32
 	#include <Windows.h>
-	#include <ws2tcpip.h>
+	#include <ws2tcpip.h> // Winsock
 #endif

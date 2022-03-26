@@ -26,13 +26,13 @@ namespace Chesster
 	void GameLayer::OnAttach()
 	{
 		// Frambuffer init
-		m_Framebuffer = std::make_shared<Framebuffer>(m_Window.GetWidth(), m_Window.GetHeight());
+		m_Framebuffer = std::make_unique<Framebuffer>(m_Window.GetWidth(), m_Window.GetHeight());
 
 		// Board init
 		m_Board = Board(glm::vec2(m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight()));
 
 		// Pieces init
-		m_PieceTexture = std::make_shared<Texture>("assets/textures/ChessPieces.png");
+		m_PieceTexture = std::make_unique<Texture>("assets/textures/ChessPieces.png");
 		m_PieceTexture->SetWidth(m_Pieces[0].Size);
 		m_PieceTexture->SetHeight(m_Pieces[0].Size);
 		SetPieceClips();
@@ -232,7 +232,7 @@ namespace Chesster
 			Renderer::DrawTexture(m_PieceTexture.get());
 		}
 
-		// Draw selected chess piece on top of all other chess pieces
+		// Draw the selected chess piece on top of all other chess pieces
 		m_PieceTexture->SetClip(&m_Pieces[m_PieceIndex].m_TextureClip);
 		m_PieceTexture->SetPosition(m_Pieces[m_PieceIndex].Position.x, m_Pieces[m_PieceIndex].Position.y);
 		Renderer::DrawTexture(m_PieceTexture.get());
@@ -250,32 +250,29 @@ namespace Chesster
 
 	void GameLayer::OnImGuiRender()
 	{
-		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
-
 		const ImGuiViewport* viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->WorkPos);
 		ImGui::SetNextWindowSize(viewport->WorkSize);
 		ImGui::SetNextWindowViewport(viewport->ID);
+
+		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking;
+		windowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));		
-		ImGui::Begin("DockSpace", (bool*)0, window_flags);
+		ImGui::Begin("DockSpace", (bool*)0, windowFlags);
 		ImGui::PopStyleVar(3);
 
-		// DockSpace
-		ImGuiIO& io = ImGui::GetIO();
+		// Set minimum window size
 		ImGuiStyle& style = ImGui::GetStyle();
 		float minWinSizeX = style.WindowMinSize.x;
 		style.WindowMinSize.x = 300.0f;
-		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-		{
-			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-		}
+
+		// DockSpace
+		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
 
 		style.WindowMinSize.x = minWinSizeX;
 
