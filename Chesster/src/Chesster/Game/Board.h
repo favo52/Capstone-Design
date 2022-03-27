@@ -9,24 +9,24 @@
 namespace Chesster
 {
 	/// <summary>
-	/// 
+	/// Represents the chess board.
 	/// </summary>
 	class Board
 	{
 	public:
 		/// <summary>
-		/// Represents an individual square in the board.
+		/// Represents an individual square of the board.
 		/// </summary>
 		struct Square
 		{
-			glm::vec2 Position{ 0.0f, 0.0f };
-			float Size{ 100.0f };
-			glm::vec4 Color{ 0.0f, 0.0f, 0.0f, 1.0f };
-			glm::vec2 Center{ 0.0f, 0.0f };
-			QuadBounds WorldBounds{};
-			std::string Notation{};
-			uint32_t Index{ 0 };
-			bool UnderAttack{ false };
+			glm::vec2	Position{ 0.0f, 0.0f };
+			float		Size{ 100.0f };
+			glm::vec4	Color{ 0.0f, 0.0f, 0.0f, 1.0f };
+			glm::vec2	Center{ 0.0f, 0.0f };
+			RectBounds	WorldBounds{};
+			std::string	Notation{};
+			uint32_t	Index{ 0 };
+			bool		UnderAttack{ false };
 
 			void UpdateCenter();
 			void UpdateWorldBounds();
@@ -51,8 +51,16 @@ namespace Chesster
 		/// <param name="currentMove"></param>
 		/// <param name="pieceIndex"></param>
 		void OnNewMove(std::array<Piece, 32>& pieces, const std::string& currentMove, int pieceIndex);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="viewportSize"></param>
 		void OnViewportResize(const glm::vec2& viewportSize);
 
+		/// <summary>
+		/// 
+		/// </summary>
 		void Reset();
 
 		/// <summary>
@@ -73,9 +81,9 @@ namespace Chesster
 
 	private:
 		static std::array<Square, 64> m_BoardSquares;	// Represents the 64 squares of the chess board
-		std::array<Piece, 32>* m_Pieces{ nullptr };		// Represents the 32 pieces of chess
+		std::array<Piece, 32>* m_Pieces{ nullptr };		// A pointer to the 32 pieces of chess
 
-		std::array<Square, 2> m_ActiveSquares{};		// The highlighted squares
+		std::array<Square, 2> m_ActiveSquares{};		// The two highlighted squares
 
 		std::string m_CurrentMove{ "0000" };
 	};

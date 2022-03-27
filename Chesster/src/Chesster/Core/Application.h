@@ -1,20 +1,22 @@
 #pragma once
 
+#include "Chesster/Core/Window.h"
 #include "Chesster/Core/LayerStack.h"
-
-#include "Chesster/Layers/TitleLayer.h"
-#include "Chesster/ImGui/ImGuiLayer.h"
 
 /* Legend
  * <summary> Beginning of summary
  * </summary> End of summary
 */
 
-// Forward declarations
+// Forward declaration
 int main(int argc, char* args[]);
 
 namespace Chesster
 {
+	// Forward declarations
+	class TitleLayer;
+	class ImGuiLayer;
+
 	/// <summary>
 	/// The main application class. Creates a Window,
 	/// handles all the events, and manages the layers.
@@ -44,6 +46,11 @@ namespace Chesster
 		/// </summary>
 		/// <param name="sdlEvent">The SDL event to handle.</param>
 		void OnEvent(SDL_Event& sdlEvent);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void OnLayerEvent();
 
 		/// <summary>
 		/// Used to push a layer.
@@ -94,8 +101,8 @@ namespace Chesster
 		ImGuiLayer* m_ImGuiLayer;
 
 	private:
-		static Application* s_Instance; // Pointer to this.
+		static Application* s_Instance;				// Pointer to this.
 
-		friend int ::main(int argc, char* args[]); // Allows main() access to Run()
+		friend int ::main(int argc, char* args[]);	// Allows main() access to Run()
 	};
 }

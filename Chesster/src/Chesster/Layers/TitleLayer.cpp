@@ -2,7 +2,6 @@
 #include "Chesster/Layers/TitleLayer.h"
 
 #include "Chesster/Core/Application.h"
-#include "Chesster/Renderer/Renderer.h"
 
 namespace Chesster
 {
@@ -179,8 +178,8 @@ namespace Chesster
 		if (m_MenuOptionsBounds.empty())
 			return;
 
-		SDL_Color Black = { 0u, 0u, 0u, 255u };
-		SDL_Color Red = { 255u, 0u, 0u, 255u };
+		const SDL_Color Black = { 0u, 0u, 0u, 255u };
+		const SDL_Color Red = { 255u, 0u, 0u, 255u };
 
 		// Black all texts
 		m_StartText = std::make_unique<Texture>(m_OpenSansFont, "START", Black);

@@ -40,7 +40,7 @@ namespace Chesster
 
 	private:
 		// Color settings
-		glm::vec4 SquareColor1 = { 0.084f, 0.342f, 0.517f, 1.0f }; // Blueish
-		glm::vec4 SquareColor2 = { 1.0f, 1.0f, 1.0f, 1.0f }; // White
+		glm::vec4 SquareColor1 = { 0.084f, 0.342f, 0.517f, 1.0f };	// Blueish
+		glm::vec4 SquareColor2 = { 1.0f, 1.0f, 1.0f, 1.0f };		// White
 	};
 }

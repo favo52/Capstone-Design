@@ -4,8 +4,6 @@
 
 namespace Chesster
 {
-	struct Square;
-
 	/// <summary>
 	/// 
 	/// </summary>
@@ -49,7 +47,7 @@ namespace Chesster
 		glm::vec2 Position = { 0.0f, 0.0f };
 		glm::vec2 Center{ 0.0f, 0.0f };
 		const float Size{ 80.0f };
-		QuadBounds WorldBounds{};
+		RectBounds WorldBounds{};
 		std::string Notation{};
 		uint32_t Index{ 0 };
 		PieceType Type{ PieceType::None };

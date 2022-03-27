@@ -75,7 +75,7 @@ namespace Chesster
 					{
 						for (const Piece& piece : m_Pieces)
 						{
-							if (IsPointInQuad(m_ViewportMousePos, piece.WorldBounds) && !m_IsHoldingPiece)
+							if (IsPointInRect(m_ViewportMousePos, piece.WorldBounds) && !m_IsHoldingPiece)
 							{
 								m_PieceIndex = piece.Index;
 								m_IsHoldingPiece = true;
@@ -240,8 +240,8 @@ namespace Chesster
 		// Draw a faded black screen when gameover
 		if (m_CurrentGameState == GameState::Gameover)
 		{
-			SDL_Rect blackOverlayRect = { 0, 0, m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight() };
-			glm::vec4 blackOverlayColor = { 0, 0, 0, 150 };
+			const SDL_Rect blackOverlayRect = { 0, 0, m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight() };
+			const glm::vec4 blackOverlayColor = { 0, 0, 0, 150 };
 			Renderer::DrawFilledRect(blackOverlayRect, blackOverlayColor);
 		}
 
@@ -363,7 +363,7 @@ namespace Chesster
 		// Find the square where the piece was dropped at
 		for (const Board::Square& square : m_Board.GetBoardSquares())
 		{
-			if (IsPointInQuad(m_ViewportMousePos, square.WorldBounds))
+			if (IsPointInRect(m_ViewportMousePos, square.WorldBounds))
 			{
 				// If piece was not moved to a new square
 				if (m_Pieces[m_PieceIndex].Notation == square.Notation)
@@ -573,10 +573,10 @@ namespace Chesster
 		}
 	}
 
-	bool GameLayer::IsPointInQuad(const glm::vec2& point, const QuadBounds& quad)
+	bool GameLayer::IsPointInRect(const glm::vec2& point, const RectBounds& rect)
 	{
-		return ((point.x >= quad.left) && (point.x <= quad.right) &&
-			(point.y >= quad.bottom) && (point.y <= quad.top)) ? true : false;
+		return ((point.x >= rect.left) && (point.x <= rect.right) &&
+			(point.y >= rect.bottom) && (point.y <= rect.top)) ? true : false;
 	}
 
 	bool GameLayer::IsNotationValid(const std::string& notation)

@@ -2,8 +2,6 @@
 
 #include "Chesster/Renderer/Renderer.h"
 
-#include <SDL_events.h>
-
 namespace Chesster
 {
 	/// <summary>
@@ -16,11 +14,7 @@ namespace Chesster
 		uint32_t Height;
 
 		WindowProps(const std::string& title, uint32_t width, uint32_t height) :
-			Title{ title },
-			Width{ width },
-			Height{ height }
-		{
-		}
+			Title{ title }, Width{ width }, Height{ height } {}
 	};
 
 	/// <summary>
@@ -35,6 +29,10 @@ namespace Chesster
 		/// </summary>
 		/// <param name="props">The Window properties.</param>
 		Window(const WindowProps& props);
+
+		/// <summary>
+		/// 
+		/// </summary>
 		virtual ~Window();
 
 		/// <summary>
@@ -66,12 +64,6 @@ namespace Chesster
 		/// </summary>
 		/// <returns>A pointer to the m_Window member variable.</returns>
 		SDL_Window* GetSDLWindow() const { return m_Window; }
-
-		/// <summary>
-		/// Used to retrieve the WindowProps object.
-		/// </summary>
-		/// <returns>A pointer to the m_WinProps member variable.</returns>
-		WindowProps* GetWinProps() { return &m_WinProps; }
 
 	private:
 		SDL_Window* m_Window;

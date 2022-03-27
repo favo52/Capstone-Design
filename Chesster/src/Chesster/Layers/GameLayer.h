@@ -47,7 +47,7 @@ namespace Chesster
 		void EvaluateBoard();
 		void UpdateDifficulty();
 
-		bool IsPointInQuad(const glm::vec2& point, const QuadBounds& quad);
+		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsNotationValid(const std::string& notation);
 		bool IsCurrentMoveLegal();
 

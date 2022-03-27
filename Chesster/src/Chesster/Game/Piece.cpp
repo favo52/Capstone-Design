@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Piece.h"
+#include "Chesster/Game/Piece.h"
 
 #include "Chesster/Game/Board.h"
 

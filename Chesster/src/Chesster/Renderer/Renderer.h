@@ -10,14 +10,14 @@ struct SDL_Renderer;
 namespace Chesster
 {
 	/// <summary>
-	/// Utility for storing the dimensions of all four sides of a square.
+	/// Used for storing left, right, bottom and top sides of a rectangle/square.
 	/// </summary>
-	struct QuadBounds
+	struct RectBounds
 	{
 		float left{ 0.0f }, right{ 0.0f };
 		float bottom{ 0.0f }, top{ 0.0f };
 
-		QuadBounds operator+(const float& value) const;
+		RectBounds operator+(const float& value) const;
 	};
 
 	/// <summary>
@@ -55,14 +55,14 @@ namespace Chesster
 		/// <summary>
 		/// Updates the viewport size. Must be called after a window resize event.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="x">The new top left x position.</param>
+		/// <param name="y">The new top left y position.</param>
 		/// <param name="width">The new window width.</param>
 		/// <param name="height">The new window height.</param>
 		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
 		/// <summary>
-		/// Set the color used for drawing operations (Rect, Line and Clear).
+		/// Set the color used for drawing operations.
 		/// </summary>
 		/// <param name="color">The color to be used.</param>
 		static void SetClearColor(const glm::vec4& color);
@@ -75,7 +75,7 @@ namespace Chesster
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The instance of the SDL_Renderer.</returns>
 		static SDL_Renderer* Get() { return s_Renderer; }
 
 	private:

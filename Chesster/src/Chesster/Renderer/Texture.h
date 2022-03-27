@@ -10,21 +10,23 @@ namespace Chesster
 	class Texture
 	{
 	public:
+		/// <summary>
+		/// Initializes the Texture to nullptr and zeros.
+		/// </summary>
 		Texture() = default;
 
 		/// <summary>
-		/// Loads image at specified path.
+		/// Creates a texture with the image at specified path.
 		/// </summary>
 		/// <param name="path">The filepath of the image.</param>
-		/// <returns>True if image loaded successfully, False otherwise.</returns>
 		Texture(const std::string& path);
 
 		/// <summary>
-		/// 
+		/// Creates a text texture with the provided font, text and color.
 		/// </summary>
-		/// <param name="font"></param>
-		/// <param name="textureText"></param>
-		/// <param name="color"></param>
+		/// <param name="font">The text's font.</param>
+		/// <param name="textureText">The text's message.</param>
+		/// <param name="color">The color of the text.</param>
 		Texture(std::shared_ptr<Font> font, const std::string& textureText, SDL_Color color);
 
 		/// <summary>

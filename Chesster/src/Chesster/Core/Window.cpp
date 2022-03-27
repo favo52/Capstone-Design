@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Chesster/Core/Window.h"
 
-#include "Chesster/Core/Application.h"
-
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -51,7 +49,7 @@ namespace Chesster
 
 		// Initialize graphics context (SDL_Renderer)
 		m_GraphicsContext = std::make_unique<Renderer>(m_Window);
-		
+
 		// Initialize SDL_image with PNG and JPG loading
 		int imgFlagsPNG = IMG_INIT_PNG;
 		int imgFlagsJPG = IMG_INIT_JPG;
@@ -79,7 +77,7 @@ namespace Chesster
 		IMG_Quit();
 		SDL_Quit();
 
-		LOG_INFO("SDL closed successfully.")
+		LOG_INFO("SDL closed successfully.");
 	}
 
 	void Window::SwapBuffers()
@@ -89,34 +87,23 @@ namespace Chesster
 
 	void Window::OnWindowEvent(SDL_Event& sdlEvent)
 	{
-		// Get the window ID, display error if failed
-		uint32_t windowID = SDL_GetWindowID(m_Window);
-		if (windowID == 0) LOG_ERROR("Application::OnWindowEvent(SDL_Event&) - SDL_GetWindowID failed with error: {0}", SDL_GetError());
-
-		if (sdlEvent.window.windowID == windowID)
+		// Handle the window events
+		switch (sdlEvent.window.event)
 		{
-			// Handle the window events
-			switch (sdlEvent.window.event)
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
 			{
-				case SDL_WINDOWEVENT_CLOSE:
-					Application::Get().Quit();
-					break;
-
-				case SDL_WINDOWEVENT_SIZE_CHANGED:
-				{
-					m_WinProps.Width = sdlEvent.window.data1;
-					m_WinProps.Height = sdlEvent.window.data2;
-					break;
-				}
-
-				case SDL_WINDOWEVENT_RESIZED:
-					m_GraphicsContext->SetViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
-					break;
-
-				case SDL_WINDOWEVENT_EXPOSED:
-					SwapBuffers();
-					break;
+				m_WinProps.Width = sdlEvent.window.data1;
+				m_WinProps.Height = sdlEvent.window.data2;
+				break;
 			}
+
+			case SDL_WINDOWEVENT_RESIZED:
+				m_GraphicsContext->SetViewport(0, 0, sdlEvent.window.data1, sdlEvent.window.data2);
+				break;
+
+			case SDL_WINDOWEVENT_EXPOSED:
+				SwapBuffers();
+				break;
 		}
 	}
 }

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Chesster/Core/Layer.h"
-#include "Chesster/Core/Window.h"
 #include "Chesster/Renderer/Texture.h"
 
 namespace Chesster
 {
+	class Window;
+
 	class TitleLayer : public Layer
 	{
 	public:

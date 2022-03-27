@@ -114,7 +114,7 @@ namespace Chesster
 		m_Texture = SDL_CreateTexture(Renderer::Get(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
 		if (m_Texture == nullptr)
 		{
-			LOG_ERROR("Unable to create blank texture! SDL Error: {0}", SDL_GetError());
+			LOG_ERROR("Unable to create blank texture! SDL error: {0}", SDL_GetError());
 		}
 		else
 		{

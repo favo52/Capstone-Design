@@ -21,7 +21,7 @@ namespace Chesster
 		LOG_INFO("Current SDL_Renderer: {0} | Texture formats: {1}", info.name, info.num_texture_formats);
 
 		// Set renderer settings
-		SDL_SetRenderDrawColor(s_Renderer, 255u, 255u, 255u, 255u);
+		SDL_SetRenderDrawColor(s_Renderer, 255u, 255u, 255u, SDL_ALPHA_OPAQUE);
 		SDL_SetRenderDrawBlendMode(s_Renderer, SDL_BLENDMODE_BLEND);
 	}
 
@@ -41,7 +41,7 @@ namespace Chesster
 	{
 		SDL_RenderCopy(s_Renderer, texture->GetSDLTexture(), texture->GetRenderClip(), &texture->GetBounds());
 	}
-
+	
 	void Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
 		const SDL_Rect viewport = { (int)x, (int)y, (int)width, (int)height };
@@ -58,7 +58,7 @@ namespace Chesster
 		SDL_RenderClear(s_Renderer);
 	}
 
-	QuadBounds QuadBounds::operator+(const float& value) const
+	RectBounds RectBounds::operator+(const float& value) const
 	{
 		return { left + value, right + value, bottom + value, top + value };
 	}

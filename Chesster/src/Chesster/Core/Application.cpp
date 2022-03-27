@@ -2,7 +2,10 @@
 #include "Chesster/Core/Application.h"
 
 #include "Chesster/Core/Clock.h"
+
+#include "Chesster/Layers/TitleLayer.h"
 #include "Chesster/Layers/Gamelayer.h"
+#include "Chesster/ImGui/ImGuiLayer.h"
 
 #include <backends/imgui_impl_sdl.h>
 
@@ -45,6 +48,9 @@ namespace Chesster
 			while (SDL_PollEvent(&e))
 				OnEvent(e);
 
+			// Handle layer push/pop
+			OnLayerEvent();
+
 			// Variable delta time
 			TimePoint newTime = Clock::Now();
 			auto frameTime = newTime - currentTime;
@@ -81,9 +87,15 @@ namespace Chesster
 
 		// Window events
 		if (sdlEvent.type == SDL_WINDOWEVENT)
-			m_Window->OnWindowEvent(sdlEvent);
+			m_Window->OnWindowEvent(sdlEvent);		
 
-		// Handle layer pop/push
+		// Handle layer events
+		for (auto itr = m_LayerStack.rbegin(); itr != m_LayerStack.rend(); ++itr)
+			(*itr)->OnEvent(sdlEvent);
+	}
+
+	void Application::OnLayerEvent()
+	{		
 		if (TitleLayer::IsStart)
 		{
 			TitleLayer::IsStart = false;
@@ -93,10 +105,6 @@ namespace Chesster
 
 			PushLayer(new GameLayer);
 		}
-
-		// Handle layer events
-		for (auto itr = m_LayerStack.rbegin(); itr != m_LayerStack.rend(); ++itr)
-			(*itr)->OnEvent(sdlEvent);
 	}
 
 	void Application::PushLayer(Layer* layer)
