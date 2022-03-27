@@ -7,24 +7,18 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// The Logger class is an abstraction of the spdlog open-source library.
-	/// spdlog is a very fast, header-only/compiled, C++ logging library.
-	/// It is used to print custom messages to the console and to files.
-	/// </summary>
+	/*	The Logger class is an abstraction of the spdlog open-source library.
+		spdlog is a very fast, header-only/compiled, C++ logging library.
+		It is used to print custom messages to the console and to files. */
 	class Logger
 	{
 	public:
-		/// <summary>
-		/// Creates the sinks, sets the text patterns, and registers the logger.
-		/// Must be called before using the logger.
-		/// </summary>
+		/*	Static function. Creates the sinks, sets the text patterns,
+			and registers the logger. Must be called before using the logger. */
 		static void Init();
 
-		/// <summary>
-		/// Retrieves the logger object that is used to print all the custom messages.
-		/// </summary>
-		/// <returns>A shared pointer of the static member variable s_ChessterLogger.</returns>
+		/** Static function. Retrieves the logger object that is used to print all the custom messages.
+		 @return A shared pointer of the spdlog::logger static member variable. */
 		static std::shared_ptr<spdlog::logger>& GetChessterLogger() { return s_ChessterLogger; }
 
 	private:

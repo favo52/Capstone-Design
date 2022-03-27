@@ -4,41 +4,24 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// Abstraction of the SDL_ttf addon.
-	/// Loads fonts from ttf files. Closes fonts when not wanted anymore.
-	/// </summary>
+	/*	Abstraction of the SDL_ttf addon.
+		Loads fonts from ttf files. Closes fonts when not wanted anymore. */
 	class Font
 	{
 	public:
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="filename"></param>
-		/// <param name="size"></param>
+		/** Loads a ttf file.
+		 @param filename The filepath of the ttf file.
+		 @param size The size to be set to the font. */
 		Font(const std::string& filename, int size = 30);
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/*	Calls CloseFont() */
 		virtual ~Font();
 
-		/// <summary>
-		/// Loads a ttf file.
-		/// </summary>
-		/// <param name="filename">The filepath of the ttf file.</param>
-		/// <param name="size">The size to be set to the font.</param>
-		/// <returns>True if font loaded successfully, False otherwise.</returns>
-
-		/// <summary>
-		/// Releases all the font's resources.
-		/// </summary>
+		/*	Releases all the font's resources. */
 		void CloseFont();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
+		/** Holds the font information.
+		 @return A pointer to the Font's TTF_Font member variable. */
 		TTF_Font* GetTTF() const { return m_Font; }
 
 	private:

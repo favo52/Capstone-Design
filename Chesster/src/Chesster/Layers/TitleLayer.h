@@ -57,6 +57,5 @@ namespace Chesster
 
 		friend MenuOptions operator++(MenuOptions& menuOption);
 		friend MenuOptions operator--(MenuOptions& menuOption);
-
 	};
 }

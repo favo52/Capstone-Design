@@ -4,9 +4,7 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// Window Properties. It stores the window's title, width and height.
-	/// </summary>
+	/*	Window Properties. It stores the window's title, width and height. */
 	struct WindowProps
 	{
 		std::string Title;
@@ -17,52 +15,35 @@ namespace Chesster
 			Title{ title }, Width{ width }, Height{ height } {}
 	};
 
-	/// <summary>
-	/// The Window class initialized the SDL library and its subsystems.
-	/// It creates a window and a context for the application.
-	/// </summary>
+	/*	Initializes the SDL library and its subsystems.
+		It creates the window and graphics context for the application. */
 	class Window
 	{
 	public:
-		/// <summary>
-		/// It creates a window and a context for the application.
-		/// </summary>
-		/// <param name="props">The Window properties.</param>
+		/** Creates an SDL_Window and a graphics context for the application.
+		 @param props The Window properties. */
 		Window(const WindowProps& props);
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/*	Destroys the SDL_Window and Quits all SDL systems. */
 		virtual ~Window();
 
-		/// <summary>
-		/// Update the screen with any rendering performed since the previous call.
-		/// </summary>
+		/*	Update the screen with any rendering performed since the previous call. */
 		void SwapBuffers();
 
-		/// <summary>
-		/// Handles all window events i.e. window closing, window resize,
-		/// window minimize, window maximize.
-		/// </summary>
-		/// <param name="sdlEvent">The SDL window event.</param>
+		/** Handles window closing and window resize events.
+		 @param sdlEvent The SDL window event to handle. */
 		void OnWindowEvent(SDL_Event& sdlEvent);
 
-		/// <summary>
-		/// Retrieves the Width from the WindowProps.
-		/// </summary>
-		/// <returns>The width of the Window.</returns>
+		/** Retrieves the Width from the WindowProps.
+		 @return The width of the Window. */
 		const uint32_t& GetWidth() const { return m_WinProps.Width; }
 
-		/// <summary>
-		/// Retrieves the Height from the WindowProps.
-		/// </summary>
-		/// <returns>The height of the Window.</returns>
+		/** Retrieves the Height from the WindowProps.
+		 @return The height of the Window. */
 		const uint32_t& GetHeight() const { return m_WinProps.Height; }
 
-		/// <summary>
-		/// Used to retrieve the SDL_Window object.
-		/// </summary>
-		/// <returns>A pointer to the m_Window member variable.</returns>
+		/** Retrieves the SDL_Window object.
+		 @return A pointer to the Window's SDL_Window member variable. */
 		SDL_Window* GetSDLWindow() const { return m_Window; }
 
 	private:

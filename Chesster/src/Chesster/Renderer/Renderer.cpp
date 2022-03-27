@@ -29,6 +29,8 @@ namespace Chesster
 	{
 		SDL_DestroyRenderer(s_Renderer);
 		s_Renderer = nullptr;
+
+		LOG_INFO("Renderer destroyed successfully.");
 	}
 
 	void Renderer::DrawFilledRect(const SDL_Rect& rect, const glm::vec4& color)

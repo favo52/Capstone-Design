@@ -7,9 +7,7 @@ namespace Chesster
 	// The maximum size of the buffer
 	constexpr DWORD BUFSIZE{ 2048 };
 
-	/// <summary>
-	/// 
-	/// </summary>
+	/**/
 	class Connector
 	{
 	public:

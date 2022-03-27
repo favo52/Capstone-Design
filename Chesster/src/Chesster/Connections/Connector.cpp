@@ -95,9 +95,9 @@ namespace Chesster
 		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
 		Sleep(150);
 
-		// Set difficulty level
+		// Set default difficulty level
 		CHAR setSkillLevel[] = "setoption name Skill Level value 0\n";
-		WriteFile(m_Pipe_IN_Wr, setSkillLevel, strlen(setSkillLevel), &m_Written, NULL);
+		m_Success = WriteFile(m_Pipe_IN_Wr, setSkillLevel, strlen(setSkillLevel), &m_Written, NULL);
 		Sleep(150);
 
 		msg = { "\n" + GetEngineReply() };

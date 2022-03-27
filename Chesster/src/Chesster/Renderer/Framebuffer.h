@@ -4,23 +4,40 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// 
-	/// </summary>
+	/*	*/
 	class Framebuffer
 	{
 	public:
+		/**	Creates a Blank texture to function as a Framebuffer to be used as a rendering target.
+		 @param width The width of the Framebuffer.
+		 @param height The height of the Framebuffer. */
 		Framebuffer(uint32_t width, uint32_t height);
+
+		/*	Default destructor */
 		virtual ~Framebuffer() = default;
 
+		/*	Sets the Framebuffer as the rendering target. */
 		void Bind();
+
+		/*	Removes the Framebuffers as the rendering target. */
 		void Unbind();
 
+		/**	Destroys and recreates the Framebuffer with the new dimensions. 
+			Must be called after a window resize event.
+		 @param width The new width for the Framebuffer.
+		 @param height The new height for the Framebuffer. */
 		void Resize(uint32_t width, uint32_t height);
 
+		/**	
+		 @return */
 		SDL_Texture* GetSDLTexture() const { return m_Framebuffer.GetSDLTexture(); }
 
+		/**
+		 @return The Framebuffer's width in pixels. */
 		const uint32_t& GetWidth() const { return m_Framebuffer.GetWidth(); }
+
+		/**
+		 @return The Framebuffer's height in pixels. */
 		const uint32_t& GetHeight() const { return m_Framebuffer.GetHeight(); }
 
 	private:

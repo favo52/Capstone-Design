@@ -4,13 +4,15 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// Base class to be inherited by the Title, Game, and ImGui layers.
-	/// </summary>
+	/*	Base class to be inherited by the Title, Game, and ImGui layers. */
 	class Layer
 	{
 	public:
+		/** 
+		 @param debugName The name of the Layer. */
 		Layer(const std::string& debugName = "Layer");
+
+		/*	Default destructor */
 		virtual ~Layer() = default;
 
 		virtual void OnAttach() {}
@@ -21,10 +23,8 @@ namespace Chesster
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns>A std::string of the name of the layer.</returns>
+		/** Retrieves the Layer's name used for debugging.
+		 @return A std::string of the name of the Layer. */
 		const std::string& GetName() const { return m_DebugName; }
 
 	protected:

@@ -10,7 +10,7 @@ namespace Chesster
 	// Disguises std::runtime_error()
 	inline void RuntimeError(const std::string& s) { throw std::runtime_error(s); }
 
-	Texture::Texture(const std::string& path)
+	Texture::Texture(const std::string& filepath)
 	{
 		const std::string errorMsg{ "Failed to load image! Check Chesster.log for more information." };
 
@@ -18,10 +18,10 @@ namespace Chesster
 		FreeTexture();
 
 		// Load image at specified path
-		SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+		SDL_Surface* loadedSurface = IMG_Load(filepath.c_str());
 		if (loadedSurface == nullptr)
 		{
-			LOG_ERROR("Unable to load image '{0}'! SDL_image error: {1}", path.c_str(), IMG_GetError());
+			LOG_ERROR("Unable to load image '{0}'! SDL_image error: {1}", filepath.c_str(), IMG_GetError());
 			RuntimeError(errorMsg);
 		}
 

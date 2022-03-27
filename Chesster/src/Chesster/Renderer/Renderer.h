@@ -9,9 +9,7 @@ struct SDL_Renderer;
 
 namespace Chesster
 {
-	/// <summary>
-	/// Used for storing left, right, bottom and top sides of a rectangle/square.
-	/// </summary>
+	/*	Represents a rectangle/square's left, right, bottom and top sides. */
 	struct RectBounds
 	{
 		float left{ 0.0f }, right{ 0.0f };
@@ -20,65 +18,48 @@ namespace Chesster
 		RectBounds operator+(const float& value) const;
 	};
 
-	/// <summary>
-	/// Abstraction of the SDL Renderer.
-	/// The Renderer class draws rectangles and textures to the screen.
-	/// </summary>
+	/*	Abstraction of the SDL Renderer.
+		The Renderer class draws rectangles and textures to the screen.
+		It also changes the viewport size, sets clear color and clears the screen. */
 	class Renderer
 	{
 	public:
-		/// <summary>
-		/// Renderer Constructor.
-		/// Creates a 2D renderering context for the given window.
-		/// </summary>
-		/// <param name="windowHandle">The window where rendering is displayed.</param>
+		/** Renderer Constructor.
+			Creates a 2D renderering context for the given window.
+		 @param windowHandle The window where rendering is displayed. */
 		Renderer(SDL_Window* windowHandle);
 
-		/// <summary>
-		/// Destroys the SDL renderer.
-		/// </summary>
+		/*	Destroys the SDL renderer. */
 		virtual ~Renderer();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="rect">The dimensions of the rectangle.</param>
-		/// <param name="color">The color of the rectangle.</param>
+		/** Draws a filled rectangle with the specified dimensions and color.
+		 @param rect The dimensions of the rectangle.
+		 @param color The color of the rectangle. */
 		static void DrawFilledRect(const SDL_Rect& rect, const glm::vec4& color);
 
-		/// <summary>
-		/// Draws a fixed texture to the render target.
-		/// </summary>
-		/// <param name="texture">The texture to be drawn.</param>
+		/** Draws a fixed texture to the render target.
+		 @param texture The texture to be drawn. */
 		static void DrawTexture(const Texture* texture);
-
-		/// <summary>
-		/// Updates the viewport size. Must be called after a window resize event.
-		/// </summary>
-		/// <param name="x">The new top left x position.</param>
-		/// <param name="y">The new top left y position.</param>
-		/// <param name="width">The new window width.</param>
-		/// <param name="height">The new window height.</param>
+		
+		/** Updates the viewport dimensions. Must be called after a window resize event.
+		 @param x The new top left x position.
+		 @param y The new top left y position.
+		 @param width The new viewport width.
+		 @param height The new viewport height. */
 		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
-		/// <summary>
-		/// Set the color used for drawing operations.
-		/// </summary>
-		/// <param name="color">The color to be used.</param>
+		/** Set the color used for drawing operations or filling rectangles.
+		 @param color The color to be used. */
 		static void SetClearColor(const glm::vec4& color);
-
-		/// <summary>
-		/// Clear the current rendering target with the drawing color.
-		/// </summary>
+		
+		/*	Clear the current rendering target with the drawing color. */
 		static void Clear();
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns>The instance of the SDL_Renderer.</returns>
+		
+		/** Is is used to retrieve the SDL_Renderer.
+		 @return A pointer to the Renderer's SDL_Renderer member variable. */
 		static SDL_Renderer* Get() { return s_Renderer; }
 
 	private:
-		static SDL_Renderer* s_Renderer;
+		static SDL_Renderer* s_Renderer;	// A structure representing rendering state.
 	};
 }

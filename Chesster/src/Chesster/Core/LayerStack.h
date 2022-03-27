@@ -4,44 +4,30 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// Holds and manages all the Layer objects used in the Application.
-	/// </summary>
+	/*	Holds and manages all the Layer objects used in the Application. */
 	class LayerStack
 	{
 	public:
-		/// <summary>
-		/// Default constructor.
-		/// </summary>
+		/*	Default constructor. */
 		LayerStack() = default;
 
-		/// <summary>
-		/// Empties the layer stack and releases the memory.
-		/// </summary>
+		/*	Empties the layer stack and releases the memory. */
 		~LayerStack();
 		
-		/// <summary>
-		/// Inserts a Layer to the layer stack.
-		/// </summary>
-		/// <param name="layer">A pointer to the Layer to be inserted.</param>
+		/** Inserts a Layer to the layer stack.
+		 @param layer A pointer to the Layer to be inserted. */
 		void PushLayer(Layer* layer);
 
-		/// <summary>
-		/// Inserts a Layer to the back of the layer stack.
-		/// </summary>
-		/// <param name="overlay">A pointer to the Layer to be inserted.</param>
+		/** Inserts a Layer to the back of the layer stack.
+		 @param overlay A pointer to the Layer to be inserted. */
 		void PushOverlay(Layer* overlay);
 
-		/// <summary>
-		/// Removes the Layer from the layer stack.
-		/// </summary>
-		/// <param name="layer">A pointer to the Layer to be removed.</param>
+		/** Removes the Layer from the layer stack.
+		 @param layer A pointer to the Layer to be removed. */
 		void PopLayer(Layer* layer);
 
-		/// <summary>
-		/// Removes the Layer from the back of the layer stack.
-		/// </summary>
-		/// <param name="overlay">A pointer to the Layer to be removed.</param>
+		/** Removes the Layer from the back of the layer stack.
+		 @param overlay A pointer to the Layer to be removed. */
 		void PopOverlay(Layer* overlay);
 
 		std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }

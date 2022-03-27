@@ -3,10 +3,9 @@
 #include "Chesster/Core/Window.h"
 #include "Chesster/Core/LayerStack.h"
 
-/* Legend
- * <summary> Beginning of summary
- * </summary> End of summary
-*/
+/** Legend
+ @param A parameter of the function.
+ @return What the function returns. */
 
 // Forward declaration
 int main(int argc, char* args[]);
@@ -17,78 +16,55 @@ namespace Chesster
 	class TitleLayer;
 	class ImGuiLayer;
 
-	/// <summary>
-	/// The main application class. Creates a Window,
-	/// handles all the events, and manages the layers.
-	/// </summary>
+	/*	The main application class. Creates a Window, handles all the events, and manages the layers. */
 	class Application
 	{
 	public:
-		/// <summary>
-		/// Application constructor. It Creates a Window,
-		/// and creates and pushes the layers.
-		/// </summary>
-		/// <param name="name">The name of the application.</param>
+		/** It initializes the logger, and creates the Window and layers.
+		 @param name The name of the application. */
 		Application(const std::string& name);
 
-		/// <summary>
-		/// Application destructor. Releases all the resources.
-		/// </summary>
+		/*	Default destructor. */
 		virtual ~Application() = default;
 
-		/// <summary>
-		/// Stops the application. Changes m_Running to false.
-		/// </summary>
+		/*	Stops the application. Changes m_Running to false. */
 		void Quit() { m_Running = false; }
 
-		/// <summary>
-		/// Handles events on queue.
-		/// </summary>
-		/// <param name="sdlEvent">The SDL event to handle.</param>
+		/** Handles events on queue. Events include Window events,
+			mouse and keyboard input, and 
+		 @param sdlEvent The SDL event to handle. */
 		void OnEvent(SDL_Event& sdlEvent);
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/*	Handles conditions for Layer pushes and pops happening during runtime. */
 		void OnLayerEvent();
 
-		/// <summary>
-		/// Used to push a layer.
-		/// </summary>
-		/// <param name="layer">A pointer to the layer to be pushed.</param>
+		/**	Pushes a Layer into the LayerStack and calls its OnAttach() function.
+		 @param layer A pointer of the layer to be pushed. */
 		void PushLayer(Layer* layer);
 
-		/// <summary>
-		/// Used to push an overlay.
-		/// </summary>
-		/// <param name="layer">A pointer to the layer to be pushed.</param>
+		/**	Emplaces the Layer into the back of the LayerStack and calls its OnAttach() function.
+			This Layer will reside after Layers inserted with PushLayer().
+		 @param layer A pointer of the layer to be pushed. */
 		void PushOverlay(Layer* layer);
 
-		/// <summary>
-		/// Retrieves the Window object. A convenience function.
-		/// It is used to acquire the window's properties.
-		/// </summary>
-		/// <returns>A reference to the m_Window member variable.</returns>
+		/** Retrieves the Window object. A convenience function. 
+			It is used to acquire the window's properties or the SDL_Window.
+		 @return A reference to the Application's Window member variable. */
 		Window& GetWindow() { return *m_Window; }
 
-		/// <summary>
-		/// Retrieves the ImGuiLayer object. A convenience function.
-		/// It is used to update and draw the different ImGui Windows.
-		/// </summary>
-		/// <returns>A pointer to the m_ImGuiLayer member variable.</returns>
+		/** Retrieves the ImGuiLayer object. A convenience function. 
+			It is used to update and draw the different ImGui Windows.
+		 @return A pointer to the Application's ImGuiLayer member variable. */
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
-		/// <summary>
-		/// This function is used to retrieve the instance of the current application.
-		/// </summary>
-		/// <returns>A reference to the application object.</returns>
+		/** It is used to retrieve the instance of the current application.
+		 @return A reference to this Application object. */
 		static Application& Get() { return *s_Instance; }
 
 	private:
-		/// <summary>
-		/// Starts the application.
-		/// This function contains the main program loop.
-		/// </summary>
+		/*	Contains the main program loop.
+			It handles events on queue, layer push/pop, updates game logic,
+			draws everything, and updates the screen. */
 		void Run();
 
 	private:
