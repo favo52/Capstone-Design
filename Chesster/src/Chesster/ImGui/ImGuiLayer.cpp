@@ -25,13 +25,13 @@ namespace Chesster
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;		// Enable Multi-Viewport / Platform Windows
 
 		// Set fonts
-		float fontSize{ 18.0f };
+		float fontSize{ 20.0f };
 		ImFontConfig consoleFontConfig;
 		consoleFontConfig.GlyphMinAdvanceX = 7.5f;
 		consoleFontConfig.GlyphMaxAdvanceX = 8.0f;
 
 		io.Fonts->AddFontDefault();
-		io.Fonts->AddFontFromFileTTF("assets/fonts/arial.ttf", 14, &consoleFontConfig);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/arial.ttf", 16, &consoleFontConfig);
 		io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Bold.ttf", fontSize);
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/opensans/OpenSans-Regular.ttf", fontSize);
 

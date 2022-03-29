@@ -27,21 +27,12 @@ namespace Chesster
 		void ClearLog();
 		void AddLog(const char* fmt, ...); IM_FMTARGS(2);
 
-		void OnImGuiRender(const char* title, bool* p_open = nullptr);
+		void OnImGuiRender();
 
 		void PushFont(int index);
 		void PopFont();
 
 		void ExecCommand(const char* command_line);
-
-		// In C++11 you'd be better off using lambdas for this sort of forwarding callbacks
-		static int TextEditCallbackStub(ImGuiInputTextCallbackData* data)
-		{
-			ConsolePanel* console = (ConsolePanel*)data->UserData;
-			return console->TextEditCallback(data);
-		}
-
-		int	 TextEditCallback(ImGuiInputTextCallbackData* data);
 
 	private:
 		std::array<char, 256> InputBuffer;

@@ -8,15 +8,11 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// Represents the chess board.
-	/// </summary>
+	/*	Represents the chess board. */
 	class Board
 	{
 	public:
-		/// <summary>
-		/// Represents an individual square of the board.
-		/// </summary>
+		/*	Represents an individual square of the board. */
 		struct Square
 		{
 			glm::vec2	Position{ 0.0f, 0.0f };

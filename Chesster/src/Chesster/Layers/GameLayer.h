@@ -104,7 +104,6 @@ namespace Chesster
 
 		// Panels
 		static ConsolePanel s_ConsolePanel;
-		static SettingsPanel s_SettingsPanel;
 
 		enum class Player { White, Black };
 		friend Player operator++(Player& player);

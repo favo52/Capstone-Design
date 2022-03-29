@@ -1,12 +1,15 @@
 #pragma once
 
 #include "Chesster/Core/Layer.h"
-#include "Chesster/Renderer/Texture.h"
 
 namespace Chesster
 {
+	// Forward declarations
 	class Window;
+	class Texture;
+	class Font;
 
+	/*	 */
 	class TitleLayer : public Layer
 	{
 	public:
@@ -33,15 +36,15 @@ namespace Chesster
 	private:
 		Window& m_Window; // Reference to the current window
 
-		std::shared_ptr<Font> m_AbsEmpireFont;
-		std::shared_ptr<Font> m_OpenSansFont;
+		std::shared_ptr<Font> m_AbsEmpireFont;			// The title's font
+		std::shared_ptr<Font> m_OpenSansFont;			// The menu's font
 
-		std::unique_ptr<Texture> m_GroupNameTexture;
-		std::unique_ptr<Texture> m_LogoTexture;
+		std::unique_ptr<Texture> m_GroupNameTexture;	// The groups logo image
+		std::unique_ptr<Texture> m_LogoTexture;			// Chesster's logo image
 
-		std::unique_ptr<Texture> m_TitleText;
-		std::unique_ptr<Texture> m_StartText;
-		std::unique_ptr<Texture> m_ExitText;
+		std::unique_ptr<Texture> m_TitleText;			
+		std::unique_ptr<Texture> m_StartText;			
+		std::unique_ptr<Texture> m_ExitText;			
 
 		std::vector<const SDL_Rect*> m_MenuOptionsBounds;
 

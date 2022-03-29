@@ -17,6 +17,13 @@ namespace Chesster
 	bool TCPConnection::IsCameraStreaming{ false };
 	bool TCPConnection::IsServerListening{ false };
 
+	std::string TCPConnection::s_CameraIP{ "localhost" };
+	std::string TCPConnection::s_CameraCommandPort{ "23" };
+	std::string TCPConnection::s_CameraStreamPort{ "3000" };
+
+	std::string TCPConnection::s_RobotIP{ "192.168.7.10" };
+	std::string TCPConnection::s_RobotPort{ "15000" };
+
 	TCPConnection* TCPConnection::s_Instance{ nullptr };
 
 	TCPConnection::TCPConnection() :
@@ -54,11 +61,10 @@ namespace Chesster
 		ZeroMemory(Buffer, BufferLen);
 
 		// For commanding the camera to take the picture
-		std::string ip = { "localhost" }, port = { "23" };
-		if (!CreateClientSocket(m_CameraCommandSocket, ip.c_str(), port.c_str()))
+		if (!CreateClientSocket(m_CameraCommandSocket, s_CameraIP.c_str(), s_CameraCommandPort.c_str()))
 		{
-			LOG_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", ip, port);
-			std::string str{ "Unable to connect m_CommandSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
+			LOG_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraCommandPort);
+			std::string str{ "Unable to connect m_CommandSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraCommandPort + ")\n\n" };
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 		}
 		else // If successful
@@ -95,11 +101,10 @@ namespace Chesster
 		}
 
 		// For receiving data stream of physical board's status
-		ip = { "localhost" }, port = { "3000" };
-		if (!CreateClientSocket(m_CameraBufferSocket, ip.c_str(), port.c_str()))
+		if (!CreateClientSocket(m_CameraBufferSocket, s_CameraIP.c_str(), s_CameraStreamPort.c_str()))
 		{
-			LOG_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", ip, port);
-			std::string str{ "Unable to connect m_BufferSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
+			LOG_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraStreamPort);
+			std::string str{ "Unable to connect m_BufferSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraStreamPort + ")\n\n" };
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 		}
 		else // If successful
@@ -131,10 +136,9 @@ namespace Chesster
 		int BufferLen{ sizeof(Buffer) };
 		ZeroMemory(Buffer, BufferLen);
 
-		std::string ip = { "192.168.7.10" }, port = { "15000" };
-		if (!TCP->CreateServerSocket(TCP->m_RobotListenSocket, ip.c_str(), port.c_str()))
+		if (!TCP->CreateServerSocket(TCP->m_RobotListenSocket, s_RobotIP.c_str(), s_RobotPort.c_str()))
 		{
-			std::string str{ "Unable to connect m_RobotListenSocket. (IP: " + ip + ", Port: " + port + ")\n\n" };
+			std::string str{ "Unable to connect m_RobotListenSocket. (IP: " + s_RobotIP + ", Port: " + s_RobotPort + ")\n\n" };
 			LOG_ERROR(str);
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 			SettingsPanel::IsRobotConnected = false;
@@ -157,6 +161,7 @@ namespace Chesster
 			}
 
 			LOG_INFO("CS8C Connected.");
+			GameLayer::GetConsolePanel()->AddLog("CS8C Connected.");
 
 			IsServerListening = true;
 			while (IsServerListening)
@@ -237,6 +242,7 @@ namespace Chesster
 		ZeroMemory(Buffer, BufferLen);
 
 		LOG_INFO("Waiting to receive...");
+		GameLayer::GetConsolePanel()->AddLog("Waiting to receive...");
 		int iResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
 		if (iResult > 0)
 		{

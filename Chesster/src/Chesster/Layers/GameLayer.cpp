@@ -9,7 +9,6 @@ namespace Chesster
 	static bool s_IsThreadRunning{ true };
 
 	ConsolePanel GameLayer::s_ConsolePanel{};
-	SettingsPanel GameLayer::s_SettingsPanel{};
 
 	TCPConnection GameLayer::s_TCPConnection{};
 
@@ -218,7 +217,7 @@ namespace Chesster
 		// Render to ImGui's viewport window
 		m_Framebuffer->Bind();
 
-		Renderer::SetClearColor(SettingsPanel::ClearColor);
+		Renderer::SetClearColor(SettingsPanel::s_ClearColor);
 		Renderer::Clear();
 
 		// Draw all the chess board squares
@@ -277,10 +276,10 @@ namespace Chesster
 		style.WindowMinSize.x = minWinSizeX;
 
 		// Settings Panel
-		s_SettingsPanel.OnImGuiRender();
+		SettingsPanel::OnImGuiRender();
 
 		// Console Panel
-		s_ConsolePanel.OnImGuiRender("Chess Engine");
+		s_ConsolePanel.OnImGuiRender();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//// Viewport Window ////////////////////////////////////////////////////////////////////////

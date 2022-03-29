@@ -4,19 +4,14 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// The settings panel holds all the buttons to
-	/// </summary>
+	/*	The settings panel holds all the buttons to */
 	class SettingsPanel
 	{
 	public:
-		SettingsPanel() = default;
-		virtual ~SettingsPanel() = default;
+		/*	Draws the Settings panel to the screen. */
+		static void OnImGuiRender();
 
-		void OnImGuiRender();
-
-	public:
-		static glm::vec4 ClearColor;
+		static glm::vec4 s_ClearColor;
 
 		static int SkillLevel;
 		static int ELO;
@@ -36,11 +31,10 @@ namespace Chesster
 		static bool IsRobotConnected;
 
 	private:
-		void UpdateSquareColors();
+		static void UpdateSquareColors();
 
-	private:
 		// Color settings
-		glm::vec4 SquareColor1 = { 0.084f, 0.342f, 0.517f, 1.0f };	// Blueish
-		glm::vec4 SquareColor2 = { 1.0f, 1.0f, 1.0f, 1.0f };		// White
+		static glm::vec4 s_SquareColor1;
+		static glm::vec4 s_SquareColor2;
 	};
 }

@@ -14,9 +14,7 @@
 
 namespace Chesster
 {
-	/// <summary>
-	/// 
-	/// </summary>
+	/*	 */
 	class TCPConnection
 	{
 	public:
@@ -48,6 +46,9 @@ namespace Chesster
 
 		static bool IsCameraStreaming;
 		static bool IsServerListening;
+
+		static std::string s_CameraIP, s_CameraCommandPort, s_CameraStreamPort;
+		static std::string s_RobotIP, s_RobotPort;
 
 	private:
 		bool CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port);
