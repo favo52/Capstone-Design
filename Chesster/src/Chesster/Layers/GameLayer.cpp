@@ -14,7 +14,6 @@ namespace Chesster
 
 	GameLayer::GameLayer() :
 		Layer("GameLayer"),
-		m_Window{ Application::Get().GetWindow() },
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_PathPythonScript{ "assets/script/__init__.exe" }
 	{
@@ -25,7 +24,8 @@ namespace Chesster
 	void GameLayer::OnAttach()
 	{
 		// Frambuffer init
-		m_Framebuffer = std::make_unique<Framebuffer>(m_Window.GetWidth(), m_Window.GetHeight());
+		Window& window = Application::Get().GetWindow();
+		m_Framebuffer = std::make_unique<Framebuffer>(window.GetWidth(), window.GetHeight());
 
 		// Board init
 		m_Board = Board(glm::vec2(m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight()));
@@ -55,6 +55,7 @@ namespace Chesster
 					{
 						//s_TCPConnection.SendCommand();
 						m_IsComputerTurn = true;
+						Sleep(150);
 					}
 					break;
 				}

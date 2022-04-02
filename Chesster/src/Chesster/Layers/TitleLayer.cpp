@@ -8,8 +8,7 @@ namespace Chesster
 	bool TitleLayer::IsStart{ false };
 
 	TitleLayer::TitleLayer() :
-		Layer{ "TitleLayer" },
-		m_Window{ Application::Get().GetWindow() }
+		Layer{ "TitleLayer" }
 	{
 	}
 
@@ -24,8 +23,7 @@ namespace Chesster
 		m_LogoTexture = std::make_unique<Texture>("assets/textures/ChessterLogo.png");
 
 		// Set up text
-		SDL_Color Black = { 0u, 0u, 0u, 255u };
-		SDL_Color Red = { 255u, 0u, 0u, 255u };
+		SDL_Color Black = { 0u, 0u, 0u, 255u }, Red = { 255u, 0u, 0u, 255u };
 		m_TitleText = std::make_unique<Texture>(m_AbsEmpireFont, "CHESSTER", Black);
 		m_StartText = std::make_unique<Texture>(m_OpenSansFont, "START", Red);
 		m_ExitText = std::make_unique<Texture>(m_OpenSansFont, "EXIT", Black);
@@ -61,6 +59,7 @@ namespace Chesster
 					OnWindowResize();
 				break;
 
+			// Menu Keyboard selection
 			case SDL_KEYDOWN:
 			{
 				if (sdlEvent.key.keysym.sym == SDLK_RETURN)
@@ -83,10 +82,9 @@ namespace Chesster
 
 			case SDL_MOUSEMOTION:
 			{
-				// Get the mouse screen coordinates
 				SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
 
-				// Check if mouse
+				// Check if mouse is hovering menu option
 				for (int i = 0; i < m_MenuOptionsBounds.size(); ++i)
 				{
 					if (SDL_PointInRect(&m_MousePos, m_MenuOptionsBounds[i]))
@@ -121,7 +119,7 @@ namespace Chesster
 
 		using namespace std::literals;
 		if (m_SplashDuration >= 2s) // 2 seconds
-			m_CurrentTitleState = TitleState::MainMenu;
+			m_TitleState = TitleState::MainMenu;
 	}
 
 	void TitleLayer::OnRender()
@@ -130,7 +128,7 @@ namespace Chesster
 		Renderer::SetClearColor(clearColor);
 		Renderer::Clear();
 
-		switch (m_CurrentTitleState)
+		switch (m_TitleState)
 		{
 			case TitleState::Splashscreen:
 			{
@@ -160,9 +158,11 @@ namespace Chesster
 
 	void TitleLayer::RepositionTexture(Texture* texture, float value)
 	{
+		Window& window = Application::Get().GetWindow();
+
 		int offsetX = texture->GetWidth() / 2.0f;
 		int offsetY = texture->GetHeight() / 2.0f;
-		texture->SetPosition((m_Window.GetWidth() / 2.0f) - offsetX, ((m_Window.GetHeight() / 2.0f) - offsetY) + value);
+		texture->SetPosition((window.GetWidth() / 2.0f) - offsetX, ((window.GetHeight() / 2.0f) - offsetY) + value);
 	}
 
 	void TitleLayer::SelectMenuOption()

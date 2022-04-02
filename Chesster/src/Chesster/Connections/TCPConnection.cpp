@@ -364,7 +364,7 @@ namespace Chesster
 	{
 		char ServerName[NI_MAXHOST];
 		char ServerPort[NI_MAXHOST];
-
+	
 		// Attempt to get the server's name
 		int iResult = getpeername(m_socket, (sockaddr*)&m_SockAddr, &m_SockAddrSize);
 		if (iResult == SOCKET_ERROR)

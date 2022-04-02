@@ -34,30 +34,28 @@ namespace Chesster
 		void UpdateMenuOptionText();
 
 	private:
-		Window& m_Window; // Reference to the current window
+		enum class TitleState { Splashscreen, MainMenu };
+		enum class MenuOptions { Start, Exit };
 
+	private:
 		std::shared_ptr<Font> m_AbsEmpireFont;			// The title's font
 		std::shared_ptr<Font> m_OpenSansFont;			// The menu's font
 
 		std::unique_ptr<Texture> m_GroupNameTexture;	// The groups logo image
 		std::unique_ptr<Texture> m_LogoTexture;			// Chesster's logo image
 
-		std::unique_ptr<Texture> m_TitleText;			
-		std::unique_ptr<Texture> m_StartText;			
-		std::unique_ptr<Texture> m_ExitText;			
-
-		std::vector<const SDL_Rect*> m_MenuOptionsBounds;
+		std::unique_ptr<Texture> m_TitleText;
+		std::unique_ptr<Texture> m_StartText;
+		std::unique_ptr<Texture> m_ExitText;
 
 		SDL_Point m_MousePos{ 0, 0 };
-
 		std::chrono::duration<double> m_SplashDuration{};
 
-		enum class TitleState { Splashscreen, MainMenu };
-		TitleState m_CurrentTitleState{ TitleState::Splashscreen };
+		std::vector<const SDL_Rect*> m_MenuOptionsBounds;
+		
+		TitleState m_TitleState{ TitleState::Splashscreen };
 
-		enum class MenuOptions { Start, Exit };
 		MenuOptions m_CurrentMenuOption{ MenuOptions::Start };
-
 		friend MenuOptions operator++(MenuOptions& menuOption);
 		friend MenuOptions operator--(MenuOptions& menuOption);
 	};

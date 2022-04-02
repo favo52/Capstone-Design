@@ -10,10 +10,10 @@ namespace Chesster
 
 	Board::Board(const glm::vec2& viewportSize)
 	{
-		glm::vec4 BlueColor = { 0.084f, 0.342f, 0.517f, 1.0f };
-		glm::vec4 WhiteColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		const glm::vec4 BlueColor = { 0.084f, 0.342f, 0.517f, 1.0f };
+		const glm::vec4 WhiteColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		glm::vec2 offset{ (viewportSize.x * 0.5) - (m_BoardSquares[0].Size * 8.0f) * 0.5f ,
+		const glm::vec2 offset{ (viewportSize.x * 0.5) - (m_BoardSquares[0].Size * 8.0f) * 0.5f ,
 						(viewportSize.y * 0.5f) - (m_BoardSquares[0].Size * 8.0f) * 0.5f };
 
 		// Iterate all 64 squares
@@ -147,9 +147,10 @@ namespace Chesster
 
 	void Board::Castle(const std::string& notation)
 	{
-		std::string oldPos{ notation[0], notation[1] };
-		std::string newPos{ notation[2], notation[3] };
+		const std::string oldPos{ notation[0], notation[1] };
+		const std::string newPos{ notation[2], notation[3] };
 
+		// Find rook
 		auto newSquare = m_SquaresMap.find(newPos);
 		if (newSquare != m_SquaresMap.end())
 		{
@@ -171,8 +172,8 @@ namespace Chesster
 
 	void Board::PaintActiveSquares()
 	{
-		std::string oldPos = { m_CurrentMove[0], m_CurrentMove[1] };
-		std::string newPos = { m_CurrentMove[2], m_CurrentMove[3] };
+		const std::string oldPos = { m_CurrentMove[0], m_CurrentMove[1] };
+		const std::string newPos = { m_CurrentMove[2], m_CurrentMove[3] };
 		
 		auto oldSquare = m_SquaresMap.find(oldPos);
 		auto newSquare = m_SquaresMap.find(newPos);

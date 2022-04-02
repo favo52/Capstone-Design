@@ -13,8 +13,8 @@ namespace Chesster
 
 		static glm::vec4 s_ClearColor;
 
-		static int SkillLevel;
-		static int ELO;
+		static int SkillLevel;	// Defaults to 0 (Minimum)
+		static int ELO;		// Defaults to 1350 (Minimum)
 
 		// Difficulty toggles
 		static bool IsNewSkillLevel;
@@ -31,6 +31,7 @@ namespace Chesster
 		static bool IsRobotConnected;
 
 	private:
+		/*	Changes the square colors when it is changed during runtime. */
 		static void UpdateSquareColors();
 
 		// Color settings

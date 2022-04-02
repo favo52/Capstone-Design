@@ -118,9 +118,6 @@ namespace Chesster
 				Type = PieceType::Queen;
 				break;
 			}
-
-			default:
-				return;
 		}
 	}
 

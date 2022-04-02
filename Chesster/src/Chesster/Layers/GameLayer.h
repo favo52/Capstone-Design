@@ -59,8 +59,6 @@ namespace Chesster
 		static unsigned int __stdcall EngineThread(void* data);
 
 	private:
-		// Rendering
-		Window& m_Window;
 		std::unique_ptr<Framebuffer> m_Framebuffer;
 
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };

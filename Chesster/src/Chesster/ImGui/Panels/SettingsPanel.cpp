@@ -206,6 +206,7 @@ namespace Chesster
 				UpdateSquareColors();
 		});
 
+		// Display the framerate
 		ImGui::Separator();
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
