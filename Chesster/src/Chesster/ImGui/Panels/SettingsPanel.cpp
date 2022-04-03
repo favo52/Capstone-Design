@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Chesster/ImGui/Panels/SettingsPanel.h"
 
-#include "Chesster/Connections/TCPConnection.h"
+#include "Chesster/Connections/Network.h"
 #include "Chesster/Game/Board.h"
 
 #include <imgui.h>
@@ -122,7 +122,7 @@ namespace Chesster
     {
 		ImGui::Begin("Settings");
 
-		TCPConnection& TCP = TCPConnection::Get();
+		Network& TCP = Network::Get();
 		ImGuiIO& io = ImGui::GetIO();
 		auto boldFont = io.Fonts->Fonts[2];
 

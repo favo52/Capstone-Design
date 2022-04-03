@@ -3,8 +3,8 @@
 #include "Chesster/Core/Layer.h"
 #include "Chesster/Core/Window.h"
 
-#include "Chesster/Connections/Connector.h"
-#include "Chesster/Connections/TCPConnection.h"
+#include "Chesster/Connections/Interprocess.h"
+#include "Chesster/Connections/Network.h"
 
 #include "Chesster/Renderer/Framebuffer.h"
 
@@ -31,7 +31,7 @@ namespace Chesster
 
 	public:
 		static ConsolePanel* GetConsolePanel() { return &s_ConsolePanel; }
-		static TCPConnection* GetTCP() { return &s_TCPConnection; }
+		static Network* GetTCP() { return &s_TCPConnection; }
 
 	private:
 		void UpdateComputerMove();
@@ -64,7 +64,7 @@ namespace Chesster
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 
 		// Chess Engine
-		Connector m_Connector{};
+		Interprocess m_Connector{};
 		const std::string m_PathPythonScript;
 
 		// Chess board
@@ -111,6 +111,6 @@ namespace Chesster
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
-		static TCPConnection s_TCPConnection;
+		static Network s_TCPConnection;
 	};
 }

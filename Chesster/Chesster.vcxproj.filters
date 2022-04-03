@@ -31,10 +31,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\Chesster\Connections\Connector.h">
+    <ClInclude Include="src\Chesster\Connections\Interprocess.h">
       <Filter>src\Chesster\Connections</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Connections\TCPConnection.h">
+    <ClInclude Include="src\Chesster\Connections\Network.h">
       <Filter>src\Chesster\Connections</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Core\Application.h">
@@ -92,10 +92,10 @@
     <ClInclude Include="src\Chesster\Connections\Winsock.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Chesster\Connections\Connector.cpp">
+    <ClCompile Include="src\Chesster\Connections\Interprocess.cpp">
       <Filter>src\Chesster\Connections</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\Connections\TCPConnection.cpp">
+    <ClCompile Include="src\Chesster\Connections\Network.cpp">
       <Filter>src\Chesster\Connections</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Core\Application.cpp">

@@ -110,8 +110,8 @@
   <ItemGroup>
     <ClInclude Include="src\Chesster\Renderer\Font.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\Chesster\Connections\Connector.h" />
-    <ClInclude Include="src\Chesster\Connections\TCPConnection.h" />
+    <ClInclude Include="src\Chesster\Connections\Interprocess.h" />
+    <ClInclude Include="src\Chesster\Connections\Network.h" />
     <ClInclude Include="src\Chesster\Core\Application.h" />
     <ClInclude Include="src\Chesster\Core\Clock.h" />
     <ClInclude Include="src\Chesster\Core\Layer.h" />
@@ -133,8 +133,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster\Renderer\Font.cpp" />
-    <ClCompile Include="src\Chesster\Connections\Connector.cpp" />
-    <ClCompile Include="src\Chesster\Connections\TCPConnection.cpp" />
+    <ClCompile Include="src\Chesster\Connections\Interprocess.cpp" />
+    <ClCompile Include="src\Chesster\Connections\Network.cpp" />
     <ClCompile Include="src\Chesster\Core\Application.cpp" />
     <ClCompile Include="src\Chesster\Core\Layer.cpp" />
     <ClCompile Include="src\Chesster\Core\LayerStack.cpp" />

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Chesster/Connections/TCPConnection.h"
+#include "Chesster/Connections/Network.h"
 
 #include "Chesster/Layers/GameLayer.h"
 
@@ -8,25 +8,25 @@ namespace Chesster
 	// Use Winsock version 2.2
 	constexpr WORD WINSOCK_VER{ MAKEWORD(2, 2) };
 
-	std::string TCPConnection::s_CameraData{ "" };
-	std::string TCPConnection::s_RobotData{ "" };
+	std::string Network::s_CameraData{ "" };
+	std::string Network::s_RobotData{ "" };
 
-	bool TCPConnection::CameraDataReceived{ false };
-	bool TCPConnection::RobotDataReceived{ false };
+	bool Network::CameraDataReceived{ false };
+	bool Network::RobotDataReceived{ false };
 
-	bool TCPConnection::IsCameraStreaming{ false };
-	bool TCPConnection::IsServerListening{ false };
+	bool Network::IsCameraStreaming{ false };
+	bool Network::IsServerListening{ false };
 
-	std::string TCPConnection::s_CameraIP{ "localhost" };
-	std::string TCPConnection::s_CameraCommandPort{ "23" };
-	std::string TCPConnection::s_CameraStreamPort{ "3000" };
+	std::string Network::s_CameraIP{ "localhost" };
+	std::string Network::s_CameraCommandPort{ "23" };
+	std::string Network::s_CameraStreamPort{ "3000" };
 
-	std::string TCPConnection::s_RobotIP{ "192.168.7.10" };
-	std::string TCPConnection::s_RobotPort{ "15000" };
+	std::string Network::s_RobotIP{ "192.168.7.10" };
+	std::string Network::s_RobotPort{ "15000" };
 
-	TCPConnection* TCPConnection::s_Instance{ nullptr };
+	Network* Network::s_Instance{ nullptr };
 
-	TCPConnection::TCPConnection() :
+	Network::Network() :
 		m_CameraCommandSocket{ INVALID_SOCKET },
 		m_CameraBufferSocket{ INVALID_SOCKET },
 		m_ChessterListenSocket{ INVALID_SOCKET },
@@ -35,13 +35,13 @@ namespace Chesster
 		s_Instance = this;
 	}
 
-	TCPConnection::~TCPConnection()
+	Network::~Network()
 	{
 		DisconnectCamera();
 		DisconnectRobot();
 	}
 
-	void TCPConnection::ConnectCamera()
+	void Network::ConnectCamera()
 	{
 		// For commanding the camera to take the picture
 		if (!m_Winsock.CreateClientSocket(m_CameraCommandSocket, s_CameraIP.c_str(), s_CameraCommandPort.c_str()))
@@ -101,13 +101,13 @@ namespace Chesster
 
 			// Create new thread for receiving data
 			unsigned threadID{};
-			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &TCPConnection::CameraDataStreamThread, (void*)this, 0, &threadID);
+			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &Network::CameraDataStreamThread, (void*)this, 0, &threadID);
 		}
 
 		Sleep(150);
 	}
 
-	void TCPConnection::DisconnectCamera()
+	void Network::DisconnectCamera()
 	{
 		IsCameraStreaming = false;
 
@@ -115,9 +115,9 @@ namespace Chesster
 		closesocket(m_CameraBufferSocket);
 	}
 
-	unsigned int __stdcall TCPConnection::ConnectRobotThread(void* data)
+	unsigned int __stdcall Network::ConnectRobotThread(void* data)
 	{
-		TCPConnection* TCP = static_cast<TCPConnection*>(data);
+		Network* TCP = static_cast<Network*>(data);
 
 		if (!TCP->m_Winsock.CreateServerSocket(TCP->m_ChessterListenSocket, s_RobotIP.c_str(), s_RobotPort.c_str()))
 		{
@@ -160,7 +160,7 @@ namespace Chesster
 		return 0;
 	}
 
-	void TCPConnection::DisconnectRobot()
+	void Network::DisconnectRobot()
 	{
 		IsServerListening = false;
 
@@ -172,7 +172,7 @@ namespace Chesster
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 	}
 
-	bool TCPConnection::SendCameraCommand(const std::string& command)
+	bool Network::SendCameraCommand(const std::string& command)
 	{
 		int iSendResult = send(m_CameraCommandSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
@@ -184,7 +184,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool TCPConnection::RecvCameraConfirmation()
+	bool Network::RecvCameraConfirmation()
 	{
 		// Prepare buffer
 		char Buffer[8]{};
@@ -204,7 +204,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool TCPConnection::SendToRobot(const std::string& command)
+	bool Network::SendToRobot(const std::string& command)
 	{
 		int iSendResult = send(m_RobotClientSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
@@ -216,7 +216,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool TCPConnection::RecvFromRobot()
+	bool Network::RecvFromRobot()
 	{
 		// Prepare buffer
 		char Buffer[128]{};
@@ -238,7 +238,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool TCPConnection::RecvCameraData()
+	bool Network::RecvCameraData()
 	{
 		// Prepare buffer
 		char Buffer[256]{};
@@ -263,9 +263,9 @@ namespace Chesster
 		return true;
 	}	
 
-	unsigned int __stdcall TCPConnection::CameraDataStreamThread(void* data)
+	unsigned int __stdcall Network::CameraDataStreamThread(void* data)
 	{
-		TCPConnection* clientTCP = static_cast<TCPConnection*>(data);
+		Network* clientTCP = static_cast<Network*>(data);
 
 		IsCameraStreaming = true;
 		while (IsCameraStreaming)

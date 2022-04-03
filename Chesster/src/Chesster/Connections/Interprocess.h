@@ -8,14 +8,14 @@ namespace Chesster
 
 	/*	Establishes the interprocess communication between the Chesster application, 
 		the Stockfish chess engine and the python script used to evaluate all valid moves. */
-	class Connector
+	class Interprocess
 	{
 	public:
 		/*	Default constructor. Prepares all the resources to establish communication. */
-		Connector();
+		Interprocess();
 
 		/*	Destructor. Closes all connections. */
-		virtual ~Connector();
+		virtual ~Interprocess();
 
 		/* Connects to the UCI chess engine file in the specified path.
 		 @param path The filepath of the chess engine executable. */

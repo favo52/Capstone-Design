@@ -10,7 +10,7 @@ namespace Chesster
 
 	ConsolePanel GameLayer::s_ConsolePanel{};
 
-	TCPConnection GameLayer::s_TCPConnection{};
+	Network GameLayer::s_TCPConnection{};
 
 	GameLayer::GameLayer() :
 		Layer("GameLayer"),
@@ -199,7 +199,7 @@ namespace Chesster
 				SettingsPanel::IsRobotConnected = true;
 
 				unsigned threadID{};
-				_beginthreadex(NULL, 0, &TCPConnection::ConnectRobotThread, &TCPConnection::Get(), 0, &threadID);
+				_beginthreadex(NULL, 0, &Network::ConnectRobotThread, &Network::Get(), 0, &threadID);
 			}
 
 			SettingsPanel::IsRobotButtonPressed = false;

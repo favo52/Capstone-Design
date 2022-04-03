@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Chesster/Connections/Connector.h"
+#include "Chesster/Connections/Interprocess.h"
 
 #include "Chesster/Layers/GameLayer.h"
 
@@ -10,7 +10,7 @@
 
 namespace Chesster
 {
-	Connector::Connector() :
+	Interprocess::Interprocess() :
 		// Chess engine
 		m_StartInfo{ 0 },
 		m_SecAttr{ 0 },
@@ -70,13 +70,13 @@ namespace Chesster
 		Py_Initialize();
 	}
 
-	Connector::~Connector()
+	Interprocess::~Interprocess()
 	{
 		CloseAllConnections();
 		Py_Finalize();
 	}
 
-	void Connector::ConnectToEngine(const LPWSTR& path)
+	void Interprocess::ConnectToEngine(const LPWSTR& path)
 	{
 		// Create the child process
 		m_Success = CreateProcess(NULL, path, NULL, NULL, TRUE, 0, NULL, NULL, &m_StartInfo, &m_ProcessInfo);
@@ -105,7 +105,7 @@ namespace Chesster
 		LOG_INFO(msg);
 	}
 
-	void Connector::ResetGame()
+	void Interprocess::ResetGame()
 	{
 		// The fen is the chess starting position.
 		CHAR str[] = "ucinewgame\nposition fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\nd\nisready\n";
@@ -119,7 +119,7 @@ namespace Chesster
 		LOG_INFO(msg);
 	}
 
-	void Connector::EvaluateGame()
+	void Interprocess::EvaluateGame()
 	{
 		CHAR str[] = "eval\n";
 		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
@@ -132,7 +132,7 @@ namespace Chesster
 		LOG_INFO(msg);
 	}
 
-	void Connector::SetDifficultyLevel(int difficulty)
+	void Interprocess::SetDifficultyLevel(int difficulty)
 	{
 		std::string skill = { "setoption name Skill Level value " + std::to_string(difficulty) + "\n" };
 		WriteFile(m_Pipe_IN_Wr, skill.c_str(), skill.length(), &m_Written, NULL);
@@ -143,7 +143,7 @@ namespace Chesster
 	}
 
 	// Overrides skill level
-	void Connector::SetDifficultyELO(int elo)
+	void Interprocess::SetDifficultyELO(int elo)
 	{
 		// Specify ELO
 		std::string setElo = { "setoption name UCI_Elo value " + std::to_string(elo) + "\n" };
@@ -154,7 +154,7 @@ namespace Chesster
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 	}
 
-	void Connector::ToggleELO(bool boolean)
+	void Interprocess::ToggleELO(bool boolean)
 	{
 		std::string toggle{ "false\n" };
 		if (boolean) toggle = { "true\n" };
@@ -164,7 +164,7 @@ namespace Chesster
 		Sleep(100);
 	}
 
-	std::string Connector::GetNextMove(const std::string& moveHistory)
+	std::string Interprocess::GetNextMove(const std::string& moveHistory)
 	{
 		std::string msg = { "position startpos moves " + moveHistory + "\ngo depth 10\nd\n" };
 
@@ -192,7 +192,7 @@ namespace Chesster
 	}
 
 	// Run the Python script
-	std::vector<std::string> Connector::GetValidMoves(const std::string& path, const std::string& fen)
+	std::vector<std::string> Interprocess::GetValidMoves(const std::string& path, const std::string& fen)
 	{
 		std::string argument = { path + " " + fen };
 
@@ -228,7 +228,7 @@ namespace Chesster
 		return validMoves;
 	}
 
-	std::string Connector::GetFEN(const std::string& moveHistory)
+	std::string Interprocess::GetFEN(const std::string& moveHistory)
 	{
 		std::string msg = { "position startpos moves " + moveHistory + "\nd\n" };
 
@@ -266,7 +266,7 @@ namespace Chesster
 		return "error"; // If no FEN string is found
 	}
 
-	const std::string Connector::GetEngineReply()
+	const std::string Interprocess::GetEngineReply()
 	{
 		// Read engine's reply
 		std::string msg{};
@@ -283,7 +283,7 @@ namespace Chesster
 		return msg;
 	}
 
-	void Connector::CloseAllConnections()
+	void Interprocess::CloseAllConnections()
 	{
 		// Quit chess engine
 		CHAR str[] = "quit\n";

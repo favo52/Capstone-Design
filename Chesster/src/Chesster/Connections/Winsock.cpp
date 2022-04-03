@@ -30,14 +30,16 @@ namespace Chesster
 
 	bool Winsock::CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
 	{
+		struct addrinfo hints;
+
 		// Prepare addrinfo
-		ZeroMemory(&m_Hints, sizeof(m_Hints));
-		m_Hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6.
-		m_Hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
-		m_Hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
+		ZeroMemory(&hints, sizeof(hints));
+		hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6.
+		hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
+		hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
 
 		// Resolve the server address and port
-		int iResult = getaddrinfo(ip, port, &m_Hints, &m_Result);
+		int iResult = getaddrinfo(ip, port, &hints, &m_Result);
 		if (iResult == Result::Failure)
 		{
 			LOG_ERROR("WINSOCK: getaddrinfo failed with error: {0}", iResult);
@@ -78,16 +80,18 @@ namespace Chesster
 
 	bool Winsock::CreateServerSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
 	{
+		struct addrinfo hints;
+
 		// Prepare addrinfo
-		ZeroMemory(&m_Hints, sizeof(m_Hints));	// ZeroMemory fills the hints with zeros, prepares the memory to be used
-		m_Hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6. AF_UNSPEC for either (might cause error).
-		m_Hints.ai_socktype = SOCK_STREAM;		// Used to specify a stream socket.
-		m_Hints.ai_protocol = IPPROTO_TCP;		// Used to specify the TCP protocol.
-		m_Hints.ai_flags = AI_PASSIVE;			// Indicates the caller intends to use the returned socket address structure
-												// in a call to the bind function.
+		ZeroMemory(&hints, sizeof(hints));	// ZeroMemory fills the hints with zeros, prepares the memory to be used
+		hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6. AF_UNSPEC for either (might cause error).
+		hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
+		hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
+		hints.ai_flags = AI_PASSIVE;		// Indicates the caller intends to use the returned socket address structure
+											// in a call to the bind function.
 		// Resolve the local address and port to be used by the server
 		// The getaddrinfo function is used to determine the values in the sockaddr structure
-		int iResult = getaddrinfo(ip, port, &m_Hints, &m_Result);
+		int iResult = getaddrinfo(ip, port, &hints, &m_Result);
 		if (iResult != Result::Success) // Error checking: ensure an address was received
 		{
 			LOG_ERROR("WINSOCK: getaddrinfo() failed with error: {0}", iResult);

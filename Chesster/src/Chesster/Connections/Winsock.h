@@ -30,6 +30,6 @@ namespace Chesster
 		int m_SockAddrSize;		// Socket size
 
 		// Contains a sockaddr structure
-		struct addrinfo* m_Result, * m_Ptr, m_Hints;
+		struct addrinfo* m_Result, * m_Ptr;
 	};
 }

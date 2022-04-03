@@ -14,11 +14,11 @@
 namespace Chesster
 {
 	/*	 */
-	class TCPConnection
+	class Network
 	{
 	public:
-		TCPConnection();
-		virtual ~TCPConnection();
+		Network();
+		virtual ~Network();
 
 		// Camera connection
 		void ConnectCamera();
@@ -37,7 +37,7 @@ namespace Chesster
 		const std::string& GetCameraData() const { return s_CameraData; }
 		const std::string& GetRobotData() const { return s_RobotData; }
 
-		static TCPConnection& Get() { return *s_Instance; }
+		static Network& Get() { return *s_Instance; }
 
 	public:
 		static bool CameraDataReceived;
@@ -66,6 +66,6 @@ namespace Chesster
 		static std::string s_CameraData;
 		static std::string s_RobotData;
 
-		static TCPConnection* s_Instance; // Pointer to this
+		static Network* s_Instance; // Pointer to this
 	};
 }
