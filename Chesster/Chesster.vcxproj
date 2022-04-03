@@ -129,6 +129,7 @@
     <ClInclude Include="src\Chesster\Renderer\Renderer.h" />
     <ClInclude Include="src\Chesster\Renderer\Texture.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Chesster\Connections\Winsock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster\Renderer\Font.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Chesster\Connections\Winsock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Chesster.aps" />

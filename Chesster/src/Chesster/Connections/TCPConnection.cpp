@@ -8,8 +8,8 @@ namespace Chesster
 	// Use Winsock version 2.2
 	constexpr WORD WINSOCK_VER{ MAKEWORD(2, 2) };
 
-	std::string TCPConnection::m_CameraData{ "" };
-	std::string TCPConnection::m_RobotData{ "" };
+	std::string TCPConnection::s_CameraData{ "" };
+	std::string TCPConnection::s_RobotData{ "" };
 
 	bool TCPConnection::CameraDataReceived{ false };
 	bool TCPConnection::RobotDataReceived{ false };
@@ -27,41 +27,24 @@ namespace Chesster
 	TCPConnection* TCPConnection::s_Instance{ nullptr };
 
 	TCPConnection::TCPConnection() :
-		m_WSAData{ NULL },
 		m_CameraCommandSocket{ INVALID_SOCKET },
 		m_CameraBufferSocket{ INVALID_SOCKET },
-		m_RobotListenSocket{ INVALID_SOCKET },
+		m_ChessterListenSocket{ INVALID_SOCKET },
 		m_RobotClientSocket{ INVALID_SOCKET }
 	{
 		s_Instance = this;
-
-		// Initialize Winsock
-		int iResult = WSAStartup(WINSOCK_VER, &m_WSAData);
-		if (iResult != Result::Success) // Ensure system supports Winsock
-		{
-			LOG_ERROR("WSAStartup failed with error: {0}", iResult);
-			throw std::runtime_error("Unable to initialize Winsock!");
-		}
 	}
 
 	TCPConnection::~TCPConnection()
 	{
 		DisconnectCamera();
 		DisconnectRobot();
-
-		// Shut down the socket DLL
-		WSACleanup();
 	}
 
 	void TCPConnection::ConnectCamera()
 	{
-		// Prepare buffer
-		char Buffer[128]{};
-		int BufferLen{ sizeof(Buffer) };
-		ZeroMemory(Buffer, BufferLen);
-
 		// For commanding the camera to take the picture
-		if (!CreateClientSocket(m_CameraCommandSocket, s_CameraIP.c_str(), s_CameraCommandPort.c_str()))
+		if (!m_Winsock.CreateClientSocket(m_CameraCommandSocket, s_CameraIP.c_str(), s_CameraCommandPort.c_str()))
 		{
 			LOG_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraCommandPort);
 			std::string str{ "Unable to connect m_CommandSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraCommandPort + ")\n\n" };
@@ -69,7 +52,12 @@ namespace Chesster
 		}
 		else // If successful
 		{
-			DNSLookup(m_CameraCommandSocket);
+			m_Winsock.DNSLookup(m_CameraCommandSocket);
+
+			// Prepare buffer
+			char Buffer[128]{};
+			int BufferLen{ sizeof(Buffer) };
+			ZeroMemory(Buffer, BufferLen);
 
 			// Receive Cognex welcome message and username prompt
 			recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
@@ -101,7 +89,7 @@ namespace Chesster
 		}
 
 		// For receiving data stream of physical board's status
-		if (!CreateClientSocket(m_CameraBufferSocket, s_CameraIP.c_str(), s_CameraStreamPort.c_str()))
+		if (!m_Winsock.CreateClientSocket(m_CameraBufferSocket, s_CameraIP.c_str(), s_CameraStreamPort.c_str()))
 		{
 			LOG_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraStreamPort);
 			std::string str{ "Unable to connect m_BufferSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraStreamPort + ")\n\n" };
@@ -109,7 +97,7 @@ namespace Chesster
 		}
 		else // If successful
 		{
-			DNSLookup(m_CameraBufferSocket);
+			m_Winsock.DNSLookup(m_CameraBufferSocket);
 
 			// Create new thread for receiving data
 			unsigned threadID{};
@@ -131,47 +119,41 @@ namespace Chesster
 	{
 		TCPConnection* TCP = static_cast<TCPConnection*>(data);
 
-		// Prepare buffer
-		char Buffer[128]{};
-		int BufferLen{ sizeof(Buffer) };
-		ZeroMemory(Buffer, BufferLen);
-
-		if (!TCP->CreateServerSocket(TCP->m_RobotListenSocket, s_RobotIP.c_str(), s_RobotPort.c_str()))
+		if (!TCP->m_Winsock.CreateServerSocket(TCP->m_ChessterListenSocket, s_RobotIP.c_str(), s_RobotPort.c_str()))
 		{
-			std::string str{ "Unable to connect m_RobotListenSocket. (IP: " + s_RobotIP + ", Port: " + s_RobotPort + ")\n\n" };
+			const std::string str{ "Unable create server socket. (IP: " + s_RobotIP + ", Port: " + s_RobotPort + ")\n\n" };
 			LOG_ERROR(str);
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
-			SettingsPanel::IsRobotConnected = false;
-			return false;
-		}
-		else
-		{
-			std::string str{ "Chesster server is ready." };
-			LOG_INFO(str);
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
 
-			// Accept a client socket
-			TCP->m_RobotClientSocket = accept(TCP->m_RobotListenSocket, (sockaddr*)&TCP->m_SockAddr, &TCP->m_SockAddrSize);
-			if (TCP->m_RobotClientSocket == INVALID_SOCKET)
+			SettingsPanel::IsRobotConnected = false;
+			return 1;
+		}
+
+		const std::string str{ "Chesster server is ready." };
+		LOG_INFO(str);
+		GameLayer::GetConsolePanel()->AddLog(str.c_str());
+
+		// Accept a client socket
+		TCP->m_RobotClientSocket = TCP->m_Winsock.AcceptClient(TCP->m_ChessterListenSocket);
+		if (TCP->m_RobotClientSocket == INVALID_SOCKET)
+		{
+			LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
+			closesocket(TCP->m_RobotClientSocket);
+			SettingsPanel::IsRobotConnected = false;
+			return 1;
+		}
+
+		LOG_INFO("CS8C Connected.");
+		GameLayer::GetConsolePanel()->AddLog("CS8C Connected.");
+
+		IsServerListening = true;
+		while (IsServerListening)
+		{
+			if (!TCP->RecvFromRobot())
 			{
-				LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
 				closesocket(TCP->m_RobotClientSocket);
 				SettingsPanel::IsRobotConnected = false;
-				return false;
-			}
-
-			LOG_INFO("CS8C Connected.");
-			GameLayer::GetConsolePanel()->AddLog("CS8C Connected.");
-
-			IsServerListening = true;
-			while (IsServerListening)
-			{
-				if (!TCP->RecvFromRobot())
-				{
-					closesocket(TCP->m_RobotClientSocket);
-					SettingsPanel::IsRobotConnected = false;
-					break;
-				}
+				break;
 			}
 		}
 
@@ -182,10 +164,10 @@ namespace Chesster
 	{
 		IsServerListening = false;
 
-		closesocket(m_RobotListenSocket);
+		closesocket(m_ChessterListenSocket);
 		closesocket(m_RobotClientSocket);
 
-		std::string msg{ "Chesster server shut down." };
+		const std::string msg{ "Chesster server shut down." };
 		LOG_INFO(msg);
 		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 	}
@@ -246,7 +228,7 @@ namespace Chesster
 		int iResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
 		if (iResult > 0)
 		{
-			m_RobotData = Buffer;
+			s_RobotData = Buffer;
 			LOG_INFO(Buffer);
 			GameLayer::GetConsolePanel()->AddLog(Buffer);
 			RobotDataReceived = true;
@@ -254,135 +236,6 @@ namespace Chesster
 
 		Sleep(1000);
 		return true;
-	}
-
-	bool TCPConnection::CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
-	{
-		// Prepare addrinfo
-		ZeroMemory(&hints, sizeof(hints));
-		hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6.
-		hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
-		hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
-
-		// Resolve the server address and port
-		int iResult = getaddrinfo(ip, port, &hints, &result);
-		if (iResult == Result::Failure)
-		{
-			LOG_ERROR("WINSOCK: getaddrinfo failed with error: {0}", iResult);
-			return false;
-		}
-
-		// Attempt to connect to an address until one succeeds
-		for (ptr = result; ptr != NULL; ptr = ptr->ai_next)
-		{
-			// Create a SOCKET for connecting to server
-			m_socket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-			if (m_socket == INVALID_SOCKET) // Ensure that the socket is a valid socket.
-			{
-				LOG_ERROR("WINSOCK: socket failed with error: {0}", WSAGetLastError());
-				freeaddrinfo(result);
-				return false;
-			}
-
-			// Connect to server.
-			iResult = connect(m_socket, ptr->ai_addr, (int)ptr->ai_addrlen);
-			if (iResult == SOCKET_ERROR) // Check for general errors.
-			{
-				closesocket(m_socket);
-				m_socket = INVALID_SOCKET;
-				continue;
-			}
-			break;
-		}
-
-		// Not needed anymore, free the memory
-		freeaddrinfo(result);
-
-		if (m_socket == INVALID_SOCKET)
-			return false;
-
-		return true;
-	}
-
-	bool TCPConnection::CreateServerSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
-	{
-		// Prepare addrinfo
-		ZeroMemory(&hints, sizeof(hints));	// ZeroMemory fills the hints with zeros, prepares the memory to be used
-		hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6. AF_UNSPEC for either (might cause error).
-		hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
-		hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
-		hints.ai_flags = AI_PASSIVE;		// Indicates the caller intends to use the returned socket address structure
-											// in a call to the bind function.
-		// Resolve the local address and port to be used by the server
-		// The getaddrinfo function is used to determine the values in the sockaddr structure
-		int iResult = getaddrinfo(ip, port, &hints, &result);
-		if (iResult != Result::Success) // Error checking: ensure an address was received
-		{
-			LOG_ERROR("WINSOCK: getaddrinfo() failed with error: {0}", iResult);
-			return false;
-		}
-
-		// Create a SOCKET for the server to listen for client connections
-		m_RobotListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-		if (m_RobotListenSocket == INVALID_SOCKET) // Error checking: ensure the socket is valid.
-		{
-			LOG_ERROR("WINSOCK: socket() failed with error: {0}", WSAGetLastError());
-			freeaddrinfo(result);
-			return false;
-		}
-
-		// For a server to accept client connections,
-		// it must be bound to a network address within the system.
-
-		// Setup the TCP listening socket
-		iResult = bind(m_RobotListenSocket, result->ai_addr, (int)result->ai_addrlen);
-		if (iResult == SOCKET_ERROR) // Error checking
-		{
-			LOG_ERROR("WINSOCK: bind() failed with error: {0}", WSAGetLastError());
-			freeaddrinfo(result);
-			closesocket(m_RobotListenSocket);
-			return false;
-		}
-
-		// Once the bind function is called, the address information
-		// returned by the getaddrinfo function is no longer needed
-		freeaddrinfo(result);
-
-		// After the socket is bound to an IP address and port on the system, the server
-		// must then listen on that IP address and port for incoming connection requests.
-		if (listen(m_RobotListenSocket, SOMAXCONN) == SOCKET_ERROR)
-		{
-			LOG_ERROR("WINSOCK: listen() failed with error: {0}", WSAGetLastError());
-			closesocket(m_RobotListenSocket);
-			return false;
-		}
-
-		return true;
-	}
-
-	void TCPConnection::DNSLookup(const SOCKET& m_socket)
-	{
-		char ServerName[NI_MAXHOST];
-		char ServerPort[NI_MAXHOST];
-	
-		// Attempt to get the server's name
-		int iResult = getpeername(m_socket, (sockaddr*)&m_SockAddr, &m_SockAddrSize);
-		if (iResult == SOCKET_ERROR)
-		{
-			LOG_WARN("Unable to retrieve the server's address.");
-		}
-		else
-		{
-			if (getnameinfo((sockaddr*)&m_SockAddr, m_SockAddrSize, ServerName, NI_MAXHOST, ServerPort, NI_MAXSERV, 0) == 0)
-			{
-				LOG_INFO("Connected to {0} on port {1}", ServerName, ServerPort);
-			}
-			else // if unable to get name then show IP
-			{
-				inet_ntop(result->ai_family, &m_SockAddr.sin_addr, ServerName, NI_MAXHOST);
-				LOG_INFO("Connected to {0} on port {1}", ServerName, ntohs(m_SockAddr.sin_port));
-			}
-		}
 	}
 
 	bool TCPConnection::RecvCameraData()
@@ -403,7 +256,7 @@ namespace Chesster
 			return false;
 		}
 
-		m_CameraData = std::string(Buffer);
+		s_CameraData = std::string(Buffer);
 		CameraDataReceived = true;
 
 		Sleep(1000);
@@ -418,9 +271,9 @@ namespace Chesster
 		while (IsCameraStreaming)
 		{
 			if (!clientTCP->RecvCameraData())
-				return Result::Failure;
+				return 1;
 		}
 
-		return Result::Success;
+		return 0;
 	}
 }

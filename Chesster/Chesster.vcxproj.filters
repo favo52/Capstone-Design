@@ -89,6 +89,7 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Renderer\Font.h" />
+    <ClInclude Include="src\Chesster\Connections\Winsock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster\Connections\Connector.cpp">
@@ -152,6 +153,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Renderer\Font.cpp" />
+    <ClCompile Include="src\Chesster\Connections\Winsock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Chesster.aps" />
