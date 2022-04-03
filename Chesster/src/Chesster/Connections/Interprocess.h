@@ -3,7 +3,7 @@
 // Uses Microsoft types because "When in Rome..."
 
 namespace Chesster
-{	
+{
 	constexpr DWORD BUFSIZE{ 2048 };	// The maximum size of the buffers
 
 	/*	Establishes the interprocess communication between the Chesster application, 

@@ -35,7 +35,6 @@ namespace Chesster
 
 	void Application::Run()
 	{
-		using namespace std::literals;
 		using Duration = std::chrono::duration<double>;
 		using TimePoint = std::chrono::time_point<Clock, Duration>;
 		TimePoint currentTime = Clock::Now();

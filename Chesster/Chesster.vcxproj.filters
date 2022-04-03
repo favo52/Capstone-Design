@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Chesster.aps" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chesster.rc" />
