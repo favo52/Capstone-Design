@@ -78,6 +78,8 @@ namespace Chesster
 
 	void Interprocess::ConnectToEngine(const LPWSTR& path)
 	{
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+
 		// Create the child process
 		m_Success = CreateProcess(NULL, path, NULL, NULL, TRUE, 0, NULL, NULL, &m_StartInfo, &m_ProcessInfo);
 		if (!m_Success)
@@ -86,9 +88,10 @@ namespace Chesster
 			return;
 		}
 		LOG_INFO("Engine connection opened.");
+
 		std::string msg = GetEngineReply();
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 		LOG_INFO(msg);
+		consolePanel->AddLog(msg.c_str());
 
 		// Check if engine is ready
 		CHAR str[] = "uci\nucinewgame\nisready\n";
@@ -101,8 +104,8 @@ namespace Chesster
 		Sleep(150);
 
 		msg = { "\n" + GetEngineReply() };
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 		LOG_INFO(msg);
+		consolePanel->AddLog(msg.c_str());
 	}
 
 	void Interprocess::ResetGame()
@@ -115,8 +118,8 @@ namespace Chesster
 		// Read engine's reply and print it
 		std::string msg{ "GAME RESET\n" };
 		msg += GetEngineReply() + '\n';
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 		LOG_INFO(msg);
+		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
 	}
 
 	void Interprocess::EvaluateGame()
@@ -128,30 +131,36 @@ namespace Chesster
 		// Read engine's reply and print it
 		std::string msg{ "GAME EVALUATION\n" };
 		msg += GetEngineReply() + '\n';
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 		LOG_INFO(msg);
+		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
 	}
 
 	void Interprocess::SetDifficultyLevel(int difficulty)
 	{
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+
 		std::string skill = { "setoption name Skill Level value " + std::to_string(difficulty) + "\n" };
 		WriteFile(m_Pipe_IN_Wr, skill.c_str(), skill.length(), &m_Written, NULL);
 		Sleep(150);
 
 		std::string msg = { "Difficulty set to skill level " + std::to_string(difficulty) + ".\n" };
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
+		LOG_INFO(msg);
+		consolePanel->AddLog(msg.c_str());
 	}
 
 	// Overrides skill level
 	void Interprocess::SetDifficultyELO(int elo)
 	{
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+
 		// Specify ELO
 		std::string setElo = { "setoption name UCI_Elo value " + std::to_string(elo) + "\n" };
 		WriteFile(m_Pipe_IN_Wr, setElo.c_str(), setElo.length(), &m_Written, NULL);
 		Sleep(100);
 
 		std::string msg = { "Difficulty set to " + std::to_string(elo) + " ELO.\n" };
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
+		LOG_INFO(msg);
+		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
 	}
 
 	void Interprocess::ToggleELO(bool boolean)
@@ -162,6 +171,11 @@ namespace Chesster
 		std::string toogleELO = { "setoption name UCI_LimitStrength value " + toggle };
 		WriteFile(m_Pipe_IN_Wr, toogleELO.c_str(), toogleELO.length() , &m_Written, NULL);
 		Sleep(100);
+
+		std::string boolMsg = (boolean) ? "activated" : "deactivated";
+		std::string msg = { "ELO Rating " + boolMsg + ".\n" };
+		LOG_INFO(msg);
+		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
 	}
 
 	std::string Interprocess::GetNextMove(const std::string& moveHistory)
@@ -239,7 +253,7 @@ namespace Chesster
 		// Read engine's reply and print it
 		msg = GetEngineReply() + '\n';
 		LOG_INFO(msg);
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
+		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
 		msg.pop_back();
 
 		// Grab the FEN string

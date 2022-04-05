@@ -30,7 +30,7 @@ namespace Chesster
 		virtual void OnImGuiRender() override;
 
 		Interprocess* GetConnector() { return &m_Connector; }
-		static ConsolePanel* GetConsolePanel() { return &s_ConsolePanel; }
+		ConsolePanel* GetConsolePanel() { return &s_ConsolePanel; }
 		SettingsPanel* GetSettingsPanel() { return &m_SettingsPanel; }
 		static Network* GetTCP() { return &s_TCPConnection; }
 
@@ -104,7 +104,6 @@ namespace Chesster
 		bool m_IsRecvComputerMove{ false };
 		bool m_IsPlayerPlayed{ false };
 		bool m_IsMovePlayed{ false };
-		bool m_IsOutsideBoard{ false };
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
@@ -112,9 +111,10 @@ namespace Chesster
 		Interprocess m_Connector;
 		static Network s_TCPConnection;
 
-		static ConsolePanel s_ConsolePanel;
+		ConsolePanel s_ConsolePanel;
 		SettingsPanel m_SettingsPanel;
 
-		static GameLayer* s_Instance;
+	private:
+		static GameLayer* s_Instance;	// Pointer to this
 	};
 }

@@ -53,6 +53,11 @@ namespace Chesster
 		Items.push_back(Strdup(buf));
 	}
 
+	void ConsolePanel::AddLog(const std::string& msg)
+	{
+		myItems.push_back(msg);
+	}
+
 	void ConsolePanel::OnImGuiRender()
 	{
 		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);

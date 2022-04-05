@@ -10,7 +10,6 @@ namespace Chesster
 	
 	GameLayer* GameLayer::s_Instance{ nullptr };
 
-	ConsolePanel GameLayer::s_ConsolePanel{};
 	Network GameLayer::s_TCPConnection{};
 
 	GameLayer::GameLayer() :
@@ -124,18 +123,12 @@ namespace Chesster
 		// Player released piece held by mouse click
 		if (m_IsPieceReleased)
 		{
+			m_IsPieceReleased = false;
 			UpdatePlayerMove();
 
 			// Guard against out of board placement
-			if (m_IsOutsideBoard)
-			{
-				if (IsNotationValid(m_Pieces[m_PieceIndex].Notation))
-				{
-					m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
-					s_ConsolePanel.AddLog("Hey! The board is over there!\n\n");
-					LOG_ERROR("Hey! The board is over there!");
-				}
-			}
+			if (IsNotationValid(m_Pieces[m_PieceIndex].Notation))
+				m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
 		}
 
 		// A new move has been played
@@ -163,8 +156,6 @@ namespace Chesster
 			ConsoleButtons::EvaluateBoardButton = false;
 		}
 
-		m_SettingsPanel.OnUpdate();
-
 		// Check for New Game (take pic and compare, etc)
 		//m_NewGameData = s_TCPConnection.GetCameraData();
 
@@ -176,7 +167,7 @@ namespace Chesster
 		// Render to ImGui's viewport window
 		m_Framebuffer->Bind();
 
-		Renderer::SetClearColor(SettingsPanel::ClearColor());
+		Renderer::SetClearColor(m_SettingsPanel.GetClearColor());
 		Renderer::Clear();
 
 		// Draw all the chess board squares
@@ -316,9 +307,6 @@ namespace Chesster
 
 	void GameLayer::UpdatePlayerMove()
 	{
-		m_IsOutsideBoard = true;
-		m_IsPieceReleased = false;
-
 		// Find the square where the piece was dropped at
 		for (const Board::Square& square : m_Board.GetBoardSquares())
 		{
@@ -328,7 +316,6 @@ namespace Chesster
 				if (m_Pieces[m_PieceIndex].Notation == square.Notation)
 				{
 					m_Pieces[m_PieceIndex].SetPosition(square.Center.x, square.Center.y);
-					m_IsOutsideBoard = false;
 					break;
 				}
 
@@ -336,10 +323,7 @@ namespace Chesster
 
 				// Pawn Promotions
 				if (m_Pieces[m_PieceIndex].IsPromotion(m_CurrentMove))
-				{
 					m_CurrentGameState = GameState::PawnPromotion;
-					m_IsOutsideBoard = false;
-				}
 
 				if (m_CurrentGameState == GameState::Gameplay)
 				{
@@ -359,12 +343,13 @@ namespace Chesster
 
 						// Update move history
 						m_MoveHistory += m_CurrentMove + ' ';
-						s_ConsolePanel.AddLog("Player move: %s", m_CurrentMove);
-						LOG_INFO(std::string("Player move: " + m_CurrentMove).c_str());
+
+						std::string msg{ "Player move: " + m_CurrentMove };
+						LOG_INFO(msg);
+						s_ConsolePanel.AddLog(msg.c_str());
 
 						// Update states
 						m_IsPlayerPlayed = true;
-						m_IsOutsideBoard = false;
 						break;
 					}
 					else
@@ -375,7 +360,6 @@ namespace Chesster
 							m_Pieces[m_PieceIndex].SetPosition(m_TargetSquare.Center.x, m_TargetSquare.Center.y);
 							s_ConsolePanel.AddLog(" Wait... that's illegal!\n");
 							LOG_ERROR("Wait... that's illegal!");
-							m_IsOutsideBoard = false;
 							break;
 						}
 					}

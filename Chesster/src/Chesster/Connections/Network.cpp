@@ -43,12 +43,14 @@ namespace Chesster
 
 	void Network::ConnectCamera()
 	{
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+
 		// For commanding the camera to take the picture
 		if (!m_Winsock.CreateClientSocket(m_CameraCommandSocket, s_CameraIP.c_str(), s_CameraCommandPort.c_str()))
 		{
 			LOG_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraCommandPort);
 			std::string str{ "Unable to connect m_CommandSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraCommandPort + ")\n\n" };
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
+			consolePanel->AddLog(str.c_str());
 		}
 		else // If successful
 		{
@@ -64,7 +66,7 @@ namespace Chesster
 			std::string str{ Buffer };
 			str.erase(str.length() - sizeof("User: "), sizeof("User: ")); // Erase "User: "
 			LOG_INFO(str);
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
+			consolePanel->AddLog(str.c_str());
 
 			// Send username
 			std::string msg{ "admin\n" };
@@ -85,7 +87,7 @@ namespace Chesster
 			LOG_INFO(str);
 
 			str.insert(0, "\n"); str += "\n\n";
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
+			consolePanel->AddLog(str.c_str());
 		}
 
 		// For receiving data stream of physical board's status
@@ -93,7 +95,7 @@ namespace Chesster
 		{
 			LOG_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraStreamPort);
 			std::string str{ "Unable to connect m_BufferSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraStreamPort + ")\n\n" };
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
+			consolePanel->AddLog(str.c_str());
 		}
 		else // If successful
 		{
@@ -118,20 +120,22 @@ namespace Chesster
 	unsigned int __stdcall Network::ConnectRobotThread(void* data)
 	{
 		Network* TCP = static_cast<Network*>(data);
-		SettingsPanel* SettingsPanel = GameLayer::Get().GetSettingsPanel();
+
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		SettingsPanel* settingsPanel = GameLayer::Get().GetSettingsPanel();
 		
 		if (!TCP->m_Winsock.CreateServerSocket(TCP->m_ChessterListenSocket, s_RobotIP.c_str(), s_RobotPort.c_str()))
 		{
 			const std::string str{ "Unable create server socket. (IP: " + s_RobotIP + ", Port: " + s_RobotPort + ")\n\n" };
 			LOG_ERROR(str);
-			GameLayer::GetConsolePanel()->AddLog(str.c_str());
-			SettingsPanel->SetRobotConnection(false);
+			consolePanel->AddLog(str.c_str());
+			settingsPanel->SetRobotConnection(false);
 			return 1;
 		}
 
 		const std::string str{ "Chesster server is ready." };
 		LOG_INFO(str);
-		GameLayer::GetConsolePanel()->AddLog(str.c_str());
+		consolePanel->AddLog(str.c_str());
 
 		// Accept a client socket
 		TCP->m_RobotClientSocket = TCP->m_Winsock.AcceptClient(TCP->m_ChessterListenSocket);
@@ -139,12 +143,12 @@ namespace Chesster
 		{
 			LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
 			closesocket(TCP->m_RobotClientSocket);
-			SettingsPanel->SetRobotConnection(false);
+			settingsPanel->SetRobotConnection(false);
 			return 1;
 		}
 
 		LOG_INFO("CS8C Connected.");
-		GameLayer::GetConsolePanel()->AddLog("CS8C Connected.");
+		consolePanel->AddLog("CS8C Connected.");
 
 		IsServerListening = true;
 		while (IsServerListening)
@@ -152,7 +156,7 @@ namespace Chesster
 			if (!TCP->RecvFromRobot())
 			{
 				closesocket(TCP->m_RobotClientSocket);
-				SettingsPanel->SetRobotConnection(false);
+				settingsPanel->SetRobotConnection(false);
 				break;
 			}
 		}
@@ -166,10 +170,6 @@ namespace Chesster
 
 		closesocket(m_ChessterListenSocket);
 		closesocket(m_RobotClientSocket);
-
-		const std::string msg{ "Chesster server shut down." };
-		LOG_INFO(msg);
-		GameLayer::GetConsolePanel()->AddLog(msg.c_str());
 	}
 
 	bool Network::SendCameraCommand(const std::string& command)
@@ -218,19 +218,21 @@ namespace Chesster
 
 	bool Network::RecvFromRobot()
 	{
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+
 		// Prepare buffer
 		char Buffer[128]{};
 		int BufferLen{ sizeof(Buffer) };
 		ZeroMemory(Buffer, BufferLen);
 
 		LOG_INFO("Waiting to receive...");
-		GameLayer::GetConsolePanel()->AddLog("Waiting to receive...");
+		consolePanel->AddLog("Waiting to receive...");
 		int iResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
 		if (iResult > 0)
 		{
 			s_RobotData = Buffer;
 			LOG_INFO(Buffer);
-			GameLayer::GetConsolePanel()->AddLog(Buffer);
+			consolePanel->AddLog(Buffer);
 			RobotDataReceived = true;
 		}
 
@@ -240,6 +242,8 @@ namespace Chesster
 
 	bool Network::RecvCameraData()
 	{
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+
 		// Prepare buffer
 		char Buffer[256]{};
 		int BufferLen{ sizeof(Buffer) };
@@ -252,7 +256,7 @@ namespace Chesster
 			DisconnectCamera();
 			
 			LOG_INFO("Camera disconnected.");
-			GameLayer::GetConsolePanel()->AddLog("Camera disconnected.\n\n");
+			consolePanel->AddLog("Camera disconnected.\n\n");
 			return false;
 		}
 

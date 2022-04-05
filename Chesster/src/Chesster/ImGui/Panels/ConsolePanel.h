@@ -16,14 +16,16 @@ namespace Chesster
 	{
 	public:
 		ConsolePanel();
-		virtual ~ConsolePanel();		
-
-		void ClearLog();
-		void AddLog(const char* fmt, ...); IM_FMTARGS(2);
+		virtual ~ConsolePanel();
 
 		void OnImGuiRender();
 
+		void AddLog(const char* fmt, ...); IM_FMTARGS(2);
+		void AddLog(const std::string& msg);
+
 	private:
+		void ClearLog();
+
 		void PushFont(int index);
 		void PopFont();
 
@@ -33,6 +35,7 @@ namespace Chesster
 		std::array<char, 256> InputBuffer;
 
 		ImVector<char*> Items;
+		std::vector<std::string> myItems;
 		ImVector<const char*> Commands;
 		ImVector<char*> History;
 		int HistoryPos{ -1 };

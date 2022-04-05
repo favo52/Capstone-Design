@@ -4,15 +4,13 @@
 
 namespace Chesster
 {
-	/*	The settings panel holds all the buttons to */
+	/*	The settings panel draws and manages all the buttons and sliders to
+		control the connections with the camera, robot and the chess engine. */
 	class SettingsPanel
 	{
 	public:
+		/*	Default constructor. Sets all the member variables default values. */
 		SettingsPanel();
-
-		/*	Checks if a button has been pressed and performs the
-			corresponding action if done so. */
-		void OnUpdate();
 
 		/*	Draws the Settings panel to the screen. */
 		void OnImGuiRender();
@@ -23,33 +21,24 @@ namespace Chesster
 
 		/**	Retrieves the Clear Color from the Settings Panel.
 		 @return A glm::vec4 of the Clear Color. */
-		static const glm::vec4& ClearColor() { return s_ClearColor; }
+		const glm::vec4& GetClearColor() { return m_ClearColor; }
 
 	private:
-		/*	Changes the square colors when it is changed during runtime. */
-		void UpdateSquareColors();
+		void OnCameraButtonPressed();
+		void OnRobotButtonPressed();
+
+		/*	Updates the square colors when it is changed during runtime. */
+		void OnNewSquareColor();
 
 	private:
-		int m_SkillLevel;	// Defaults to 0 (Minimum)
-		int m_ELORating;	// Defaults to 1350 (Minimum)
+		int m_SkillLevel;			// Defaults to 0 (Minimum)
+		int m_ELORating;			// Defaults to 1350 (Minimum)
 
-		// Difficulty toggles
-		bool m_IsNewSkillLevel;
-		bool m_IsNewELO;
-		bool m_IsToggleELOPressed;
-		bool m_IsELOActive;
+		bool m_IsCameraConnected;	// Keeps track of the camera connection
+		bool m_IsRobotConnected;	// Keeps track of the robot connection
 
-		// Camera toggles
-		bool m_IsCameraButtonPressed;
-		bool m_IsCameraConnected;
-
-		// Robot toggles
-		bool m_IsRobotButtonPressed;
-		bool m_IsRobotConnected;
-
-		// Board Color settings
-		static glm::vec4 s_ClearColor;		// Background/Screen refresh color
-		static glm::vec4 s_SquareColor1;
-		static glm::vec4 s_SquareColor2;
+		glm::vec4 m_ClearColor;		// Background/Screen refresh color
+		glm::vec4 m_SquareColor1;	// Color of all odd squares
+		glm::vec4 m_SquareColor2;	// Color of all even squares
 	};
 }
