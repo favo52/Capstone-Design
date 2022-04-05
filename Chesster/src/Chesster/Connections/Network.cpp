@@ -118,14 +118,14 @@ namespace Chesster
 	unsigned int __stdcall Network::ConnectRobotThread(void* data)
 	{
 		Network* TCP = static_cast<Network*>(data);
-
+		SettingsPanel* SettingsPanel = GameLayer::Get().GetSettingsPanel();
+		
 		if (!TCP->m_Winsock.CreateServerSocket(TCP->m_ChessterListenSocket, s_RobotIP.c_str(), s_RobotPort.c_str()))
 		{
 			const std::string str{ "Unable create server socket. (IP: " + s_RobotIP + ", Port: " + s_RobotPort + ")\n\n" };
 			LOG_ERROR(str);
 			GameLayer::GetConsolePanel()->AddLog(str.c_str());
-
-			SettingsPanel::IsRobotConnected = false;
+			SettingsPanel->SetRobotConnection(false);
 			return 1;
 		}
 
@@ -139,7 +139,7 @@ namespace Chesster
 		{
 			LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
 			closesocket(TCP->m_RobotClientSocket);
-			SettingsPanel::IsRobotConnected = false;
+			SettingsPanel->SetRobotConnection(false);
 			return 1;
 		}
 
@@ -152,7 +152,7 @@ namespace Chesster
 			if (!TCP->RecvFromRobot())
 			{
 				closesocket(TCP->m_RobotClientSocket);
-				SettingsPanel::IsRobotConnected = false;
+				SettingsPanel->SetRobotConnection(false);
 				break;
 			}
 		}

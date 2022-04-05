@@ -29,9 +29,14 @@ namespace Chesster
 		virtual void OnRender() override;
 		virtual void OnImGuiRender() override;
 
-	public:
+		Interprocess* GetConnector() { return &m_Connector; }
 		static ConsolePanel* GetConsolePanel() { return &s_ConsolePanel; }
+		SettingsPanel* GetSettingsPanel() { return &m_SettingsPanel; }
 		static Network* GetTCP() { return &s_TCPConnection; }
+
+		/** It is used to retrieve the instance of the current GameLayer.
+		 @return A reference to this GameLayer object. */
+		static GameLayer& Get() { return *s_Instance; }
 
 	private:
 		void UpdateComputerMove();
@@ -45,7 +50,6 @@ namespace Chesster
 
 		void ResetBoard();
 		void EvaluateBoard();
-		void UpdateDifficulty();
 
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsNotationValid(const std::string& notation);
@@ -54,17 +58,20 @@ namespace Chesster
 		void GameoverPopup();
 		void PawnPromotionPopup();
 
-	private:
 		// Multithread
 		static unsigned int __stdcall EngineThread(void* data);
 
 	private:
-		std::unique_ptr<Framebuffer> m_Framebuffer;
+		enum class Player { White, Black };
+		friend Player operator++(Player& player);
 
+		enum class GameState { Gameplay, Gameover, PawnPromotion };
+
+	private:
+		std::unique_ptr<Framebuffer> m_Framebuffer;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 
-		// Chess Engine
-		Interprocess m_Connector{};
+		const std::string m_StartPosFEN;
 		const std::string m_PathPythonScript;
 
 		// Chess board
@@ -80,9 +87,8 @@ namespace Chesster
 		// Moves/Notations
 		std::string m_CurrentMove{ "0000" };
 		std::string m_MoveHistory;
-		size_t m_MoveHistorySize{ m_MoveHistory.size() };
+		size_t m_MoveHistorySize{ 0 };
 
-		const std::string m_StartPosFEN;
 		std::string m_CurrentFEN;
 		std::vector<std::string> m_LegalMoves;
 
@@ -100,17 +106,15 @@ namespace Chesster
 		bool m_IsMovePlayed{ false };
 		bool m_IsOutsideBoard{ false };
 
-		// Panels
-		static ConsolePanel s_ConsolePanel;
-
-		enum class Player { White, Black };
-		friend Player operator++(Player& player);
-
-		enum class GameState { Gameplay, Gameover, PawnPromotion };
-
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
+		Interprocess m_Connector;
 		static Network s_TCPConnection;
+
+		static ConsolePanel s_ConsolePanel;
+		SettingsPanel m_SettingsPanel;
+
+		static GameLayer* s_Instance;
 	};
 }

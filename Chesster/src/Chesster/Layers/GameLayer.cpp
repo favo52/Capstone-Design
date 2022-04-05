@@ -6,10 +6,11 @@
 
 namespace Chesster
 {
-	static bool s_IsThreadRunning{ true };
+	static bool s_IsEngineThreadRunning{ true };
+	
+	GameLayer* GameLayer::s_Instance{ nullptr };
 
 	ConsolePanel GameLayer::s_ConsolePanel{};
-
 	Network GameLayer::s_TCPConnection{};
 
 	GameLayer::GameLayer() :
@@ -17,6 +18,8 @@ namespace Chesster
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
 		m_PathPythonScript{ "assets/script/__init__.exe" }
 	{
+		s_Instance = this;
+
 		unsigned threadID{};
 		_beginthreadex(nullptr, 0, &EngineThread, (void*)this, 0, &threadID);
 	}
@@ -40,7 +43,7 @@ namespace Chesster
 
 	void GameLayer::OnDetach()
 	{
-		s_IsThreadRunning = false;
+		s_IsEngineThreadRunning = false;
 	}
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
@@ -94,9 +97,6 @@ namespace Chesster
 					}
 					break;
 				}
-
-				default:
-					break;
 			}
 		}
 	}
@@ -163,52 +163,10 @@ namespace Chesster
 			ConsoleButtons::EvaluateBoardButton = false;
 		}
 
-		if (SettingsPanel::IsCameraButtonPressed)
-		{
-			if (SettingsPanel::IsCameraConnected)
-			{
-				s_TCPConnection.DisconnectCamera();
-				SettingsPanel::IsCameraConnected = false;
-			}
-			else
-			{
-				SettingsPanel::IsCameraConnected = true;
-				s_TCPConnection.ConnectCamera();
-				s_TCPConnection.SendCameraCommand("SE8");
-				if (!s_TCPConnection.RecvCameraConfirmation())
-				{
-					std::string msg{ "Camera did not connect sucessfully." };
-					LOG_WARN(msg);
-					s_ConsolePanel.AddLog(msg.c_str());
-					SettingsPanel::IsCameraConnected = false;
-				}
-			}
-
-			SettingsPanel::IsCameraButtonPressed = false;
-		}
-
-		if (SettingsPanel::IsRobotButtonPressed)
-		{
-			if (SettingsPanel::IsRobotConnected)
-			{
-				s_TCPConnection.DisconnectRobot();
-				SettingsPanel::IsRobotConnected = false;
-			}
-			else
-			{
-				SettingsPanel::IsRobotConnected = true;
-
-				unsigned threadID{};
-				_beginthreadex(NULL, 0, &Network::ConnectRobotThread, &Network::Get(), 0, &threadID);
-			}
-
-			SettingsPanel::IsRobotButtonPressed = false;
-		}
+		m_SettingsPanel.OnUpdate();
 
 		// Check for New Game (take pic and compare, etc)
-		m_NewGameData = s_TCPConnection.GetCameraData();
-
-		UpdateDifficulty();
+		//m_NewGameData = s_TCPConnection.GetCameraData();
 
 		m_Board.OnUpdate(dt);
 	}
@@ -218,7 +176,7 @@ namespace Chesster
 		// Render to ImGui's viewport window
 		m_Framebuffer->Bind();
 
-		Renderer::SetClearColor(SettingsPanel::s_ClearColor);
+		Renderer::SetClearColor(SettingsPanel::ClearColor());
 		Renderer::Clear();
 
 		// Draw all the chess board squares
@@ -277,7 +235,8 @@ namespace Chesster
 		style.WindowMinSize.x = minWinSizeX;
 
 		// Settings Panel
-		SettingsPanel::OnImGuiRender();
+		//SettingsPanel::OnImGuiRender();
+		m_SettingsPanel.OnImGuiRender();
 
 		// Console Panel
 		s_ConsolePanel.OnImGuiRender();
@@ -552,27 +511,6 @@ namespace Chesster
 		m_Connector.EvaluateGame();
 	}
 
-	void GameLayer::UpdateDifficulty()
-	{
-		if (SettingsPanel::IsNewSkillLevel)
-		{
-			m_Connector.SetDifficultyLevel(SettingsPanel::SkillLevel);
-			SettingsPanel::IsNewSkillLevel = false;
-		}
-
-		if (SettingsPanel::IsNewELO)
-		{
-			m_Connector.SetDifficultyELO(SettingsPanel::ELO);
-			SettingsPanel::IsNewELO = false;
-		}
-
-		if (SettingsPanel::IsToggleELO)
-		{
-			m_Connector.ToggleELO(SettingsPanel::IsELOActive);
-			SettingsPanel::IsToggleELO = false;
-		}
-	}
-
 	bool GameLayer::IsPointInRect(const glm::vec2& point, const RectBounds& rect)
 	{
 		return ((point.x >= rect.left) && (point.x <= rect.right) &&
@@ -673,55 +611,52 @@ namespace Chesster
 
 	unsigned int __stdcall GameLayer::EngineThread(void* data)
 	{
-		GameLayer* game = static_cast<GameLayer*>(data);
+		GameLayer* Game = static_cast<GameLayer*>(data);
 
 		wchar_t path_Stockfish14_avx2[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
+		Game->m_Connector.ConnectToEngine(path_Stockfish14_avx2);
 
-		game->m_Connector.ConnectToEngine(path_Stockfish14_avx2);
+		Game->m_LegalMoves = Game->m_Connector.GetValidMoves(Game->m_PathPythonScript, Game->m_StartPosFEN);
+		Game->m_CurrentFEN = { "\"" + Game->m_Connector.GetFEN(" ") + "\"" };
 
-		game->m_LegalMoves = game->m_Connector.GetValidMoves(game->m_PathPythonScript, game->m_StartPosFEN);
-		game->m_CurrentFEN = { "\"" + game->m_Connector.GetFEN(" ") + "\"" };
-
-		while (s_IsThreadRunning)
+		while (s_IsEngineThreadRunning)
 		{
-			if (game->m_IsMovePlayed && !game->m_IsComputerTurn)
+			if (Game->m_IsMovePlayed && !Game->m_IsComputerTurn)
 			{
 				// Update legal moves list
-				game->m_CurrentFEN = { "\"" + game->m_Connector.GetFEN(game->m_MoveHistory) + "\"" };
-				game->m_LegalMoves = game->m_Connector.GetValidMoves(game->m_PathPythonScript, game->m_CurrentFEN);
+				Game->m_CurrentFEN = { "\"" + Game->m_Connector.GetFEN(Game->m_MoveHistory) + "\"" };
+				Game->m_LegalMoves = Game->m_Connector.GetValidMoves(Game->m_PathPythonScript, Game->m_CurrentFEN);
 				
-				if (game->m_LegalMoves.empty())
-					game->m_CurrentGameState = GameState::Gameover;
+				if (Game->m_LegalMoves.empty())
+					Game->m_CurrentGameState = GameState::Gameover;
 
 				// Make computer play automatically after player
-				if (game->m_IsPlayerPlayed)
+				if (Game->m_IsPlayerPlayed)
 				{
 					//game->m_IsComputerTurn = true;
-					game->m_IsPlayerPlayed = false;
+					Game->m_IsPlayerPlayed = false;
 				}
 
-				game->m_IsMovePlayed = false;
+				Game->m_IsMovePlayed = false;
 			}
 
-			if (game->m_IsComputerTurn)
+			if (Game->m_IsComputerTurn)
 			{
 				// Get computer's move
-				game->m_CurrentMove = game->m_Connector.GetNextMove(game->m_MoveHistory);
-				if (game->m_CurrentMove == "error")
+				Game->m_CurrentMove = Game->m_Connector.GetNextMove(Game->m_MoveHistory);
+				if (Game->m_CurrentMove == "error")
 				{
-					game->s_ConsolePanel.AddLog("Failed to get engine move.");
-					game->s_ConsolePanel.AddLog("Enter <spacebar> to try again.");
+					Game->s_ConsolePanel.AddLog("Failed to get engine move.");
+					Game->s_ConsolePanel.AddLog("Enter <spacebar> to try again.");
 					LOG_ERROR("Failed to get engine move.");
-					game->m_IsRecvComputerMove = false;
+					Game->m_IsRecvComputerMove = false;
 				}
 				else
 				{
-					game->m_IsRecvComputerMove = true;
-					game->m_IsComputerTurn = false;
+					Game->m_IsRecvComputerMove = true;
+					Game->m_IsComputerTurn = false;
 				}
 			}
-
-			//Sleep(150);
 		}
 
 		return 100;

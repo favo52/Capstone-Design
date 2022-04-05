@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "Chesster/ImGui/Panels/SettingsPanel.h"
 
-#include "Chesster/Connections/Network.h"
-#include "Chesster/Game/Board.h"
+#include "Chesster/Layers/GameLayer.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -12,24 +11,89 @@
 
 namespace Chesster
 {
-	glm::vec4 SettingsPanel::s_ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f }; // Black
-
-	int SettingsPanel::SkillLevel{ 0 };
-	int SettingsPanel::ELO{ 1350 };
-
-	bool SettingsPanel::IsNewSkillLevel{ false };
-	bool SettingsPanel::IsNewELO{ false };
-	bool SettingsPanel::IsToggleELO{ false };
-	bool SettingsPanel::IsELOActive{ false };
-
-	bool SettingsPanel::IsCameraButtonPressed{ false };
-	bool SettingsPanel::IsCameraConnected{ false };
-
-	bool SettingsPanel::IsRobotButtonPressed{ false };
-	bool SettingsPanel::IsRobotConnected{ false };
-
+	glm::vec4 SettingsPanel::s_ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };			// Black
 	glm::vec4 SettingsPanel::s_SquareColor1 = { 0.084f, 0.342f, 0.517f, 1.0f };	// Blueish
 	glm::vec4 SettingsPanel::s_SquareColor2 = { 1.0f, 1.0f, 1.0f, 1.0f };		// White
+	
+	SettingsPanel::SettingsPanel() :
+		m_SkillLevel{ 0 },
+		m_ELORating{ 1350 },
+		m_IsNewSkillLevel{ false },
+		m_IsNewELO{ false },
+		m_IsToggleELOPressed{ false },
+		m_IsELOActive{ false },
+		m_IsCameraButtonPressed{ false },
+		m_IsCameraConnected{ false },
+		m_IsRobotButtonPressed{ false },
+		m_IsRobotConnected{ false }
+	{
+	}
+
+	void SettingsPanel::OnUpdate()
+	{
+		Network* TCP = GameLayer::GetTCP();
+
+		if (m_IsCameraButtonPressed)
+		{
+			if (m_IsCameraConnected)
+			{
+				TCP->DisconnectCamera();
+				m_IsCameraConnected = false;
+			}
+			else
+			{
+				m_IsCameraConnected = true;
+				TCP->ConnectCamera();
+				TCP->SendCameraCommand("SE8");
+				if (!TCP->RecvCameraConfirmation())
+				{
+					LOG_WARN("Camera did not connect sucessfully.");
+					GameLayer::GetConsolePanel()->AddLog("Camera did not connect sucessfully.");
+					m_IsCameraConnected = false;
+				}
+			}
+
+			m_IsCameraButtonPressed = false;
+		}
+
+		if (m_IsRobotButtonPressed)
+		{
+			if (m_IsRobotConnected)
+			{
+				TCP->DisconnectRobot();
+				m_IsRobotConnected = false;
+			}
+			else
+			{
+				m_IsRobotConnected = true;
+
+				unsigned threadID{};
+				_beginthreadex(NULL, 0, &Network::ConnectRobotThread, &Network::Get(), 0, &threadID);
+			}
+
+			m_IsRobotButtonPressed = false;
+		}
+
+		Interprocess* Connector = GameLayer::Get().GetConnector();
+
+		if (m_IsNewSkillLevel)
+		{
+			Connector->SetDifficultyLevel(m_SkillLevel);
+			m_IsNewSkillLevel = false;
+		}
+
+		if (m_IsNewELO)
+		{
+			Connector->SetDifficultyELO(m_ELORating);
+			m_IsNewELO = false;
+		}
+
+		if (m_IsToggleELOPressed)
+		{
+			Connector->ToggleELO(m_IsELOActive);
+			m_IsToggleELOPressed = false;
+		}
+	}
 
 	static void DrawIntControl(const std::string& label, int& value, bool& button, int min, int max, float columnWidth = 100.0f)
 	{
@@ -70,7 +134,7 @@ namespace Chesster
 		ImGui::PopStyleVar();
 		ImGui::Columns(1);
 		ImGui::PopID();
-		
+
 		return update;
 	}
 
@@ -118,21 +182,20 @@ namespace Chesster
 		}
 	}
 
-    void SettingsPanel::OnImGuiRender()
+	void SettingsPanel::OnImGuiRender()
     {
 		ImGui::Begin("Settings");
 
 		Network& TCP = Network::Get();
-		ImGuiIO& io = ImGui::GetIO();
-		auto boldFont = io.Fonts->Fonts[2];
+		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
 
 		class Cognex {};
 		DrawSection<Cognex>("Cognex Camera", [&]()
 		{
-			ImGui::PushFont(boldFont); 
-			const char* buttonText = (!IsCameraConnected) ? "Connect" : "Disconnect";
+			ImGui::PushFont(boldFont);
+			const char* buttonText = (!m_IsCameraConnected) ? "Connect" : "Disconnect";
 			if (ImGui::Button(buttonText, { 100, 50 }))
-				IsCameraButtonPressed = true;
+				m_IsCameraButtonPressed = true;
 			ImGui::PopFont();
 
 			ImGui::Separator();
@@ -162,9 +225,9 @@ namespace Chesster
 		DrawSection<Staubli>("Staubli Robotic Arm", [&]()
 		{
 			ImGui::PushFont(boldFont);
-			const char* buttonText = (!IsRobotConnected) ? "Connect" : "Disconnect";
+			const char* buttonText = (!m_IsRobotConnected) ? "Connect" : "Disconnect";
 			if (ImGui::Button(buttonText, { 100, 50 }))
-				IsRobotButtonPressed = true;
+				m_IsRobotButtonPressed = true;
 			ImGui::PopFont();
 
 			ImGui::Separator();
@@ -184,13 +247,13 @@ namespace Chesster
 		});
 
 		class DifficultySlider {};
-		DrawSection<DifficultySlider>("Engine Difficulty", []()
+		DrawSection<DifficultySlider>("Engine Difficulty", [&]()
 		{
-			DrawIntControl("Skill Level", SkillLevel, IsNewSkillLevel, 0, 20);
-			DrawIntControl("ELO Rating", ELO, IsNewELO, 1350, 2850);
+			DrawIntControl("Skill Level", m_SkillLevel, m_IsNewSkillLevel, 0, 20);
+			DrawIntControl("ELO Rating", m_ELORating, m_IsNewELO, 1350, 2850);
 
-			if (ImGui::Checkbox("Activate ELO (Overrides Skill Level)", &IsELOActive))
-				IsToggleELO = true;
+			if (ImGui::Checkbox("Activate ELO (Overrides Skill Level)", &m_IsELOActive))
+				m_IsToggleELOPressed = true;
 		});
 
 		static glm::vec4 clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
