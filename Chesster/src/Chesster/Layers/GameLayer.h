@@ -29,6 +29,8 @@ namespace Chesster
 		virtual void OnRender() override;
 		virtual void OnImGuiRender() override;
 
+		void ResetGame();
+
 		Interprocess* GetConnector() { return &m_Connector; }
 		ConsolePanel* GetConsolePanel() { return &s_ConsolePanel; }
 		SettingsPanel* GetSettingsPanel() { return &m_SettingsPanel; }
@@ -47,9 +49,6 @@ namespace Chesster
 		void ResetPieces();
 
 		void PromotePawn();
-
-		void ResetBoard();
-		void EvaluateBoard();
 
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsNotationValid(const std::string& notation);

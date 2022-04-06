@@ -91,7 +91,7 @@ namespace Chesster
 
 		std::string msg = GetEngineReply();
 		LOG_INFO(msg);
-		consolePanel->AddLog(msg.c_str());
+		consolePanel->AddLog(msg);
 
 		// Check if engine is ready
 		CHAR str[] = "uci\nucinewgame\nisready\n";
@@ -105,7 +105,7 @@ namespace Chesster
 
 		msg = { "\n" + GetEngineReply() };
 		LOG_INFO(msg);
-		consolePanel->AddLog(msg.c_str());
+		consolePanel->AddLog(msg);
 	}
 
 	void Interprocess::ResetGame()
@@ -119,7 +119,7 @@ namespace Chesster
 		std::string msg{ "GAME RESET\n" };
 		msg += GetEngineReply() + '\n';
 		LOG_INFO(msg);
-		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
+		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
 	void Interprocess::EvaluateGame()
@@ -132,7 +132,7 @@ namespace Chesster
 		std::string msg{ "GAME EVALUATION\n" };
 		msg += GetEngineReply() + '\n';
 		LOG_INFO(msg);
-		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
+		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
 	void Interprocess::SetDifficultyLevel(int difficulty)
@@ -145,7 +145,7 @@ namespace Chesster
 
 		std::string msg = { "Difficulty set to skill level " + std::to_string(difficulty) + ".\n" };
 		LOG_INFO(msg);
-		consolePanel->AddLog(msg.c_str());
+		consolePanel->AddLog(msg);
 	}
 
 	// Overrides skill level
@@ -160,7 +160,7 @@ namespace Chesster
 
 		std::string msg = { "Difficulty set to " + std::to_string(elo) + " ELO.\n" };
 		LOG_INFO(msg);
-		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
+		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
 	void Interprocess::ToggleELO(bool boolean)
@@ -175,7 +175,7 @@ namespace Chesster
 		std::string boolMsg = (boolean) ? "activated" : "deactivated";
 		std::string msg = { "ELO Rating " + boolMsg + ".\n" };
 		LOG_INFO(msg);
-		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
+		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
 	std::string Interprocess::GetNextMove(const std::string& moveHistory)
@@ -253,7 +253,7 @@ namespace Chesster
 		// Read engine's reply and print it
 		msg = GetEngineReply() + '\n';
 		LOG_INFO(msg);
-		GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
+		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 		msg.pop_back();
 
 		// Grab the FEN string

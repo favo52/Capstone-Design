@@ -143,19 +143,6 @@ namespace Chesster
 			++m_CurrentPlayer;
 		}
 
-		// Interface Buttons
-		if (ConsoleButtons::ResetBoardButton)
-		{
-			ResetBoard();
-			ConsoleButtons::ResetBoardButton = false;
-		}
-
-		if (ConsoleButtons::EvaluateBoardButton)
-		{
-			EvaluateBoard();
-			ConsoleButtons::EvaluateBoardButton = false;
-		}
-
 		// Check for New Game (take pic and compare, etc)
 		//m_NewGameData = s_TCPConnection.GetCameraData();
 
@@ -294,7 +281,7 @@ namespace Chesster
 			m_Pieces[m_PieceIndex].Notation = m_TargetSquare.Notation;
 			m_Pieces[m_PieceIndex].CheckEnPassant(oldPos);
 			m_MoveHistory += m_CurrentMove + ' ';
-			s_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove).c_str());
+			s_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove));
 
 			// Remove captured pieces
 			for (Piece& piece : m_Pieces)
@@ -346,7 +333,7 @@ namespace Chesster
 
 						std::string msg{ "Player move: " + m_CurrentMove };
 						LOG_INFO(msg);
-						s_ConsolePanel.AddLog(msg.c_str());
+						s_ConsolePanel.AddLog(msg);
 
 						// Update states
 						m_IsPlayerPlayed = true;
@@ -458,14 +445,15 @@ namespace Chesster
 			m_MoveHistory += m_CurrentMove + ' ';
 
 			// Print message to consoles
-			s_ConsolePanel.AddLog("Player move: %s", m_CurrentMove);
-			LOG_INFO(std::string("Player move: " + m_CurrentMove).c_str());
+			std::string msg{ "Player move: " + m_CurrentMove };
+			LOG_INFO(msg);
+			s_ConsolePanel.AddLog(msg);
 
 			m_IsPlayerPlayed = true;
 		}
 	}
 
-	void GameLayer::ResetBoard()
+	void GameLayer::ResetGame()
 	{
 		m_CurrentPlayer = Player::White;
 		m_CurrentGameState = GameState::Gameplay;
@@ -488,11 +476,6 @@ namespace Chesster
 		m_OldData.clear();
 		m_NewData.clear();
 		m_NewGameData.clear();
-	}
-
-	void GameLayer::EvaluateBoard()
-	{
-		m_Connector.EvaluateGame();
 	}
 
 	bool GameLayer::IsPointInRect(const glm::vec2& point, const RectBounds& rect)
@@ -543,7 +526,7 @@ namespace Chesster
 		ImGui::PushFont(boldFont);
 		ImGui::Text(winner.c_str());
 		if (ImGui::Button("Play Again", { 200, 50 }))
-			ResetBoard();
+			ResetGame();
 		ImGui::PopFont();
 
 		ImGui::End();
@@ -630,9 +613,9 @@ namespace Chesster
 				Game->m_CurrentMove = Game->m_Connector.GetNextMove(Game->m_MoveHistory);
 				if (Game->m_CurrentMove == "error")
 				{
+					LOG_ERROR("Failed to get engine move.");
 					Game->s_ConsolePanel.AddLog("Failed to get engine move.");
 					Game->s_ConsolePanel.AddLog("Enter <spacebar> to try again.");
-					LOG_ERROR("Failed to get engine move.");
 					Game->m_IsRecvComputerMove = false;
 				}
 				else

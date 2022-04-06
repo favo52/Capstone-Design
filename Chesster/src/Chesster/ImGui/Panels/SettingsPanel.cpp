@@ -247,7 +247,7 @@ namespace Chesster
 
 			const std::string msg{ "Chesster server shut down." };
 			LOG_INFO(msg);
-			GameLayer::Get().GetConsolePanel()->AddLog(msg.c_str());
+			GameLayer::Get().GetConsolePanel()->AddLog(msg);
 
 			m_IsRobotConnected = false;
 		}

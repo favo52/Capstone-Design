@@ -50,7 +50,7 @@ namespace Chesster
 		{
 			LOG_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraCommandPort);
 			std::string str{ "Unable to connect m_CommandSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraCommandPort + ")\n\n" };
-			consolePanel->AddLog(str.c_str());
+			consolePanel->AddLog(str);
 		}
 		else // If successful
 		{
@@ -66,7 +66,7 @@ namespace Chesster
 			std::string str{ Buffer };
 			str.erase(str.length() - sizeof("User: "), sizeof("User: ")); // Erase "User: "
 			LOG_INFO(str);
-			consolePanel->AddLog(str.c_str());
+			consolePanel->AddLog(str);
 
 			// Send username
 			std::string msg{ "admin\n" };
@@ -87,7 +87,7 @@ namespace Chesster
 			LOG_INFO(str);
 
 			str.insert(0, "\n"); str += "\n\n";
-			consolePanel->AddLog(str.c_str());
+			consolePanel->AddLog(str);
 		}
 
 		// For receiving data stream of physical board's status
@@ -95,7 +95,7 @@ namespace Chesster
 		{
 			LOG_ERROR("Unable to connect m_BufferSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraStreamPort);
 			std::string str{ "Unable to connect m_BufferSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraStreamPort + ")\n\n" };
-			consolePanel->AddLog(str.c_str());
+			consolePanel->AddLog(str);
 		}
 		else // If successful
 		{
@@ -128,14 +128,14 @@ namespace Chesster
 		{
 			const std::string str{ "Unable create server socket. (IP: " + s_RobotIP + ", Port: " + s_RobotPort + ")\n\n" };
 			LOG_ERROR(str);
-			consolePanel->AddLog(str.c_str());
+			consolePanel->AddLog(str);
 			settingsPanel->SetRobotConnection(false);
 			return 1;
 		}
 
 		const std::string str{ "Chesster server is ready." };
 		LOG_INFO(str);
-		consolePanel->AddLog(str.c_str());
+		consolePanel->AddLog(str);
 
 		// Accept a client socket
 		TCP->m_RobotClientSocket = TCP->m_Winsock.AcceptClient(TCP->m_ChessterListenSocket);
