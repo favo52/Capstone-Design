@@ -48,47 +48,45 @@ namespace Chesster
 		// For commanding the camera to take the picture
 		if (!m_Winsock.CreateClientSocket(m_CameraCommandSocket, s_CameraIP.c_str(), s_CameraCommandPort.c_str()))
 		{
-			LOG_ERROR("Unable to connect m_CommandSocket. (IP: {0}, Port: {1})", s_CameraIP, s_CameraCommandPort);
-			std::string str{ "Unable to connect m_CommandSocket. (IP: " + s_CameraIP + ", Port: " + s_CameraCommandPort + ")\n\n" };
+			std::string str{ "Unable to connect the camera command socket. "
+				"(IP: " + s_CameraIP + ", Port: " + s_CameraCommandPort + ")\n" };
+			LOG_ERROR(str);
 			consolePanel->AddLog(str);
+			return;
 		}
-		else // If successful
-		{
-			m_Winsock.DNSLookup(m_CameraCommandSocket);
 
-			// Prepare buffer
-			char Buffer[128]{};
-			int BufferLen{ sizeof(Buffer) };
-			ZeroMemory(Buffer, BufferLen);
+		// Prepare buffer
+		char Buffer[128]{};
+		int BufferLen{ sizeof(Buffer) };
+		ZeroMemory(Buffer, BufferLen);
 
-			// Receive Cognex welcome message and username prompt
-			recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
-			std::string str{ Buffer };
-			str.erase(str.length() - sizeof("User: "), sizeof("User: ")); // Erase "User: "
-			LOG_INFO(str);
-			consolePanel->AddLog(str);
+		// Receive Cognex welcome message and username prompt
+		recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
+		std::string str{ Buffer };
+		str.erase(str.length() - sizeof("User: "), sizeof("User: ")); // Erase "User: "
+		LOG_INFO(str);
+		consolePanel->AddLog(str);
 
-			// Send username
-			std::string msg{ "admin\n" };
-			send(m_CameraCommandSocket, msg.c_str(), msg.length(), 0);
+		// Send username
+		std::string msg{ "admin\n" };
+		send(m_CameraCommandSocket, msg.c_str(), msg.length(), 0);
 
-			// Receive password prompt
-			ZeroMemory(Buffer, BufferLen);
-			recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
+		// Receive password prompt
+		ZeroMemory(Buffer, BufferLen);
+		recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
 
-			// Send password (no password, thus send \n)
-			msg = { "\n" };
-			send(m_CameraCommandSocket, msg.c_str(), msg.length(), 0);
+		// Send password (no password, thus send \n)
+		msg = { "\n" };
+		send(m_CameraCommandSocket, msg.c_str(), msg.length(), 0);
 
-			// Receive login confirmation
-			ZeroMemory(Buffer, BufferLen);
-			recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
-			str = { Buffer }; str.pop_back(); // pop '\n'
-			LOG_INFO(str);
+		// Receive login confirmation
+		ZeroMemory(Buffer, BufferLen);
+		recv(m_CameraCommandSocket, Buffer, BufferLen, 0);
+		str = { Buffer }; str.pop_back(); // pop '\n'
+		LOG_INFO(str);
 
-			str.insert(0, "\n"); str += "\n\n";
-			consolePanel->AddLog(str);
-		}
+		str.insert(0, "\n"); str += "\n\n";
+		consolePanel->AddLog(str);
 
 		// For receiving data stream of physical board's status
 		if (!m_Winsock.CreateClientSocket(m_CameraBufferSocket, s_CameraIP.c_str(), s_CameraStreamPort.c_str()))
@@ -99,8 +97,6 @@ namespace Chesster
 		}
 		else // If successful
 		{
-			m_Winsock.DNSLookup(m_CameraBufferSocket);
-
 			// Create new thread for receiving data
 			unsigned threadID{};
 			HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &Network::CameraDataStreamThread, (void*)this, 0, &threadID);
@@ -142,10 +138,13 @@ namespace Chesster
 		if (TCP->m_RobotClientSocket == INVALID_SOCKET)
 		{
 			LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
-			closesocket(TCP->m_RobotClientSocket);
+			closesocket(TCP->m_ChessterListenSocket);
 			settingsPanel->SetRobotConnection(false);
 			return 1;
 		}
+
+		// No longer need server listening socket
+		closesocket(TCP->m_ChessterListenSocket);
 
 		LOG_INFO("CS8C Connected.");
 		consolePanel->AddLog("CS8C Connected.");
@@ -157,6 +156,7 @@ namespace Chesster
 			{
 				closesocket(TCP->m_RobotClientSocket);
 				settingsPanel->SetRobotConnection(false);
+				IsServerListening = false;
 				break;
 			}
 		}

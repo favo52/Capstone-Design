@@ -8,7 +8,6 @@ namespace Chesster
 	{
 	public:
 		ConsolePanel();
-		virtual ~ConsolePanel() = default;
 
 		void OnImGuiRender();
 

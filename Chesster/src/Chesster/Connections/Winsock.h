@@ -10,7 +10,10 @@ namespace Chesster
 	class Winsock
 	{
 	public:
+		/*	Initializes Winsock populating the WSADATA. */
 		Winsock();
+
+		/*	Shut down the socket DLL. */
 		virtual ~Winsock();
 
 		bool CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port);
@@ -18,18 +21,10 @@ namespace Chesster
 
 		SOCKET AcceptClient(const SOCKET& listenSocket);
 
-		void DNSLookup(const SOCKET& m_socket);
-
 	private:
 		enum Result { Success, Failure };
 
 	private:
 		WSADATA m_WSAData;
-		
-		sockaddr_in m_SockAddr;	// Socket information
-		int m_SockAddrSize;		// Socket size
-
-		// Contains a sockaddr structure
-		struct addrinfo* m_Result, * m_Ptr;
 	};
 }

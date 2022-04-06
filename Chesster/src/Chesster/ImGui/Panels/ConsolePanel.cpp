@@ -12,11 +12,6 @@ namespace Chesster
 		AddLog("Welcome to Chesster!");
 	}
 
-	void ConsolePanel::AddLog(const std::string& msg)
-	{
-		m_Items.push_back(msg);
-	}
-
 	void ConsolePanel::OnImGuiRender()
 	{
 		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
@@ -96,6 +91,11 @@ namespace Chesster
 		ImGui::Separator();
 
 		ImGui::End(); // End "Chess Engine Console"
+	}
+
+	void ConsolePanel::AddLog(const std::string& msg)
+	{
+		m_Items.push_back(msg);
 	}
 
 	void ConsolePanel::PushFont(int index)
