@@ -227,7 +227,7 @@ namespace Chesster
 		{
 			m_IsCameraConnected = true;
 			TCP->ConnectCamera();
-			TCP->SendCameraCommand("SE8");
+			TCP->SendToCamera("SE8");
 			if (!TCP->RecvCameraConfirmation())
 			{
 				LOG_WARN("Camera did not connect sucessfully.");

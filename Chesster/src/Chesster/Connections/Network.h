@@ -20,15 +20,13 @@ namespace Chesster
 		Network();
 		virtual ~Network();
 
-		// Camera connection
-		void ConnectCamera();
-		void DisconnectCamera();
-
-		// Robot connection
+		static unsigned int __stdcall ConnectCameraThread(void* data);
 		static unsigned int __stdcall ConnectRobotThread(void* data);
+
+		void DisconnectCamera();
 		void DisconnectRobot();
 
-		bool SendCameraCommand(const std::string& command);
+		bool SendToCamera(const std::string& command);
 		bool RecvCameraConfirmation();
 
 		bool SendToRobot(const std::string& command);

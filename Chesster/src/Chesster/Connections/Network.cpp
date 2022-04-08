@@ -41,7 +41,8 @@ namespace Chesster
 		DisconnectRobot();
 	}
 
-	void Network::ConnectCamera()
+
+	unsigned int __stdcall Network::ConnectCameraThread(void* data)
 	{
 		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
 
@@ -103,14 +104,7 @@ namespace Chesster
 		}
 
 		Sleep(150);
-	}
-
-	void Network::DisconnectCamera()
-	{
-		IsCameraStreaming = false;
-
-		closesocket(m_CameraCommandSocket);
-		closesocket(m_CameraBufferSocket);
+		return 0;
 	}
 
 	unsigned int __stdcall Network::ConnectRobotThread(void* data)
@@ -164,6 +158,14 @@ namespace Chesster
 		return 0;
 	}
 
+	void Network::DisconnectCamera()
+	{
+		IsCameraStreaming = false;
+
+		closesocket(m_CameraCommandSocket);
+		closesocket(m_CameraBufferSocket);
+	}
+
 	void Network::DisconnectRobot()
 	{
 		IsServerListening = false;
@@ -172,12 +174,12 @@ namespace Chesster
 		closesocket(m_RobotClientSocket);
 	}
 
-	bool Network::SendCameraCommand(const std::string& command)
+	bool Network::SendToCamera(const std::string& command)
 	{
 		int iSendResult = send(m_CameraCommandSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
 		{
-			LOG_ERROR("SendCameraCommand failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("SendToCamera failed with error: {0}", WSAGetLastError());
 			return false;
 		}
 
@@ -227,8 +229,8 @@ namespace Chesster
 
 		LOG_INFO("Waiting to receive...");
 		consolePanel->AddLog("Waiting to receive...");
-		int iResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
-		if (iResult > 0)
+		int iRecvResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
+		if (iRecvResult > 0)
 		{
 			s_RobotData = Buffer;
 			LOG_INFO(Buffer);
@@ -236,7 +238,7 @@ namespace Chesster
 			RobotDataReceived = true;
 		}
 
-		Sleep(1000);
+		//Sleep(1000);
 		return true;
 	}
 
