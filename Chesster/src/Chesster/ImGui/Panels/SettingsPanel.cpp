@@ -13,8 +13,8 @@ namespace Chesster
 {	
 	SettingsPanel::SettingsPanel() :
 		m_CameraIP{ "localhost" },
-		m_CameraCommandPort{ "23" },
-		m_CameraStreamPort{ "3000" },
+		m_CameraTelnetPort{ "23" },
+		m_CameraTCPDevicePort{ "3000" },
 		m_RobotIP{ "192.168.7.10" },
 		m_RobotPort{ "15000" },
 		m_SkillLevel{ 0 },
@@ -122,7 +122,7 @@ namespace Chesster
     {
 		ImGui::Begin("Settings");
 
-		Network& TCP = Network::Get();
+		Network& network = Network::Get();
 		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
 
 		class Cognex {};
@@ -132,9 +132,18 @@ namespace Chesster
 			const char* buttonText = (!m_IsCameraConnected) ? "Connect" : "Disconnect";
 			if (ImGui::Button(buttonText, { 100, 50 }))
 				OnCameraButtonPressed();
+
+			ImGui::SameLine();
+			ImGui::BeginDisabled(!m_IsCameraConnected);
+
+			if (ImGui::Button("Take Picture", { 100, 50 }))
+				Network::Get().SendToCamera("SE8\n");
+
+			ImGui::EndDisabled();
 			ImGui::PopFont();
 
 			ImGui::Separator();
+			ImGui::Text("The IP Address is usually the local address\nof the computer running the In-Sight Explorer program.");
 			std::array<char, 64> ip_buffer = {};
 			if (DrawInputText("IP Address", ip_buffer, m_CameraIP, 120.0f))
 				m_CameraIP = std::string(ip_buffer.data());
@@ -143,15 +152,15 @@ namespace Chesster
 			ImGui::Text("localhost");
 
 			std::array<char, 64> commandPort_buffer = {};
-			if (DrawInputText("Command Port", commandPort_buffer, m_CameraCommandPort, 120.0f))
-				m_CameraCommandPort = std::string(commandPort_buffer.data());
+			if (DrawInputText("Telnet Port", commandPort_buffer, m_CameraTelnetPort, 120.0f))
+				m_CameraTelnetPort = std::string(commandPort_buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("23");
 
 			std::array<char, 64> streamPort_buffer = {};
-			if (DrawInputText("Stream Port", streamPort_buffer, m_CameraStreamPort, 120.0f))
-				m_CameraStreamPort = std::string(streamPort_buffer.data());
+			if (DrawInputText("TCPDevice Port", streamPort_buffer, m_CameraTCPDevicePort, 120.0f))
+				m_CameraTCPDevicePort = std::string(streamPort_buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("3000");
@@ -221,17 +230,23 @@ namespace Chesster
 
 	void SettingsPanel::OnCameraButtonPressed()
 	{
-		Network* TCP = GameLayer::GetTCP();
-
 		if (m_IsCameraConnected)
 		{
-			TCP->DisconnectCamera();
+			GameLayer::Get().GetNetwork()->DisconnectCamera();
+
+			const std::string msg{ "Camera disconnected." };
+			LOG_INFO(msg);
+			GameLayer::Get().GetConsolePanel()->AddLog(msg);
+
 			m_IsCameraConnected = false;
 		}
 		else
 		{
-			unsigned threadID{};
-			_beginthreadex(NULL, 0, &Network::ConnectCameraThread, &Network::Get(), 0, &threadID);
+			unsigned commandThreadID{};
+			_beginthreadex(NULL, 0, &Network::CameraTelnetThread, &Network::Get(), 0, &commandThreadID);
+
+			unsigned bufferThreadID{};
+			_beginthreadex(NULL, 0, &Network::CameraTCPDeviceThread, &Network::Get(), 0, &bufferThreadID);
 
 			m_IsCameraConnected = true;
 		}
@@ -239,11 +254,9 @@ namespace Chesster
 
 	void SettingsPanel::OnRobotButtonPressed()
 	{
-		Network* TCP = GameLayer::GetTCP();
-
 		if (m_IsRobotConnected)
 		{
-			TCP->DisconnectRobot();
+			GameLayer::Get().GetNetwork()->DisconnectRobot();
 
 			const std::string msg{ "Chesster server shut down." };
 			LOG_INFO(msg);
@@ -254,7 +267,7 @@ namespace Chesster
 		else
 		{
 			unsigned threadID{};
-			_beginthreadex(NULL, 0, &Network::ConnectRobotThread, &Network::Get(), 0, &threadID);
+			_beginthreadex(NULL, 0, &Network::ChessterRobotThread, &Network::Get(), 0, &threadID);
 
 			m_IsRobotConnected = true;
 		}

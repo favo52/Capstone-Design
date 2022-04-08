@@ -10,8 +10,6 @@ namespace Chesster
 	
 	GameLayer* GameLayer::s_Instance{ nullptr };
 
-	Network GameLayer::s_TCPConnection{};
-
 	GameLayer::GameLayer() :
 		Layer("GameLayer"),
 		m_StartPosFEN{ "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" },
@@ -112,6 +110,13 @@ namespace Chesster
 			for (auto& p : m_Pieces) p.OnViewportResize();
 		}
 
+		// Camera taking pictures
+		if (m_CameraDataReceived)
+		{
+			LOG_INFO(m_CameraDataBuffer.data());
+			m_CameraDataReceived = false;
+		}
+
 		// Chess engine's move
 		if (m_IsRecvComputerMove)
 			UpdateComputerMove();
@@ -142,9 +147,6 @@ namespace Chesster
 			// Update current player
 			++m_CurrentPlayer;
 		}
-
-		// Check for New Game (take pic and compare, etc)
-		//m_NewGameData = s_TCPConnection.GetCameraData();
 
 		m_Board.OnUpdate(dt);
 	}

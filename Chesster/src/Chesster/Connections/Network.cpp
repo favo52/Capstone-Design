@@ -5,23 +5,11 @@
 
 namespace Chesster
 {
-	// Use Winsock version 2.2
-	constexpr WORD WINSOCK_VER{ MAKEWORD(2, 2) };
-
-	std::string Network::s_CameraData{ "" };
-	std::string Network::s_RobotData{ "" };
-
-	bool Network::CameraDataReceived{ false };
-	bool Network::RobotDataReceived{ false };
-
-	bool Network::IsCameraStreaming{ false };
-	bool Network::IsServerListening{ false };
-
 	Network* Network::s_Instance{ nullptr };
 
 	Network::Network() :
-		m_CameraCommandSocket{ INVALID_SOCKET },
-		m_CameraBufferSocket{ INVALID_SOCKET },
+		m_CameraTelnetSocket{ INVALID_SOCKET },
+		m_CameraTCPDeviceSocket{ INVALID_SOCKET },
 		m_ChessterListenSocket{ INVALID_SOCKET },
 		m_RobotClientSocket{ INVALID_SOCKET }
 	{
@@ -34,27 +22,27 @@ namespace Chesster
 		DisconnectRobot();
 	}
 
-	unsigned int __stdcall Network::ConnectCameraThread(void* data)
+	unsigned int __stdcall Network::CameraTelnetThread(void* data)
 	{
-		Network* TCP = static_cast<Network*>(data);
+		Network* network = static_cast<Network*>(data);
 		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
 		SettingsPanel* settingsPanel = GameLayer::Get().GetSettingsPanel();
 
 		// For commanding the camera to take the picture
-		const std::string& cameraIP = settingsPanel->GetCameraIP();
-		const std::string& cameraCommandPort = settingsPanel->GetCamCommandPort();
-		if (!TCP->m_Winsock.CreateClientSocket(TCP->m_CameraCommandSocket, cameraIP, cameraCommandPort))
+		const std::string& cameraIP = settingsPanel->m_CameraIP;
+		const std::string& cameraTelnetPort = settingsPanel->m_CameraTelnetPort;
+		if (!network->m_Winsock.CreateClientSocket(network->m_CameraTelnetSocket, cameraIP, cameraTelnetPort))
 		{
 			std::string str{ "Unable to connect the Camera Command Socket. "
-				"(IP: " + cameraIP + ", Port: " + cameraCommandPort + ")\n" };
+				"(IP: " + cameraIP + ", Port: " + cameraTelnetPort + ")\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
 			settingsPanel->SetCameraButtonStatus(false);
 			return 1;
 		}
 
-		// Attempt to login to the cognex camera
-		if (!TCP->LoginToCognex())
+		// Attempt to login to InSight-Explorer
+		if (!network->LoginToCognex())
 		{
 			std::string str{ "Unable to login to the Cognex camera.\n" };
 			LOG_ERROR(str);
@@ -63,42 +51,68 @@ namespace Chesster
 			return 1;
 		}
 
+		// Keep thread alive waiting for any new data received from
+		// the InSight-Explorer Telnet socket
+		while (true)
+		{
+			std::array<char, 128> buffer = {};
+			if (!network->RecvCameraCommand(buffer))
+				break;
+
+			LOG_INFO(buffer.data());
+			consolePanel->AddLog(buffer.data());
+		}
+
+		settingsPanel->SetCameraButtonStatus(false);
+
+		return 0;
+	}
+
+	unsigned int __stdcall Network::CameraTCPDeviceThread(void* data)
+	{
+		Network* network = static_cast<Network*>(data);
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		SettingsPanel* settingsPanel = GameLayer::Get().GetSettingsPanel();
+
 		// For receiving data stream of physical board's status
-		const std::string& cameraStreamPort = settingsPanel->GetCamStreamPort();
-		if (!TCP->m_Winsock.CreateClientSocket(TCP->m_CameraBufferSocket, cameraIP, cameraStreamPort))
+		const std::string& cameraIP = settingsPanel->m_CameraIP;
+		const std::string& cameraTCPDevicePort = settingsPanel->m_CameraTCPDevicePort;
+		if (!network->m_Winsock.CreateClientSocket(network->m_CameraTCPDeviceSocket, cameraIP, cameraTCPDevicePort))
 		{
 			std::string str{ "Unable to connect the Camera Buffer Socket. "
-				"(IP: " + cameraIP + ", Port: " + cameraStreamPort + ")\n" };
+				"(IP: " + cameraIP + ", Port: " + cameraTCPDevicePort + ")\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
 			settingsPanel->SetCameraButtonStatus(false);
 			return 1;
 		}
-		
-		IsCameraStreaming = true;
-		while (IsCameraStreaming)
+
+		// Keep thread alive waiting for any new data received from
+		// the InSight-Explorer TCP Device socket
+		while (true)
 		{
-			if (!TCP->RecvCameraData())
+			if (!network->RecvCameraData(GameLayer::Get().GetCameraBuffer()))
 			{
 				std::string str{ "Stopped receiving camera data." };
-				LOG_ERROR(str);
+				LOG_INFO(str);
 				consolePanel->AddLog(str);
-				return 1;
+				break;
 			}
 		}
+
+		settingsPanel->SetCameraButtonStatus(false);
 
 		return 0;
 	}
 
-	unsigned int __stdcall Network::ConnectRobotThread(void* data)
+	unsigned int __stdcall Network::ChessterRobotThread(void* data)
 	{
 		Network* TCP = static_cast<Network*>(data);
-
 		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
 		SettingsPanel* settingsPanel = GameLayer::Get().GetSettingsPanel();
 		
-		const std::string& robotIP = settingsPanel->GetRobotIP();
-		const std::string& robotPort = settingsPanel->GetRobotPort();
+		const std::string& robotIP = settingsPanel->m_RobotIP;
+		const std::string& robotPort = settingsPanel->m_RobotPort;
 		if (!TCP->m_Winsock.CreateServerSocket(TCP->m_ChessterListenSocket, robotIP, robotPort))
 		{
 			const std::string str{ "Unable create server socket. (IP: " + robotIP + ", Port: " + robotPort + ")\n\n" };
@@ -108,11 +122,11 @@ namespace Chesster
 			return 1;
 		}
 
-		const std::string str{ "Chesster server is ready." };
+		const std::string str{ "Chesster server is ready. Accepting client..." };
 		LOG_INFO(str);
 		consolePanel->AddLog(str);
 
-		// Accept a client socket
+		// Accept a client socket (the staubli robot)
 		TCP->m_RobotClientSocket = TCP->m_Winsock.AcceptClient(TCP->m_ChessterListenSocket);
 		if (TCP->m_RobotClientSocket == INVALID_SOCKET)
 		{
@@ -125,17 +139,18 @@ namespace Chesster
 		// No longer need server listening socket
 		closesocket(TCP->m_ChessterListenSocket);
 
-		LOG_INFO("CS8C Connected.");
-		consolePanel->AddLog("CS8C Connected.");
+		LOG_INFO("Client accepted. CS8C Connected.");
+		consolePanel->AddLog("Client accepted. CS8C Connected.");
 
-		IsServerListening = true;
-		while (IsServerListening)
+		// Keep thread alive waiting for any new
+		// data received from the robot's client socket
+		while (true)
 		{
-			if (!TCP->RecvFromRobot())
+			std::array<char, 256> buffer = {};
+			if (!TCP->RecvFromRobot(buffer))
 			{
 				closesocket(TCP->m_RobotClientSocket);
 				settingsPanel->SetRobotButtonStatus(false);
-				IsServerListening = false;
 				break;
 			}
 		}
@@ -145,42 +160,22 @@ namespace Chesster
 
 	void Network::DisconnectCamera()
 	{
-		IsCameraStreaming = false;
-
-		closesocket(m_CameraCommandSocket);
-		closesocket(m_CameraBufferSocket);
+		closesocket(m_CameraTelnetSocket);
+		closesocket(m_CameraTCPDeviceSocket);
 	}
 
 	void Network::DisconnectRobot()
 	{
-		IsServerListening = false;
-
 		closesocket(m_ChessterListenSocket);
 		closesocket(m_RobotClientSocket);
 	}
 
 	bool Network::SendToCamera(const std::string& command)
 	{
-		int iSendResult = send(m_CameraCommandSocket, command.c_str(), command.length(), 0);
+		int iSendResult = send(m_CameraTelnetSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
 		{
 			LOG_ERROR("SendToCamera failed with error: {0}", WSAGetLastError());
-			return false;
-		}
-
-		return true;
-	}
-
-	bool Network::RecvFromCamera(std::array<char, 128>& buffer)
-	{
-		// Empty the buffer
-		buffer = {};
-
-		// Receive confirmation from the camera
-		int iRecvResult = recv(m_CameraCommandSocket, buffer.data(), buffer.size(), 0);
-		if (iRecvResult == INVALID_SOCKET)
-		{
-			LOG_ERROR("RecvFromCamera failed with error: {0}", WSAGetLastError());
 			return false;
 		}
 
@@ -199,108 +194,73 @@ namespace Chesster
 		return true;
 	}
 
-	bool Network::RecvFromRobot()
-	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
-
-		// Prepare buffer
-		char Buffer[128]{};
-		int BufferLen{ sizeof(Buffer) };
-		ZeroMemory(Buffer, BufferLen);
-
-		LOG_INFO("Waiting to receive...");
-		consolePanel->AddLog("Waiting to receive...");
-		int iRecvResult = recv(m_RobotClientSocket, Buffer, BufferLen, 0);
-		if (iRecvResult > 0)
-		{
-			s_RobotData = Buffer;
-			LOG_INFO(Buffer);
-			consolePanel->AddLog(Buffer);
-			RobotDataReceived = true;
-		}
-
-		//Sleep(1000);
-		return true;
-	}
-
 	bool Network::LoginToCognex()
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
-		std::array<char, 128> buffer = {};
-
-		// Receive Cognex welcome message
-		if (!RecvFromCamera(buffer))
-			return false;
-		LOG_INFO(buffer.data());
-		consolePanel->AddLog(buffer.data());
-
-		// Receive User name prompt
-		if (!RecvFromCamera(buffer))
-			return false;
-		LOG_INFO("{0} {1}", buffer.data(), "admin");
-		consolePanel->AddLog(buffer.data() + std::string("admin"));
-
 		// Send User name
 		if (!SendToCamera("admin\n"))
 			return false;
-
-		// Receive Password prompt
-		if (!RecvFromCamera(buffer))
-			return false;
-		LOG_INFO(buffer.data());
-		consolePanel->AddLog(buffer.data());
 
 		// Send password (no password, thus we "press enter")
 		if (!SendToCamera("\n"))
 			return false;
 
-		// Receive login confirmation
-		if (!RecvFromCamera(buffer))
-			return false;
-		LOG_INFO(buffer.data());
-		consolePanel->AddLog(buffer.data());
-
 		// Send take initial picture command
 		if (!SendToCamera("SE8\n"))
 			return false;
 
-		// Receive picture confirmation
-		if (!RecvFromCamera(buffer))
-			return false;
+		return true;
+	}
 
-		if (buffer.size() > 0 && buffer.front() != '1')
+	bool Network::RecvCameraCommand(std::array<char, 128>& buffer)
+	{
+		// Receive confirmation from the camera
+		int iRecvResult = recv(m_CameraTelnetSocket, buffer.data(), buffer.size(), 0);
+		if (iRecvResult == INVALID_SOCKET)
 		{
-			LOG_WARN("Camera did not take picture.");
-			GameLayer::Get().GetConsolePanel()->AddLog("Camera did not take picture.");
+			LOG_ERROR("RecvCameraCommand failed with error: {0}. Disconnecting...", WSAGetLastError());
+			return false;
 		}
 
 		return true;
 	}
 
-	bool Network::RecvCameraData()
+	bool Network::RecvCameraData(std::array<char, 256>& buffer)
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
-
-		// Prepare buffer
-		char Buffer[256]{};
-		int BufferLen{ sizeof(Buffer) };
-		ZeroMemory(Buffer, BufferLen);
-
-		int iRecvResult = recv(m_CameraBufferSocket, Buffer, BufferLen, 0);
+		int iRecvResult = recv(m_CameraTCPDeviceSocket, buffer.data(), buffer.size(), 0);
 		if (iRecvResult == SOCKET_ERROR)
 		{
-			LOG_ERROR("RecvBuffer failed with error: {0}. Disconnecting...", WSAGetLastError());
+			LOG_ERROR("RecvCameraData failed with error: {0}. Disconnecting...", WSAGetLastError());
 			DisconnectCamera();
 			
-			LOG_INFO("Camera disconnected.");
-			consolePanel->AddLog("Camera disconnected.\n\n");
+			LOG_INFO("Camera buffer disconnected.");
+			GameLayer::Get().GetConsolePanel()->AddLog("Camera buffer disconnected.\n\n");
 			return false;
 		}
 
-		s_CameraData = std::string(Buffer);
-		CameraDataReceived = true;
+		GameLayer::Get().CameraDataReceived();
 
-		Sleep(1000);
+		return true;
+	}
+
+	bool Network::RecvFromRobot(std::array<char, 256>& buffer)
+	{
+		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		
+		LOG_INFO("Waiting to receive...");
+		consolePanel->AddLog("Waiting to receive...");
+
+		int iRecvResult = recv(m_RobotClientSocket, buffer.data(), buffer.size(), 0);
+		if (iRecvResult == INVALID_SOCKET)
+		{
+			LOG_ERROR("RecvFromRobot failed with error: {0}. Disconnecting...", WSAGetLastError());
+			return false;
+		}
+		if (iRecvResult > 0)
+		{
+			LOG_INFO(buffer.data());
+			consolePanel->AddLog(buffer.data());
+		}
+
 		return true;
 	}
 }

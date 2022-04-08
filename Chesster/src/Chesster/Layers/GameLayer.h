@@ -31,10 +31,14 @@ namespace Chesster
 
 		void ResetGame();
 
-		Interprocess* GetConnector() { return &m_Connector; }
-		ConsolePanel* GetConsolePanel() { return &s_ConsolePanel; }
-		SettingsPanel* GetSettingsPanel() { return &m_SettingsPanel; }
-		static Network* GetTCP() { return &s_TCPConnection; }
+		void CameraDataReceived() { m_CameraDataReceived = true; }
+
+		std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
+
+		Interprocess*	GetConnector() { return &m_Connector; }
+		Network*		GetNetwork() { return &m_Network; }
+		ConsolePanel*	GetConsolePanel() { return &s_ConsolePanel; }
+		SettingsPanel*	GetSettingsPanel() { return &m_SettingsPanel; }
 
 		/** It is used to retrieve the instance of the current GameLayer.
 		 @return A reference to this GameLayer object. */
@@ -91,6 +95,7 @@ namespace Chesster
 		std::string m_CurrentFEN;
 		std::vector<std::string> m_LegalMoves;
 
+		std::array<char, 256> m_CameraDataBuffer = {};
 		std::string m_OldData;
 		std::string m_NewData;
 		std::string m_TempData;
@@ -103,12 +108,13 @@ namespace Chesster
 		bool m_IsRecvComputerMove{ false };
 		bool m_IsPlayerPlayed{ false };
 		bool m_IsMovePlayed{ false };
+		bool m_CameraDataReceived{ false };
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
 		Interprocess m_Connector;
-		static Network s_TCPConnection;
+		Network m_Network;
 
 		ConsolePanel s_ConsolePanel;
 		SettingsPanel m_SettingsPanel;
