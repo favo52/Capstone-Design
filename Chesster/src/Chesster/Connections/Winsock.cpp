@@ -23,7 +23,7 @@ namespace Chesster
 		WSACleanup();
 	}
 
-	bool Winsock::CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
+	bool Winsock::CreateClientSocket(SOCKET& m_socket, const std::string& ip, const std::string& port)
 	{
 		// Contains a sockaddr structure
 		struct addrinfo* Result, Hints;
@@ -35,7 +35,7 @@ namespace Chesster
 		Hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
 
 		// Resolve the server address and port
-		int iResult = getaddrinfo(ip, port, &Hints, &Result);
+		int iResult = getaddrinfo(ip.c_str(), port.c_str(), &Hints, &Result);
 		if (iResult == Result::Failure)
 		{
 			LOG_ERROR("WINSOCK: getaddrinfo failed with error: {0}", iResult);
@@ -74,7 +74,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool Winsock::CreateServerSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port)
+	bool Winsock::CreateServerSocket(SOCKET& m_socket, const std::string& ip, const std::string& port)
 	{
 		// Contains a sockaddr structure
 		struct addrinfo* Result, Hints;
@@ -88,7 +88,7 @@ namespace Chesster
 											// in a call to the bind function.
 		// Resolve the local address and port to be used by the server
 		// The getaddrinfo function is used to determine the values in the sockaddr structure
-		int iResult = getaddrinfo(ip, port, &Hints, &Result);
+		int iResult = getaddrinfo(ip.c_str(), port.c_str(), &Hints, &Result);
 		if (iResult != Result::Success) // Error checking: ensure an address was received
 		{
 			LOG_ERROR("WINSOCK: getaddrinfo() failed with error: {0}", iResult);

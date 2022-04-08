@@ -15,9 +15,19 @@ namespace Chesster
 		/*	Draws the Settings panel to the screen. */
 		void OnImGuiRender();
 
-		/*	Sets the robot connection toggle to true or false.
+		/*	Sets the camera button connection status to Connect or Disconnect.
 		 @param toggle The new true or false state. */
-		void SetRobotConnection(bool toggle) { m_IsRobotConnected = toggle; }
+		void SetCameraButtonStatus(bool toggle) { m_IsCameraConnected = toggle; }
+
+		/*	Sets the robot button connection status to Connect or Disconnect.
+		 @param toggle The new true or false state. */
+		void SetRobotButtonStatus(bool toggle) { m_IsRobotConnected = toggle; }
+
+		const std::string& GetCameraIP() const { return m_CameraIP; }
+		const std::string& GetCamCommandPort() const { return m_CameraCommandPort; }
+		const std::string& GetCamStreamPort() const { return m_CameraStreamPort; }
+		const std::string& GetRobotIP() const { return m_RobotIP; }
+		const std::string& GetRobotPort() const { return m_RobotPort; }
 
 		/**	Retrieves the Clear Color from the Settings Panel.
 		 @return A glm::vec4 of the Clear Color. */
@@ -31,6 +41,9 @@ namespace Chesster
 		void OnNewSquareColor();
 
 	private:
+		std::string m_CameraIP, m_CameraCommandPort, m_CameraStreamPort;
+		std::string m_RobotIP, m_RobotPort;
+
 		int m_SkillLevel;			// Defaults to 0 (Minimum)
 		int m_ELORating;			// Defaults to 1350 (Minimum)
 

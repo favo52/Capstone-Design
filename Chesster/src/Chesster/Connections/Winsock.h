@@ -16,8 +16,8 @@ namespace Chesster
 		/*	Shut down the socket DLL. */
 		virtual ~Winsock();
 
-		bool CreateClientSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port);
-		bool CreateServerSocket(SOCKET& m_socket, const PCSTR& ip, const PCSTR& port);
+		bool CreateClientSocket(SOCKET& m_socket, const std::string& ip, const std::string& port);
+		bool CreateServerSocket(SOCKET& m_socket, const std::string& ip, const std::string& port);
 
 		SOCKET AcceptClient(const SOCKET& listenSocket);
 

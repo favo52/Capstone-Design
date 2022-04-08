@@ -12,6 +12,11 @@
 namespace Chesster
 {	
 	SettingsPanel::SettingsPanel() :
+		m_CameraIP{ "localhost" },
+		m_CameraCommandPort{ "23" },
+		m_CameraStreamPort{ "3000" },
+		m_RobotIP{ "192.168.7.10" },
+		m_RobotPort{ "15000" },
 		m_SkillLevel{ 0 },
 		m_ELORating{ 1350 },
 		m_IsCameraConnected{ false },
@@ -131,22 +136,22 @@ namespace Chesster
 
 			ImGui::Separator();
 			std::array<char, 64> ip_buffer = {};
-			if (DrawInputText("IP Address", ip_buffer, TCP.s_CameraIP, 120.0f))
-				TCP.s_CameraIP = std::string(ip_buffer.data());
+			if (DrawInputText("IP Address", ip_buffer, m_CameraIP, 120.0f))
+				m_CameraIP = std::string(ip_buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("localhost");
 
 			std::array<char, 64> commandPort_buffer = {};
-			if (DrawInputText("Command Port", commandPort_buffer, TCP.s_CameraCommandPort, 120.0f))
-				TCP.s_CameraCommandPort = std::string(commandPort_buffer.data());
+			if (DrawInputText("Command Port", commandPort_buffer, m_CameraCommandPort, 120.0f))
+				m_CameraCommandPort = std::string(commandPort_buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("23");
 
 			std::array<char, 64> streamPort_buffer = {};
-			if (DrawInputText("Stream Port", streamPort_buffer, TCP.s_CameraStreamPort, 120.0f))
-				TCP.s_CameraStreamPort = std::string(streamPort_buffer.data());
+			if (DrawInputText("Stream Port", streamPort_buffer, m_CameraStreamPort, 120.0f))
+				m_CameraStreamPort = std::string(streamPort_buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("3000");
@@ -163,15 +168,15 @@ namespace Chesster
 
 			ImGui::Separator();
 			std::array<char, 64> ip_buffer = {};
-			if (DrawInputText("IP Address", ip_buffer, TCP.s_RobotIP, 100.0f))
-				TCP.s_RobotIP = std::string(ip_buffer.data());
+			if (DrawInputText("IP Address", ip_buffer, m_RobotIP, 100.0f))
+				m_RobotIP = std::string(ip_buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("192.168.7.10");
 
 			std::array<char, 64> port_buffer = {};
-			if (DrawInputText("Port", port_buffer, TCP.s_RobotPort, 100.0f))
-				TCP.s_RobotPort = std::string(port_buffer.data());
+			if (DrawInputText("Port", port_buffer, m_RobotPort, 100.0f))
+				m_RobotPort = std::string(port_buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("15000");
@@ -225,15 +230,10 @@ namespace Chesster
 		}
 		else
 		{
+			unsigned threadID{};
+			_beginthreadex(NULL, 0, &Network::ConnectCameraThread, &Network::Get(), 0, &threadID);
+
 			m_IsCameraConnected = true;
-			TCP->ConnectCamera();
-			TCP->SendToCamera("SE8");
-			if (!TCP->RecvCameraConfirmation())
-			{
-				LOG_WARN("Camera did not connect sucessfully.");
-				GameLayer::Get().GetConsolePanel()->AddLog("Camera did not connect sucessfully.");
-				m_IsCameraConnected = false;
-			}
 		}
 	}
 
@@ -253,10 +253,10 @@ namespace Chesster
 		}
 		else
 		{
-			m_IsRobotConnected = true;
-
 			unsigned threadID{};
 			_beginthreadex(NULL, 0, &Network::ConnectRobotThread, &Network::Get(), 0, &threadID);
+
+			m_IsRobotConnected = true;
 		}
 	}
 
