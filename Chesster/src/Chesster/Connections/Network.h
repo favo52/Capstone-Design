@@ -20,16 +20,14 @@ namespace Chesster
 		Network();
 		virtual ~Network();
 
-		// Camera connection
-		void ConnectCamera();
-		void DisconnectCamera();
-
-		// Robot connection
+		static unsigned int __stdcall ConnectCameraThread(void* data);
 		static unsigned int __stdcall ConnectRobotThread(void* data);
+
+		void DisconnectCamera();
 		void DisconnectRobot();
 
-		bool SendCameraCommand(const std::string& command);
-		bool RecvCameraConfirmation();
+		bool SendToCamera(const std::string& command);
+		bool RecvFromCamera(std::array<char, 128>& buffer);
 
 		bool SendToRobot(const std::string& command);
 		bool RecvFromRobot();
@@ -46,26 +44,23 @@ namespace Chesster
 		static bool IsCameraStreaming;
 		static bool IsServerListening;
 
-		static std::string s_CameraIP, s_CameraCommandPort, s_CameraStreamPort;
-		static std::string s_RobotIP, s_RobotPort;
-
 	private:
+		bool LoginToCognex();
 		bool RecvCameraData();
-		static unsigned int __stdcall CameraDataStreamThread(void* data);
 
 	private:
-		Winsock m_Winsock;
+		Winsock m_Winsock;				// Initializes Windows Sockets
 
-		SOCKET m_CameraCommandSocket;	// Command the camera to take a pic
-		SOCKET m_CameraBufferSocket;	// Receive the camera's data
+		SOCKET m_CameraCommandSocket;	// Client SOCKET to give commands to the camera
+		SOCKET m_CameraBufferSocket;	// Client SOCKET to receive the camera's data
 
-		SOCKET m_ChessterListenSocket;	// SOCKET for server to listen for client connections
-		SOCKET m_RobotClientSocket;		// SOCKET for accepting connection from staubli robot
+		SOCKET m_ChessterListenSocket;	// Server SOCKET to listen for client connections
+		SOCKET m_RobotClientSocket;		// Client SOCKET for accepting connection from staubli robot
 
 	private:
 		static std::string s_CameraData;
 		static std::string s_RobotData;
 
-		static Network* s_Instance; // Pointer to this
+		static Network* s_Instance;		// Pointer to this
 	};
 }
