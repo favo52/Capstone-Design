@@ -113,7 +113,7 @@ namespace Chesster
 		// Camera taking pictures
 		if (m_CameraDataReceived)
 		{
-			LOG_INFO(m_CameraDataBuffer.data());
+			LOG_INFO("Data Received: {0}", m_CameraDataBuffer.data());
 			m_CameraDataReceived = false;
 		}
 

@@ -37,16 +37,18 @@ namespace Chesster
 				"(IP: " + cameraIP + ", Port: " + cameraTelnetPort + ")\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
+			network->DisconnectCamera();
 			settingsPanel->SetCameraButtonStatus(false);
 			return 1;
 		}
 
 		// Attempt to login to InSight-Explorer
-		if (!network->LoginToCognex())
+		if (!network->SendToCamera("admin\n\nSE8\n"))
 		{
 			std::string str{ "Unable to login to the Cognex camera.\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
+			network->DisconnectCamera();
 			settingsPanel->SetCameraButtonStatus(false);
 			return 1;
 		}
@@ -63,6 +65,7 @@ namespace Chesster
 			consolePanel->AddLog(buffer.data());
 		}
 
+		network->DisconnectCamera();
 		settingsPanel->SetCameraButtonStatus(false);
 
 		return 0;
@@ -83,6 +86,7 @@ namespace Chesster
 				"(IP: " + cameraIP + ", Port: " + cameraTCPDevicePort + ")\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
+			network->DisconnectCamera();
 			settingsPanel->SetCameraButtonStatus(false);
 			return 1;
 		}
@@ -100,6 +104,7 @@ namespace Chesster
 			}
 		}
 
+		network->DisconnectCamera();
 		settingsPanel->SetCameraButtonStatus(false);
 
 		return 0;
@@ -107,17 +112,18 @@ namespace Chesster
 
 	unsigned int __stdcall Network::ChessterRobotThread(void* data)
 	{
-		Network* TCP = static_cast<Network*>(data);
+		Network* network = static_cast<Network*>(data);
 		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
 		SettingsPanel* settingsPanel = GameLayer::Get().GetSettingsPanel();
 		
 		const std::string& robotIP = settingsPanel->m_RobotIP;
 		const std::string& robotPort = settingsPanel->m_RobotPort;
-		if (!TCP->m_Winsock.CreateServerSocket(TCP->m_ChessterListenSocket, robotIP, robotPort))
+		if (!network->m_Winsock.CreateServerSocket(network->m_ChessterListenSocket, robotIP, robotPort))
 		{
 			const std::string str{ "Unable create server socket. (IP: " + robotIP + ", Port: " + robotPort + ")\n\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
+			network->DisconnectRobot();
 			settingsPanel->SetRobotButtonStatus(false);
 			return 1;
 		}
@@ -126,18 +132,18 @@ namespace Chesster
 		LOG_INFO(str);
 		consolePanel->AddLog(str);
 
-		// Accept a client socket (the staubli robot)
-		TCP->m_RobotClientSocket = TCP->m_Winsock.AcceptClient(TCP->m_ChessterListenSocket);
-		if (TCP->m_RobotClientSocket == INVALID_SOCKET)
+		// Accept a client (the staubli robot)
+		network->m_RobotClientSocket = network->m_Winsock.AcceptClient(network->m_ChessterListenSocket);
+		if (network->m_RobotClientSocket == INVALID_SOCKET)
 		{
 			LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());
-			closesocket(TCP->m_ChessterListenSocket);
+			network->DisconnectRobot();
 			settingsPanel->SetRobotButtonStatus(false);
 			return 1;
 		}
 
 		// No longer need server listening socket
-		closesocket(TCP->m_ChessterListenSocket);
+		closesocket(network->m_ChessterListenSocket);
 
 		LOG_INFO("Client accepted. CS8C Connected.");
 		consolePanel->AddLog("Client accepted. CS8C Connected.");
@@ -147,9 +153,9 @@ namespace Chesster
 		while (true)
 		{
 			std::array<char, 256> buffer = {};
-			if (!TCP->RecvFromRobot(buffer))
+			if (!network->RecvFromRobot(buffer))
 			{
-				closesocket(TCP->m_RobotClientSocket);
+				network->DisconnectRobot();
 				settingsPanel->SetRobotButtonStatus(false);
 				break;
 			}
@@ -161,13 +167,19 @@ namespace Chesster
 	void Network::DisconnectCamera()
 	{
 		closesocket(m_CameraTelnetSocket);
+		m_CameraTelnetSocket = INVALID_SOCKET;
+
 		closesocket(m_CameraTCPDeviceSocket);
+		m_CameraTCPDeviceSocket = INVALID_SOCKET;
 	}
 
 	void Network::DisconnectRobot()
 	{
 		closesocket(m_ChessterListenSocket);
+		m_ChessterListenSocket = INVALID_SOCKET;
+
 		closesocket(m_RobotClientSocket);
+		m_RobotClientSocket = INVALID_SOCKET;
 	}
 
 	bool Network::SendToCamera(const std::string& command)
@@ -194,30 +206,13 @@ namespace Chesster
 		return true;
 	}
 
-	bool Network::LoginToCognex()
-	{
-		// Send User name
-		if (!SendToCamera("admin\n"))
-			return false;
-
-		// Send password (no password, thus we "press enter")
-		if (!SendToCamera("\n"))
-			return false;
-
-		// Send take initial picture command
-		if (!SendToCamera("SE8\n"))
-			return false;
-
-		return true;
-	}
-
 	bool Network::RecvCameraCommand(std::array<char, 128>& buffer)
 	{
-		// Receive confirmation from the camera
 		int iRecvResult = recv(m_CameraTelnetSocket, buffer.data(), buffer.size(), 0);
 		if (iRecvResult == INVALID_SOCKET)
 		{
 			LOG_ERROR("RecvCameraCommand failed with error: {0}. Disconnecting...", WSAGetLastError());
+			DisconnectCamera();
 			return false;
 		}
 
@@ -237,7 +232,8 @@ namespace Chesster
 			return false;
 		}
 
-		GameLayer::Get().CameraDataReceived();
+		if (iRecvResult > 0)
+			GameLayer::Get().CameraDataReceived();
 
 		return true;
 	}
@@ -255,6 +251,7 @@ namespace Chesster
 			LOG_ERROR("RecvFromRobot failed with error: {0}. Disconnecting...", WSAGetLastError());
 			return false;
 		}
+
 		if (iRecvResult > 0)
 		{
 			LOG_INFO(buffer.data());
