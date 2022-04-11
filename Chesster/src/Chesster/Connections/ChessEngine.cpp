@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Chesster/Connections/Interprocess.h"
+#include "Chesster/Connections/ChessEngine.h"
 
 #include "Chesster/Layers/GameLayer.h"
 
@@ -10,7 +10,7 @@
 
 namespace Chesster
 {
-	Interprocess::Interprocess() :
+	ChessEngine::ChessEngine() :
 		// Chess engine
 		m_StartInfo{ 0 },
 		m_SecAttr{ 0 },
@@ -70,13 +70,13 @@ namespace Chesster
 		Py_Initialize();
 	}
 
-	Interprocess::~Interprocess()
+	ChessEngine::~ChessEngine()
 	{
 		CloseAllConnections();
 		Py_Finalize();
 	}
 
-	void Interprocess::ConnectToEngine(const LPWSTR& path)
+	void ChessEngine::ConnectToEngine(const LPWSTR& path)
 	{
 		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
 
@@ -108,7 +108,7 @@ namespace Chesster
 		consolePanel->AddLog(msg);
 	}
 
-	void Interprocess::ResetGame()
+	void ChessEngine::NewGame()
 	{
 		// The fen is the chess starting position.
 		CHAR str[] = "ucinewgame\nposition fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\nd\nisready\n";
@@ -122,7 +122,7 @@ namespace Chesster
 		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
-	void Interprocess::EvaluateGame()
+	void ChessEngine::EvaluateGame()
 	{
 		CHAR str[] = "eval\n";
 		m_Success = WriteFile(m_Pipe_IN_Wr, str, strlen(str), &m_Written, NULL);
@@ -135,7 +135,7 @@ namespace Chesster
 		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
-	void Interprocess::SetDifficultyLevel(int difficulty)
+	void ChessEngine::SetDifficultyLevel(int difficulty)
 	{
 		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
 
@@ -149,7 +149,7 @@ namespace Chesster
 	}
 
 	// Overrides skill level
-	void Interprocess::SetDifficultyELO(int elo)
+	void ChessEngine::SetDifficultyELO(int elo)
 	{
 		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
 
@@ -163,7 +163,7 @@ namespace Chesster
 		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
-	void Interprocess::ToggleELO(bool boolean)
+	void ChessEngine::ToggleELO(bool boolean)
 	{
 		std::string toggle{ "false\n" };
 		if (boolean) toggle = { "true\n" };
@@ -178,7 +178,7 @@ namespace Chesster
 		GameLayer::Get().GetConsolePanel()->AddLog(msg);
 	}
 
-	std::string Interprocess::GetNextMove(const std::string& moveHistory)
+	std::string ChessEngine::GetNextMove(const std::string& moveHistory)
 	{
 		std::string msg = { "position startpos moves " + moveHistory + "\ngo depth 10\nd\n" };
 
@@ -206,8 +206,10 @@ namespace Chesster
 	}
 
 	// Run the Python script
-	std::vector<std::string> Interprocess::GetValidMoves(const std::string& path, const std::string& fen)
+	std::vector<std::string> ChessEngine::GetValidMoves(const std::string& fen)
 	{
+		const std::string path{ "assets/script/__init__.exe" };
+
 		std::string argument = { path + " " + fen };
 
 		// Convert std::string into LPSTR
@@ -242,7 +244,7 @@ namespace Chesster
 		return validMoves;
 	}
 
-	std::string Interprocess::GetFEN(const std::string& moveHistory)
+	std::string ChessEngine::GetFEN(const std::string& moveHistory)
 	{
 		std::string msg = { "position startpos moves " + moveHistory + "\nd\n" };
 
@@ -280,7 +282,7 @@ namespace Chesster
 		return "error"; // If no FEN string is found
 	}
 
-	const std::string Interprocess::GetEngineReply()
+	const std::string ChessEngine::GetEngineReply()
 	{
 		// Read engine's reply
 		std::string msg{};
@@ -297,7 +299,7 @@ namespace Chesster
 		return msg;
 	}
 
-	void Interprocess::CloseAllConnections()
+	void ChessEngine::CloseAllConnections()
 	{
 		// Quit chess engine
 		CHAR str[] = "quit\n";

@@ -2,6 +2,7 @@
 #include "Chesster/ImGui/Panels/SettingsPanel.h"
 
 #include "Chesster/Layers/GameLayer.h"
+#include "Chesster/Connections/ChessEngine.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -122,7 +123,6 @@ namespace Chesster
     {
 		ImGui::Begin("Settings");
 
-		Network& network = Network::Get();
 		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
 
 		class Cognex {};
@@ -137,7 +137,7 @@ namespace Chesster
 			ImGui::BeginDisabled(!m_IsCameraConnected);
 
 			if (ImGui::Button("Take Picture", { 100, 50 }))
-				Network::Get().SendToCamera("SE8\n");
+				m_Network.SendToCamera("SE8\n");
 
 			ImGui::EndDisabled();
 			ImGui::PopFont();
@@ -194,17 +194,17 @@ namespace Chesster
 		class DifficultySlider {};
 		DrawSection<DifficultySlider>("Engine Difficulty", [&]()
 		{
-			Interprocess* chessEngine = GameLayer::Get().GetConnector();
+			ChessEngine& chessEngine = GameLayer::Get().GetChessEngine();
 
 			if (DrawIntSliderControl("Skill Level", m_SkillLevel, 0, 20))
-				chessEngine->SetDifficultyLevel(m_SkillLevel);
+				chessEngine.SetDifficultyLevel(m_SkillLevel);
 
 			if (DrawIntSliderControl("ELO Rating", m_ELORating, 1350, 2850))
-				chessEngine->SetDifficultyELO(m_ELORating);
+				chessEngine.SetDifficultyELO(m_ELORating);
 
 			static bool isELOActive;
 			if (ImGui::Checkbox("Activate ELO (Overrides Skill Level)", &isELOActive))
-				chessEngine->ToggleELO(isELOActive);
+				chessEngine.ToggleELO(isELOActive);
 		});
 
 		static glm::vec4 clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -232,7 +232,7 @@ namespace Chesster
 	{
 		if (m_IsCameraConnected)
 		{
-			GameLayer::Get().GetNetwork()->DisconnectCamera();
+			m_Network.DisconnectCamera();
 
 			const std::string msg{ "Camera disconnected." };
 			LOG_INFO(msg);
@@ -243,11 +243,11 @@ namespace Chesster
 		else
 		{
 			unsigned commandThreadID{};
-			_beginthreadex(NULL, 0, &Network::CameraTelnetThread, &Network::Get(), 0, &commandThreadID);
+			_beginthreadex(NULL, 0, &Network::CameraTelnetThread, &m_Network, 0, &commandThreadID);
 
 			unsigned bufferThreadID{};
-			_beginthreadex(NULL, 0, &Network::CameraTCPDeviceThread, &Network::Get(), 0, &bufferThreadID);
-
+			_beginthreadex(NULL, 0, &Network::CameraTCPDeviceThread, &m_Network, 0, &bufferThreadID);
+			
 			m_IsCameraConnected = true;
 		}
 	}
@@ -256,7 +256,7 @@ namespace Chesster
 	{
 		if (m_IsRobotConnected)
 		{
-			GameLayer::Get().GetNetwork()->DisconnectRobot();
+			m_Network.DisconnectRobot();
 
 			const std::string msg{ "Chesster server shut down." };
 			LOG_INFO(msg);
@@ -267,7 +267,7 @@ namespace Chesster
 		else
 		{
 			unsigned threadID{};
-			_beginthreadex(NULL, 0, &Network::ChessterRobotThread, &Network::Get(), 0, &threadID);
+			_beginthreadex(NULL, 0, &Network::ChessterRobotThread, &m_Network, 0, &threadID);
 
 			m_IsRobotConnected = true;
 		}
@@ -275,9 +275,11 @@ namespace Chesster
 
 	void SettingsPanel::OnNewSquareColor()
 	{
-		for (Board::Square& square : Board::GetBoardSquares())
+		for (Board::Square& square : Board::Get().GetBoardSquares())
 		{
-			const glm::vec4 newColor = ((square.Index + 1) % 2 == 0) ? m_SquareColor1 : m_SquareColor2;
+			const glm::vec4 newColor =
+				((square.Notation[0] + square.Notation[1]) % 2 == 0) ? m_SquareColor1 : m_SquareColor2;
+
 			square.Color = newColor * 255.0f;
 		}
 	}

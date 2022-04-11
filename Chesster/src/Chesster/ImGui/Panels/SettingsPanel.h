@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Chesster/Connections/Network.h"
+
 #include <glm/glm.hpp>
 
 namespace Chesster
@@ -42,6 +44,8 @@ namespace Chesster
 		void OnNewSquareColor();
 
 	private:
+		Network m_Network;
+
 		std::string m_CameraIP, m_CameraTelnetPort, m_CameraTCPDevicePort,
 					m_RobotIP, m_RobotPort;
 

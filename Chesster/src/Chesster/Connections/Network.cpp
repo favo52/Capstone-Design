@@ -33,7 +33,7 @@ namespace Chesster
 		const std::string& cameraTelnetPort = settingsPanel->m_CameraTelnetPort;
 		if (!network->m_Winsock.CreateClientSocket(network->m_CameraTelnetSocket, cameraIP, cameraTelnetPort))
 		{
-			std::string str{ "Unable to connect the Camera Command Socket. "
+			const std::string str{ "Unable to connect the Camera Command Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTelnetPort + ")\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
@@ -42,10 +42,10 @@ namespace Chesster
 			return 1;
 		}
 
-		// Attempt to login to InSight-Explorer
+		// Attempt to login to Cognex InSight-Explorer
 		if (!network->SendToCamera("admin\n\nSE8\n"))
 		{
-			std::string str{ "Unable to login to the Cognex camera.\n" };
+			const std::string str{ "Unable to login to the Cognex InSight-Explorer.\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
 			network->DisconnectCamera();
@@ -82,7 +82,7 @@ namespace Chesster
 		const std::string& cameraTCPDevicePort = settingsPanel->m_CameraTCPDevicePort;
 		if (!network->m_Winsock.CreateClientSocket(network->m_CameraTCPDeviceSocket, cameraIP, cameraTCPDevicePort))
 		{
-			std::string str{ "Unable to connect the Camera Buffer Socket. "
+			const std::string str{ "Unable to connect the Camera Buffer Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTCPDevicePort + ")\n" };
 			LOG_ERROR(str);
 			consolePanel->AddLog(str);
@@ -97,7 +97,7 @@ namespace Chesster
 		{
 			if (!network->RecvCameraData(GameLayer::Get().GetCameraBuffer()))
 			{
-				std::string str{ "Stopped receiving camera data." };
+				const std::string str{ "Stopped receiving camera data." };
 				LOG_INFO(str);
 				consolePanel->AddLog(str);
 				break;
@@ -228,7 +228,7 @@ namespace Chesster
 			DisconnectCamera();
 			
 			LOG_INFO("Camera buffer disconnected.");
-			GameLayer::Get().GetConsolePanel()->AddLog("Camera buffer disconnected.\n\n");
+			GameLayer::Get().GetConsolePanel()->AddLog("Camera buffer disconnected.\n");
 			return false;
 		}
 

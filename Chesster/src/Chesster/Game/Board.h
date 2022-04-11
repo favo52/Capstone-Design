@@ -1,86 +1,59 @@
 #pragma once
 
-#include "Chesster/Game/Piece.h"
+#include "Chesster/Renderer/Renderer.h"
 
 /* LEGEND
-<summary> Beginning of the summary.
 */
 
 namespace Chesster
 {
+	constexpr int SQUARE_SIZE{ 100 };
+
+	class Piece;
+
 	/*	Represents the chess board. */
 	class Board
 	{
 	public:
-		/*	Represents an individual square of the board. */
+		/*	Represents an individual square on the board. */
 		struct Square
 		{
 			glm::vec2	Position{ 0.0f, 0.0f };
-			float		Size{ 100.0f };
 			glm::vec4	Color{ 0.0f, 0.0f, 0.0f, 1.0f };
-			glm::vec2	Center{ 0.0f, 0.0f };
-			RectBounds	WorldBounds{};
-			std::string	Notation{};
-			uint32_t	Index{ 0 };
-			bool		UnderAttack{ false };
+			std::string	Notation;
 
-			void UpdateCenter();
-			void UpdateWorldBounds();
+			const glm::vec2 GetCenter() const;
+			const RectBounds GetBounds() const;
 		};
 
 	public:
-		Board() = default;
 		Board(const glm::vec2& viewportSize);
-		virtual ~Board() = default;
 
-		void OnUpdate(const std::chrono::duration<double>& dt);
-
-		/// <summary>
-		/// Draws all the 64 squares of the chess board.
-		/// </summary>
+		/*	Draws all the 64 squares of the chess board. */
 		void OnRender();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="pieces"></param>
-		/// <param name="currentMove"></param>
-		/// <param name="pieceIndex"></param>
-		void OnNewMove(std::array<Piece, 32>& pieces, const std::string& currentMove, int pieceIndex);
+		void OnNewMove(const std::string& currentMove, Piece* currentPiece);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="viewportSize"></param>
 		void OnViewportResize(const glm::vec2& viewportSize);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		void Reset();
+		void UpdateActiveSquares();
+		void ResetActiveSquares();
 
-		/// <summary>
-		/// Used to retrieve the board.
-		/// </summary>
-		/// <returns>Returns the entire board.</returns>
-		static std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
-
-		std::unordered_map<std::string, Square*>& GetSquaresMap() { return m_SquaresMap; }
-		const std::unordered_map<std::string, Square*>& GetSquaresMap() const { return m_SquaresMap; }
+		/**	Used to retrieve the board squares.
+		 @return Returns an array of all 64 individual squares of the board. */
+		std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
+			
+		/** It is used to retrieve the instance of the current Board.
+		 @return A reference to this Board object. */
+		static Board& Get() { return *s_Instance; }
 
 	private:
-		void Castle(const std::string& notation);
-		void PaintActiveSquares();
-
-	public:
-		static std::unordered_map<std::string, Square*> m_SquaresMap;
+		void MovePiece(const std::string& notation);
 
 	private:
-		static std::array<Square, 64> m_BoardSquares;	// Represents the 64 squares of the chess board
-		std::array<Piece, 32>* m_Pieces{ nullptr };		// A pointer to the 32 pieces of chess
+		std::array<Square, 64> m_BoardSquares;	// Represents the 64 squares of the chess board
+		std::array<Square, 2> m_ActiveSquares;	// The two highlighted squares
 
-		std::array<Square, 2> m_ActiveSquares{};		// The two highlighted squares
-
-		std::string m_CurrentMove{ "0000" };
+		static Board* s_Instance;
 	};
 }

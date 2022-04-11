@@ -2,6 +2,9 @@
 #include "Chesster/ImGui/Panels/ConsolePanel.h"
 
 #include "Chesster/Layers/GameLayer.h"
+#include "Chesster/Connections/ChessEngine.h"
+
+#include <imgui.h>
 
 namespace Chesster
 {
@@ -85,7 +88,7 @@ namespace Chesster
 
 		ImGui::SameLine();
 		if (ImGui::Button("Evaluate", ImVec2(100, 50)))
-			GameLayer::Get().GetConnector()->EvaluateGame();
+			GameLayer::Get().GetChessEngine().EvaluateGame();
 
 		ImGui::PopFont();
 		ImGui::Separator();

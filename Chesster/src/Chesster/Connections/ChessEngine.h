@@ -8,21 +8,21 @@ namespace Chesster
 
 	/*	Establishes the interprocess communication between the Chesster application, 
 		the Stockfish chess engine and the python script used to evaluate all valid moves. */
-	class Interprocess
+	class ChessEngine
 	{
 	public:
 		/*	Default constructor. Prepares all the resources to establish communication. */
-		Interprocess();
+		ChessEngine();
 
 		/*	Destructor. Closes all connections. */
-		virtual ~Interprocess();
+		virtual ~ChessEngine();
 
 		/* Connects to the UCI chess engine file in the specified path.
 		 @param path The filepath of the chess engine executable. */
 		void ConnectToEngine(const LPWSTR& path);
 
 		/*	Sends a command to the UCI chess engine to reset the game position to a starting position. */
-		void ResetGame();
+		void NewGame();
 
 		/*	Sends a command to the UCI chess engine to evaluate the current standing of the chess game. */
 		void EvaluateGame();
@@ -51,7 +51,7 @@ namespace Chesster
 		 @param path The filepath of the python script.
 		 @param fen The FEN notation of the current board position.
 		 @return A list of all the valid moves in the current positon separated by whitespace. */
-		std::vector<std::string> GetValidMoves(const std::string& path, const std::string& fen);
+		std::vector<std::string> GetValidMoves(const std::string& fen);
 
 		/*	Retrieves the current FEN notation from the chess engine of the given move history.
 		 @param moveHistory The current move history of the board.

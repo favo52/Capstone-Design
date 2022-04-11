@@ -23,24 +23,24 @@ namespace Chesster
 		/*	Closes all SOCKETs if there's any left open. */
 		virtual ~Network();
 
-		/**	To be used when creating a new thread. 
-			Establishes a TCP client SOCKET connection between the localhost PC and 
+		/**	To be used when creating a new thread.
+			Establishes a TCP client SOCKET connection between the localhost PC and
 			the Cognex In-Sight Explorer software. It allows the user to send commands
 			and receive corresponding messages.
 		 @param data Must be the current instance of this Network object.
 		 @return 0 if thread ended successfully, 1 if thread could not complete its task. */
 		static unsigned int __stdcall CameraTelnetThread(void* data);
 
-		/**	To be used when creating a new thread. 
-			Establishes a TCP client SOCKET connection between the localhost PC and 
-			the Cognex In-Sight Explorer software. It allows the CHESSTER program to receive 
+		/**	To be used when creating a new thread.
+			Establishes a TCP client SOCKET connection between the localhost PC and
+			the Cognex In-Sight Explorer software. It allows the CHESSTER program to receive
 			the new board positions each time the Cognex camera takes a new picture.
 		 @param data Must be the current instance of this Network object.
 		 @return 0 if thread ended successfully, 1 if thread could not complete its task. */
 		static unsigned int __stdcall CameraTCPDeviceThread(void* data);
 
-		/**	To be used when creating a new thread. 
-			Enables the CHESSTER program to act as a TCP server. This allows the Staubli robot to 
+		/**	To be used when creating a new thread.
+			Enables the CHESSTER program to act as a TCP server. This allows the Staubli robot to
 			connect as a client and establish TCP/IP communication.
 		 @param data Must be the current instance of this Network object.
 		 @return 0 if thread ended successfully, 1 if thread could not complete its task. */
@@ -64,7 +64,7 @@ namespace Chesster
 
 		/** Retrieves the instance of the current Network object.
 		 @return A reference to this Network object. */
-		static Network& Get() { return *s_Instance; }
+		//static Network& Get() { return *s_Instance; }
 
 	private:
 		/**	Waits to receive any new data from the Camera Telnet SOCKET. 

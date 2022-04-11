@@ -1,20 +1,19 @@
 #pragma once
 
 #include "Chesster/Core/Layer.h"
-#include "Chesster/Core/Window.h"
-
-#include "Chesster/Connections/Interprocess.h"
-#include "Chesster/Connections/Network.h"
 
 #include "Chesster/Renderer/Framebuffer.h"
 
 #include "Chesster/Game/Board.h"
+#include "Chesster/Game/Piece.h"
 
 #include "Chesster/ImGui/Panels/ConsolePanel.h"
 #include "Chesster/ImGui/Panels/SettingsPanel.h"
 
 namespace Chesster
 {
+	class ChessEngine;
+
 	class GameLayer : public Layer
 	{
 	public:
@@ -33,12 +32,13 @@ namespace Chesster
 
 		void CameraDataReceived() { m_CameraDataReceived = true; }
 
+		const std::string& GetCurrentMove() const { return m_CurrentMove; }
+		std::array<Piece, 32>& GetChessPieces() { return m_ChessPieces; }
 		std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
 
-		Interprocess*	GetConnector() { return &m_Connector; }
-		Network*		GetNetwork() { return &m_Network; }
-		ConsolePanel*	GetConsolePanel() { return &s_ConsolePanel; }
-		SettingsPanel*	GetSettingsPanel() { return &m_SettingsPanel; }
+		ChessEngine& GetChessEngine() { return *m_ChessEngine; }
+		ConsolePanel* GetConsolePanel() { return &m_ConsolePanel; }
+		SettingsPanel* GetSettingsPanel() { return &m_SettingsPanel; }
 
 		/** It is used to retrieve the instance of the current GameLayer.
 		 @return A reference to this GameLayer object. */
@@ -48,21 +48,18 @@ namespace Chesster
 		void UpdateComputerMove();
 		void UpdatePlayerMove();
 		
-		void SetPieceClips();
-		void RemovePiece(Piece& piece);
 		void ResetPieces();
-
+		void CheckPieceCapture();
 		void PromotePawn();
 
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
-		bool IsNotationValid(const std::string& notation);
 		bool IsCurrentMoveLegal();
 
 		void GameoverPopup();
 		void PawnPromotionPopup();
 
 		// Multithread
-		static unsigned int __stdcall EngineThread(void* data);
+		static unsigned int __stdcall ChessEngineThread(void* data);
 
 	private:
 		enum class Player { White, Black };
@@ -71,52 +68,36 @@ namespace Chesster
 		enum class GameState { Gameplay, Gameover, PawnPromotion };
 
 	private:
-		std::unique_ptr<Framebuffer> m_Framebuffer;
-		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+		std::unique_ptr<ChessEngine> m_ChessEngine;
 
-		const std::string m_StartPosFEN;
-		const std::string m_PathPythonScript;
+		std::unique_ptr<Texture> m_PieceSpriteSheetTexture;
+		std::unique_ptr<Framebuffer> m_Framebuffer;
+		glm::vec2 m_ViewportSize;
 
 		// Chess board
-		Board m_Board;
-		std::unique_ptr<Texture> m_PieceTexture;
-		std::array<Piece, 32> m_Pieces;
-		uint32_t m_PieceIndex{ 0 };
-		Board::Square m_TargetSquare;
+		std::unique_ptr<Board> m_Board;			// Holds all 64 squares of the board
+		std::array<Piece, 32> m_ChessPieces;	// The 32 chess pieces
+		Piece* m_CurrentPiece;					// A pointer to the currently held piece
 
-		glm::vec2 m_MouseCoords{ 0.0f, 0.0f };
-		glm::vec2 m_ViewportMousePos{ 0.0f, 0.0f };
+		glm::vec2 m_MousePos;					// The mouse position relative to the window
+		glm::vec2 m_ViewportMousePos;			// The mouse position within the viewport window
 
 		// Moves/Notations
-		std::string m_CurrentMove{ "0000" };
+		std::string m_CurrentMove;
 		std::string m_MoveHistory;
 		size_t m_MoveHistorySize{ 0 };
 
+		const std::string m_StartPosFEN;
 		std::string m_CurrentFEN;
 		std::vector<std::string> m_LegalMoves;
 
-		std::array<char, 256> m_CameraDataBuffer = {};
-		std::string m_OldData;
-		std::string m_NewData;
-		std::string m_TempData;
-		std::string m_NewGameData;
-
-		// Boolean switches
-		bool m_IsHoldingPiece{ false };
-		bool m_IsPieceReleased{ false };
-		bool m_IsComputerTurn{ false };
-		bool m_IsRecvComputerMove{ false };
-		bool m_IsPlayerPlayed{ false };
-		bool m_IsMovePlayed{ false };
 		bool m_CameraDataReceived{ false };
+		std::array<char, 256> m_CameraDataBuffer = {};
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
-		Interprocess m_Connector;
-		Network m_Network;
-
-		ConsolePanel s_ConsolePanel;
+		ConsolePanel m_ConsolePanel;
 		SettingsPanel m_SettingsPanel;
 
 	private:
