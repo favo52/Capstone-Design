@@ -2,6 +2,7 @@
 documentation/
 
 # Program files
+Chesster/imgui.ini
 Chesster/Chesster.log
 Chesster/validmoves.txt
 
