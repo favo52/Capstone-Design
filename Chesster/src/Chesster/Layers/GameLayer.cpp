@@ -27,11 +27,6 @@ namespace Chesster
 		m_CurrentPiece{ &Piece{} }
 	{
 		s_Instance = this;
-
-		m_ChessEngine = std::make_unique<ChessEngine>();
-
-		unsigned threadID{};
-		_beginthreadex(nullptr, 0, &ChessEngineThread, (void*)this, 0, &threadID);
 	}
 
 	void GameLayer::OnAttach()
@@ -50,6 +45,12 @@ namespace Chesster
 
 		// Pieces init
 		ResetPieces();
+
+		// Connect Stockfish
+		m_ChessEngine = std::make_unique<ChessEngine>();
+
+		unsigned threadID{};
+		_beginthreadex(nullptr, 0, &ChessEngineThread, (void*)this, 0, &threadID);
 	}
 
 	void GameLayer::OnDetach()
@@ -103,7 +104,7 @@ namespace Chesster
 				{
 					if (sdlEvent.button.button == SDL_BUTTON_LEFT && s_IsHoldingPiece)
 					{
-						UpdatePlayerMove();
+						UpdatePlayerMouseMove();
 						s_IsHoldingPiece = false;
 					}
 					break;
@@ -250,49 +251,21 @@ namespace Chesster
 
 	void GameLayer::UpdateComputerMove()
 	{
-		// Grab the selected chess piece's old and new positions
-		const std::string oldPos{ m_CurrentMove[0], m_CurrentMove[1] };
-		const std::string newPos{ m_CurrentMove[2], m_CurrentMove[3] };
+		MovePiece(m_CurrentMove);
 
-		// Find the corresponding squares inside the squares array
-		auto& boardSquares = m_Board->GetBoardSquares();
-		auto oldSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
-			[&](const Board::Square& sq) { return sq.Notation == oldPos; });
-		
-		auto newSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
-			[&](const Board::Square& sq) { return sq.Notation == newPos; });
-		
-		if (oldSquareItr != std::end(boardSquares) && newSquareItr != std::end(boardSquares))
-		{
-			// Find the corresponding piece
-			auto currentPieceItr = std::find_if(std::begin(m_ChessPieces), std::end(m_ChessPieces),
-				[&](const Piece& piece) { return piece.GetNotation() == oldSquareItr->Notation; });
-			
-			if (currentPieceItr != std::end(m_ChessPieces))
-			{
-				m_CurrentPiece = &(*currentPieceItr);
+		// Pawn Promotions
+		if (m_CurrentPiece->IsPromotion(m_CurrentMove))
+			m_CurrentPiece->Promote(m_CurrentMove);
 
-				// Pawn Promotions
-				if (currentPieceItr->IsPromotion(m_CurrentMove))
-					currentPieceItr->Promote(m_CurrentMove);
+		// Remove captured pieces
+		UpdatePieceCapture();
 
-				// Move chess piece
-				const glm::vec2 center = newSquareItr->GetCenter();
-				currentPieceItr->SetPosition(center.x, center.y);
-				currentPieceItr->SetNotation(newSquareItr->Notation);
-				currentPieceItr->CheckEnPassant(oldPos);
-
-				m_MoveHistory += m_CurrentMove + ' ';
-				LOG_INFO("Computer moved: {0}", m_CurrentMove);
-				m_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove));
-
-				// Remove captured pieces
-				CheckPieceCapture();
-			}
-		}
+		m_MoveHistory += m_CurrentMove + ' ';
+		LOG_INFO("Computer moved: {0}", m_CurrentMove);
+		m_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove));
 	}
 
-	void GameLayer::UpdatePlayerMove()
+	void GameLayer::UpdatePlayerMouseMove()
 	{
 		// Find the square where the piece was dropped at
 		auto& boardSquares = m_Board->GetBoardSquares();
@@ -304,8 +277,8 @@ namespace Chesster
 			// If piece was released at same position it was
 			if (m_CurrentPiece->GetNotation() == targetSquareItr->Notation)
 			{
-				const glm::vec2 center = targetSquareItr->GetCenter();
-				m_CurrentPiece->SetPosition(center.x, center.y);
+				const glm::vec2 squareCenter = targetSquareItr->GetCenter();
+				m_CurrentPiece->SetPosition(squareCenter.x, squareCenter.y);
 				return;
 			}
 
@@ -319,17 +292,12 @@ namespace Chesster
 				return;
 			}
 
-			if (IsCurrentMoveLegal())
+			if (IsMoveLegal(m_CurrentMove))
 			{
-				// Move Piece position
-				const glm::vec2 center = targetSquareItr->GetCenter();
-				m_CurrentPiece->SetPosition(center.x, center.y);
-				const std::string oldPos = m_CurrentPiece->GetNotation();
-				m_CurrentPiece->SetNotation(targetSquareItr->Notation);
-				m_CurrentPiece->CheckEnPassant(oldPos);
+				MovePiece(m_CurrentMove);
 
 				// Capture a piece (if any)
-				CheckPieceCapture();
+				UpdatePieceCapture();
 
 				// Update move history
 				m_MoveHistory += m_CurrentMove + ' ';
@@ -342,80 +310,108 @@ namespace Chesster
 			}
 		}
 		
-		// Reaching here means the move piece was not released at a valid location
+		// The piece was not released at a valid location
 		m_ConsolePanel.AddLog(" Wait... that's illegal!\n");
 
 		auto originalSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
 			[&](const Board::Square& sq) { return m_CurrentPiece->GetNotation() == sq.Notation; });
 		
+		// Move it back to its original square
 		if (originalSquareItr != std::end(boardSquares))
 			m_CurrentPiece->SetPosition(originalSquareItr->GetCenter().x, originalSquareItr->GetCenter().y);
 	}
 
-	void GameLayer::ResetPieces()
+	void GameLayer::UpdatePlayerPawnPromotion()
 	{
-		// Set piece starting positions and properties
-		size_t i{ 0 };
-		uint32_t offset{ 0 };
-		Piece::Color color{ Piece::Color::Black };
-		for (Piece& piece : m_ChessPieces)
-		{
-			if (i > 15) { offset = 32; color = Piece::Color::White; }
+		m_CurrentPiece->Promote(m_CurrentMove);
+		MovePiece(m_CurrentMove);
 
-			// Set up the piece properties
-			auto& boardSquares = m_Board->GetBoardSquares();
-			piece.SetPosition(boardSquares[i + offset].GetCenter().x, boardSquares[i + offset].GetCenter().y);
-			piece.SetNotation(boardSquares[i + offset].Notation);
-			piece.SetIndex(i);
-			piece.SetType();
-			piece.SetColor(color);
-			piece.SetTextureClip();
-			piece.SetEnPassant(false);
-			piece.SetCaptured(false);
-			++i;
-		}
+		// Capture a piece (if any)
+		UpdatePieceCapture();
+
+		// Update move history
+		m_MoveHistory += m_CurrentMove + ' ';
+		const std::string msg{ "Player move: " + m_CurrentMove };
+		LOG_INFO(msg);
+		m_ConsolePanel.AddLog(msg);
+
+		//m_IsPlayerPlayed = true;
 	}
 
-	void GameLayer::CheckPieceCapture()
+	void GameLayer::MovePiece(const std::string& notation)
 	{
-		for (Piece& piece : m_ChessPieces)
-		{
-			if (m_CurrentPiece->GetNotation() == piece.GetNotation() &&
-				!(m_CurrentPiece->GetIndex() == piece.GetIndex()))	// don't capture self
-			{
-				piece.Capture();
-				break;
-			}
-		}
-	}
+		// Grab the selected chess piece's old and new positions
+		const std::string oldPos{ notation[0], notation[1] };
+		const std::string newPos{ notation[2], notation[3] };
 
-	void GameLayer::PromotePawn()
-	{
-		const std::string newPos = { m_CurrentMove[2], m_CurrentMove[3] };
-
+		// Find new square
 		auto& boardSquares = m_Board->GetBoardSquares();
 		auto targetSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
 			[&](const Board::Square& sq) { return sq.Notation == newPos; });
 
 		if (targetSquareItr != std::end(boardSquares))
 		{
-			m_CurrentPiece->Promote(m_CurrentMove);
-			const glm::vec2 center = targetSquareItr->GetCenter();
-			m_CurrentPiece->SetPosition(center.x, center.y);
-			m_CurrentPiece->SetNotation(targetSquareItr->Notation);
+			// Find piece and move it to new square
+			for (Piece& piece : m_ChessPieces)
+			{
+				piece.UpdateEnPassant(oldPos);
+				if (piece.GetNotation() == oldPos)
+				{
+					m_CurrentPiece = &piece;
 
-			// Capture a piece (if any)
-			CheckPieceCapture();
+					const glm::vec2 squareCenter = targetSquareItr->GetCenter();
+					piece.SetPosition(squareCenter.x, squareCenter.y);
+					piece.SetNotation(newPos);
+					break;
+				}
+			}
+		}
+	}
 
-			// Update move history
-			m_MoveHistory += m_CurrentMove + ' ';
+	void GameLayer::ResetPieces()
+	{
+		// The numbers are according to the enum class Piece::Type values
+		int pieceLocations[8 * 4] =
+		{
+			1, 2, 3, 4, 5, 3, 2, 1,
+			6, 6, 6, 6, 6, 6, 6, 6,
+			6, 6, 6, 6, 6, 6, 6, 6,
+			1, 2, 3, 4, 5, 3, 2, 1
+		};
 
-			// Print message to consoles
-			const std::string msg{ "Player move: " + m_CurrentMove };
-			LOG_INFO(msg);
-			m_ConsolePanel.AddLog(msg);
+		size_t index{ 0 };
+		uint32_t offset{ 0 };
+		Piece::Color color{ Piece::Color::Black };
 
-			//m_IsPlayerPlayed = true;
+		for (Piece& piece : m_ChessPieces)
+		{
+			if (index > 15) { offset = 32; color = Piece::Color::White; }
+
+			// Set up the piece properties
+			auto& boardSquares = m_Board->GetBoardSquares();
+			const glm::vec2 squareCenter = boardSquares[index + offset].GetCenter();
+
+			piece.SetPosition(squareCenter.x, squareCenter.y);
+			piece.SetNotation(boardSquares[index + offset].Notation);
+			piece.SetType(Piece::Type(pieceLocations[index]));
+			piece.SetColor(color);
+			piece.SetTextureClip();
+			piece.SetEnPassant(false);
+			piece.SetCaptured(false);
+			++index;
+		}
+	}
+
+	void GameLayer::UpdatePieceCapture()
+	{
+		for (Piece& piece : m_ChessPieces)
+		{
+			if (m_CurrentPiece->GetNotation() == piece.GetNotation() &&
+				!(m_CurrentPiece->GetColor() == piece.GetColor()))	// don't capture self
+			{
+				piece.Capture();
+				break;
+			}
 		}
 	}
 
@@ -440,10 +436,10 @@ namespace Chesster
 			(point.y >= rect.bottom) && (point.y <= rect.top)) ? true : false;
 	}
 
-	bool GameLayer::IsCurrentMoveLegal()
+	bool GameLayer::IsMoveLegal(const std::string& notation)
 	{
 		// Compare current move to all the legal moves
-		auto itr = std::find(std::begin(m_LegalMoves), std::end(m_LegalMoves), m_CurrentMove);
+		auto itr = std::find(std::begin(m_LegalMoves), std::end(m_LegalMoves), notation);
 		return (itr != std::end(m_LegalMoves)) ? true : false;
 	}
 
@@ -510,7 +506,7 @@ namespace Chesster
 
 		if (update)
 		{
-			PromotePawn();
+			UpdatePlayerPawnPromotion();
 			m_CurrentGameState = GameState::Gameplay();
 		}
 

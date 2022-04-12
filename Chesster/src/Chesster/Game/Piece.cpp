@@ -6,9 +6,8 @@
 namespace Chesster
 {
 	Piece::Piece() :
-		m_Index{ 0 },
 		m_TextureClip{ 0, 0, PIECE_SIZE, PIECE_SIZE },
-		m_Position{ 0.0f, 0.0f },
+		m_Position{ -3000.0f, -3000.0f },
 		m_Notation{ "00" },
 		m_Type{ Type::None },
 		m_Color{ Color::None },
@@ -52,7 +51,7 @@ namespace Chesster
 		m_IsCaptured = true;
 	}
 
-	void Piece::CheckEnPassant(const std::string& oldPos)
+	void Piece::UpdateEnPassant(const std::string& oldPos)
 	{
 		if (IsPawn())
 		{
@@ -67,6 +66,12 @@ namespace Chesster
 
 	void Piece::SetTextureClip()
 	{
+		if (m_Type == Type::None || m_Color == Color::None)
+		{
+			LOG_WARN("Unable to set Texture Clip. Piece is missing Type or Color.");
+			return;
+		}
+
 		m_TextureClip.x = PIECE_SIZE * ((int)m_Type - 1);
 		m_TextureClip.y = PIECE_SIZE * ((int)m_Color - 1);
 	}
@@ -77,37 +82,12 @@ namespace Chesster
 		m_Position = { centerX - (PIECE_SIZE * 0.5f), centerY - (PIECE_SIZE * 0.5f) };
 	}
 
-	void Piece::SetType()
+	/*void Piece::SetType(uint32_t id)
 	{
-		switch (m_Index)
-		{
-			case 0: case 7:		// Black
-			case 24: case 31:	// White
-				m_Type = Type::Rook; break;
+		
 
-			case 1: case 6:
-			case 25: case 30:
-				m_Type = Type::Knight; break;
-
-			case 2: case 5:
-			case 26: case 29:
-				m_Type = Type::Bishop; break;
-
-			case 3:
-			case 27:
-				m_Type = Type::Queen; break;
-
-			case 4:
-			case 28:
-				m_Type = Type::King; break;
-
-			case 8: case 9: case 10: case 11:
-			case 12: case 13: case 14: case 15:
-			case 16: case 17: case 18: case 19:
-			case 20: case 21: case 22: case 23:
-				m_Type = Type::Pawn; break;
-		}
-	}
+		m_Type = Type(pieceLocations[id]);
+	}*/
 
 	const RectBounds Piece::GetBounds() const
 	{

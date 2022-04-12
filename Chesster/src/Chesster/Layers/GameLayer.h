@@ -46,14 +46,15 @@ namespace Chesster
 
 	private:
 		void UpdateComputerMove();
-		void UpdatePlayerMove();
+		void UpdatePlayerMouseMove();
+		void UpdatePlayerPawnPromotion();
 		
+		void MovePiece(const std::string& notation);
 		void ResetPieces();
-		void CheckPieceCapture();
-		void PromotePawn();
+		void UpdatePieceCapture();
 
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
-		bool IsCurrentMoveLegal();
+		bool IsMoveLegal(const std::string& notation);
 
 		void GameoverPopup();
 		void PawnPromotionPopup();
