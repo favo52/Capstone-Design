@@ -82,13 +82,6 @@ namespace Chesster
 		m_Position = { centerX - (PIECE_SIZE * 0.5f), centerY - (PIECE_SIZE * 0.5f) };
 	}
 
-	/*void Piece::SetType(uint32_t id)
-	{
-		
-
-		m_Type = Type(pieceLocations[id]);
-	}*/
-
 	const RectBounds Piece::GetBounds() const
 	{
 		const glm::vec2 center = { (m_Position.x + (PIECE_SIZE * 0.5f)),

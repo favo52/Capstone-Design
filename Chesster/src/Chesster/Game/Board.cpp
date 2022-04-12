@@ -59,45 +59,6 @@ namespace Chesster
 		Renderer::DrawFilledRect(newSq, m_ActiveSquares[1].Color);
 	}
 
-	void Board::OnNewMove(const std::string& currentMove, Piece* currentPiece)
-	{
-		// Check for Castling		// Move Rook
-		if (currentMove == "e1g1") MovePiece("h1f1");
-		if (currentMove == "e8g8") MovePiece("h8f8");
-		if (currentMove == "e1c1") MovePiece("a1d1");
-		if (currentMove == "e8c8") MovePiece("a8d8");
-
-		// Check for En Passant
-		if (currentPiece->IsPawn())
-		{
-			int offset{ 1 };
-			if (currentPiece->m_Color == Piece::Color::White)
-				offset = -1;
-
-			// Grab the piece behind
-			Piece* pieceBehind{ nullptr };
-			auto& chessPieces = GameLayer::Get().GetChessPieces();
-			for (Piece& piece : chessPieces)
-			{
-				if (piece.m_Notation[0] == currentPiece->m_Notation[0] &&
-					piece.m_Notation[1] == currentPiece->m_Notation[1] + offset)
-				{
-					pieceBehind = &piece;
-				}
-			}
-
-			// Capture the correct pawn
-			if (pieceBehind)
-			{
-				if (pieceBehind->IsPawn() && pieceBehind->m_Color != currentPiece->m_Color &&
-					pieceBehind->m_EnPassant)
-				{
-					pieceBehind->Capture();
-				}
-			}
-		}
-	}
-
 	void Board::OnViewportResize(const glm::vec2& viewportSize)
 	{
 		// Offset is half of viewport size minus half of entire board's size
@@ -118,32 +79,6 @@ namespace Chesster
 	{
 		m_ActiveSquares[0].Color = { 0, 0, 0, 0 };
 		m_ActiveSquares[1].Color = { 0, 0, 0, 0 };
-	}
-
-	void Board::MovePiece(const std::string& notation)
-	{
-		const std::string oldPos{ notation[0], notation[1] };
-		const std::string newPos{ notation[2], notation[3] };
-
-		// Find new square
-		auto targetSquareItr = std::find_if(std::begin(m_BoardSquares), std::end(m_BoardSquares),
-			[&](const Board::Square& sq) { return sq.Notation == newPos; });
-
-		if (targetSquareItr != std::end(m_BoardSquares))
-		{
-			// Find piece and move it to new square
-			auto& chessPieces = GameLayer::Get().GetChessPieces();
-			for (Piece &piece : chessPieces)
-			{
-				if (piece.m_Notation == oldPos)
-				{
-					const glm::vec2 squareCenter = targetSquareItr->GetCenter();
-					piece.SetPosition(squareCenter.x, squareCenter.y);
-					piece.SetNotation(newPos);
-					break;
-				}
-			}
-		}
 	}
 
 	void Board::UpdateActiveSquares()

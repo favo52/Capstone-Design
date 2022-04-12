@@ -47,12 +47,15 @@ namespace Chesster
 
 	private:
 		void UpdateComputerMove();
+		void UpdatePlayerCameraMove();
 		void UpdatePlayerMouseMove();
 		void UpdatePlayerPawnPromotion();
 		
 		void MovePiece(const std::string& notation);
 		void ResetPieces();
+
 		void UpdatePieceCapture();
+		void UpdateNewMove();
 
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsMoveLegal(const std::string& notation);
@@ -61,7 +64,8 @@ namespace Chesster
 		void PawnPromotionPopup();
 
 		// Multithread
-		static unsigned int __stdcall ChessEngineThread(void* data);
+		//static unsigned int __stdcall ChessEngineThread(void* data);
+		static void ChessEngineThread();
 
 	private:
 		enum class Player { White, Black };
@@ -71,7 +75,7 @@ namespace Chesster
 
 	private:
 		std::unique_ptr<ChessEngine> m_ChessEngine;
-		Network m_Network;
+		//HANDLE m_EngineThread;
 
 		std::unique_ptr<Texture> m_PieceSpriteSheetTexture;
 		std::unique_ptr<Framebuffer> m_Framebuffer;
@@ -99,7 +103,8 @@ namespace Chesster
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
-
+		
+		Network m_Network;
 		ConsolePanel m_ConsolePanel;
 		SettingsPanel m_SettingsPanel;
 

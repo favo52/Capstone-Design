@@ -12,7 +12,7 @@ namespace Chesster
 		/*	Creates Pipes and prepares all the resources to create the child processes. */
 		ChessEngine();
 
-		/*	Closes all connections. */
+		/*	Sends the "quit" command to the engine and closes all the interprocess pipes. */
 		virtual ~ChessEngine();
 
 		/* Connects to the UCI chess engine file in the specified path.
@@ -58,14 +58,14 @@ namespace Chesster
 		std::string GetFEN(const std::string& moveHistory);
 
 	private:
-		/*	Sends the "quit" command to the engine and closes all the interprocess pipes. */
-		void CloseAllConnections();
-
-		bool WriteToEngine(const std::string& message);
+		/**	Sends the data to the chess engine.
+		 @param data The data to send, usually an UCI chess engine command.
+		 @return True if the data was sent successfully, false if not. */
+		bool WriteToEngine(const std::string& data);
 
 		/*	Retrieves the message from the chess engine after it was given a command.
 		 @return A string of the chess engine's reply to the given command. */
-		const std::string GetEngineReply();
+		const std::string ReadFromEngine();
 
 	private:
 		STARTUPINFO m_StartInfo;

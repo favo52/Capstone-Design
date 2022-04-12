@@ -4,15 +4,16 @@
 #include "Chesster/Core/Application.h"
 
 #include "Chesster/Connections/ChessEngine.h"
-
+#include <thread>
 #include <imgui.h>
 
 namespace Chesster
 {
-	// Boolean switches
-	static bool s_IsEngineThreadRunning{ true };
-	static bool s_IsComputerTurn{ false };
-	static bool s_IsMovePlayed{ false };
+	// Boolean atomic switches
+	std::atomic<bool> a_RunEngineThread{ false };	
+	std::atomic<bool> a_IsMovePlayed{ false };
+	std::atomic<bool> a_IsComputerTurn{ false };
+
 	static bool s_IsHoldingPiece{ false };
 	
 	GameLayer* GameLayer::s_Instance{ nullptr };
@@ -20,6 +21,8 @@ namespace Chesster
 	GameLayer::GameLayer() :
 		Layer("GameLayer"),
 		m_ChessEngine{ nullptr },
+		m_PieceSpriteSheetTexture{ nullptr },
+		m_Framebuffer{ nullptr },
 		m_ViewportSize{ 0.0f, 0.0f },
 		m_MousePos{ 0.0f, 0.0f },
 		m_ViewportMousePos{ 0.0f, 0.0f },
@@ -49,13 +52,18 @@ namespace Chesster
 		// Connect Stockfish
 		m_ChessEngine = std::make_unique<ChessEngine>();
 
-		unsigned threadID{};
-		_beginthreadex(nullptr, 0, &ChessEngineThread, (void*)this, 0, &threadID);
+		//unsigned threadID{};
+		//m_EngineThread = (HANDLE)_beginthreadex(nullptr, 0, &ChessEngineThread, (void*)this, 0, &threadID);
+
+		std::thread engineThread(ChessEngineThread);
+		engineThread.detach();
 	}
 
 	void GameLayer::OnDetach()
 	{
-		s_IsEngineThreadRunning = false;
+		a_RunEngineThread = false;
+		//WaitForSingleObject(m_EngineThread, INFINITE);
+		//CloseHandle(m_EngineThread);
 	}
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
@@ -66,9 +74,9 @@ namespace Chesster
 			{
 				case SDL_KEYDOWN:
 				{
-					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !s_IsComputerTurn)
+					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !a_IsComputerTurn)
 					{
-						s_IsComputerTurn = true;
+						a_IsComputerTurn = true;
 
 						using namespace std::literals;
 						//std::this_thread::sleep_for(150ms);
@@ -87,7 +95,7 @@ namespace Chesster
 
 				case SDL_MOUSEBUTTONDOWN:
 				{
-					if (sdlEvent.button.button == SDL_BUTTON_LEFT && !s_IsComputerTurn)
+					if (sdlEvent.button.button == SDL_BUTTON_LEFT && !a_IsComputerTurn)
 					{
 						for (Piece& piece : m_ChessPieces)
 						{
@@ -130,20 +138,22 @@ namespace Chesster
 		if (m_CameraDataReceived)
 		{
 			LOG_INFO("Data Received: {0}", m_CameraDataBuffer.data());
+
+			UpdatePlayerCameraMove();
 			m_CameraDataReceived = false;
 		}
 
-		// Dragging a piece
+		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
 			m_CurrentPiece->SetPosition(m_ViewportMousePos.x, m_ViewportMousePos.y);
 
 		// A new move has been played
 		if (m_MoveHistorySize != m_MoveHistory.size())
 		{
-			m_Board->OnNewMove(m_CurrentMove, m_CurrentPiece);
+			UpdateNewMove();
 
 			m_MoveHistorySize = m_MoveHistory.size();
-			s_IsMovePlayed = true;
+			a_IsMovePlayed = true;
 
 			// Update current player
 			++m_CurrentPlayer;
@@ -264,6 +274,11 @@ namespace Chesster
 		m_MoveHistory += m_CurrentMove + ' ';
 		LOG_INFO("Computer moved: {0}", m_CurrentMove);
 		m_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove));
+	}
+
+	void GameLayer::UpdatePlayerCameraMove()
+	{
+
 	}
 
 	void GameLayer::UpdatePlayerMouseMove()
@@ -416,6 +431,45 @@ namespace Chesster
 		}
 	}
 
+	void GameLayer::UpdateNewMove()
+	{
+		// Check for Castling		// Move Rook
+		if (m_CurrentMove == "e1g1") MovePiece("h1f1");
+		if (m_CurrentMove == "e8g8") MovePiece("h8f8");
+		if (m_CurrentMove == "e1c1") MovePiece("a1d1");
+		if (m_CurrentMove == "e8c8") MovePiece("a8d8");
+
+		// Check for En Passant
+		if (m_CurrentPiece->IsPawn())
+		{
+			int offset{ 1 };
+			if (m_CurrentPiece->GetColor() == Piece::Color::White)
+				offset = -1;
+
+			// Grab the piece behind
+			Piece* pieceBehind{ nullptr };
+			auto& chessPieces = GameLayer::Get().GetChessPieces();
+			for (Piece& piece : chessPieces)
+			{
+				if (piece.GetNotation()[0] == m_CurrentPiece->GetNotation()[0] &&
+					piece.GetNotation()[1] == m_CurrentPiece->GetNotation()[1] + offset)
+				{
+					pieceBehind = &piece;
+				}
+			}
+
+			// Capture the correct pawn
+			if (pieceBehind)
+			{
+				if (pieceBehind->IsPawn() && pieceBehind->GetColor() != m_CurrentPiece->GetColor() &&
+					pieceBehind->IsEnPassant())
+				{
+					pieceBehind->Capture();
+				}
+			}
+		}
+	}
+
 	void GameLayer::ResetGame()
 	{
 		m_CurrentPlayer = Player::White;
@@ -514,54 +568,104 @@ namespace Chesster
 		ImGui::End();	// End "PawnPromo"
 	}
 
-	unsigned int __stdcall GameLayer::ChessEngineThread(void* data)
+	//unsigned int __stdcall GameLayer::ChessEngineThread(void* data)
+	//{
+	//	GameLayer* Game = static_cast<GameLayer*>(data);
+
+	//	wchar_t path_Stockfish14_avx2[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
+	//	Game->m_ChessEngine->ConnectToEngine(path_Stockfish14_avx2);
+
+	//	Game->m_LegalMoves = Game->m_ChessEngine->GetValidMoves(Game->m_StartPosFEN);
+	//	Game->m_CurrentFEN = { "\"" + Game->m_ChessEngine->GetFEN(" ") + "\"" };
+
+	//	a_RunEngineThread = true;
+	//	while (a_RunEngineThread)
+	//	{
+	//		if (a_IsMovePlayed && !a_IsComputerTurn)
+	//		{
+	//			// Update legal moves list
+	//			Game->m_CurrentFEN = { "\"" + Game->m_ChessEngine->GetFEN(Game->m_MoveHistory) + "\"" };
+	//			Game->m_LegalMoves = Game->m_ChessEngine->GetValidMoves(Game->m_CurrentFEN);
+	//			
+	//			if (Game->m_LegalMoves.empty())
+	//				Game->m_CurrentGameState = GameState::Gameover;
+
+	//			a_IsMovePlayed = false;
+	//		}
+
+	//		if (a_IsComputerTurn)
+	//		{
+	//			LOG_INFO("Computer is playing...");
+	//			Game->m_ConsolePanel.AddLog("Computer is playing...");
+
+	//			// Get computer's move
+	//			Game->m_CurrentMove = Game->m_ChessEngine->GetNextMove(Game->m_MoveHistory);
+	//			if (Game->m_CurrentMove == "error")
+	//			{
+	//				LOG_ERROR("Failed to get engine move.");
+	//				Game->m_ConsolePanel.AddLog("Failed to get engine move.");
+	//				Game->m_ConsolePanel.AddLog("Enter <F4> to try again.");
+	//			}
+	//			else
+	//			{
+	//				Game->UpdateComputerMove();
+	//				//Game->m_Network.SendToRobot(Game->m_CurrentMove);
+	//			}
+
+	//			a_IsComputerTurn = false;
+	//		}
+	//	}
+
+	//	return 100;
+	//}
+
+	void GameLayer::ChessEngineThread()
 	{
-		GameLayer* Game = static_cast<GameLayer*>(data);
+		GameLayer& Game = GameLayer::Get();
 
 		wchar_t path_Stockfish14_avx2[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
-		Game->m_ChessEngine->ConnectToEngine(path_Stockfish14_avx2);
+		Game.m_ChessEngine->ConnectToEngine(path_Stockfish14_avx2);
 
-		Game->m_LegalMoves = Game->m_ChessEngine->GetValidMoves(Game->m_StartPosFEN);
-		Game->m_CurrentFEN = { "\"" + Game->m_ChessEngine->GetFEN(" ") + "\"" };
+		Game.m_LegalMoves = Game.m_ChessEngine->GetValidMoves(Game.m_StartPosFEN);
+		Game.m_CurrentFEN = { "\"" + Game.m_ChessEngine->GetFEN(" ") + "\"" };
 
-		while (s_IsEngineThreadRunning)
+		a_RunEngineThread = true;
+		while (a_RunEngineThread)
 		{
-			if (s_IsMovePlayed && !s_IsComputerTurn)
+			if (a_IsMovePlayed && !a_IsComputerTurn)
 			{
 				// Update legal moves list
-				Game->m_CurrentFEN = { "\"" + Game->m_ChessEngine->GetFEN(Game->m_MoveHistory) + "\"" };
-				Game->m_LegalMoves = Game->m_ChessEngine->GetValidMoves(Game->m_CurrentFEN);
-				
-				if (Game->m_LegalMoves.empty())
-					Game->m_CurrentGameState = GameState::Gameover;
+				Game.m_CurrentFEN = { "\"" + Game.m_ChessEngine->GetFEN(Game.m_MoveHistory) + "\"" };
+				Game.m_LegalMoves = Game.m_ChessEngine->GetValidMoves(Game.m_CurrentFEN);
+					
+				if (Game.m_LegalMoves.empty())
+					Game.m_CurrentGameState = GameState::Gameover;
 
-				s_IsMovePlayed = false;
+				a_IsMovePlayed = false;
 			}
 
-			if (s_IsComputerTurn)
+			if (a_IsComputerTurn)
 			{
 				LOG_INFO("Computer is playing...");
-				Game->m_ConsolePanel.AddLog("Computer is playing...");
+				Game.m_ConsolePanel.AddLog("Computer is playing...");
 
 				// Get computer's move
-				Game->m_CurrentMove = Game->m_ChessEngine->GetNextMove(Game->m_MoveHistory);
-				if (Game->m_CurrentMove == "error")
+				Game.m_CurrentMove = Game.m_ChessEngine->GetNextMove(Game.m_MoveHistory);
+				if (Game.m_CurrentMove == "error")
 				{
 					LOG_ERROR("Failed to get engine move.");
-					Game->m_ConsolePanel.AddLog("Failed to get engine move.");
-					Game->m_ConsolePanel.AddLog("Enter <F4> to try again.");
+					Game.m_ConsolePanel.AddLog("Failed to get engine move.");
+					Game.m_ConsolePanel.AddLog("Enter <F4> to try again.");
 				}
 				else
 				{
-					Game->UpdateComputerMove();
-					//Game->m_Network.SendToRobot(Game->m_CurrentMove);
+					Game.UpdateComputerMove();
+					//Game.m_Network.SendToRobot(Game.m_CurrentMove);
 				}
 
-				s_IsComputerTurn = false;
+				a_IsComputerTurn = false;
 			}
 		}
-
-		return 100;
 	}
 
 	GameLayer::Player operator++(GameLayer::Player& player)

@@ -46,11 +46,11 @@ namespace Chesster
 
 		bool IsPromotion(const std::string& notation);
 
+		bool IsEnPassant() { return m_EnPassant; }
+
 		/** Check wether the Piece has been captured.
 		 @return True if the Piece has been captured, false if not. */
 		bool IsCaptured() { return m_IsCaptured; }
-
-		//void SetIndex(uint32_t index) { m_Index = index; }
 
 		/*	Sets the Piece's TextureClip according to its Type and Color.
 			NOTE: The Piece MUST have a Type and Color before this function can be used. */
@@ -73,7 +73,6 @@ namespace Chesster
 
 		void SetEnPassant(bool boolean) { m_EnPassant = boolean; }
 
-		//const uint32_t& GetIndex() const { return m_Index; }
 		SDL_Rect& GetTextureClip() { return m_TextureClip; }
 		const glm::vec2& GetPosition() const { return m_Position; }
 		const std::string& GetNotation() const { return m_Notation; }
@@ -85,7 +84,6 @@ namespace Chesster
 		const RectBounds GetBounds() const;
 
 	private:
-		//uint32_t m_Index;
 		SDL_Rect m_TextureClip;		// The texture coordinates on the piece spritesheet
 		glm::vec2 m_Position;		// The top left (x, y) positon of the piece
 		std::string m_Notation;		// The piece's location in algebraic notation

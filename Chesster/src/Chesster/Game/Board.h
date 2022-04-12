@@ -32,8 +32,6 @@ namespace Chesster
 		/*	Draws all the 64 squares of the chess board. */
 		void OnRender();
 
-		void OnNewMove(const std::string& currentMove, Piece* currentPiece);
-
 		void OnViewportResize(const glm::vec2& viewportSize);
 
 		void UpdateActiveSquares();
@@ -46,9 +44,6 @@ namespace Chesster
 		/** It is used to retrieve the instance of the current Board.
 		 @return A reference to this Board object. */
 		static Board& Get() { return *s_Instance; }
-
-	private:
-		void MovePiece(const std::string& notation);
 
 	private:
 		std::array<Square, 64> m_BoardSquares;	// Represents the 64 squares of the chess board

@@ -31,7 +31,7 @@ namespace Chesster
 		// For commanding the camera to take the picture
 		const std::string& cameraIP = settingsPanel->m_CameraIP;
 		const std::string& cameraTelnetPort = settingsPanel->m_CameraTelnetPort;
-		if (!network->m_Winsock.CreateClientSocket(network->m_CameraTelnetSocket, cameraIP, cameraTelnetPort))
+		if (!network->CreateClientSocket(network->m_CameraTelnetSocket, cameraIP, cameraTelnetPort))
 		{
 			const std::string str{ "Unable to connect the Camera Command Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTelnetPort + ")\n" };
@@ -80,7 +80,7 @@ namespace Chesster
 		// For receiving data stream of physical board's status
 		const std::string& cameraIP = settingsPanel->m_CameraIP;
 		const std::string& cameraTCPDevicePort = settingsPanel->m_CameraTCPDevicePort;
-		if (!network->m_Winsock.CreateClientSocket(network->m_CameraTCPDeviceSocket, cameraIP, cameraTCPDevicePort))
+		if (!network->CreateClientSocket(network->m_CameraTCPDeviceSocket, cameraIP, cameraTCPDevicePort))
 		{
 			const std::string str{ "Unable to connect the Camera Buffer Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTCPDevicePort + ")\n" };
@@ -118,7 +118,7 @@ namespace Chesster
 		
 		const std::string& robotIP = settingsPanel->m_RobotIP;
 		const std::string& robotPort = settingsPanel->m_RobotPort;
-		if (!network->m_Winsock.CreateServerSocket(network->m_ChessterListenSocket, robotIP, robotPort))
+		if (!network->CreateServerSocket(network->m_ChessterListenSocket, robotIP, robotPort))
 		{
 			const std::string str{ "Unable create server socket. (IP: " + robotIP + ", Port: " + robotPort + ")\n\n" };
 			LOG_ERROR(str);
@@ -133,7 +133,7 @@ namespace Chesster
 		consolePanel->AddLog(str);
 
 		// Accept a client (the staubli robot)
-		network->m_RobotClientSocket = network->m_Winsock.AcceptClient(network->m_ChessterListenSocket);
+		network->m_RobotClientSocket = network->AcceptClient(network->m_ChessterListenSocket);
 		if (network->m_RobotClientSocket == INVALID_SOCKET)
 		{
 			LOG_ERROR("WINSOCK: accept() failed with code: ", WSAGetLastError());

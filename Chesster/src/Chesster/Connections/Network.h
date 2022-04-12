@@ -14,10 +14,10 @@
 namespace Chesster
 {
 	/*	 */
-	class Network
+	class Network : public Winsock
 	{
 	public:
-		/*	Initializes all SOCKETs to invalid and saves an instance of itself. */
+		/*	Initializes all SOCKETs to INVALID_SOCKET and a pointer to itself. */
 		Network();
 
 		/*	Closes all SOCKETs if there's any left open. */
@@ -86,8 +86,6 @@ namespace Chesster
 		bool RecvFromRobot(std::array<char, 256>& buffer);
 
 	private:
-		Winsock m_Winsock;				// Initializes Windows Sockets
-
 		SOCKET m_CameraTelnetSocket;	// Client SOCKET to give commands to the camera
 		SOCKET m_CameraTCPDeviceSocket;	// Client SOCKET to receive the camera's data
 
