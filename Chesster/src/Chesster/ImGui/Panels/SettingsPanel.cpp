@@ -242,11 +242,11 @@ namespace Chesster
 		}
 		else
 		{
-			unsigned commandThreadID{};
-			_beginthreadex(NULL, 0, &Network::CameraTelnetThread, &Network::Get(), 0, &commandThreadID);
+			std::thread cameraTelnetThread(Network::CameraTelnetThread);
+			cameraTelnetThread.detach();
 
-			unsigned bufferThreadID{};
-			_beginthreadex(NULL, 0, &Network::CameraTCPDeviceThread, &Network::Get(), 0, &bufferThreadID);
+			std::thread cameraTCPDeviceThread(Network::CameraTCPDeviceThread);
+			cameraTCPDeviceThread.detach();
 			
 			m_IsCameraConnected = true;
 		}
@@ -266,8 +266,8 @@ namespace Chesster
 		}
 		else
 		{
-			unsigned threadID{};
-			_beginthreadex(NULL, 0, &Network::ChessterRobotThread, &Network::Get(), 0, &threadID);
+			std::thread chessterRobotThread(Network::ChessterRobotThread);
+			chessterRobotThread.detach();
 
 			m_IsRobotConnected = true;
 		}

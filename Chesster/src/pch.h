@@ -10,6 +10,7 @@
 #include <vector>
 #include <array>
 #include <memory>
+#include <thread>
 
 // Microsoft
 #ifdef _WIN32

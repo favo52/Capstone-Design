@@ -117,9 +117,9 @@ namespace Chesster
 
 		// Read engine's reply and print it
 		std::string engineMessage{ "GAME RESET\n" };
-		engineMessage += ReadFromEngine() + '\n';
+		engineMessage += ReadFromEngine();
 		LOG_INFO(engineMessage);
-		consolePanel->AddLog(engineMessage);
+		consolePanel->AddLog("\n" + engineMessage);
 	}
 
 	void ChessEngine::EvaluateGame()
@@ -137,9 +137,9 @@ namespace Chesster
 
 		// Read engine's reply and print it
 		std::string engineMessage{ "GAME EVALUATION\n" };
-		engineMessage += ReadFromEngine() + '\n';
+		engineMessage += ReadFromEngine();
 		LOG_INFO(engineMessage);
-		consolePanel->AddLog(engineMessage);
+		consolePanel->AddLog("\n" + engineMessage);
 	}
 
 	void ChessEngine::SetDifficultyLevel(int difficulty)
@@ -148,14 +148,14 @@ namespace Chesster
 
 		if (!WriteToEngine("setoption name Skill Level value " + std::to_string(difficulty) + "\n"))
 		{
-			const std::string errorMsg{ "Unable to set Skill Level value to " + std::to_string(difficulty) + ".\n" };
+			const std::string errorMsg{ "Unable to set Skill Level value to " + std::to_string(difficulty) + "." };
 			LOG_WARN(errorMsg);
 			consolePanel->AddLog(errorMsg);
 			return;
 		}
 		Sleep(100);
 
-		const std::string message{ "Skill Level value set to " + std::to_string(difficulty) + ".\n" };
+		const std::string message{ "Skill Level value set to " + std::to_string(difficulty) + "." };
 		LOG_INFO(message);
 		consolePanel->AddLog(message);
 	}
@@ -168,14 +168,14 @@ namespace Chesster
 		// Specify ELO
 		if (!WriteToEngine("setoption name UCI_Elo value " + std::to_string(elo) + "\n"))
 		{
-			const std::string errorMsg{ "Unable to set ELO Rating to " + std::to_string(elo) + ".\n" };
+			const std::string errorMsg{ "Unable to set ELO Rating to " + std::to_string(elo) + "." };
 			LOG_WARN(errorMsg);
 			consolePanel->AddLog(errorMsg);
 			return;
 		}
 		Sleep(100);
 
-		const std::string message = { "ELO Rating set to " + std::to_string(elo) + ".\n" };
+		const std::string message = { "ELO Rating set to " + std::to_string(elo) + "." };
 		LOG_INFO(message);
 		consolePanel->AddLog(message);
 	}
@@ -190,15 +190,15 @@ namespace Chesster
 		if (!WriteToEngine("setoption name UCI_LimitStrength value " + toggle))
 		{
 			const std::string boolMsg = (boolean) ? "activate" : "deactivate";
-			const std::string errorMsg{ "Unable to " + boolMsg + " ELO.\n" };
+			const std::string errorMsg{ "Unable to " + boolMsg + " ELO Rating." };
 			LOG_WARN(errorMsg);
 			consolePanel->AddLog(errorMsg);
 			return;
 		}
 		Sleep(150);
 
-		const std::string boolMsg = (boolean) ? "activated" : "deactivated";
-		const std::string message = { "ELO Rating " + boolMsg + ".\n" };
+		const std::string boolMsg = (boolean) ? "activated." : "deactivated.";
+		const std::string message = { "ELO Rating " + boolMsg };
 		LOG_INFO(message);
 		consolePanel->AddLog(message);
 	}
@@ -218,7 +218,7 @@ namespace Chesster
 		Sleep(200);
 		
 		// Read engine's reply
-		std::string engineMessage = ReadFromEngine() + '\n';
+		std::string engineMessage = ReadFromEngine();
 		LOG_INFO(engineMessage);
 
 		// Grab the engine's move
@@ -301,7 +301,7 @@ namespace Chesster
 		Sleep(200);
 
 		// Read engine's reply and print it
-		std::string engineMessage = ReadFromEngine() + '\n';
+		std::string engineMessage = ReadFromEngine();
 		LOG_INFO(engineMessage);
 		consolePanel->AddLog(engineMessage);
 		engineMessage.pop_back();

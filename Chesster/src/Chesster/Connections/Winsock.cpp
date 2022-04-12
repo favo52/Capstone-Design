@@ -30,7 +30,7 @@ namespace Chesster
 
 		// Prepare addrinfo
 		ZeroMemory(&Hints, sizeof(Hints));
-		Hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6.
+		Hints.ai_family = AF_INET;			// AF_INET for IPv4. AF_INET6 for IPv6.
 		Hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
 		Hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
 
@@ -81,7 +81,7 @@ namespace Chesster
 
 		// Prepare addrinfo
 		ZeroMemory(&Hints, sizeof(Hints));	// ZeroMemory fills the hints with zeros, prepares the memory to be used
-		Hints.ai_family = AF_INET;			// AF_NET for IPv4. AF_NET6 for IPv6. AF_UNSPEC for either (might cause error).
+		Hints.ai_family = AF_INET;			// AF_INET for IPv4. AF_INET6 for IPv6. AF_UNSPEC for either (might cause error).
 		Hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
 		Hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
 		Hints.ai_flags = AI_PASSIVE;		// Indicates the caller intends to use the returned socket address structure

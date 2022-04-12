@@ -4,7 +4,7 @@
 #include "Chesster/Core/Application.h"
 
 #include "Chesster/Connections/ChessEngine.h"
-#include <thread>
+
 #include <imgui.h>
 
 namespace Chesster
@@ -51,10 +51,6 @@ namespace Chesster
 
 		// Connect Stockfish
 		m_ChessEngine = std::make_unique<ChessEngine>();
-
-		//unsigned threadID{};
-		//m_EngineThread = (HANDLE)_beginthreadex(nullptr, 0, &ChessEngineThread, (void*)this, 0, &threadID);
-
 		std::thread engineThread(ChessEngineThread);
 		engineThread.detach();
 	}
@@ -62,8 +58,6 @@ namespace Chesster
 	void GameLayer::OnDetach()
 	{
 		a_RunEngineThread = false;
-		//WaitForSingleObject(m_EngineThread, INFINITE);
-		//CloseHandle(m_EngineThread);
 	}
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)

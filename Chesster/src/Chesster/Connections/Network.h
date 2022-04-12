@@ -23,28 +23,22 @@ namespace Chesster
 		/*	Closes all SOCKETs if there's any left open. */
 		virtual ~Network();
 
-		/**	To be used when creating a new thread.
+		/*	To be used when creating a new thread.
 			Establishes a TCP client SOCKET connection between the localhost PC and
 			the Cognex In-Sight Explorer software. It allows the user to send commands
-			and receive corresponding messages.
-		 @param data Must be the current instance of this Network object.
-		 @return 0 if thread ended successfully, 1 if thread could not complete its task. */
-		static unsigned int __stdcall CameraTelnetThread(void* data);
+			and receive corresponding messages. */
+		static void CameraTelnetThread();
 
-		/**	To be used when creating a new thread.
+		/*	To be used when creating a new thread.
 			Establishes a TCP client SOCKET connection between the localhost PC and
 			the Cognex In-Sight Explorer software. It allows the CHESSTER program to receive
-			the new board positions each time the Cognex camera takes a new picture.
-		 @param data Must be the current instance of this Network object.
-		 @return 0 if thread ended successfully, 1 if thread could not complete its task. */
-		static unsigned int __stdcall CameraTCPDeviceThread(void* data);
+			the new board positions each time the Cognex camera takes a new picture. */
+		static void CameraTCPDeviceThread();
 
-		/**	To be used when creating a new thread.
+		/*	To be used when creating a new thread.
 			Enables the CHESSTER program to act as a TCP server. This allows the Staubli robot to
-			connect as a client and establish TCP/IP communication.
-		 @param data Must be the current instance of this Network object.
-		 @return 0 if thread ended successfully, 1 if thread could not complete its task. */
-		static unsigned int __stdcall ChessterRobotThread(void* data);
+			connect as a client and establish TCP/IP communication. */
+		static void ChessterRobotThread();
 
 		/*	Closes the Camera Telnet and TCPDevice SOCKETs. */
 		void DisconnectCamera();
