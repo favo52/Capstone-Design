@@ -137,7 +137,7 @@ namespace Chesster
 			ImGui::BeginDisabled(!m_IsCameraConnected);
 
 			if (ImGui::Button("Take Picture", { 100, 50 }))
-				m_Network.SendToCamera("SE8\n");
+				Network::Get().SendToCamera("SE8\n");
 
 			ImGui::EndDisabled();
 			ImGui::PopFont();
@@ -232,7 +232,7 @@ namespace Chesster
 	{
 		if (m_IsCameraConnected)
 		{
-			m_Network.DisconnectCamera();
+			Network::Get().DisconnectCamera();
 
 			const std::string msg{ "Camera disconnected." };
 			LOG_INFO(msg);
@@ -243,10 +243,10 @@ namespace Chesster
 		else
 		{
 			unsigned commandThreadID{};
-			_beginthreadex(NULL, 0, &Network::CameraTelnetThread, &m_Network, 0, &commandThreadID);
+			_beginthreadex(NULL, 0, &Network::CameraTelnetThread, &Network::Get(), 0, &commandThreadID);
 
 			unsigned bufferThreadID{};
-			_beginthreadex(NULL, 0, &Network::CameraTCPDeviceThread, &m_Network, 0, &bufferThreadID);
+			_beginthreadex(NULL, 0, &Network::CameraTCPDeviceThread, &Network::Get(), 0, &bufferThreadID);
 			
 			m_IsCameraConnected = true;
 		}
@@ -256,7 +256,7 @@ namespace Chesster
 	{
 		if (m_IsRobotConnected)
 		{
-			m_Network.DisconnectRobot();
+			Network::Get().DisconnectRobot();
 
 			const std::string msg{ "Chesster server shut down." };
 			LOG_INFO(msg);
@@ -267,7 +267,7 @@ namespace Chesster
 		else
 		{
 			unsigned threadID{};
-			_beginthreadex(NULL, 0, &Network::ChessterRobotThread, &m_Network, 0, &threadID);
+			_beginthreadex(NULL, 0, &Network::ChessterRobotThread, &Network::Get(), 0, &threadID);
 
 			m_IsRobotConnected = true;
 		}
