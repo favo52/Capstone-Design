@@ -4,17 +4,15 @@
 
 namespace Chesster
 {
-	constexpr DWORD BUFSIZE{ 2048 };	// The maximum size of the buffers
-
 	/*	Establishes the interprocess communication between the Chesster application, 
 		the Stockfish chess engine and the python script used to evaluate all valid moves. */
 	class ChessEngine
 	{
 	public:
-		/*	Default constructor. Prepares all the resources to establish communication. */
+		/*	Creates Pipes and prepares all the resources to create the child processes. */
 		ChessEngine();
 
-		/*	Destructor. Closes all connections. */
+		/*	Closes all connections. */
 		virtual ~ChessEngine();
 
 		/* Connects to the UCI chess engine file in the specified path.
@@ -43,8 +41,9 @@ namespace Chesster
 
 		/*	Retrieves the next move of the chess engine.
 		 @param moveHistory The current move history of the chess game.
-		 @return A std::string of the chess engine's next move. Usually a 4 char string or
-				 a 5 char string if there is a pawn promotion. */
+		 @return A string of the chess engine's next move, usually a 4 char string or
+				 a 5 char string if there is a pawn promotion. This function
+				 returns "error" if it was unable to get the engine's move. */
 		std::string GetNextMove(const std::string& moveHistory);
 
 		/*	Executes the python script to acquire all the valid moves in the current position of the board.
@@ -62,23 +61,17 @@ namespace Chesster
 		/*	Sends the "quit" command to the engine and closes all the interprocess pipes. */
 		void CloseAllConnections();
 
+		bool WriteToEngine(const std::string& message);
+
 		/*	Retrieves the message from the chess engine after it was given a command.
 		 @return A string of the chess engine's reply to the given command. */
 		const std::string GetEngineReply();
 
 	private:
-		// Chess engine
 		STARTUPINFO m_StartInfo;
 		SECURITY_ATTRIBUTES m_SecAttr;
 		PROCESS_INFORMATION m_ProcessInfo;
-		HANDLE m_Pipe_IN_Rd, m_Pipe_IN_Wr, m_Pipe_OUT_Rd, m_Pipe_OUT_Wr;
-		BYTE m_Buffer[BUFSIZE];
-		DWORD m_Read, m_Written;
-		BOOL m_Success;
-
-		// Python script
-		STARTUPINFOA m_StartInfo_Py;
-		PROCESS_INFORMATION m_ProcessInfo_Py;
-		BOOL m_Success_Py;
+		HANDLE m_ReadPipe_IN, m_WritePipe_IN;
+		HANDLE m_ReadPipe_OUT, m_WritePipe_OUT;
 	};
 }

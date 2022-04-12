@@ -64,7 +64,7 @@ namespace Chesster
 
 		/** Retrieves the instance of the current Network object.
 		 @return A reference to this Network object. */
-		//static Network& Get() { return *s_Instance; }
+		static Network& Get() { return *s_Instance; }
 
 	private:
 		/**	Waits to receive any new data from the Camera Telnet SOCKET. 

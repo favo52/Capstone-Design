@@ -7,6 +7,7 @@
 #include "Chesster/Game/Board.h"
 #include "Chesster/Game/Piece.h"
 
+#include "Chesster/Connections/Network.h"
 #include "Chesster/ImGui/Panels/ConsolePanel.h"
 #include "Chesster/ImGui/Panels/SettingsPanel.h"
 
@@ -69,6 +70,7 @@ namespace Chesster
 
 	private:
 		std::unique_ptr<ChessEngine> m_ChessEngine;
+		Network m_Network;
 
 		std::unique_ptr<Texture> m_PieceSpriteSheetTexture;
 		std::unique_ptr<Framebuffer> m_Framebuffer;

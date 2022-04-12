@@ -67,9 +67,10 @@ namespace Chesster
 				{
 					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !s_IsComputerTurn)
 					{
-						//s_TCPConnection.SendCommand();
 						s_IsComputerTurn = true;
-						Sleep(150);
+
+						using namespace std::literals;
+						//std::this_thread::sleep_for(150ms);
 					}
 					break;
 				}
@@ -538,13 +539,6 @@ namespace Chesster
 				if (Game->m_LegalMoves.empty())
 					Game->m_CurrentGameState = GameState::Gameover;
 
-				// Make computer play automatically after player
-				//if (Game->m_IsPlayerPlayed)
-				//{
-					//game->m_IsComputerTurn = true;
-					//Game->m_IsPlayerPlayed = false;
-				//}
-
 				s_IsMovePlayed = false;
 			}
 
@@ -564,8 +558,10 @@ namespace Chesster
 				else
 				{
 					Game->UpdateComputerMove();
-					s_IsComputerTurn = false;
+					//Game->m_Network.SendToRobot(Game->m_CurrentMove);
 				}
+
+				s_IsComputerTurn = false;
 			}
 		}
 
