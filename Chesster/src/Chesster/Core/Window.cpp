@@ -69,6 +69,9 @@ namespace Chesster
 
 	Window::~Window()
 	{
+		// Destroy the SDL_Renderer first
+		m_GraphicsContext.reset();
+
 		SDL_DestroyWindow(m_Window);
 		m_Window = nullptr;
 
