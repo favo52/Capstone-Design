@@ -275,7 +275,9 @@ namespace Chesster
 
 	void SettingsPanel::OnNewSquareColor()
 	{
-		for (Board::Square& square : Board::Get().GetBoardSquares())
+		auto& boardSquares = GameLayer::Get().GetBoard().GetBoardSquares();
+
+		for (Board::Square& square : boardSquares)
 		{
 			const glm::vec4 newColor =
 				((square.Notation[0] + square.Notation[1]) % 2 == 0) ? m_SquareColor1 : m_SquareColor2;

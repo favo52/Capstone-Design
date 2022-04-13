@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Chesster/Game/Piece.h"
 
-#include "Chesster/Game/Board.h"
+#include "Chesster/Layers/GameLayer.h"
 
 namespace Chesster
 {
@@ -18,7 +18,8 @@ namespace Chesster
 
 	void Piece::OnViewportResize()
 	{
-		auto& boardSquares = Board::Get().GetBoardSquares();
+		auto& boardSquares = GameLayer::Get().GetBoard().GetBoardSquares();
+		
 		auto squareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
 			[&](const Board::Square& sq) { return sq.Notation == m_Notation; });
 

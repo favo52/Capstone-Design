@@ -5,16 +5,14 @@
 #include "Chesster/Renderer/Framebuffer.h"
 
 #include "Chesster/Game/Board.h"
-#include "Chesster/Game/Piece.h"
 
+#include "Chesster/Connections/ChessEngine.h"
 #include "Chesster/Connections/Network.h"
 #include "Chesster/ImGui/Panels/ConsolePanel.h"
 #include "Chesster/ImGui/Panels/SettingsPanel.h"
 
 namespace Chesster
 {
-	class ChessEngine;
-
 	class GameLayer : public Layer
 	{
 	public:
@@ -33,11 +31,10 @@ namespace Chesster
 
 		void CameraDataReceived() { m_CameraDataReceived = true; }
 
-		const std::string& GetCurrentMove() const { return m_CurrentMove; }
-		std::array<Piece, 32>& GetChessPieces() { return m_ChessPieces; }
+		Board& GetBoard() { return m_Board; }
 		std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
 
-		ChessEngine& GetChessEngine() { return *m_ChessEngine; }
+		ChessEngine& GetChessEngine() { return m_ChessEngine; }
 		ConsolePanel* GetConsolePanel() { return &m_ConsolePanel; }
 		SettingsPanel* GetSettingsPanel() { return &m_SettingsPanel; }
 
@@ -50,12 +47,6 @@ namespace Chesster
 		void UpdatePlayerCameraMove();
 		void UpdatePlayerMouseMove();
 		void UpdatePlayerPawnPromotion();
-		
-		void MovePiece(const std::string& notation);
-		void ResetPieces();
-
-		void UpdatePieceCapture();
-		void UpdateNewMove();
 
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsMoveLegal(const std::string& notation);
@@ -63,9 +54,7 @@ namespace Chesster
 		void GameoverPopup();
 		void PawnPromotionPopup();
 
-		// Multithread
-		//static unsigned int __stdcall ChessEngineThread(void* data);
-		static void ChessEngineThread();
+		static void ChessEngineThread();	// Multithread
 
 	private:
 		enum class Player { White, Black };
@@ -74,28 +63,21 @@ namespace Chesster
 		enum class GameState { Gameplay, Gameover, PawnPromotion };
 
 	private:
-		std::unique_ptr<ChessEngine> m_ChessEngine;
-		//HANDLE m_EngineThread;
-
-		std::unique_ptr<Texture> m_PieceSpriteSheetTexture;
-		std::unique_ptr<Framebuffer> m_Framebuffer;
+		ChessEngine m_ChessEngine;
+		
+		Framebuffer m_Framebuffer;
 		glm::vec2 m_ViewportSize;
 
-		// Chess board
-		std::unique_ptr<Board> m_Board;			// Holds all 64 squares of the board
-		std::array<Piece, 32> m_ChessPieces;	// The 32 chess pieces
-		Piece* m_CurrentPiece;					// A pointer to the currently held piece
+		Board m_Board;					// Holds all 64 squares of the board
 
-		glm::vec2 m_MousePos;					// The mouse position relative to the window
-		glm::vec2 m_ViewportMousePos;			// The mouse position within the viewport window
+		glm::vec2 m_MousePos;			// The mouse position relative to the window
+		glm::vec2 m_ViewportMousePos;	// The mouse position within the viewport window
 
 		// Moves/Notations
 		std::string m_CurrentMove;
 		std::string m_MoveHistory;
 		size_t m_MoveHistorySize{ 0 };
 
-		const std::string m_StartPosFEN;
-		std::string m_CurrentFEN;
 		std::vector<std::string> m_LegalMoves;
 
 		bool m_CameraDataReceived{ false };

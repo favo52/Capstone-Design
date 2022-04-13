@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Chesster/Renderer/Renderer.h"
+#include "Chesster/Game/Piece.h"
 
 /* LEGEND
 */
@@ -8,8 +8,6 @@
 namespace Chesster
 {
 	constexpr int SQUARE_SIZE{ 100 };
-
-	class Piece;
 
 	/*	Represents the chess board. */
 	class Board
@@ -27,28 +25,41 @@ namespace Chesster
 		};
 
 	public:
-		Board(const glm::vec2& viewportSize);
+		Board();
 
 		/*	Draws all the 64 squares of the chess board. */
 		void OnRender();
 
 		void OnViewportResize(const glm::vec2& viewportSize);
 
-		void UpdateActiveSquares();
+		void MovePiece(const std::string& notation);
+		void ResetPieces();
+
+		void UpdatePieceCapture();
+		void UpdateNewMove(const std::string& currentMove);
+
+		void UpdateActiveSquares(const std::string& currentMove);
 		void ResetActiveSquares();
+
+		void SetCurrentPiece(Piece* currentPiece) { m_CurrentPiece = currentPiece; }
 
 		/**	Used to retrieve the board squares.
 		 @return Returns an array of all 64 individual squares of the board. */
 		std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
-			
-		/** It is used to retrieve the instance of the current Board.
-		 @return A reference to this Board object. */
-		static Board& Get() { return *s_Instance; }
+
+		/**	Used to retrieve the board squares.
+		 @return Returns an array of all 64 individual squares of the board. */
+		std::array<Piece, 32>& GetChessPieces() { return m_ChessPieces; }
+
+		Piece& GetCurrentPiece() { return *m_CurrentPiece; }
 
 	private:
 		std::array<Square, 64> m_BoardSquares;	// Represents the 64 squares of the chess board
 		std::array<Square, 2> m_ActiveSquares;	// The two highlighted squares
 
-		static Board* s_Instance;
+		std::array<Piece, 32> m_ChessPieces;	// The 32 chess pieces
+		Piece* m_CurrentPiece;					// A pointer to the currently held piece
+
+		std::unique_ptr<Texture> m_PieceSpriteSheetTexture;
 	};
 }

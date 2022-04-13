@@ -3,21 +3,19 @@
 
 #include "Chesster/Layers/GameLayer.h"
 
-#include "Chesster/Game/Piece.h"
-
 namespace Chesster
 {
-	Board* Board::s_Instance{ nullptr };
-
-	Board::Board(const glm::vec2& viewportSize)
+	Board::Board() :
+		m_PieceSpriteSheetTexture{ nullptr },
+		m_CurrentPiece{ &m_ChessPieces[0] }
 	{
-		s_Instance = this;
+		// Load and setup the sprite sheet image
+		m_PieceSpriteSheetTexture = std::make_unique<Texture>("assets/textures/ChessPieces.png");
+		m_PieceSpriteSheetTexture->SetWidth(PIECE_SIZE);
+		m_PieceSpriteSheetTexture->SetHeight(PIECE_SIZE);
 
 		const glm::vec4 BlueColor = { 0.084f, 0.342f, 0.517f, 1.0f };
 		const glm::vec4 WhiteColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-		const glm::vec2 offset{ (viewportSize.x * 0.5) - (SQUARE_SIZE * 8.0f) * 0.5f ,
-						(viewportSize.y * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f };
 
 		// Create all 64 squares
 		for (size_t x = 0; x < 8; ++x)
@@ -35,11 +33,12 @@ namespace Chesster
 
 				// Set each square's properties
 				Square* square = &m_BoardSquares[x + y * 8];
-				square->Position = { (float)x * SQUARE_SIZE + offset.x, (float)y * SQUARE_SIZE + offset.y };
 				square->Color = color * 255.0f;
 				square->Notation = squareNotation;
 			}
 		}
+
+		ResetPieces();
 	}
 
 	void Board::OnRender()
@@ -47,16 +46,30 @@ namespace Chesster
 		// Draw board
 		for (const Square& square : m_BoardSquares)
 		{
-			const SDL_Rect rect = { square.Position.x, square.Position.y, SQUARE_SIZE, SQUARE_SIZE };
+			const SDL_Rect& rect = { (int)square.Position.x, (int)square.Position.y, SQUARE_SIZE, SQUARE_SIZE };
 			Renderer::DrawFilledRect(rect, square.Color);
 		}
 
 		// Draw active squares
-		const SDL_Rect oldSq = { m_ActiveSquares[0].Position.x, m_ActiveSquares[0].Position.y, SQUARE_SIZE , SQUARE_SIZE };
+		const SDL_Rect& oldSq = { (int)m_ActiveSquares[0].Position.x, (int)m_ActiveSquares[0].Position.y, SQUARE_SIZE , SQUARE_SIZE };
 		Renderer::DrawFilledRect(oldSq, m_ActiveSquares[0].Color);
 
-		const SDL_Rect newSq = { m_ActiveSquares[1].Position.x, m_ActiveSquares[1].Position.y, SQUARE_SIZE, SQUARE_SIZE };
+		const SDL_Rect& newSq = { (int)m_ActiveSquares[1].Position.x, (int)m_ActiveSquares[1].Position.y, SQUARE_SIZE, SQUARE_SIZE };
 		Renderer::DrawFilledRect(newSq, m_ActiveSquares[1].Color);
+
+		// Draw all the chess pieces
+		for (Piece& piece : m_ChessPieces)
+		{
+			if (piece.IsCaptured()) continue;	// don't draw captured pieces
+			m_PieceSpriteSheetTexture->SetClip(&piece.GetTextureClip());
+			m_PieceSpriteSheetTexture->SetPosition(piece.GetPosition().x, piece.GetPosition().y);
+			Renderer::DrawTexture(m_PieceSpriteSheetTexture.get());
+		}
+
+		// Draw the selected chess piece on top of all other chess pieces
+		m_PieceSpriteSheetTexture->SetClip(&m_CurrentPiece->GetTextureClip());
+		m_PieceSpriteSheetTexture->SetPosition(m_CurrentPiece->GetPosition().x, m_CurrentPiece->GetPosition().y);
+		Renderer::DrawTexture(m_PieceSpriteSheetTexture.get());
 	}
 
 	void Board::OnViewportResize(const glm::vec2& viewportSize)
@@ -73,6 +86,124 @@ namespace Chesster
 				{ (float)x * SQUARE_SIZE + offset.x, (float)y * SQUARE_SIZE + offset.y };
 			}
 		}
+
+		for (auto& piece : m_ChessPieces)
+			piece.OnViewportResize();
+	}
+
+	void Board::MovePiece(const std::string& notation)
+	{
+		// Grab the selected chess piece's old and new positions
+		const std::string& oldPos{ notation[0], notation[1] };
+		const std::string& newPos{ notation[2], notation[3] };
+
+		// Find new square
+		auto targetSquareItr = std::find_if(std::begin(m_BoardSquares), std::end(m_BoardSquares),
+			[&](const Board::Square& sq) { return sq.Notation == newPos; });
+
+		if (targetSquareItr != std::end(m_BoardSquares))
+		{
+			// Find piece and move it to new square
+			for (Piece& piece : m_ChessPieces)
+			{
+				piece.UpdateEnPassant(oldPos);
+				if (piece.m_Notation == oldPos)
+				{
+					m_CurrentPiece = &piece;
+
+					const glm::vec2& squareCenter = targetSquareItr->GetCenter();
+					piece.SetPosition(squareCenter.x, squareCenter.y);
+					piece.m_Notation = newPos;
+					break;
+				}
+			}
+		}
+	}
+
+	void Board::ResetPieces()
+	{
+		// The numbers are according to the enum class Piece::Type values
+		int pieceLocations[8 * 4] =
+		{
+			1, 2, 3, 4, 5, 3, 2, 1,
+			6, 6, 6, 6, 6, 6, 6, 6,
+			6, 6, 6, 6, 6, 6, 6, 6,
+			1, 2, 3, 4, 5, 3, 2, 1
+		};
+
+		size_t index{ 0 };
+		uint32_t offset{ 0 };
+		Piece::Color color{ Piece::Color::Black };
+
+		for (Piece& piece : m_ChessPieces)
+		{
+			if (index > 15) { offset = 32; color = Piece::Color::White; }
+
+			// Set up the piece properties
+			const glm::vec2 squareCenter = m_BoardSquares[index + offset].GetCenter();
+
+			piece.SetPosition(squareCenter.x, squareCenter.y);
+			piece.SetNotation(m_BoardSquares[index + offset].Notation);
+			piece.SetType(Piece::Type(pieceLocations[index]));
+			piece.SetColor(color);
+			piece.SetTextureClip();
+			piece.SetEnPassant(false);
+			piece.SetCaptured(false);
+			++index;
+		}
+	}
+
+	void Board::UpdatePieceCapture()
+	{
+		for (Piece& piece : m_ChessPieces)
+		{
+			if (m_CurrentPiece->m_Notation == piece.GetNotation() &&
+				!(m_CurrentPiece->m_Color == piece.GetColor()))	// don't capture self
+			{
+				piece.Capture();
+				break;
+			}
+		}
+	}
+
+	void Board::UpdateNewMove(const std::string& currentMove)
+	{
+		if (currentMove.empty()) return;
+
+		// Check for Castling		// Move Rook
+		if (currentMove == "e1g1") MovePiece("h1f1");
+		if (currentMove == "e8g8") MovePiece("h8f8");
+		if (currentMove == "e1c1") MovePiece("a1d1");
+		if (currentMove == "e8c8") MovePiece("a8d8");
+
+		// Check for En Passant
+		if (m_CurrentPiece->IsPawn())
+		{
+			int offset{ 1 };
+			if (m_CurrentPiece->m_Color == Piece::Color::White)
+				offset = -1;
+
+			// Grab the piece behind
+			Piece* pieceBehind{ nullptr };
+			for (Piece& piece : m_ChessPieces)
+			{
+				if (piece.m_Notation[0] == m_CurrentPiece->m_Notation[0] &&
+					piece.m_Notation[1] == m_CurrentPiece->m_Notation[1] + offset)
+				{
+					pieceBehind = &piece;
+				}
+			}
+
+			// Capture the correct pawn
+			if (pieceBehind)
+			{
+				if (pieceBehind->IsPawn() && pieceBehind->m_Color != m_CurrentPiece->m_Color &&
+					pieceBehind->IsEnPassant())
+				{
+					pieceBehind->Capture();
+				}
+			}
+		}
 	}
 
 	void Board::ResetActiveSquares()
@@ -81,13 +212,12 @@ namespace Chesster
 		m_ActiveSquares[1].Color = { 0, 0, 0, 0 };
 	}
 
-	void Board::UpdateActiveSquares()
+	void Board::UpdateActiveSquares(const std::string& currentMove)
 	{
-		const std::string currentMove = GameLayer::Get().GetCurrentMove();
 		if (currentMove.empty()) return;
 
-		const std::string oldPos{ currentMove[0], currentMove[1] };
-		const std::string newPos{ currentMove[2], currentMove[3] };
+		const std::string& oldPos{ currentMove[0], currentMove[1] };
+		const std::string& newPos{ currentMove[2], currentMove[3] };
 		
 		auto oldSquareItr = std::find_if(std::begin(m_BoardSquares), std::end(m_BoardSquares),
 			[&](const Board::Square& sq) { return sq.Notation == oldPos; });
