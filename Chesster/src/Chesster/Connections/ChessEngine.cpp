@@ -54,7 +54,7 @@ namespace Chesster
 
 	void ChessEngine::ConnectToEngine(const LPWSTR& path)
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		// Set up members of the PROCESS_INFORMATION structure.
 		ZeroMemory(&m_ProcessInfo, sizeof(PROCESS_INFORMATION));
@@ -75,147 +75,125 @@ namespace Chesster
 			return;
 		}
 		LOG_INFO("Engine connection opened.");
-		consolePanel->AddLog("Engine connection opened.");
+		consolePanel.AddLog("Engine connection opened.");
 
 		// Get the engine's welcome message
 		std::string engineMessage = ReadFromEngine();
 		LOG_INFO(engineMessage);
-		consolePanel->AddLog(engineMessage);
+		consolePanel.AddLog(engineMessage);
 
-		// Check if engine is ready
-		if (!WriteToEngine("uci\nucinewgame\nisready\n"))
-		{
-			const std::string errorMsg{ "Unable to check if engine is ready." };
-			LOG_WARN(errorMsg);
-			consolePanel->AddLog(errorMsg);
-		}
-		Sleep(100);
-
-		// Set default difficulty level
 		SetDifficultyLevel();
 		SetDifficultyELO();
-		
-		Sleep(100);
-		engineMessage = { "\n" + ReadFromEngine() };
-		LOG_INFO(engineMessage);
-		consolePanel->AddLog(engineMessage);
+
+		NewGame();
 	}
 
 	void ChessEngine::NewGame()
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		// The fen is the chess starting position.
 		if (!WriteToEngine("ucinewgame\nposition fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\nd\nisready\n"))
 		{
 			const std::string errorMsg{ "Failed to send \"ucinewgame\" request." };
 			LOG_WARN(errorMsg);
-			consolePanel->AddLog(errorMsg);
+			consolePanel.AddLog(errorMsg);
 			return;
 		}
-		Sleep(150);
 
 		// Read engine's reply and print it
-		std::string engineMessage{ "GAME RESET\n" };
+		std::string engineMessage{ "NEW GAME\n" };
 		engineMessage += ReadFromEngine();
 		LOG_INFO(engineMessage);
-		consolePanel->AddLog("\n" + engineMessage);
+		consolePanel.AddLog("\n" + engineMessage);
 	}
 
 	void ChessEngine::EvaluateGame()
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		if (!WriteToEngine("eval\n"))
 		{
 			const std::string errorMsg{ "Failed to send \"eval\" request." };
 			LOG_WARN(errorMsg);
-			consolePanel->AddLog(errorMsg);
+			consolePanel.AddLog(errorMsg);
 			return;
 		}
-		Sleep(100);
 
 		// Read engine's reply and print it
 		std::string engineMessage{ "GAME EVALUATION\n" };
 		engineMessage += ReadFromEngine();
 		LOG_INFO(engineMessage);
-		consolePanel->AddLog("\n" + engineMessage);
+		consolePanel.AddLog("\n" + engineMessage);
 	}
 
 	void ChessEngine::SetDifficultyLevel(int difficulty)
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		if (!WriteToEngine("setoption name Skill Level value " + std::to_string(difficulty) + "\n"))
 		{
 			const std::string errorMsg{ "Unable to set Skill Level value to " + std::to_string(difficulty) + "." };
 			LOG_WARN(errorMsg);
-			consolePanel->AddLog(errorMsg);
+			consolePanel.AddLog(errorMsg);
 			return;
 		}
-		Sleep(100);
 
 		const std::string message{ "Skill Level value set to " + std::to_string(difficulty) + "." };
 		LOG_INFO(message);
-		consolePanel->AddLog(message);
+		consolePanel.AddLog(message);
 	}
 
 	// Overrides skill level
 	void ChessEngine::SetDifficultyELO(int elo)
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
-		// Specify ELO
 		if (!WriteToEngine("setoption name UCI_Elo value " + std::to_string(elo) + "\n"))
 		{
 			const std::string errorMsg{ "Unable to set ELO Rating to " + std::to_string(elo) + "." };
 			LOG_WARN(errorMsg);
-			consolePanel->AddLog(errorMsg);
+			consolePanel.AddLog(errorMsg);
 			return;
 		}
-		Sleep(100);
 
 		const std::string message = { "ELO Rating set to " + std::to_string(elo) + "." };
 		LOG_INFO(message);
-		consolePanel->AddLog(message);
+		consolePanel.AddLog(message);
 	}
 
 	void ChessEngine::ToggleELO(bool boolean)
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
-		std::string toggle{ "false\n" };
-		if (boolean) toggle = { "true\n" };
-
-		if (!WriteToEngine("setoption name UCI_LimitStrength value " + toggle))
+		const std::string toggleMsg = (boolean) ? "true\n" : "false\n";
+		if (!WriteToEngine("setoption name UCI_LimitStrength value " + toggleMsg))
 		{
 			const std::string boolMsg = (boolean) ? "activate" : "deactivate";
 			const std::string errorMsg{ "Unable to " + boolMsg + " ELO Rating." };
 			LOG_WARN(errorMsg);
-			consolePanel->AddLog(errorMsg);
+			consolePanel.AddLog(errorMsg);
 			return;
 		}
-		Sleep(150);
 
 		const std::string boolMsg = (boolean) ? "activated." : "deactivated.";
 		const std::string message = { "ELO Rating " + boolMsg };
 		LOG_INFO(message);
-		consolePanel->AddLog(message);
+		consolePanel.AddLog(message);
 	}
 
 	std::string ChessEngine::GetNextMove(const std::string& moveHistory)
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		// Send position to engine
 		if (!WriteToEngine("position startpos moves " + moveHistory + "\ngo depth 5\nd\n"))
 		{
 			const std::string errorMsg{ "Unable to get chess engine's next move." };
 			LOG_WARN(errorMsg);
-			consolePanel->AddLog(errorMsg);
+			consolePanel.AddLog(errorMsg);
 			return "error";
 		}
-		Sleep(200);
 		
 		// Read engine's reply
 		std::string engineMessage = ReadFromEngine();
@@ -288,26 +266,25 @@ namespace Chesster
 
 	std::string ChessEngine::GetFEN(const std::string& moveHistory)
 	{
-		ConsolePanel* consolePanel = GameLayer::Get().GetConsolePanel();
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		// Send position to engine
 		if (!WriteToEngine("position startpos moves " + moveHistory + "\nd\n"))
 		{
 			const std::string errorMsg{ "Unable to get FEN from engine." };
 			LOG_ERROR(errorMsg);
-			consolePanel->AddLog(errorMsg);
+			consolePanel.AddLog(errorMsg);
 			return "error";
 		}
-		Sleep(200);
 
 		// Read engine's reply and print it
 		std::string engineMessage = ReadFromEngine();
 		LOG_INFO(engineMessage);
-		consolePanel->AddLog(engineMessage);
+		consolePanel.AddLog(engineMessage);
 		engineMessage.pop_back();
 
 		// Grab the FEN string
-		int found = engineMessage.find("Fen:");
+		size_t found = engineMessage.find("Fen:");
 		if (found != std::string::npos)
 		{
 			// Erase everything up to and including "Fen:"
@@ -321,7 +298,7 @@ namespace Chesster
 				if (str == "Key:")
 				{
 					engineMessage.pop_back(); // delete last whitespace
-					return engineMessage;		// only the FEN notation is left, return it
+					return engineMessage;	  // only the FEN notation is left, return it
 				}
 				engineMessage += str + ' ';
 			}
@@ -358,6 +335,8 @@ namespace Chesster
 
 	const std::string ChessEngine::ReadFromEngine()
 	{
+		Sleep(200);
+
 		std::array<char, 2048> buffer = {};
 		std::string msg{};
 		DWORD bytesRead{ 0 };

@@ -28,7 +28,6 @@ namespace Chesster
 		float fontSize{ 20.0f };
 		ImFontConfig consoleFontConfig;
 		consoleFontConfig.GlyphMinAdvanceX = 7.5f;
-		consoleFontConfig.GlyphMaxAdvanceX = 8.0f;
 
 		io.Fonts->AddFontDefault();
 		io.Fonts->AddFontFromFileTTF("assets/fonts/arial.ttf", 16, &consoleFontConfig);

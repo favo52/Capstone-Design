@@ -60,15 +60,15 @@ namespace Chesster
 		// Draw all the chess pieces
 		for (Piece& piece : m_ChessPieces)
 		{
-			if (piece.IsCaptured()) continue;	// don't draw captured pieces
-			m_PieceSpriteSheetTexture->SetClip(&piece.GetTextureClip());
-			m_PieceSpriteSheetTexture->SetPosition(piece.GetPosition().x, piece.GetPosition().y);
+			if (piece.m_IsCaptured) continue;	// don't draw captured pieces
+			m_PieceSpriteSheetTexture->SetClip(&piece.m_TextureClip);
+			m_PieceSpriteSheetTexture->SetPosition(piece.m_Position.x, piece.m_Position.y);
 			Renderer::DrawTexture(m_PieceSpriteSheetTexture.get());
 		}
 
 		// Draw the selected chess piece on top of all other chess pieces
-		m_PieceSpriteSheetTexture->SetClip(&m_CurrentPiece->GetTextureClip());
-		m_PieceSpriteSheetTexture->SetPosition(m_CurrentPiece->GetPosition().x, m_CurrentPiece->GetPosition().y);
+		m_PieceSpriteSheetTexture->SetClip(&m_CurrentPiece->m_TextureClip);
+		m_PieceSpriteSheetTexture->SetPosition(m_CurrentPiece->m_Position.x, m_CurrentPiece->m_Position.y);
 		Renderer::DrawTexture(m_PieceSpriteSheetTexture.get());
 	}
 
@@ -78,6 +78,7 @@ namespace Chesster
 		const glm::vec2 offset{ (viewportSize.x * 0.5) - (SQUARE_SIZE * 8.0f) * 0.5f ,
 						(viewportSize.y * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f };
 
+		// Update board squares position
 		for (size_t x = 0; x < 8; ++x)
 		{
 			for (size_t y = 0; y < 8; ++y)
@@ -87,8 +88,15 @@ namespace Chesster
 			}
 		}
 
+		// Update piece positions
 		for (auto& piece : m_ChessPieces)
-			piece.OnViewportResize();
+		{
+			auto squareItr = std::find_if(std::begin(m_BoardSquares), std::end(m_BoardSquares),
+				[&](const Board::Square& sq) { return sq.Notation == piece.m_Notation; });
+
+			if (squareItr != std::end(m_BoardSquares))
+				piece.SetPosition(squareItr->GetCenter());
+		}
 	}
 
 	void Board::MovePiece(const std::string& notation)
@@ -111,8 +119,7 @@ namespace Chesster
 				{
 					m_CurrentPiece = &piece;
 
-					const glm::vec2& squareCenter = targetSquareItr->GetCenter();
-					piece.SetPosition(squareCenter.x, squareCenter.y);
+					piece.SetPosition(targetSquareItr->GetCenter());
 					piece.m_Notation = newPos;
 					break;
 				}
@@ -140,15 +147,13 @@ namespace Chesster
 			if (index > 15) { offset = 32; color = Piece::Color::White; }
 
 			// Set up the piece properties
-			const glm::vec2 squareCenter = m_BoardSquares[index + offset].GetCenter();
-
-			piece.SetPosition(squareCenter.x, squareCenter.y);
-			piece.SetNotation(m_BoardSquares[index + offset].Notation);
-			piece.SetType(Piece::Type(pieceLocations[index]));
-			piece.SetColor(color);
+			piece.SetPosition(m_BoardSquares[index + offset].GetCenter());
+			piece.m_Notation = m_BoardSquares[index + offset].Notation;
+			piece.m_Type = Piece::Type(pieceLocations[index]);
+			piece.m_Color = color;
 			piece.SetTextureClip();
-			piece.SetEnPassant(false);
-			piece.SetCaptured(false);
+			piece.m_EnPassant = false;
+			piece.m_IsCaptured = false;
 			++index;
 		}
 	}
@@ -157,8 +162,8 @@ namespace Chesster
 	{
 		for (Piece& piece : m_ChessPieces)
 		{
-			if (m_CurrentPiece->m_Notation == piece.GetNotation() &&
-				!(m_CurrentPiece->m_Color == piece.GetColor()))	// don't capture self
+			if (m_CurrentPiece->m_Notation == piece.m_Notation &&
+				!(m_CurrentPiece->m_Color == piece.m_Color))	// don't capture self
 			{
 				piece.Capture();
 				break;
@@ -198,7 +203,7 @@ namespace Chesster
 			if (pieceBehind)
 			{
 				if (pieceBehind->IsPawn() && pieceBehind->m_Color != m_CurrentPiece->m_Color &&
-					pieceBehind->IsEnPassant())
+					pieceBehind->m_EnPassant)
 				{
 					pieceBehind->Capture();
 				}

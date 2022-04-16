@@ -5,12 +5,11 @@
 
 namespace Chesster
 {
-	// Boolean atomic switches to use in game engine thread
-	std::atomic<bool> a_RunEngineThread{ false };	
-	std::atomic<bool> a_IsMovePlayed{ false };
-	std::atomic<bool> a_IsComputerTurn{ false };
+	std::atomic<bool> a_IsChessEngineRunning{ false };	// ChessEngineThread loops while this is true
+	std::atomic<bool> a_IsMovePlayed{ false };			// Updates m_LegalMoves when a new move has been played
+	std::atomic<bool> a_IsComputerTurn{ false };		// Allows the chess engine to play
 
-	static bool s_IsHoldingPiece{ false };
+	static bool s_IsHoldingPiece{ false };				// Moves the Piece's sprite while user is holding it with mouse
 
 	const std::string START_FEN = { "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
 	
@@ -21,7 +20,10 @@ namespace Chesster
 		m_Framebuffer{ 480, 360 },
 		m_ViewportSize{ 0.0f, 0.0f },
 		m_MousePos{ 0.0f, 0.0f },
-		m_ViewportMousePos{ 0.0f, 0.0f }
+		m_ViewportMousePos{ 0.0f, 0.0f },
+		m_OldCameraData{ "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
+		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
+		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
 	{
 		s_Instance = this;
 	}
@@ -29,13 +31,14 @@ namespace Chesster
 	void GameLayer::OnAttach()
 	{
 		// Connect Stockfish
+		a_IsChessEngineRunning = true;
 		std::thread engineThread(ChessEngineThread);
 		engineThread.detach();
 	}
 
 	void GameLayer::OnDetach()
 	{
-		a_RunEngineThread = false;
+		a_IsChessEngineRunning = false;
 	}
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
@@ -49,9 +52,6 @@ namespace Chesster
 					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !a_IsComputerTurn)
 					{
 						a_IsComputerTurn = true;
-
-						using namespace std::literals;
-						//std::this_thread::sleep_for(150ms);
 					}
 					break;
 				}
@@ -107,15 +107,28 @@ namespace Chesster
 		// Camera taking pictures
 		if (m_CameraDataReceived)
 		{
-			LOG_INFO("Data Received: {0}", m_CameraDataBuffer.data());
+			std::vector<std::string> tempCameraData;
+			std::istringstream iss{ m_CameraDataBuffer.data() };
+			for (std::string piece; iss >> piece;)
+			{
+				if (piece.front() != '0')
+					tempCameraData.push_back(piece);
+			}
 
-			UpdatePlayerCameraMove();
+			std::sort(tempCameraData.begin(), tempCameraData.end());
+
+			if (m_NewCameraData != tempCameraData)
+			{
+				m_NewCameraData = tempCameraData;
+				UpdatePlayerCameraMove();
+			}
+
 			m_CameraDataReceived = false;
 		}
 
 		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
-			m_Board.GetCurrentPiece().SetPosition(m_ViewportMousePos.x, m_ViewportMousePos.y);
+			m_Board.GetCurrentPiece().SetPosition(m_ViewportMousePos);
 
 		// A new move has been played
 		if (m_MoveHistorySize != m_MoveHistory.size())
@@ -127,9 +140,9 @@ namespace Chesster
 
 			// Update current player
 			++m_CurrentPlayer;
-		}
 
-		m_Board.UpdateActiveSquares(m_CurrentMove);
+			m_Board.UpdateActiveSquares(m_CurrentMove);
+		}
 	}
 
 	void GameLayer::OnRender()
@@ -235,7 +248,33 @@ namespace Chesster
 
 	void GameLayer::UpdatePlayerCameraMove()
 	{
+		m_CurrentMove = GetCameraMove();
 
+		if (IsMoveLegal(m_CurrentMove))
+		{
+			m_Board.MovePiece(m_CurrentMove);
+
+			// Pawn Promotions
+			Piece& currentPiece = m_Board.GetCurrentPiece();
+			if (currentPiece.IsPromotion(m_CurrentMove))
+				currentPiece.Promote(m_CurrentMove);
+
+			// Capture a piece (if any)
+			m_Board.UpdatePieceCapture();
+
+			// Update move history
+			m_MoveHistory += m_CurrentMove + ' ';
+
+			std::string msg{ "Player moved: " + m_CurrentMove };
+			LOG_INFO(msg);
+			m_ConsolePanel.AddLog("\n" + msg);
+
+			m_OldCameraData = m_NewCameraData;
+			return;
+		}
+
+		// The piece was not placed at a valid location
+		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
 	}
 
 	void GameLayer::UpdatePlayerMouseMove()
@@ -252,8 +291,7 @@ namespace Chesster
 			// If piece was released at same position it was
 			if (currentPiece.GetNotation() == targetSquareItr->Notation)
 			{
-				const glm::vec2& squareCenter = targetSquareItr->GetCenter();
-				currentPiece.SetPosition(squareCenter.x, squareCenter.y);
+				currentPiece.SetPosition(targetSquareItr->GetCenter());
 				return;
 			}
 
@@ -261,7 +299,8 @@ namespace Chesster
 			m_CurrentMove = { currentPiece.GetNotation() + targetSquareItr->Notation };
 
 			// Pawn Promotions
-			if (currentPiece.IsPromotion(m_CurrentMove))
+			if (currentPiece.IsPromotion(m_CurrentMove)
+				&& (int)currentPiece.GetColor() == (int)m_CurrentPlayer + 1)
 			{
 				m_CurrentGameState = GameState::PawnPromotion;
 				return;
@@ -277,7 +316,7 @@ namespace Chesster
 				// Update move history
 				m_MoveHistory += m_CurrentMove + ' ';
 
-				std::string msg{ "Player move: " + m_CurrentMove };
+				std::string msg{ "Player moved: " + m_CurrentMove };
 				LOG_INFO(msg);
 				m_ConsolePanel.AddLog("\n" + msg);
 
@@ -286,21 +325,19 @@ namespace Chesster
 		}
 		
 		// The piece was not released at a valid location
-		m_ConsolePanel.AddLog(" Wait... that's illegal!\n");
+		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
 
 		auto originalSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
 			[&](const Board::Square& sq) { return currentPiece.GetNotation() == sq.Notation; });
 		
 		// Move it back to its original square
 		if (originalSquareItr != std::end(boardSquares))
-			currentPiece.SetPosition(originalSquareItr->GetCenter().x, originalSquareItr->GetCenter().y);
+			currentPiece.SetPosition(originalSquareItr->GetCenter());
 	}
 
 	void GameLayer::UpdatePlayerPawnPromotion()
 	{
-		Piece& currentPiece = m_Board.GetCurrentPiece();
-
-		currentPiece.Promote(m_CurrentMove);
+		m_Board.GetCurrentPiece().Promote(m_CurrentMove);
 		m_Board.MovePiece(m_CurrentMove);
 
 		// Capture a piece (if any)
@@ -308,11 +345,86 @@ namespace Chesster
 
 		// Update move history
 		m_MoveHistory += m_CurrentMove + ' ';
-		const std::string msg{ "Player move: " + m_CurrentMove };
+		const std::string msg{ "Player moved: " + m_CurrentMove };
 		LOG_INFO(msg);
 		m_ConsolePanel.AddLog("\n" + msg);
+	}
 
-		//m_IsPlayerPlayed = true;
+	std::string GameLayer::GetCameraMove()
+	{
+		/** Retrieves the difference between two std::vector. 
+			This lambda basically does this: difference = dataA - dataB */
+		auto getDifference = [](std::vector<std::string>& dataA, std::vector<std::string>& dataB) -> std::vector<std::string>
+		{
+			std::vector<std::string> difference;
+			std::set_difference(dataA.begin(), dataA.end(), dataB.begin(), dataB.end(),
+				std::inserter(difference, difference.begin()));
+
+			return difference;
+		};
+
+		std::vector<std::string> differenceOld = getDifference(m_OldCameraData, m_NewCameraData);
+		std::vector<std::string> differenceNew = getDifference(m_NewCameraData, m_OldCameraData);
+		
+		/* This lambda erases any std::string from dataA that exists in both dataA and dataB. */
+		auto eraseDuplicate = [&](std::vector<std::string>& dataA, std::vector<std::string>& dataB)
+		{
+			auto itr = std::find_if(std::begin(dataA), std::end(dataA),
+			[&](std::string old)
+			{
+				old.pop_back();
+				for (std::string str : dataB)
+				{
+					str.pop_back();
+					if (old == str)
+						return true;
+				}
+				return false;
+			});
+
+			if (itr != std::end(dataA))
+				dataA.erase(itr);
+		};
+
+		// Deal with captures. Captured pieces share the same square notation as its capturer.
+		if (differenceOld.size() > differenceNew.size())
+			eraseDuplicate(differenceOld, differenceNew);
+
+		if (differenceNew.size() > differenceOld.size())
+			eraseDuplicate(differenceNew, differenceOld);
+
+		// Deal with castling. If at this point the std::vectors have more than one
+		// notation, it could mean that two pieces were moved and don't share square
+		// notation (no capture). In example, it could have been a castling move.
+		if (differenceOld.size() > 1 || differenceNew.size() > 1)
+		{
+			differenceOld.erase(std::remove_if(differenceOld.begin(), differenceOld.end(),
+			[](const std::string& oldNotation)
+			{
+				return oldNotation != "e1K"
+					&& oldNotation != "e8k";
+			}), differenceOld.end());
+
+			differenceNew.erase(std::remove_if(differenceNew.begin(), differenceNew.end(),
+			[](const std::string& newNotation)
+			{
+				return newNotation != "g1K"
+					&& newNotation != "g8k"
+					&& newNotation != "c1K"
+					&& newNotation != "c8k";
+			}), differenceNew.end());
+		}
+
+		// If there's only one notation in each std::vector, that's our move
+		if (differenceOld.size() == 1 && differenceNew.size() == 1)
+		{
+			differenceOld.front().pop_back();
+			differenceNew.front().pop_back();
+
+			return { differenceOld.front() + differenceNew.front() };
+		}
+
+		return "error";
 	}
 
 	void GameLayer::ResetGame()
@@ -415,27 +527,22 @@ namespace Chesster
 
 	void GameLayer::ChessEngineThread()
 	{
-		GameLayer& Game = GameLayer::Get();
+		GameLayer& gameLayer = GameLayer::Get();
 
 		wchar_t path_Stockfish14_avx2[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
-		Game.m_ChessEngine.ConnectToEngine(path_Stockfish14_avx2);
-		Game.m_LegalMoves = Game.m_ChessEngine.GetValidMoves(START_FEN);
+		gameLayer.m_ChessEngine.ConnectToEngine(path_Stockfish14_avx2);
+		gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(START_FEN);
 
-		//Game.m_CurrentFEN = { "\"" + Game.m_ChessEngine.GetFEN(" ") + "\"" };
-
-		std::string currentFEN = { "\"" + Game.m_ChessEngine.GetFEN(" ") + "\"" };
-
-		a_RunEngineThread = true;
-		while (a_RunEngineThread)
+		while (a_IsChessEngineRunning)
 		{
 			if (a_IsMovePlayed && !a_IsComputerTurn)
 			{
 				// Update legal moves list
-				currentFEN = { "\"" + Game.m_ChessEngine.GetFEN(Game.m_MoveHistory) + "\"" };
-				Game.m_LegalMoves = Game.m_ChessEngine.GetValidMoves(currentFEN);
+				const std::string currentFEN = { "\"" + gameLayer.m_ChessEngine.GetFEN(gameLayer.m_MoveHistory) + "\"" };
+				gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(currentFEN);
 					
-				if (Game.m_LegalMoves.empty())
-					Game.m_CurrentGameState = GameState::Gameover;
+				if (gameLayer.m_LegalMoves.empty())
+					gameLayer.m_CurrentGameState = GameState::Gameover;
 
 				a_IsMovePlayed = false;
 			}
@@ -443,20 +550,20 @@ namespace Chesster
 			if (a_IsComputerTurn)
 			{
 				LOG_INFO("Computer is playing...");
-				Game.m_ConsolePanel.AddLog("\nComputer is playing...");
+				gameLayer.m_ConsolePanel.AddLog("\nComputer is playing...");
 
 				// Get computer's move
-				Game.m_CurrentMove = Game.m_ChessEngine.GetNextMove(Game.m_MoveHistory);
-				if (Game.m_CurrentMove == "error")
+				gameLayer.m_CurrentMove = gameLayer.m_ChessEngine.GetNextMove(gameLayer.m_MoveHistory);
+				if (gameLayer.m_CurrentMove == "error")
 				{
 					LOG_ERROR("Failed to get engine move.");
-					Game.m_ConsolePanel.AddLog("Failed to get engine move.");
-					Game.m_ConsolePanel.AddLog("Enter <F4> to try again.");
+					gameLayer.m_ConsolePanel.AddLog("Failed to get engine move.");
+					gameLayer.m_ConsolePanel.AddLog("Enter <F4> to try again.");
 				}
 				else
 				{
-					Game.UpdateComputerMove();
-					//Game.m_Network.SendToRobot(Game.m_CurrentMove);
+					gameLayer.UpdateComputerMove();
+					//gameLayer.m_Network.SendToRobot(gameLayer.m_CurrentMove);
 				}
 
 				a_IsComputerTurn = false;

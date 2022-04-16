@@ -29,14 +29,14 @@ namespace Chesster
 
 		void ResetGame();
 
-		void CameraDataReceived() { m_CameraDataReceived = true; }
+		void SetCameraDataReceived(bool boolean) { m_CameraDataReceived = boolean; }
 
 		Board& GetBoard() { return m_Board; }
 		std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
-		ConsolePanel* GetConsolePanel() { return &m_ConsolePanel; }
-		SettingsPanel* GetSettingsPanel() { return &m_SettingsPanel; }
+		ConsolePanel& GetConsolePanel() { return m_ConsolePanel; }
+		SettingsPanel& GetSettingsPanel() { return m_SettingsPanel; }
 
 		/** It is used to retrieve the instance of the current GameLayer.
 		 @return A reference to this GameLayer object. */
@@ -48,6 +48,8 @@ namespace Chesster
 		void UpdatePlayerMouseMove();
 		void UpdatePlayerPawnPromotion();
 
+		std::string GetCameraMove();
+
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsMoveLegal(const std::string& notation);
 
@@ -57,7 +59,7 @@ namespace Chesster
 		static void ChessEngineThread();	// Multithread
 
 	private:
-		enum class Player { White, Black };
+		enum class Player { Black, White };
 		friend Player operator++(Player& player);
 
 		enum class GameState { Gameplay, Gameover, PawnPromotion };
@@ -82,6 +84,9 @@ namespace Chesster
 
 		bool m_CameraDataReceived{ false };
 		std::array<char, 256> m_CameraDataBuffer = {};
+		//std::vector<std::string> m_TemporayCameraData;
+		std::vector<std::string> m_NewCameraData;
+		std::vector<std::string> m_OldCameraData;
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };

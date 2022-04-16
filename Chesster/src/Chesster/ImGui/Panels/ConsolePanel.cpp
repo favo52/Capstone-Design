@@ -12,6 +12,7 @@ namespace Chesster
 		m_ScrollToBottom{ false }
 	{
 		m_Commands.push_back("HELP");
+		m_Commands.push_back("UCI");
 		AddLog("Welcome to Chesster!");
 	}
 
@@ -21,7 +22,7 @@ namespace Chesster
 		ImGui::Begin("Chess Engine Console");
 
 		ImGui::TextWrapped("This console is used to interact with the Chess Engine.");
-		ImGui::TextWrapped("Enter 'HELP' for help.");
+		ImGui::TextWrapped("Enter 'HELP' to see a list of commands.");
 
 		// Small buttons at top
 		if (ImGui::SmallButton("Clear")) m_Items.clear();
@@ -120,6 +121,13 @@ namespace Chesster
 			AddLog("Commands:");
 			for (int i = 0; i < m_Commands.size(); i++)
 				AddLog("- " + m_Commands[i]);
+		}
+		if (command == "UCI")
+		{
+			GameLayer::Get().GetChessEngine().WriteToEngine("uci\n");
+			
+			const std::string engineReply = GameLayer::Get().GetChessEngine().ReadFromEngine();
+			GameLayer::Get().GetConsolePanel().AddLog("\n" + engineReply);
 		}
 
 		m_ScrollToBottom = true;

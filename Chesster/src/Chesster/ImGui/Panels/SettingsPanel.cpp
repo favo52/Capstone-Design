@@ -41,8 +41,9 @@ namespace Chesster
 		ImGui::PushItemWidth(ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.0f , 0.0f });
 
-		if (ImGui::SliderInt("##Diff", &value, min, max))
-			update = true;
+		if (!ImGui::SliderInt("##Diff", &value, min, max, "%d", ImGuiSliderFlags_AlwaysClamp)
+			&& ImGui::IsItemDeactivatedAfterEdit())
+				update = true;
 
 		ImGui::PopItemWidth();
 		ImGui::PopStyleVar();
@@ -144,23 +145,21 @@ namespace Chesster
 
 			ImGui::Separator();
 			ImGui::Text("The IP Address is usually the local address\nof the computer running the In-Sight Explorer program.");
-			std::array<char, 64> ip_buffer = {};
-			if (DrawInputText("IP Address", ip_buffer, m_CameraIP, 120.0f))
-				m_CameraIP = std::string(ip_buffer.data());
+			std::array<char, 64> buffer = {};
+			if (DrawInputText("IP Address", buffer, m_CameraIP, 120.0f))
+				m_CameraIP = std::string(buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("localhost");
 
-			std::array<char, 64> commandPort_buffer = {};
-			if (DrawInputText("Telnet Port", commandPort_buffer, m_CameraTelnetPort, 120.0f))
-				m_CameraTelnetPort = std::string(commandPort_buffer.data());
+			if (DrawInputText("Telnet Port", buffer, m_CameraTelnetPort, 120.0f))
+				m_CameraTelnetPort = std::string(buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("23");
 
-			std::array<char, 64> streamPort_buffer = {};
-			if (DrawInputText("TCPDevice Port", streamPort_buffer, m_CameraTCPDevicePort, 120.0f))
-				m_CameraTCPDevicePort = std::string(streamPort_buffer.data());
+			if (DrawInputText("TCPDevice Port", buffer, m_CameraTCPDevicePort, 120.0f))
+				m_CameraTCPDevicePort = std::string(buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("3000");
@@ -176,16 +175,15 @@ namespace Chesster
 			ImGui::PopFont();
 
 			ImGui::Separator();
-			std::array<char, 64> ip_buffer = {};
-			if (DrawInputText("IP Address", ip_buffer, m_RobotIP, 100.0f))
-				m_RobotIP = std::string(ip_buffer.data());
+			std::array<char, 64> buffer = {};
+			if (DrawInputText("IP Address", buffer, m_RobotIP, 100.0f))
+				m_RobotIP = std::string(buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("192.168.7.10");
 
-			std::array<char, 64> port_buffer = {};
-			if (DrawInputText("Port", port_buffer, m_RobotPort, 100.0f))
-				m_RobotPort = std::string(port_buffer.data());
+			if (DrawInputText("Port", buffer, m_RobotPort, 100.0f))
+				m_RobotPort = std::string(buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("15000");
@@ -236,7 +234,7 @@ namespace Chesster
 
 			const std::string msg{ "Camera disconnected." };
 			LOG_INFO(msg);
-			GameLayer::Get().GetConsolePanel()->AddLog(msg);
+			GameLayer::Get().GetConsolePanel().AddLog(msg);
 
 			m_IsCameraConnected = false;
 		}
@@ -260,7 +258,7 @@ namespace Chesster
 
 			const std::string msg{ "Chesster server shut down." };
 			LOG_INFO(msg);
-			GameLayer::Get().GetConsolePanel()->AddLog(msg);
+			GameLayer::Get().GetConsolePanel().AddLog(msg);
 
 			m_IsRobotConnected = false;
 		}

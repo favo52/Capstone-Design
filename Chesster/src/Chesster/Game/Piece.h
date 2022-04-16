@@ -25,8 +25,6 @@ namespace Chesster
 		/*	Allows a Piece object to be created with zero or empty values. */
 		Piece();
 
-		void OnViewportResize();
-
 		/**	Changes a pawn's type to the newly selected one.
 		 @param notation The 5 char notation with the selected pawn promotion. */
 		void Promote(const std::string& notation);
@@ -46,12 +44,6 @@ namespace Chesster
 
 		bool IsPromotion(const std::string& notation);
 
-		bool IsEnPassant() { return m_EnPassant; }
-
-		/** Check wether the Piece has been captured.
-		 @return True if the Piece has been captured, false if not. */
-		bool IsCaptured() { return m_IsCaptured; }
-
 		/*	Sets the Piece's TextureClip according to its Type and Color.
 			NOTE: The Piece MUST have a Type and Color before this function can be used. */
 		void SetTextureClip();
@@ -59,23 +51,11 @@ namespace Chesster
 		/**	Changes the position of the chess piece. 
 		*	The new (x, y) coordinate must be the Center 
 		*	coordinates of a Board Square.
-		 @param x The new x coordinate.
-		 @param y The new y coordinate. */
-		void SetPosition(int centerX, int centerY);
+		 @param squareCenter The (x, y) coordinates of the square where the piece is to be moved. */
+		void SetPosition(const glm::vec2& squareCenter);
 
-		void SetNotation(const std::string& notation) { m_Notation = notation; }
-
-		void SetType(Type type) { m_Type = type; }
-
-		void SetColor(Color color) { m_Color = color; }
-
-		void SetCaptured(bool boolean) { m_IsCaptured = boolean; }
-
-		void SetEnPassant(bool boolean) { m_EnPassant = boolean; }
-
-		SDL_Rect& GetTextureClip() { return m_TextureClip; }
-		const glm::vec2& GetPosition() const { return m_Position; }
 		const std::string& GetNotation() const { return m_Notation; }
+
 		const Color& GetColor() const{ return m_Color; }
 		
 		/**	Calculates the left, right, bottom, 

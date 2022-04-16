@@ -57,7 +57,6 @@ namespace Chesster
 		 @return A string of the FEN notation from the given move history. */
 		std::string GetFEN(const std::string& moveHistory);
 
-	private:
 		/**	Sends the data to the chess engine.
 		 @param data The data to send, usually an UCI chess engine command.
 		 @return True if the data was sent successfully, false if not. */

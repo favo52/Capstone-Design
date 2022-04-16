@@ -16,17 +16,6 @@ namespace Chesster
 	{
 	}
 
-	void Piece::OnViewportResize()
-	{
-		auto& boardSquares = GameLayer::Get().GetBoard().GetBoardSquares();
-		
-		auto squareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
-			[&](const Board::Square& sq) { return sq.Notation == m_Notation; });
-
-		if (squareItr != std::end(boardSquares))
-			SetPosition(squareItr->GetCenter().x, squareItr->GetCenter().y);
-	}
-
 	void Piece::Promote(const std::string& notation)
 	{
 		if (IsPawn() && notation.size() > 4)
@@ -77,10 +66,10 @@ namespace Chesster
 		m_TextureClip.y = PIECE_SIZE * ((int)m_Color - 1);
 	}
 
-	void Piece::SetPosition(int centerX, int centerY)
+	void Piece::SetPosition(const glm::vec2& squareCenter)
 	{
 		// Aligns the piece position to be at the center of the square
-		m_Position = { centerX - (PIECE_SIZE * 0.5f), centerY - (PIECE_SIZE * 0.5f) };
+		m_Position = { squareCenter.x - (PIECE_SIZE * 0.5f), squareCenter.y - (PIECE_SIZE * 0.5f) };
 	}
 
 	const RectBounds Piece::GetBounds() const
