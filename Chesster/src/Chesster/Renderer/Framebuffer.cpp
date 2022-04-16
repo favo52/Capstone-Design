@@ -9,14 +9,15 @@ namespace Chesster
 
 	Framebuffer::Framebuffer(uint32_t width, uint32_t height)
 	{
-		m_Framebuffer.CreateBlank(width, height);
+		m_Framebuffer = std::make_unique<Texture>();
+		m_Framebuffer->CreateBlank(width, height);
 	}
 
 	void Framebuffer::Bind()
 	{
 		// Make self render target
-		SDL_SetRenderTarget(Renderer::Get(), m_Framebuffer);
-		Renderer::SetViewport(0, 0, m_Framebuffer.GetWidth(), m_Framebuffer.GetHeight());
+		SDL_SetRenderTarget(Renderer::Get(), *m_Framebuffer);
+		Renderer::SetViewport(0, 0, m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight());
 	}
 
 	void Framebuffer::Unbind()
@@ -32,7 +33,7 @@ namespace Chesster
 			return;
 		}
 
-		m_Framebuffer.FreeTexture();
-		m_Framebuffer.CreateBlank(width, height);
+		m_Framebuffer->FreeTexture();
+		m_Framebuffer->CreateBlank(width, height);
 	}
 }

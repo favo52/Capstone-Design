@@ -37,6 +37,9 @@
     <ClInclude Include="src\Chesster\Connections\Network.h">
       <Filter>src\Chesster\Connections</Filter>
     </ClInclude>
+    <ClInclude Include="src\Chesster\Connections\Winsock.h">
+      <Filter>src\Chesster\Connections</Filter>
+    </ClInclude>
     <ClInclude Include="src\Chesster\Core\Application.h">
       <Filter>src\Chesster\Core</Filter>
     </ClInclude>
@@ -44,9 +47,6 @@
       <Filter>src\Chesster\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Core\Layer.h">
-      <Filter>src\Chesster\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\Core\LayerStack.h">
       <Filter>src\Chesster\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Core\Logger.h">
@@ -76,6 +76,9 @@
     <ClInclude Include="src\Chesster\Layers\TitleLayer.h">
       <Filter>src\Chesster\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Chesster\Renderer\Font.h">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Chesster\Renderer\Framebuffer.h">
       <Filter>src\Chesster\Renderer</Filter>
     </ClInclude>
@@ -88,8 +91,6 @@
     <ClInclude Include="src\pch.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Renderer\Font.h" />
-    <ClInclude Include="src\Chesster\Connections\Winsock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster\Connections\ChessEngine.cpp">
@@ -98,13 +99,10 @@
     <ClCompile Include="src\Chesster\Connections\Network.cpp">
       <Filter>src\Chesster\Connections</Filter>
     </ClCompile>
+    <ClCompile Include="src\Chesster\Connections\Winsock.cpp">
+      <Filter>src\Chesster\Connections</Filter>
+    </ClCompile>
     <ClCompile Include="src\Chesster\Core\Application.cpp">
-      <Filter>src\Chesster\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Core\Layer.cpp">
-      <Filter>src\Chesster\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\Core\LayerStack.cpp">
       <Filter>src\Chesster\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Core\Logger.cpp">
@@ -140,6 +138,9 @@
     <ClCompile Include="src\Chesster\Main.cpp">
       <Filter>src\Chesster</Filter>
     </ClCompile>
+    <ClCompile Include="src\Chesster\Renderer\Font.cpp">
+      <Filter>src\Chesster\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Chesster\Renderer\Framebuffer.cpp">
       <Filter>src\Chesster\Renderer</Filter>
     </ClCompile>
@@ -152,12 +153,9 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\Renderer\Font.cpp" />
-    <ClCompile Include="src\Chesster\Connections\Winsock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Chesster.aps" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chesster.rc" />

@@ -8,8 +8,6 @@ namespace Chesster
 	class ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer();
-
 		/*	Default destructor. */
 		virtual ~ImGuiLayer() = default;
 

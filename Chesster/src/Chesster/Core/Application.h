@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Chesster/Core/Window.h"
-#include "Chesster/Core/LayerStack.h"
+#include "Chesster/Core/Layer.h"
 
 /** Legend
  @param A parameter of the function.
@@ -14,6 +14,7 @@ namespace Chesster
 {
 	// Forward declarations
 	class TitleLayer;
+	class GameLayer;
 	class ImGuiLayer;
 
 	/*	The main application class. Creates a Window, handles all the events, and manages the layers. */
@@ -24,8 +25,8 @@ namespace Chesster
 		 @param name The name of the application. */
 		Application(const std::string& name);
 
-		/*	Default destructor. */
-		virtual ~Application() = default;
+		/*	Calls OnDetach() on all remaining Layers and empties the LayerStack. */
+		virtual ~Application();
 
 		/*	Stops the application. Changes m_Running to false. */
 		void Quit() { m_Running = false; }
@@ -53,23 +54,23 @@ namespace Chesster
 		/*	Handles conditions for Layer pushes and pops happening during runtime. */
 		void OnLayerEvent();
 
-		/**	Pushes a Layer into the LayerStack and calls its OnAttach() function.
-		 @param layer A pointer of the layer to be pushed. */
-		void PushLayer(Layer* layer);
+		/**	Inserts a Layer into the m_LayerStack and calls its OnAttach() function.
+		 @param layer A std::shared_ptr of the layer to be pushed. */
+		void PushLayer(const std::shared_ptr<Layer>& layer);
 
-		/**	Emplaces the Layer into the back of the LayerStack and calls its OnAttach() function.
-			This Layer will reside after Layers inserted with PushLayer().
-		 @param layer A pointer of the layer to be pushed. */
-		void PushOverlay(Layer* layer);
+		/**	Erases a Layer from the m_LayerStack and calls its OnDetach() function.
+		 @param layer A std::shared_ptr of the layer to be erased. */
+		void PopLayer(const std::shared_ptr<Layer>& layer);
 
 	private:
 		std::unique_ptr<Window> m_Window;
 		bool m_Running;
 
-		LayerStack m_LayerStack;
+		std::vector<std::shared_ptr<Layer>> m_LayerStack;
 
-		TitleLayer* m_TitleLayer;
-		ImGuiLayer* m_ImGuiLayer;
+		std::shared_ptr<TitleLayer> m_TitleLayer;
+		std::shared_ptr<GameLayer> m_GameLayer;
+		std::shared_ptr<ImGuiLayer> m_ImGuiLayer;
 
 	private:
 		static Application* s_Instance;				// Pointer to this.

@@ -13,9 +13,6 @@ namespace Chesster
 		 @param height The height of the Framebuffer. */
 		Framebuffer(uint32_t width, uint32_t height);
 
-		/*	Default destructor */
-		virtual ~Framebuffer() = default;
-
 		/*	Sets the Framebuffer as the rendering target. */
 		void Bind();
 
@@ -30,17 +27,17 @@ namespace Chesster
 
 		/**	
 		 @return */
-		SDL_Texture* GetSDLTexture() const { return m_Framebuffer.GetSDLTexture(); }
+		SDL_Texture* GetSDLTexture() const { return m_Framebuffer->GetSDLTexture(); }
 
 		/**
 		 @return The Framebuffer's width in pixels. */
-		const uint32_t& GetWidth() const { return m_Framebuffer.GetWidth(); }
+		const uint32_t& GetWidth() const { return m_Framebuffer->GetWidth(); }
 
 		/**
 		 @return The Framebuffer's height in pixels. */
-		const uint32_t& GetHeight() const { return m_Framebuffer.GetHeight(); }
+		const uint32_t& GetHeight() const { return m_Framebuffer->GetHeight(); }
 
 	private:
-		Texture m_Framebuffer;
+		std::unique_ptr<Texture> m_Framebuffer;
 	};
 }

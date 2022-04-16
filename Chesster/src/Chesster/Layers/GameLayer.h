@@ -17,13 +17,12 @@ namespace Chesster
 	{
 	public:
 		GameLayer();
-		virtual ~GameLayer() = default;
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
-		virtual void OnEvent(SDL_Event & sdlEvent) override;
-		virtual void OnUpdate(const std::chrono::duration<double>&dt) override;
+		virtual void OnEvent(SDL_Event& sdlEvent) override;
+		virtual void OnUpdate(const std::chrono::duration<double>& dt) override;
 		virtual void OnRender() override;
 		virtual void OnImGuiRender() override;
 
@@ -32,9 +31,9 @@ namespace Chesster
 		void SetCameraDataReceived(bool boolean) { m_CameraDataReceived = boolean; }
 
 		Board& GetBoard() { return m_Board; }
-		std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
+		Network& GetNetwork() { return m_Network; }
 		ConsolePanel& GetConsolePanel() { return m_ConsolePanel; }
 		SettingsPanel& GetSettingsPanel() { return m_SettingsPanel; }
 
@@ -83,8 +82,6 @@ namespace Chesster
 		std::vector<std::string> m_LegalMoves;
 
 		bool m_CameraDataReceived{ false };
-		std::array<char, 256> m_CameraDataBuffer = {};
-		//std::vector<std::string> m_TemporayCameraData;
 		std::vector<std::string> m_NewCameraData;
 		std::vector<std::string> m_OldCameraData;
 

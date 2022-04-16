@@ -9,10 +9,6 @@ namespace Chesster
 	class Layer
 	{
 	public:
-		/** Constructor. Assigns a debug name to the Layer.
-		 @param debugName The name of the Layer. */
-		Layer(const std::string& debugName = "Layer");
-
 		/*	Default destructor */
 		virtual ~Layer() = default;
 
@@ -35,12 +31,5 @@ namespace Chesster
 
 		/*	Draws the ImGui graphical user interface. */
 		virtual void OnImGuiRender() {}
-
-		/** Retrieves the Layer's name used for debugging.
-		 @return A std::string of the name of the Layer. */
-		const std::string& GetName() const { return m_DebugName; }
-
-	protected:
-		std::string m_DebugName; // Used to identify the layer while debugging
 	};
 }

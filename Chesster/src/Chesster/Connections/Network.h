@@ -6,8 +6,7 @@
 // User: admin
 // Pass: 
 
-// Command to take pic
-// SE8
+// Command to take pic: SE8
 // if received 1 success
 // else error
 
@@ -56,9 +55,9 @@ namespace Chesster
 		 @return True if the message was sent succesfully, false otherwise. */
 		bool SendToRobot(const std::string& command);
 
-		/** Retrieves the instance of the current Network object.
-		 @return A reference to this Network object. */
-		static Network& Get() { return *s_Instance; }
+		/**	Retrieves the buffer that stores the data received from the Cognex Camera.
+		 @return An char array of size 256 containing the piece location on the physical board. */
+		static const std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
 
 	private:
 		/**	Waits to receive any new data from the Camera Telnet SOCKET. 
@@ -86,7 +85,6 @@ namespace Chesster
 		SOCKET m_ChessterListenSocket;	// Server SOCKET to listen for client connections
 		SOCKET m_RobotClientSocket;		// Client SOCKET for accepting connection from staubli robot
 
-	private:
-		static Network* s_Instance;		// Pointer to this
+		static std::array<char, 256> m_CameraDataBuffer;
 	};
 }

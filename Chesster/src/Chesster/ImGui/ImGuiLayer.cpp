@@ -9,11 +9,6 @@
 
 namespace Chesster
 {
-	ImGuiLayer::ImGuiLayer() :
-		Layer{ "ImGuiLayer" }
-	{
-	}
-
 	void ImGuiLayer::OnAttach()
 	{
 		// Setup Dear ImGui context

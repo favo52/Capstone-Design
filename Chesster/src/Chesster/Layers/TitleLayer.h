@@ -13,9 +13,6 @@ namespace Chesster
 	class TitleLayer : public Layer
 	{
 	public:
-		TitleLayer();
-		virtual ~TitleLayer() = default;
-
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
@@ -23,8 +20,7 @@ namespace Chesster
 		virtual void OnUpdate(const std::chrono::duration<double>& dt) override;
 		virtual void OnRender() override;
 
-	public:
-		static bool IsStart;
+		static bool s_IsStart;
 
 	private:
 		void OnWindowResize();

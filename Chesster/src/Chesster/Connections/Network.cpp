@@ -5,7 +5,7 @@
 
 namespace Chesster
 {
-	Network* Network::s_Instance{ nullptr };
+	std::array<char, 256> Network::m_CameraDataBuffer = {};
 
 	Network::Network() :
 		m_CameraTelnetSocket{ INVALID_SOCKET },
@@ -13,7 +13,6 @@ namespace Chesster
 		m_ChessterListenSocket{ INVALID_SOCKET },
 		m_RobotClientSocket{ INVALID_SOCKET }
 	{
-		s_Instance = this;
 	}
 
 	Network::~Network()
@@ -24,7 +23,7 @@ namespace Chesster
 
 	void Network::CameraTelnetThread()
 	{
-		Network& network = Network::Get();
+		Network& network = GameLayer::Get().GetNetwork();
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 		SettingsPanel& settingsPanel = GameLayer::Get().GetSettingsPanel();
 
@@ -71,7 +70,7 @@ namespace Chesster
 
 	void Network::CameraTCPDeviceThread()
 	{
-		Network& network = Network::Get();
+		Network& network = GameLayer::Get().GetNetwork();
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 		SettingsPanel& settingsPanel = GameLayer::Get().GetSettingsPanel();
 
@@ -93,7 +92,7 @@ namespace Chesster
 		// the InSight-Explorer TCP Device socket
 		while (true)
 		{
-			if (!network.RecvCameraData(GameLayer::Get().GetCameraBuffer()))
+			if (!network.RecvCameraData(m_CameraDataBuffer))
 			{
 				const std::string str{ "Stopped receiving camera data." };
 				LOG_INFO(str);
@@ -108,7 +107,7 @@ namespace Chesster
 
 	void Network::ChessterRobotThread()
 	{
-		Network& network = Network::Get();
+		Network& network = GameLayer::Get().GetNetwork();
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 		SettingsPanel& settingsPanel = GameLayer::Get().GetSettingsPanel();
 		

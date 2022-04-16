@@ -12,7 +12,6 @@ namespace Chesster
 
 	Window::Window(const WindowProps& props) :
 		m_Window{ nullptr },
-		m_GraphicsContext{ nullptr },
 		m_WinProps{ props }
 	{
 		// Initialize SDL

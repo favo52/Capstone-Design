@@ -21,16 +21,24 @@ namespace Chesster
 		// Initialize the logger
 		Logger::Init();
 		LOG_INFO("Welcome to the Chesster Universal Chess Interface!");
-
+		
 		// Create the window
 		m_Window = std::make_unique<Window>(WindowProps(name, 1600, 900));
 
 		// Create the layers
-		m_TitleLayer = new TitleLayer();
+		m_TitleLayer = std::make_shared<TitleLayer>();
 		PushLayer(m_TitleLayer);
 		
-		m_ImGuiLayer = new ImGuiLayer();
-		PushOverlay(m_ImGuiLayer);
+		m_ImGuiLayer = std::make_shared<ImGuiLayer>();
+		PushLayer(m_ImGuiLayer);
+	}
+
+	Application::~Application()
+	{
+		for (auto& layer : m_LayerStack)
+			layer->OnDetach();
+
+		m_LayerStack.clear();
 	}
 
 	void Application::Run()
@@ -56,17 +64,17 @@ namespace Chesster
 			currentTime = newTime;
 
 			// Update game logic
-			for (Layer* layer : m_LayerStack)
+			for (auto& layer : m_LayerStack)
 				layer->OnUpdate(frameTime);
 
 			// Draw everything
-			for (Layer* layer : m_LayerStack)
+			for (auto& layer : m_LayerStack)
 				layer->OnRender();
 
 			// Render ImGui on top
 			m_ImGuiLayer->Begin();
 			{
-				for (Layer* layer : m_LayerStack)
+				for (auto& layer : m_LayerStack)
 					layer->OnImGuiRender();
 			}
 			m_ImGuiLayer->End();
@@ -94,27 +102,31 @@ namespace Chesster
 	}
 
 	void Application::OnLayerEvent()
-	{		
-		if (TitleLayer::IsStart)
+	{
+		if (TitleLayer::s_IsStart)
 		{
-			TitleLayer::IsStart = false;
-			m_LayerStack.PopLayer(m_TitleLayer);
-			delete m_TitleLayer;
-			m_TitleLayer = nullptr;
+			TitleLayer::s_IsStart = false;
+			PopLayer(m_TitleLayer);
+			m_TitleLayer.reset();
 
-			PushLayer(new GameLayer);
+			m_GameLayer = std::make_shared<GameLayer>();
+			PushLayer(m_GameLayer);
 		}
 	}
 
-	void Application::PushLayer(Layer* layer)
+	void Application::PushLayer(const std::shared_ptr<Layer>& layer)
 	{
-		m_LayerStack.PushLayer(layer);
+		m_LayerStack.emplace_back(layer);
 		layer->OnAttach();
 	}
 
-	void Application::PushOverlay(Layer* overlay)
+	void Application::PopLayer(const std::shared_ptr<Layer>& layer)
 	{
-		m_LayerStack.PushOverlay(overlay);
-		overlay->OnAttach();
+		auto itr = std::find(m_LayerStack.begin(), m_LayerStack.end(), layer);
+		if (itr != m_LayerStack.end())
+		{
+			layer->OnDetach();
+			m_LayerStack.erase(itr);
+		}
 	}
 }

@@ -5,12 +5,7 @@
 
 namespace Chesster
 {
-	bool TitleLayer::IsStart{ false };
-
-	TitleLayer::TitleLayer() :
-		Layer{ "TitleLayer" }
-	{
-	}
+	bool TitleLayer::s_IsStart{ false };
 
 	void TitleLayer::OnAttach()
 	{
@@ -23,7 +18,7 @@ namespace Chesster
 		m_LogoTexture = std::make_unique<Texture>("assets/textures/ChessterLogo.png");
 
 		// Set up text
-		SDL_Color Black = { 0u, 0u, 0u, 255u }, Red = { 255u, 0u, 0u, 255u };
+		const SDL_Color Black = { 0u, 0u, 0u, 255u }, Red = { 255u, 0u, 0u, 255u };
 		m_TitleText = std::make_unique<Texture>(m_AbsEmpireFont, "CHESSTER", Black);
 		m_StartText = std::make_unique<Texture>(m_OpenSansFont, "START", Red);
 		m_ExitText = std::make_unique<Texture>(m_OpenSansFont, "EXIT", Black);
@@ -168,7 +163,7 @@ namespace Chesster
 	void TitleLayer::SelectMenuOption()
 	{
 		if (m_CurrentMenuOption == MenuOptions::Start)
-			IsStart = true;
+			s_IsStart = true;
 		else
 			Application::Get().Quit();
 	}

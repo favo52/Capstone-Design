@@ -138,7 +138,7 @@ namespace Chesster
 			ImGui::BeginDisabled(!m_IsCameraConnected);
 
 			if (ImGui::Button("Take Picture", { 100, 50 }))
-				Network::Get().SendToCamera("SE8\n");
+				GameLayer::Get().GetNetwork().SendToCamera("SE8\n");
 
 			ImGui::EndDisabled();
 			ImGui::PopFont();
@@ -230,7 +230,7 @@ namespace Chesster
 	{
 		if (m_IsCameraConnected)
 		{
-			Network::Get().DisconnectCamera();
+			GameLayer::Get().GetNetwork().DisconnectCamera();
 
 			const std::string msg{ "Camera disconnected." };
 			LOG_INFO(msg);
@@ -254,7 +254,7 @@ namespace Chesster
 	{
 		if (m_IsRobotConnected)
 		{
-			Network::Get().DisconnectRobot();
+			GameLayer::Get().GetNetwork().DisconnectRobot();
 
 			const std::string msg{ "Chesster server shut down." };
 			LOG_INFO(msg);

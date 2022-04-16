@@ -1,12 +1,7 @@
 workspace "Capstone-Design" -- Solution name
 	architecture "x86_64"
+	configurations { "Debug", "Release", "Dist" }
 	startproject "Chesster"
-
-	configurations
-	{
-		"Debug",
-		"Release"
-	}
 
 	flags
 	{

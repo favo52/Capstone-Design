@@ -60,9 +60,9 @@ project "Chesster"
 		systemversion "latest"
 
 	filter "configurations:Debug"
-		defines "CHESSTER_DEBUG"
+		--defines "CHESSTER_DEBUG"
 		runtime "Debug"
-		symbols "on"
+		symbols "On"
 
 		libdirs
 		{
@@ -70,9 +70,22 @@ project "Chesster"
 		}
 
 	filter "configurations:Release"
-		defines "CHESSTER_RELEASE"
+		--defines "CHESSTER_RELEASE"
 		runtime "Release"
-		optimize "on"
+		optimize "On"
+		symbols "On"
+
+		libdirs
+		{
+			"%{LibraryDir.SDL2_Release}"
+		}
+
+	filter "configurations:Dist"
+		kind "WindowedApp"
+		--defines { "WL_DIST" }
+		runtime "Release"
+		optimize "On"
+		symbols "Off"
 
 		libdirs
 		{

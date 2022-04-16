@@ -16,7 +16,6 @@ namespace Chesster
 	GameLayer* GameLayer::s_Instance{ nullptr };
 
 	GameLayer::GameLayer() :
-		Layer("GameLayer"),
 		m_Framebuffer{ 480, 360 },
 		m_ViewportSize{ 0.0f, 0.0f },
 		m_MousePos{ 0.0f, 0.0f },
@@ -25,7 +24,7 @@ namespace Chesster
 		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
 	{
-		s_Instance = this;
+		s_Instance = this;		
 	}
 
 	void GameLayer::OnAttach()
@@ -108,7 +107,7 @@ namespace Chesster
 		if (m_CameraDataReceived)
 		{
 			std::vector<std::string> tempCameraData;
-			std::istringstream iss{ m_CameraDataBuffer.data() };
+			std::istringstream iss{ m_Network.GetCameraBuffer().data() };
 			for (std::string piece; iss >> piece;)
 			{
 				if (piece.front() != '0')

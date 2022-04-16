@@ -19,7 +19,6 @@ int main(int argc, char* args[])
 {
 	try
 	{
-		// Instantiate the application, run it, and delete everything when closed
 		Chesster::Application* App = new Chesster::Application("CHESSTER!");
 		App->Run();
 		delete App;
