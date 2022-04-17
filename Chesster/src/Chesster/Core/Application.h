@@ -51,9 +51,6 @@ namespace Chesster
 		 @param sdlEvent The SDL event to handle. */
 		void OnEvent(SDL_Event& sdlEvent);
 
-		/*	Handles conditions for Layer pushes and pops happening during runtime. */
-		void OnLayerEvent();
-
 		/**	Inserts a Layer into the m_LayerStack and calls its OnAttach() function.
 		 @param layer A std::shared_ptr of the layer to be pushed. */
 		void PushLayer(const std::shared_ptr<Layer>& layer);

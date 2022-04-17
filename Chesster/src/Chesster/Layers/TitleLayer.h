@@ -31,7 +31,10 @@ namespace Chesster
 
 	private:
 		enum class TitleState { Splashscreen, MainMenu };
+
 		enum class MenuOptions { Start, Exit };
+		friend MenuOptions operator++(MenuOptions& menuOption);
+		friend MenuOptions operator--(MenuOptions& menuOption);
 
 	private:
 		std::shared_ptr<Font> m_AbsEmpireFont;			// The title's font
@@ -46,13 +49,9 @@ namespace Chesster
 
 		SDL_Point m_MousePos{ 0, 0 };
 		std::chrono::duration<double> m_SplashDuration{};
-
 		std::vector<const SDL_Rect*> m_MenuOptionsBounds;
 		
 		TitleState m_TitleState{ TitleState::Splashscreen };
-
 		MenuOptions m_CurrentMenuOption{ MenuOptions::Start };
-		friend MenuOptions operator++(MenuOptions& menuOption);
-		friend MenuOptions operator--(MenuOptions& menuOption);
 	};
 }

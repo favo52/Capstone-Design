@@ -55,9 +55,6 @@ namespace Chesster
 			while (SDL_PollEvent(&e))
 				OnEvent(e);
 
-			// Handle layer push/pop
-			OnLayerEvent();
-
 			// Variable delta time
 			TimePoint newTime = Clock::Now();
 			auto frameTime = newTime - currentTime;
@@ -99,10 +96,8 @@ namespace Chesster
 		// Handle layer events
 		for (auto itr = m_LayerStack.rbegin(); itr != m_LayerStack.rend(); ++itr)
 			(*itr)->OnEvent(sdlEvent);
-	}
 
-	void Application::OnLayerEvent()
-	{
+		// Handle layer push/pop
 		if (TitleLayer::s_IsStart)
 		{
 			TitleLayer::s_IsStart = false;
