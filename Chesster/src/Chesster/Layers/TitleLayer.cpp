@@ -127,16 +127,16 @@ namespace Chesster
 		{
 			case TitleState::Splashscreen:
 			{
-				Renderer::DrawTexture(m_GroupNameTexture.get());
+				Renderer::DrawTexture(m_GroupNameTexture);
 				break;
 			}
 
 			case TitleState::MainMenu:
 			{
-				Renderer::DrawTexture(m_LogoTexture.get());
-				Renderer::DrawTexture(m_TitleText.get());
-				Renderer::DrawTexture(m_StartText.get());
-				Renderer::DrawTexture(m_ExitText.get());
+				Renderer::DrawTexture(m_LogoTexture);
+				Renderer::DrawTexture(m_TitleText);
+				Renderer::DrawTexture(m_StartText);
+				Renderer::DrawTexture(m_ExitText);
 				break;
 			}
 		}
@@ -144,14 +144,14 @@ namespace Chesster
 
 	void TitleLayer::OnWindowResize()
 	{
-		RepositionTexture(m_GroupNameTexture.get(), 0.0f);
-		RepositionTexture(m_LogoTexture.get(), 0.0f);
-		RepositionTexture(m_TitleText.get(), -250.0f);
-		RepositionTexture(m_StartText.get(), 200.0f);
-		RepositionTexture(m_ExitText.get(), 250.0f);
+		RepositionTexture(m_GroupNameTexture, 0.0f);
+		RepositionTexture(m_LogoTexture, 0.0f);
+		RepositionTexture(m_TitleText, -250.0f);
+		RepositionTexture(m_StartText, 200.0f);
+		RepositionTexture(m_ExitText, 250.0f);
 	}
 
-	void TitleLayer::RepositionTexture(Texture* texture, float value)
+	void TitleLayer::RepositionTexture(const std::unique_ptr<Texture>& texture, float value)
 	{
 		Window& window = Application::Get().GetWindow();
 
@@ -196,8 +196,8 @@ namespace Chesster
 		m_MenuOptionsBounds[0] = &m_StartText->GetBounds();
 		m_MenuOptionsBounds[1] = &m_ExitText->GetBounds();
 
-		RepositionTexture(m_StartText.get(), 200.0f);
-		RepositionTexture(m_ExitText.get(), 250.0f);
+		RepositionTexture(m_StartText, 200.0f);
+		RepositionTexture(m_ExitText, 250.0f);
 	}
 
 	TitleLayer::MenuOptions operator++(TitleLayer::MenuOptions& menuOption)

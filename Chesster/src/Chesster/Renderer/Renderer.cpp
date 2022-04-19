@@ -39,7 +39,7 @@ namespace Chesster
 		SDL_RenderFillRect(s_Renderer, &rect);
 	}
 
-	void Renderer::DrawTexture(const Texture* texture)
+	void Renderer::DrawTexture(const std::unique_ptr<Texture>& texture)
 	{
 		SDL_RenderCopy(s_Renderer, texture->GetSDLTexture(), texture->GetRenderClip(), &texture->GetBounds());
 	}

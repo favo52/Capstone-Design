@@ -11,8 +11,9 @@ namespace Chesster
 	ConsolePanel::ConsolePanel() :
 		m_ScrollToBottom{ false }
 	{
-		m_Commands.push_back("HELP");
-		m_Commands.push_back("UCI");
+		m_Commands.reserve(2);
+		m_Commands.emplace_back("HELP");
+		m_Commands.emplace_back("UCI");
 		AddLog("Welcome to Chesster!");
 	}
 
@@ -99,7 +100,7 @@ namespace Chesster
 
 	void ConsolePanel::AddLog(const std::string& msg)
 	{
-		m_Items.push_back(msg);
+		m_Items.emplace_back(msg);
 	}
 
 	void ConsolePanel::PushFont(int index)

@@ -6,8 +6,7 @@
 namespace Chesster
 {
 	Board::Board() :
-		m_PieceSpriteSheetTexture{ nullptr },
-		m_CurrentPiece{ &m_ChessPieces[0] }
+		m_CurrentPiece{ nullptr }
 	{
 		// Load and setup the sprite sheet image
 		m_PieceSpriteSheetTexture = std::make_unique<Texture>("assets/textures/ChessPieces.png");
@@ -63,13 +62,13 @@ namespace Chesster
 			if (piece.m_IsCaptured) continue;	// don't draw captured pieces
 			m_PieceSpriteSheetTexture->SetClip(&piece.m_TextureClip);
 			m_PieceSpriteSheetTexture->SetPosition(piece.m_Position.x, piece.m_Position.y);
-			Renderer::DrawTexture(m_PieceSpriteSheetTexture.get());
+			Renderer::DrawTexture(m_PieceSpriteSheetTexture);
 		}
 
 		// Draw the selected chess piece on top of all other chess pieces
 		m_PieceSpriteSheetTexture->SetClip(&m_CurrentPiece->m_TextureClip);
 		m_PieceSpriteSheetTexture->SetPosition(m_CurrentPiece->m_Position.x, m_CurrentPiece->m_Position.y);
-		Renderer::DrawTexture(m_PieceSpriteSheetTexture.get());
+		Renderer::DrawTexture(m_PieceSpriteSheetTexture);
 	}
 
 	void Board::OnViewportResize(const glm::vec2& viewportSize)
@@ -156,6 +155,8 @@ namespace Chesster
 			piece.m_IsCaptured = false;
 			++index;
 		}
+
+		m_CurrentPiece = &m_ChessPieces[0];
 	}
 
 	void Board::UpdatePieceCapture()

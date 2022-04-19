@@ -24,7 +24,9 @@ namespace Chesster
 		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
 	{
-		s_Instance = this;		
+		s_Instance = this;
+
+		m_Network = std::make_unique<Network>();
 	}
 
 	void GameLayer::OnAttach()
@@ -107,7 +109,7 @@ namespace Chesster
 		if (m_CameraDataReceived)
 		{
 			std::vector<std::string> tempCameraData;
-			std::istringstream iss{ m_Network.GetCameraBuffer().data() };
+			std::istringstream iss{ m_Network->GetCameraBuffer().data() };
 			for (std::string piece; iss >> piece;)
 			{
 				if (piece.front() != '0')

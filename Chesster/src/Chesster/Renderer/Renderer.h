@@ -39,7 +39,7 @@ namespace Chesster
 
 		/** Draws a fixed texture to the render target.
 		 @param texture The texture to be drawn. */
-		static void DrawTexture(const Texture* texture);
+		static void DrawTexture(const std::unique_ptr<Texture>& texture);
 		
 		/** Updates the viewport dimensions. Must be called after a window resize event.
 		 @param x The new top left x position.

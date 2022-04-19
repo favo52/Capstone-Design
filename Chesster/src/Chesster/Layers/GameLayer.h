@@ -33,7 +33,7 @@ namespace Chesster
 		Board& GetBoard() { return m_Board; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
-		Network& GetNetwork() { return m_Network; }
+		Network& GetNetwork() { return *m_Network; }
 		ConsolePanel& GetConsolePanel() { return m_ConsolePanel; }
 		SettingsPanel& GetSettingsPanel() { return m_SettingsPanel; }
 
@@ -88,7 +88,7 @@ namespace Chesster
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 		
-		Network m_Network;
+		std::unique_ptr<Network> m_Network;
 		ConsolePanel m_ConsolePanel;
 		SettingsPanel m_SettingsPanel;
 
