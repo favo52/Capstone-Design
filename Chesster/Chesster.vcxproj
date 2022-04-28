@@ -165,7 +165,6 @@
     <ClInclude Include="src\Chesster\Connections\Network.h" />
     <ClInclude Include="src\Chesster\Connections\Winsock.h" />
     <ClInclude Include="src\Chesster\Core\Application.h" />
-    <ClInclude Include="src\Chesster\Core\Clock.h" />
     <ClInclude Include="src\Chesster\Core\Layer.h" />
     <ClInclude Include="src\Chesster\Core\Logger.h" />
     <ClInclude Include="src\Chesster\Core\Window.h" />

@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Chesster/Core/Application.h"
 
-#include "Chesster/Core/Clock.h"
-
 #include "Chesster/Layers/TitleLayer.h"
 #include "Chesster/Layers/Gamelayer.h"
 #include "Chesster/ImGui/ImGuiLayer.h"
@@ -43,9 +41,11 @@ namespace Chesster
 
 	void Application::Run()
 	{
+		using Clock = std::chrono::steady_clock;
 		using Duration = std::chrono::duration<double>;
 		using TimePoint = std::chrono::time_point<Clock, Duration>;
-		TimePoint currentTime = Clock::Now();
+
+		TimePoint currentTime = Clock::now();
 
 		// Main App loop
 		while (m_Running)
@@ -56,7 +56,7 @@ namespace Chesster
 				OnEvent(e);
 
 			// Variable delta time
-			TimePoint newTime = Clock::Now();
+			TimePoint newTime = Clock::now();
 			auto frameTime = newTime - currentTime;
 			currentTime = newTime;
 
@@ -94,8 +94,8 @@ namespace Chesster
 			m_Window->OnWindowEvent(sdlEvent);		
 
 		// Handle layer events
-		for (auto itr = m_LayerStack.rbegin(); itr != m_LayerStack.rend(); ++itr)
-			(*itr)->OnEvent(sdlEvent);
+		for (auto& layer : m_LayerStack)
+			layer->OnEvent(sdlEvent);
 
 		// Handle layer push/pop
 		if (TitleLayer::s_IsStart)

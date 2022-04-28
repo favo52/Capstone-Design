@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Chesster/Core/Window.h"
 
-#include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
