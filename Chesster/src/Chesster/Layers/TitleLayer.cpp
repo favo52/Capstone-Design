@@ -2,11 +2,10 @@
 #include "Chesster/Layers/TitleLayer.h"
 
 #include "Chesster/Core/Application.h"
+#include "Chesster/Layers/Gamelayer.h"
 
 namespace Chesster
 {
-	bool TitleLayer::s_IsStart{ false };
-
 	void TitleLayer::OnAttach()
 	{
 		// Prepare fonts
@@ -162,10 +161,17 @@ namespace Chesster
 
 	void TitleLayer::SelectMenuOption()
 	{
+		Application& app = Application::Get();
+		
 		if (m_CurrentMenuOption == MenuOptions::Start)
-			s_IsStart = true;
+		{
+			app.RequestLayerAction(Layer::Action::PopLayer, shared_from_this());
+			app.RequestLayerAction(Layer::Action::PushLayer, std::make_shared<GameLayer>());
+		}
 		else
-			Application::Get().Quit();
+		{
+			app.Quit();
+		}
 	}
 
 	void TitleLayer::UpdateMenuOptionText()

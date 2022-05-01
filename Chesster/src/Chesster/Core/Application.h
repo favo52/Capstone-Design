@@ -31,6 +31,12 @@ namespace Chesster
 		/*	Stops the application. Changes m_Running to false. */
 		void Quit() { m_Running = false; }
 
+		/** Adds the specified LayerChange to the PendingChanges queue.
+			The change will occur on the next loop iteration.
+		 @param layerAction The action to be performed on the Layer.
+		 @param layer The Layer to be pushed or popped. */
+		void RequestLayerAction(Layer::Action layerAction, const std::shared_ptr<Layer>& layer);
+
 		/** Retrieves the Window object. A convenience function. 
 			It is used to acquire the window's properties or the SDL_Window.
 		 @return A reference to the Application's Window member variable. */
@@ -65,8 +71,13 @@ namespace Chesster
 
 		std::vector<std::shared_ptr<Layer>> m_LayerStack;
 
-		std::shared_ptr<TitleLayer> m_TitleLayer;
-		std::shared_ptr<GameLayer> m_GameLayer;
+		struct PendingChange
+		{
+			Layer::Action Action{ Layer::Action::None };
+			std::shared_ptr<Layer> Layer;
+		};
+		std::vector<PendingChange> m_PendingChanges;
+
 		std::shared_ptr<ImGuiLayer> m_ImGuiLayer;
 
 	private:

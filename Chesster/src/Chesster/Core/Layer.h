@@ -9,6 +9,9 @@ namespace Chesster
 	class Layer
 	{
 	public:
+		enum class Action { None, PushLayer, PopLayer };
+
+	public:
 		/*	Default destructor */
 		virtual ~Layer() = default;
 

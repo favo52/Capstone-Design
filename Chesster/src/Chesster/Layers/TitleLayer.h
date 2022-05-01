@@ -10,7 +10,7 @@ namespace Chesster
 	class Font;
 
 	/* The program's starting Layer. Displays the group's logos. */
-	class TitleLayer : public Layer
+	class TitleLayer : public Layer, public std::enable_shared_from_this<TitleLayer>
 	{
 	public:
 		/* Prepares and load, the Group's Logo Images and fonts and configure the title text. */
@@ -29,8 +29,6 @@ namespace Chesster
 
 		/* Draws all the Textures. */
 		virtual void OnRender() override;
-
-		static bool s_IsStart;
 
 	private:
 		/* Repositions all the Textures when the user resizes the Window. */
