@@ -20,9 +20,9 @@ namespace Chesster
 		LOG_INFO("Welcome to the Chesster Universal Chess Interface!");
 		
 		// Create the window
-		m_Window = std::make_unique<Window>(WindowProps(name, 1600, 900));
+		m_Window = std::make_unique<Window>(WindowProps(name, 1280, 720));
 
-		// Create the starting layers		
+		// Create the starting layers
 		m_ImGuiLayer = std::make_shared<ImGuiLayer>();
 		PushLayer(m_ImGuiLayer);
 
@@ -94,31 +94,27 @@ namespace Chesster
 
 		// Window events
 		if (sdlEvent.type == SDL_WINDOWEVENT)
-			m_Window->OnWindowEvent(sdlEvent);		
+			m_Window->OnWindowEvent(sdlEvent);
 
 		// Handle layer events
 		for (auto& layer : m_LayerStack)
 			layer->OnEvent(sdlEvent);
 
 		// Apply pending layer changes (pushes and pops)
-		if (m_PendingChanges.size())
+		for (auto& pendingChange : m_PendingChanges)
 		{
-			for (auto& pendingChange : m_PendingChanges)
+			switch (pendingChange.Action)
 			{
-				switch (pendingChange.Action)
-				{
-					case Layer::Action::PushLayer:
-						PushLayer(pendingChange.Layer);
-						break;
+				case Layer::Action::PushLayer:
+					PushLayer(pendingChange.Layer);
+					break;
 
-					case Layer::Action::PopLayer:
-						PopLayer(pendingChange.Layer);
-						break;
-				}
+				case Layer::Action::PopLayer:
+					PopLayer(pendingChange.Layer);
+					break;
 			}
-
-			m_PendingChanges.clear();
 		}
+		m_PendingChanges.clear();
 	}
 
 	void Application::PushLayer(const std::shared_ptr<Layer>& layer)

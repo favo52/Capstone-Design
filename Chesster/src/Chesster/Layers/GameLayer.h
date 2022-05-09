@@ -30,6 +30,8 @@ namespace Chesster
 
 		void SetCameraDataReceived(bool boolean) { m_CameraDataReceived = boolean; }
 
+		void SetEventsActive(bool active) { m_IsEventsActive = active; }
+
 		Board& GetBoard() { return m_Board; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
@@ -87,6 +89,8 @@ namespace Chesster
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
+
+		bool m_IsEventsActive{ true };
 		
 		std::unique_ptr<Network> m_Network;
 		ConsolePanel m_ConsolePanel;

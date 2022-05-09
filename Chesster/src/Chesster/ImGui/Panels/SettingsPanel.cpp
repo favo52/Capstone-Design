@@ -223,6 +223,11 @@ namespace Chesster
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
 
+		// Activate/deactivate mouse picking
+		static bool isMouseActive{ true };
+		if (ImGui::Checkbox("Allow Mouse/Keyboard events", &isMouseActive))
+			GameLayer::Get().SetEventsActive(isMouseActive);
+
 		ImGui::End(); // End "Settings"
     }
 

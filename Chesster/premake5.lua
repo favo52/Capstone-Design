@@ -60,7 +60,6 @@ project "Chesster"
 		systemversion "latest"
 
 	filter "configurations:Debug"
-		--defines "CHESSTER_DEBUG"
 		runtime "Debug"
 		symbols "On"
 
@@ -70,7 +69,6 @@ project "Chesster"
 		}
 
 	filter "configurations:Release"
-		--defines "CHESSTER_RELEASE"
 		runtime "Release"
 		optimize "On"
 		symbols "On"
@@ -82,7 +80,6 @@ project "Chesster"
 
 	filter "configurations:Dist"
 		kind "WindowedApp"
-		--defines { "WL_DIST" }
 		runtime "Release"
 		optimize "On"
 		symbols "Off"

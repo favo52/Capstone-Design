@@ -44,7 +44,7 @@ namespace Chesster
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
 	{
-		if (m_CurrentGameState == GameState::Gameplay)
+		if (m_IsEventsActive && m_CurrentGameState == GameState::Gameplay)
 		{
 			switch (sdlEvent.type)
 			{
@@ -148,7 +148,7 @@ namespace Chesster
 
 	void GameLayer::OnRender()
 	{
-		// Render to ImGui's viewport window
+		// Render to Viewport window
 		m_Framebuffer.Bind();
 
 		Renderer::SetClearColor(m_SettingsPanel.GetClearColor());
