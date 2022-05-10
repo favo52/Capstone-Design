@@ -30,7 +30,7 @@ namespace Chesster
 		// For commanding the camera to take the picture
 		const std::string& cameraIP = settingsPanel.m_CameraIP;
 		const std::string& cameraTelnetPort = settingsPanel.m_CameraTelnetPort;
-		if (!network.CreateClientSocket(network.m_CameraTelnetSocket, cameraIP, cameraTelnetPort))
+		if (!network.CreateClientSocket(network.m_CameraTelnetSocket, "localhost", cameraTelnetPort))
 		{
 			const std::string str{ "Unable to connect the Camera Command Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTelnetPort + ")" };
@@ -42,7 +42,7 @@ namespace Chesster
 		}
 
 		// Attempt to login to Cognex InSight-Explorer
-		if (!network.SendToCamera("admin\n\nSE8\n"))
+		if (!network.SendToCamera("admin\n\n"))
 		{
 			const std::string str{ "Unable to login to the Cognex InSight-Explorer." };
 			LOG_ERROR(str);
