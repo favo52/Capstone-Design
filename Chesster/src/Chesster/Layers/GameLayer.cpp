@@ -130,20 +130,6 @@ namespace Chesster
 		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
 			m_Board.GetCurrentPiece().SetPosition(m_ViewportMousePos);
-
-		// A new move has been played
-		if (m_MoveHistorySize != m_MoveHistory.size())
-		{
-			m_Board.UpdateNewMove(m_CurrentMove);
-
-			m_MoveHistorySize = m_MoveHistory.size();
-			a_IsMovePlayed = true;
-
-			// Update current player
-			++m_CurrentPlayer;
-
-			m_Board.UpdateActiveSquares(m_CurrentMove);
-		}
 	}
 
 	void GameLayer::OnRender()
@@ -232,19 +218,40 @@ namespace Chesster
 
 	void GameLayer::UpdateComputerMove()
 	{
-		m_Board.MovePiece(m_CurrentMove);
+		m_RobotCodes = {};
+		m_RobotCodes.fill('0');
+		UpdateRobotCode(Code::GameActive, '1');
+		UpdateRobotCode(Code::Move, '1');
+
+		m_Board.MovePiece(m_CurrentMove);	// Move piece visually in program
+
+		// Get chess move for robot arm
+		for (size_t i = 0; i < 4; ++i)
+			UpdateRobotCode(Code(i + 1), m_CurrentMove[i]);
 
 		// Pawn Promotions
 		Piece& currentPiece = m_Board.GetCurrentPiece();
 		if (currentPiece.IsPromotion(m_CurrentMove))
+		{
 			currentPiece.Promote(m_CurrentMove);
 
-		// Remove captured pieces
-		m_Board.UpdatePieceCapture();
+			const char promotionCode = (m_CurrentMove[4] == 'q') ? '4' : '2';
+			UpdateRobotCode(Code::Move, '2');
+			UpdateRobotCode(Code::Promote, promotionCode);
+		}
+		
+		m_Board.UpdatePieceCapture();			// Remove captured piece
+		m_Board.UpdateNewMove(m_CurrentMove);	// Castling and en passant
+		
+		m_Board.UpdateActiveSquares(m_CurrentMove);
 
 		m_MoveHistory += m_CurrentMove + ' ';
 		LOG_INFO("Computer moved: {0}", m_CurrentMove);
 		m_ConsolePanel.AddLog(std::string("Computer moved: " + m_CurrentMove));
+		
+		++m_CurrentPlayer;
+		a_IsMovePlayed = true;
+		LOG_INFO("Robot Code: {0}", m_RobotCodes.data());
 	}
 
 	void GameLayer::UpdatePlayerCameraMove()
@@ -259,18 +266,23 @@ namespace Chesster
 			Piece& currentPiece = m_Board.GetCurrentPiece();
 			if (currentPiece.IsPromotion(m_CurrentMove))
 				currentPiece.Promote(m_CurrentMove);
+						
+			m_Board.UpdatePieceCapture();			// Remove captured piece
+			m_Board.UpdateNewMove(m_CurrentMove);	// Castling and en passant
 
-			// Capture a piece (if any)
-			m_Board.UpdatePieceCapture();
+			m_Board.UpdateActiveSquares(m_CurrentMove);
 
 			// Update move history
 			m_MoveHistory += m_CurrentMove + ' ';
 
-			std::string msg{ "Player moved: " + m_CurrentMove };
+			const std::string msg{ "Player moved: " + m_CurrentMove };
 			LOG_INFO(msg);
 			m_ConsolePanel.AddLog("\n" + msg);
 
 			m_OldCameraData = m_NewCameraData;
+			++m_CurrentPlayer;
+			a_IsMovePlayed = true;
+
 			return;
 		}
 
@@ -281,7 +293,7 @@ namespace Chesster
 	void GameLayer::UpdatePlayerMouseMove()
 	{
 		Piece& currentPiece = m_Board.GetCurrentPiece();
-
+		
 		// Find the square where the piece was dropped at
 		auto& boardSquares = m_Board.GetBoardSquares();
 		auto targetSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
@@ -311,8 +323,10 @@ namespace Chesster
 			{
 				m_Board.MovePiece(m_CurrentMove);
 
-				// Capture a piece (if any)
-				m_Board.UpdatePieceCapture();
+				m_Board.UpdatePieceCapture();			// Remove captured piece
+				m_Board.UpdateNewMove(m_CurrentMove);	// Castling and en passant
+
+				m_Board.UpdateActiveSquares(m_CurrentMove);
 
 				// Update move history
 				m_MoveHistory += m_CurrentMove + ' ';
@@ -320,6 +334,9 @@ namespace Chesster
 				std::string msg{ "Player moved: " + m_CurrentMove };
 				LOG_INFO(msg);
 				m_ConsolePanel.AddLog("\n" + msg);
+
+				++m_CurrentPlayer;
+				a_IsMovePlayed = true;
 
 				return;
 			}
@@ -430,12 +447,13 @@ namespace Chesster
 
 	void GameLayer::ResetGame()
 	{
+		m_CurrentPlayer = Player::White;
+		m_CurrentGameState = GameState::Gameplay;
+
+		m_NewCameraData.clear();
 		m_OldCameraData = { "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
 		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" };
-
-		m_CurrentPlayer = Player::White;
-		m_CurrentGameState = GameState::Gameplay;
 
 		m_CurrentMove.clear();
 		m_MoveHistory.clear();
@@ -445,7 +463,11 @@ namespace Chesster
 		m_Board.ResetPieces();
 		m_ChessEngine.NewGame();
 		m_LegalMoves = m_ChessEngine.GetValidMoves(START_FEN);
+	}
 
+	void GameLayer::UpdateRobotCode(Code code, char value)
+	{
+		m_RobotCodes[(int)code] = value;
 	}
 
 	bool GameLayer::IsPointInRect(const glm::vec2& point, const RectBounds& rect)
@@ -538,7 +560,7 @@ namespace Chesster
 		wchar_t path_Stockfish14_avx2[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
 		gameLayer.m_ChessEngine.ConnectToEngine(path_Stockfish14_avx2);
 		gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(START_FEN);
-
+		
 		while (a_IsChessEngineRunning)
 		{
 			if (a_IsMovePlayed && !a_IsComputerTurn)
@@ -569,7 +591,7 @@ namespace Chesster
 				else
 				{
 					gameLayer.UpdateComputerMove();
-					//gameLayer.m_Network.SendToRobot(gameLayer.m_CurrentMove);
+					//gameLayer.m_Network->SendToRobot(gameLayer.m_RobotCodes.data());
 				}
 
 				a_IsComputerTurn = false;

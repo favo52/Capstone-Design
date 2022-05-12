@@ -144,13 +144,15 @@ namespace Chesster
 			ImGui::PopFont();
 
 			ImGui::Separator();
-			ImGui::Text("The IP Address is usually the local address\nof the computer running the In-Sight Explorer program.");
+			ImGui::Text("The IP Address is the Static IP assigned to the camera.\n"
+						"It can be verified in the In-Sight Explorer program.\n"
+						"The camera must act as a server.");
 			std::array<char, 64> buffer = {};
 			if (DrawInputText("IP Address", buffer, m_CameraIP, 120.0f))
 				m_CameraIP = std::string(buffer.data());
 
 			ImGui::SameLine();
-			ImGui::Text("localhost");
+			ImGui::Text("192.168.7.9");
 
 			if (DrawInputText("Telnet Port", buffer, m_CameraTelnetPort, 120.0f))
 				m_CameraTelnetPort = std::string(buffer.data());
@@ -169,12 +171,14 @@ namespace Chesster
 		DrawSection<Staubli>("Staubli Robotic Arm", [&]()
 		{
 			ImGui::PushFont(boldFont);
-			const char* buttonText = (!m_IsRobotConnected) ? "Connect" : "Disconnect";
+			const char* buttonText = (!m_IsRobotConnected) ? " Start\nServer" : " Stop\nServer";
 			if (ImGui::Button(buttonText, { 100, 50 }))
 				OnRobotButtonPressed();
 			ImGui::PopFont();
 
 			ImGui::Separator();
+			ImGui::Text("The Chesster application acts as a server.\n"
+						"The Staubli robot arm acts as a client.");
 			std::array<char, 64> buffer = {};
 			if (DrawInputText("IP Address", buffer, m_RobotIP, 100.0f))
 				m_RobotIP = std::string(buffer.data());

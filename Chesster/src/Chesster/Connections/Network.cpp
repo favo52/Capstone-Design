@@ -51,10 +51,10 @@ namespace Chesster
 		while (true)
 		{
 			std::array<char, 128> buffer = {};
-			if (!network.RecvCameraCommand(buffer))
+			if (!network.RecvCameraTelnet(buffer))
 				break;
 
-			LOG_INFO("TelnetBuffer: {0}", buffer.data());			
+			LOG_INFO("Telnet Buffer: {0}", buffer.data());			
 			consolePanel.AddLog(buffer.data());
 		}
 
@@ -199,7 +199,7 @@ namespace Chesster
 		return true;
 	}
 	
-	bool Network::RecvCameraCommand(std::array<char, 128>& buffer)
+	bool Network::RecvCameraTelnet(std::array<char, 128>& buffer)
 	{
 		buffer = {};
 		int iRecvResult = recv(m_CameraTelnetSocket, buffer.data(), buffer.size(), 0);
@@ -215,6 +215,7 @@ namespace Chesster
 
 	bool Network::RecvCameraData(std::array<char, 512>& buffer)
 	{
+		buffer = {};
 		int iRecvResult = recv(m_CameraTCPDeviceSocket, buffer.data(), buffer.size(), 0);
 		if (iRecvResult == SOCKET_ERROR)
 		{
@@ -248,8 +249,17 @@ namespace Chesster
 
 		if (iRecvResult > 0)
 		{
-			LOG_INFO(buffer.data());
-			consolePanel.AddLog(buffer.data());
+			const std::string data{ buffer.data() };
+			LOG_INFO("Received From Robot: {0}", data);
+			consolePanel.AddLog("Received From Robot: " + data);
+
+			if (data.size() == 3)
+			{
+				GameLayer& gameLayer = GameLayer::Get();
+				if (data[0] == '1') gameLayer.ResetGame();
+				if (data[1] == '1') SendToCamera("SE8\r\n");
+				if (data[2] == '1') SendToCamera("SE8\r\n");
+			}
 		}
 
 		return true;

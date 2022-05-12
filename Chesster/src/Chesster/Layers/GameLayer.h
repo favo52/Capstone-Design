@@ -13,6 +13,8 @@
 
 namespace Chesster
 {
+	enum class Code;
+
 	class GameLayer : public Layer
 	{
 	public:
@@ -31,6 +33,8 @@ namespace Chesster
 		void SetCameraDataReceived(bool boolean) { m_CameraDataReceived = boolean; }
 
 		void SetEventsActive(bool active) { m_IsEventsActive = active; }
+
+		void UpdateRobotCode(Code code, char value);
 
 		Board& GetBoard() { return m_Board; }
 
@@ -87,6 +91,8 @@ namespace Chesster
 		std::vector<std::string> m_NewCameraData;
 		std::vector<std::string> m_OldCameraData;
 
+		std::array<char, 11> m_RobotCodes;
+
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
@@ -98,5 +104,20 @@ namespace Chesster
 
 	private:
 		static GameLayer* s_Instance;	// Pointer to this
+	};
+
+	enum class Code
+	{
+		GameActive,	// Code for playing. 0 = lock, 1 = playing.
+		InitCol,	// First letter of initial position in ASCII code.
+		InitRow,	// First number of initial position in ASCII code.
+		EndCol,		// First letter of ending position in ASCII code.
+		EndRow,		// First number of ending position in ASCII code.
+		Special,	// Special movement. 0 = None. 1 = En Passant, 2 = Castling.
+		SpecialCol,	// Letter of position for special movement, be it rook to grab for castling or pawn to discard for en passant.
+		SpecialRow,	// Number of position for special movement, be it rook to grab for castling or pawn to discard for en passant.
+		Capture,	// Capture Code. 0 = false (no box), 1 = true (box).
+		Move,		// Move Code. 1 = move, 2 = promote
+		Promote		// Promote Code. 2 = Knight, 4 = Queen.
 	};
 }

@@ -64,7 +64,7 @@ namespace Chesster
 			This function is used in its own thread so it doesn't lock up the program.
 		 @param buffer The buffer where the received data will be stored.
 		 @return True if a message was received successfully, false if the communication was closed. */
-		bool RecvCameraCommand(std::array<char, 128>& buffer);
+		bool RecvCameraTelnet(std::array<char, 128>& buffer);
 
 		/**	Waits to receive any new data from the Camera TCP Device SOCKET. 
 			This function is used in its own thread so it doesn't lock up the program.

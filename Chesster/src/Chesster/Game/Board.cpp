@@ -100,6 +100,8 @@ namespace Chesster
 
 	void Board::MovePiece(const std::string& notation)
 	{
+		if (notation.empty() || notation.size() < 4) return;
+
 		// Grab the selected chess piece's old and new positions
 		const std::string& oldPos{ notation[0], notation[1] };
 		const std::string& newPos{ notation[2], notation[3] };
@@ -167,6 +169,7 @@ namespace Chesster
 				!(m_CurrentPiece->m_Color == piece.m_Color))	// don't capture self
 			{
 				piece.Capture();
+				GameLayer::Get().UpdateRobotCode(Code::Capture, '1');
 				break;
 			}
 		}
@@ -177,10 +180,18 @@ namespace Chesster
 		if (currentMove.empty()) return;
 
 		// Check for Castling		// Move Rook
-		if (currentMove == "e1g1") MovePiece("h1f1");
-		if (currentMove == "e8g8") MovePiece("h8f8");
-		if (currentMove == "e1c1") MovePiece("a1d1");
-		if (currentMove == "e8c8") MovePiece("a8d8");
+		bool castling{ false };
+		if (currentMove == "e1g1") { MovePiece("h1f1"); castling = true; }
+		if (currentMove == "e8g8") { MovePiece("h8f8"); castling = true; }
+		if (currentMove == "e1c1") { MovePiece("a1d1"); castling = true; }
+		if (currentMove == "e8c8") { MovePiece("a8d8"); castling = true; }
+		if (castling)
+		{
+			GameLayer& gameLayer = GameLayer::Get();
+			gameLayer.UpdateRobotCode(Code::Special, '2');
+			gameLayer.UpdateRobotCode(Code::SpecialCol, m_CurrentPiece->m_Notation[0]);
+			gameLayer.UpdateRobotCode(Code::SpecialRow, m_CurrentPiece->m_Notation[1]);
+		}
 
 		// Check for En Passant
 		if (m_CurrentPiece->IsPawn())
@@ -200,12 +211,16 @@ namespace Chesster
 				}
 			}
 
-			// Capture the correct pawn
+			// Capture the correct pawn when en passant
 			if (pieceBehind)
 			{
 				if (pieceBehind->IsPawn() && pieceBehind->m_Color != m_CurrentPiece->m_Color &&
 					pieceBehind->m_EnPassant)
 				{
+					GameLayer& gameLayer = GameLayer::Get();
+					gameLayer.UpdateRobotCode(Code::Special, '1');
+					gameLayer.UpdateRobotCode(Code::SpecialCol, pieceBehind->m_Position[0]);
+					gameLayer.UpdateRobotCode(Code::SpecialRow, pieceBehind->m_Position[1]);
 					pieceBehind->Capture();
 				}
 			}
@@ -220,16 +235,19 @@ namespace Chesster
 
 	void Board::UpdateActiveSquares(const std::string& currentMove)
 	{
-		if (currentMove.empty()) return;
+		if (currentMove.empty() || currentMove.size() < 4) return;
 
 		const std::string& oldPos{ currentMove[0], currentMove[1] };
 		const std::string& newPos{ currentMove[2], currentMove[3] };
-		
-		auto oldSquareItr = std::find_if(std::begin(m_BoardSquares), std::end(m_BoardSquares),
-			[&](const Board::Square& sq) { return sq.Notation == oldPos; });
 
-		auto newSquareItr = std::find_if(std::begin(m_BoardSquares), std::end(m_BoardSquares),
-			[&](const Board::Square& sq) { return sq.Notation == newPos; });
+		auto findPos = [&](const std::string& pos)
+		{
+			return std::find_if(std::begin(m_BoardSquares), std::end(m_BoardSquares),
+				[&](const Board::Square& sq) { return sq.Notation == pos; });
+		};
+		
+		auto oldSquareItr = findPos(oldPos);
+		auto newSquareItr = findPos(newPos);
 
 		if (oldSquareItr != std::end(m_BoardSquares) && newSquareItr != std::end(m_BoardSquares))
 		{
