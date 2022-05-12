@@ -14,7 +14,6 @@ namespace Chesster
 {	
 	SettingsPanel::SettingsPanel() :
 		m_CameraIP{ "192.168.7.9" },
-		//m_CameraIP{ "169.254.42.238" },
 		m_CameraTelnetPort{ "23" },
 		m_CameraTCPDevicePort{ "3000" },
 		m_RobotIP{ "192.168.7.10" },
@@ -139,8 +138,7 @@ namespace Chesster
 			ImGui::BeginDisabled(!m_IsCameraConnected);
 
 			if (ImGui::Button("Take Picture", { 100, 50 }))
-				GameLayer::Get().GetNetwork().TakePicture();
-				//GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
+				GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
 
 			ImGui::EndDisabled();
 			ImGui::PopFont();

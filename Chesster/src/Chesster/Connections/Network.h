@@ -48,14 +48,12 @@ namespace Chesster
 		/**	Sends a message through TCP/IP to the camera.
 		 @param command The message to be sent.
 		 @return True if the message was sent succesfully, false otherwise. */
-		bool SendToCamera(SOCKET& socket, const std::string& command);
+		bool SendToCamera(const std::string& command);
 
 		/**	Sends a message through TCP/IP to the staubli robot.
 		 @param command The message to be sent.
 		 @return True if the message was sent succesfully, false otherwise. */
 		bool SendToRobot(const std::string& command);
-
-		void TakePicture();
 
 		/**	Retrieves the buffer that stores the data received from the Cognex Camera.
 		 @return An char array of size 256 containing the piece location on the physical board. */

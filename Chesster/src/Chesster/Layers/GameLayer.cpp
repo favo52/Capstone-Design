@@ -430,6 +430,10 @@ namespace Chesster
 
 	void GameLayer::ResetGame()
 	{
+		m_OldCameraData = { "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
+		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
+		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" };
+
 		m_CurrentPlayer = Player::White;
 		m_CurrentGameState = GameState::Gameplay;
 
@@ -441,6 +445,7 @@ namespace Chesster
 		m_Board.ResetPieces();
 		m_ChessEngine.NewGame();
 		m_LegalMoves = m_ChessEngine.GetValidMoves(START_FEN);
+
 	}
 
 	bool GameLayer::IsPointInRect(const glm::vec2& point, const RectBounds& rect)

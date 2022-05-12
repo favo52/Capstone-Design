@@ -29,7 +29,6 @@ namespace Chesster
 
 		// For commanding the camera to take the picture
 		const std::string& cameraIP = settingsPanel.m_CameraIP;
-		//const std::string& cameraIP = "localhost";
 		const std::string& cameraTelnetPort = settingsPanel.m_CameraTelnetPort;
 		if (!network.CreateClientSocket(network.m_CameraTelnetSocket, cameraIP, cameraTelnetPort))
 		{
@@ -43,32 +42,9 @@ namespace Chesster
 		}
 		LOG_INFO("Telnet Connected. (ip: {0}, port: {1})", cameraIP, cameraTelnetPort);
 
-		network.SendToCamera(network.m_CameraTelnetSocket, "admin\r\n");
-		network.SendToCamera(network.m_CameraTelnetSocket, "\r\n");
-
 		// Attempt to login to Cognex InSight-Explorer
-		//std::array<char, 128> tempbuffer = {};
-		//if (network.RecvCameraCommand(tempbuffer))
-		{
-			//network.SendToCamera(network.m_CameraTelnetSocket, "admin\r\n");
-			//network.SendToCamera(network.m_CameraTelnetSocket, "\r\n");
-			//LOG_INFO("Received1: {0}", tempbuffer.data()); // welcome
-			//if (network.RecvCameraCommand(tempbuffer))
-			{
-				//LOG_INFO("Received2 {0}", tempbuffer.data()); // user
-				
-				//network.SendToCamera("admin\r\n \0");
-				//if (!network.SendToCamera("admin\r\n\r\n"))
-				//{
-				//	const std::string str{ "Unable to login to the Cognex InSight-Explorer." };
-				//	LOG_ERROR(str);
-				//	consolePanel.AddLog(str);
-				//	network.DisconnectCamera();
-				//	settingsPanel.SetCameraButtonStatus(false);
-				//	return;
-				//}
-			}
-		}
+		network.SendToCamera("admin\r\n");
+		network.SendToCamera("\r\n");
 
 		// Keep thread alive waiting for any new data received from
 		// the InSight-Explorer Telnet socket
@@ -106,11 +82,6 @@ namespace Chesster
 			return;
 		}
 		LOG_INFO("TCP Device Connected. (ip: {0}, port: {1})", cameraIP, cameraTCPDevicePort);
-
-		network.SendToCamera(network.m_CameraTCPDeviceSocket, "admin\r\n");
-		network.SendToCamera(network.m_CameraTCPDeviceSocket, "\r\n");
-		network.SendToCamera(network.m_CameraTCPDeviceSocket, "IMG\r\n");
-		//network.SendToCamera(network.m_CameraTCPDeviceSocket, "DAT\r\n");
 
 		// Keep thread alive waiting for any new data received from
 		// the InSight-Explorer TCP Device socket
@@ -200,15 +171,16 @@ namespace Chesster
 		m_RobotClientSocket = INVALID_SOCKET;
 	}
 
-	bool Network::SendToCamera(SOCKET& socket, const std::string& command)
+	bool Network::SendToCamera(const std::string& command)
 	{
-		//int iSendResult = send(m_CameraTelnetSocket, command.c_str(), command.length(), 0);
-		int iSendResult = send(socket, command.c_str(), command.length(), 0);
+		int iSendResult = send(m_CameraTelnetSocket, command.c_str(), command.length(), 0);
 		if (iSendResult == INVALID_SOCKET)
 		{
 			LOG_ERROR("SendToCamera failed with error: {0}", WSAGetLastError());
 			return false;
 		}
+
+		LOG_INFO("Sent To Camera: {0}", command);
 
 		return true;
 	}
@@ -222,14 +194,11 @@ namespace Chesster
 			return false;
 		}
 
+		LOG_INFO("Sent To Robot: {0}", command);
+
 		return true;
 	}
 	
-	void Network::TakePicture()
-	{
-		SendToCamera(m_CameraTelnetSocket, "SE8\r\n");
-	}
-
 	bool Network::RecvCameraCommand(std::array<char, 128>& buffer)
 	{
 		buffer = {};
