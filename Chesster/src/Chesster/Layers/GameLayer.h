@@ -35,6 +35,8 @@ namespace Chesster
 		void SetEventsActive(bool active) { m_IsEventsActive = active; }
 
 		void UpdateRobotCode(Code code, char value);
+		void EndPlayerTurn() { m_IsEndPlayerTurn = true; }
+		void ArmIsSettled() { m_IsArmSettled = true; }
 
 		Board& GetBoard() { return m_Board; }
 
@@ -92,6 +94,8 @@ namespace Chesster
 		std::vector<std::string> m_OldCameraData;
 
 		std::array<char, 11> m_RobotCodes;
+		bool m_IsEndPlayerTurn{ false };
+		bool m_IsArmSettled{ false };
 
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };

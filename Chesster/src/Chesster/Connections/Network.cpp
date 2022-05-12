@@ -256,9 +256,9 @@ namespace Chesster
 			if (data.size() == 3)
 			{
 				GameLayer& gameLayer = GameLayer::Get();
-				if (data[0] == '1') gameLayer.ResetGame();
-				if (data[1] == '1') SendToCamera("SE8\r\n");
-				if (data[2] == '1') SendToCamera("SE8\r\n");
+				if (data[0] == '1') { gameLayer.ResetGame(); }
+				if (data[1] == '1') { gameLayer.EndPlayerTurn(); SendToCamera("SE8\r\n"); }
+				if (data[2] == '1') { gameLayer.ArmIsSettled(); SendToCamera("SE8\r\n"); }
 			}
 		}
 

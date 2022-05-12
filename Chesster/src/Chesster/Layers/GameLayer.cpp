@@ -121,7 +121,18 @@ namespace Chesster
 			if (m_NewCameraData != tempCameraData)
 			{
 				m_NewCameraData = tempCameraData;
-				UpdatePlayerCameraMove();
+
+				if (m_IsEndPlayerTurn)
+				{
+					UpdatePlayerCameraMove();					
+					m_IsEndPlayerTurn = false;
+				}
+
+				if (m_IsArmSettled)
+				{
+					m_OldCameraData = m_NewCameraData;
+					m_IsArmSettled = false;
+				}
 			}
 
 			m_CameraDataReceived = false;
@@ -266,7 +277,7 @@ namespace Chesster
 			Piece& currentPiece = m_Board.GetCurrentPiece();
 			if (currentPiece.IsPromotion(m_CurrentMove))
 				currentPiece.Promote(m_CurrentMove);
-						
+			
 			m_Board.UpdatePieceCapture();			// Remove captured piece
 			m_Board.UpdateNewMove(m_CurrentMove);	// Castling and en passant
 
@@ -282,6 +293,7 @@ namespace Chesster
 			m_OldCameraData = m_NewCameraData;
 			++m_CurrentPlayer;
 			a_IsMovePlayed = true;
+			a_IsComputerTurn = true;
 
 			return;
 		}
@@ -563,7 +575,7 @@ namespace Chesster
 		
 		while (a_IsChessEngineRunning)
 		{
-			if (a_IsMovePlayed && !a_IsComputerTurn)
+			if (a_IsMovePlayed)
 			{
 				// Update legal moves list
 				const std::string currentFEN = { "\"" + gameLayer.m_ChessEngine.GetFEN(gameLayer.m_MoveHistory) + "\"" };
