@@ -42,10 +42,10 @@ namespace Chesster
 		}
 		LOG_INFO("Telnet Connected. (IP: {0}, Port: {1})", cameraIP, cameraTelnetPort);
 
-		// Attempt to login to Cognex InSight-Explorer
+		// Attempt to login to Cognex Camera
 		network.SendToCamera("admin\r\n");
 		network.SendToCamera("\r\n");
-		network.SendToCamera("SE8\r\n");
+		network.SendToCamera("SE8\r\n");	// Take initial picture
 
 		// Keep thread alive waiting for any new data
 		// received from the InSight-Explorer Telnet socket
@@ -152,6 +152,8 @@ namespace Chesster
 		LOG_INFO("Client accepted. CS8C Connected.");
 		consolePanel.AddLog("Client accepted. CS8C Connected.");
 
+		network.SendToRobot("10000000000");	// index [0] = GameActive
+
 		// Keep thread alive waiting for any new
 		// data received from the robot's client socket
 		while (true)
@@ -162,13 +164,27 @@ namespace Chesster
 				LOG_INFO("Received From Robot: {0}", buffer.data());
 				consolePanel.AddLog("Received From Robot: " + std::string(buffer.data()));
 
-				if (buffer.size() == 3)
+				if (buffer.size() > 2)
 				{
 					GameLayer& gameLayer = GameLayer::Get();
-					if (buffer[0] == '1') { gameLayer.ResetGame(); }
-					if (buffer[1] == '1') { gameLayer.EndPlayerTurn(); network.SendToCamera("SE8\r\n"); }
-					if (buffer[2] == '1') { gameLayer.ArmIsSettled(); network.SendToCamera("SE8\r\n"); }
-				}				
+					
+					if (buffer[0] == '1')
+					{
+						gameLayer.ResetGame();
+						network.SendToCamera("SE8\r\n");
+					}
+					if (buffer[1] == '1')
+					{
+						gameLayer.EndPlayerTurn();
+						network.SendToCamera("SE8\r\n");
+					}
+					if (buffer[2] == '1')
+					{
+						gameLayer.ArmIsSettled();
+						network.SendToCamera("SE8\r\n");
+						network.SendToRobot("10000000000"); // 10 billones
+					}
+				}
 			}
 			else
 			{
@@ -231,12 +247,12 @@ namespace Chesster
 		LOG_INFO("Sent To Robot: {0}", data);
 
 		return true;
-	}	
+	}
 
 	template<size_t S>
 	bool Network::RecvData(const SOCKET& socket, std::array<char, S>& buffer)
 	{
-		buffer = {};
+		buffer = {};	// Empty the buffer
 		int recvResult = recv(socket, buffer.data(), buffer.size(), 0);
 		if (recvResult == SOCKET_ERROR)
 		{

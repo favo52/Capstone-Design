@@ -25,7 +25,8 @@ namespace Chesster
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
 	{
 		s_Instance = this;
-
+		
+		m_RobotCodes.fill('0');
 		m_Network = std::make_unique<Network>();
 	}
 
@@ -117,7 +118,7 @@ namespace Chesster
 			}
 
 			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
-
+			
 			if (m_IsEndPlayerTurn)
 			{
 				UpdatePlayerCameraMove();					
@@ -296,6 +297,7 @@ namespace Chesster
 
 		// The piece was not placed at a valid location
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
+		m_Network->SendToRobot("10000000000");
 	}
 
 	void GameLayer::UpdatePlayerMouseMove()
@@ -463,6 +465,8 @@ namespace Chesster
 		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" };
 
+		m_RobotCodes.fill('0');
+
 		m_CurrentMove.clear();
 		m_MoveHistory.clear();
 		m_MoveHistorySize = 0;
@@ -578,7 +582,11 @@ namespace Chesster
 				gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(currentFEN);
 					
 				if (gameLayer.m_LegalMoves.empty())
+				{
 					gameLayer.m_CurrentGameState = GameState::Gameover;
+					gameLayer.UpdateRobotCode(Code::GameActive, '0');
+					gameLayer.m_Network->SendToRobot(gameLayer.m_RobotCodes.data());
+				}
 
 				a_IsMovePlayed = false;
 			}
@@ -599,7 +607,7 @@ namespace Chesster
 				else
 				{
 					gameLayer.UpdateComputerMove();
-					//gameLayer.m_Network->SendToRobot(gameLayer.m_RobotCodes.data());
+					gameLayer.m_Network->SendToRobot(gameLayer.m_RobotCodes.data());
 				}
 
 				a_IsComputerTurn = false;
