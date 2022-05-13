@@ -138,7 +138,17 @@ namespace Chesster
 			ImGui::BeginDisabled(!m_IsCameraConnected);
 
 			if (ImGui::Button("Take Picture", { 100, 50 }))
+			{
+				GameLayer::Get().EndPlayerTurn();
 				GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("ArmSettled", { 100, 50 }))
+			{
+				GameLayer::Get().ArmIsSettled();
+				GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
+			}
 
 			ImGui::EndDisabled();
 			ImGui::PopFont();

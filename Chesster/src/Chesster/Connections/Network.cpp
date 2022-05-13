@@ -5,7 +5,7 @@
 
 namespace Chesster
 {
-	std::array<char, 512> Network::m_CameraDataBuffer = {};
+	std::array<char, 256> Network::m_CameraDataBuffer = {};
 
 	Network::Network() :
 		m_CameraTelnetSocket{ INVALID_SOCKET },
@@ -45,6 +45,7 @@ namespace Chesster
 		// Attempt to login to Cognex InSight-Explorer
 		network.SendToCamera("admin\r\n");
 		network.SendToCamera("\r\n");
+		network.SendToCamera("SE8\r\n");
 
 		// Keep thread alive waiting for any new data received from
 		// the InSight-Explorer Telnet socket
@@ -87,7 +88,8 @@ namespace Chesster
 		// the InSight-Explorer TCP Device socket
 		while (true)
 		{
-			if (!network.RecvCameraData(m_CameraDataBuffer))
+			std::array<char, 256> buffer = {};
+			if (!network.RecvCameraData(buffer))
 			{
 				const std::string str{ "Stopped receiving camera data." };
 				LOG_INFO(str);
@@ -95,6 +97,7 @@ namespace Chesster
 				break;
 			}
 
+			m_CameraDataBuffer = buffer;
 			LOG_INFO("TCP Device Buffer: {0}", m_CameraDataBuffer.data());
 		}
 
@@ -213,7 +216,7 @@ namespace Chesster
 		return true;
 	}
 
-	bool Network::RecvCameraData(std::array<char, 512>& buffer)
+	bool Network::RecvCameraData(std::array<char, 256>& buffer)
 	{
 		buffer = {};
 		int iRecvResult = recv(m_CameraTCPDeviceSocket, buffer.data(), buffer.size(), 0);

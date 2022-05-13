@@ -57,7 +57,7 @@ namespace Chesster
 
 		/**	Retrieves the buffer that stores the data received from the Cognex Camera.
 		 @return An char array of size 256 containing the piece location on the physical board. */
-		static const std::array<char, 512>& GetCameraBuffer() { return m_CameraDataBuffer; }
+		static const std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
 
 	private:
 		/**	Waits to receive any new data from the Camera Telnet SOCKET. 
@@ -70,7 +70,7 @@ namespace Chesster
 			This function is used in its own thread so it doesn't lock up the program.
 		 @param buffer The buffer where the received data will be stored.
 		 @return True if a message was received successfully, false if the communication was closed. */
-		bool RecvCameraData(std::array<char, 512>& buffer);
+		bool RecvCameraData(std::array<char, 256>& buffer);
 
 		/**	Waits to receive any new data from the Robot Client SOCKET.
 			This function is used in its own thread so it doesn't lock up the program.
@@ -85,6 +85,6 @@ namespace Chesster
 		SOCKET m_ChessterListenSocket;	// Server SOCKET to listen for client connections
 		SOCKET m_RobotClientSocket;		// Client SOCKET for accepting connection from staubli robot
 
-		static std::array<char, 512> m_CameraDataBuffer;
+		static std::array<char, 256> m_CameraDataBuffer;
 	};
 }

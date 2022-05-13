@@ -108,31 +108,26 @@ namespace Chesster
 		// Camera taking pictures
 		if (m_CameraDataReceived)
 		{
-			std::vector<std::string> tempCameraData;
+			m_NewCameraData.clear();
 			std::istringstream iss{ m_Network->GetCameraBuffer().data() };
 			for (std::string piece; iss >> piece;)
 			{
 				if (piece.front() != '0')
-					tempCameraData.push_back(piece);
+					m_NewCameraData.push_back(piece);
 			}
 
-			std::sort(tempCameraData.begin(), tempCameraData.end());
+			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
 
-			if (m_NewCameraData != tempCameraData)
+			if (m_IsEndPlayerTurn)
 			{
-				m_NewCameraData = tempCameraData;
+				UpdatePlayerCameraMove();					
+				m_IsEndPlayerTurn = false;
+			}
 
-				if (m_IsEndPlayerTurn)
-				{
-					UpdatePlayerCameraMove();					
-					m_IsEndPlayerTurn = false;
-				}
-
-				if (m_IsArmSettled)
-				{
-					m_OldCameraData = m_NewCameraData;
-					m_IsArmSettled = false;
-				}
+			if (m_IsArmSettled)
+			{
+				m_OldCameraData = m_NewCameraData;
+				m_IsArmSettled = false;
 			}
 
 			m_CameraDataReceived = false;
@@ -268,6 +263,7 @@ namespace Chesster
 	void GameLayer::UpdatePlayerCameraMove()
 	{
 		m_CurrentMove = GetCameraMove();
+		LOG_INFO("Camera Move: {0}", m_CurrentMove);
 
 		if (IsMoveLegal(m_CurrentMove))
 		{
@@ -395,7 +391,7 @@ namespace Chesster
 
 		std::vector<std::string> differenceOld = getDifference(m_OldCameraData, m_NewCameraData);
 		std::vector<std::string> differenceNew = getDifference(m_NewCameraData, m_OldCameraData);
-		
+
 		/* This lambda erases any std::string from dataA that exists in both dataA and dataB. */
 		auto eraseDuplicate = [&](std::vector<std::string>& dataA, std::vector<std::string>& dataB)
 		{
