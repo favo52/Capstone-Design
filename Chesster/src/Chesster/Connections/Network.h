@@ -3,10 +3,10 @@
 #include "Chesster/Connections/Winsock.h"
 
 // Cognex camera login
-// User: admin
-// Pass: 
+// User: "admin\r\n"
+// Pass: "\r\n"
 
-// Command to take pic: SE8
+// Command to take pic: "SE8\r\n"
 // if received 1 success
 // else error
 
@@ -39,6 +39,9 @@ namespace Chesster
 			connect as a client and establish TCP/IP communication. */
 		static void ChessterRobotThread();
 
+		/*	Signals that the Telnet and TCPDevice SOCKETs will not be sending any more data. */
+		void ShutdownCamera();
+
 		/*	Closes the Camera Telnet and TCPDevice SOCKETs. */
 		void DisconnectCamera();
 		
@@ -48,35 +51,25 @@ namespace Chesster
 		/**	Sends a message through TCP/IP to the camera.
 		 @param command The message to be sent.
 		 @return True if the message was sent succesfully, false otherwise. */
-		bool SendToCamera(const std::string& command);
+		bool SendToCamera(const std::string& data);
 
 		/**	Sends a message through TCP/IP to the staubli robot.
 		 @param command The message to be sent.
 		 @return True if the message was sent succesfully, false otherwise. */
-		bool SendToRobot(const std::string& command);
+		bool SendToRobot(const std::string& data);
 
 		/**	Retrieves the buffer that stores the data received from the Cognex Camera.
 		 @return An char array of size 256 containing the piece location on the physical board. */
 		static const std::array<char, 256>& GetCameraBuffer() { return m_CameraDataBuffer; }
 
 	private:
-		/**	Waits to receive any new data from the Camera Telnet SOCKET. 
-			This function is used in its own thread so it doesn't lock up the program.
+		/**	Waits to receive any new data from the specified SOCKET. 
+			This function should be used in its own thread so it doesn't lock up the program.
+		 @param socket The socket from where the data will be received.
 		 @param buffer The buffer where the received data will be stored.
 		 @return True if a message was received successfully, false if the communication was closed. */
-		bool RecvCameraTelnet(std::array<char, 128>& buffer);
-
-		/**	Waits to receive any new data from the Camera TCP Device SOCKET. 
-			This function is used in its own thread so it doesn't lock up the program.
-		 @param buffer The buffer where the received data will be stored.
-		 @return True if a message was received successfully, false if the communication was closed. */
-		bool RecvCameraData(std::array<char, 256>& buffer);
-
-		/**	Waits to receive any new data from the Robot Client SOCKET.
-			This function is used in its own thread so it doesn't lock up the program.
-		 @param buffer The buffer where the received data will be stored.
-		 @return True if a message was received successfully, false if the communication was closed. */
-		bool RecvFromRobot(std::array<char, 256>& buffer);
+		template<size_t S>
+		bool RecvData(const SOCKET& socket, std::array<char, S>& buffer);
 
 	private:
 		SOCKET m_CameraTelnetSocket;	// Client SOCKET to give commands to the camera

@@ -238,7 +238,7 @@ namespace Chesster
 		ImGui::Separator();
 
 		// Activate/deactivate mouse picking
-		static bool isMouseActive{ true };
+		static bool isMouseActive{ false };
 		if (ImGui::Checkbox("Allow Mouse/Keyboard events", &isMouseActive))
 			GameLayer::Get().SetEventsActive(isMouseActive);
 
@@ -249,7 +249,7 @@ namespace Chesster
 	{
 		if (m_IsCameraConnected)
 		{
-			GameLayer::Get().GetNetwork().DisconnectCamera();
+			GameLayer::Get().GetNetwork().ShutdownCamera();
 
 			const std::string msg{ "Camera disconnected." };
 			LOG_INFO(msg);

@@ -100,7 +100,7 @@ namespace Chesster
 		Player m_CurrentPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
-		bool m_IsEventsActive{ true };
+		bool m_IsEventsActive{ false };
 		
 		std::unique_ptr<Network> m_Network;
 		ConsolePanel m_ConsolePanel;

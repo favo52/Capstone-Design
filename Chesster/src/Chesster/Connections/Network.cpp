@@ -32,7 +32,7 @@ namespace Chesster
 		const std::string& cameraTelnetPort = settingsPanel.m_CameraTelnetPort;
 		if (!network.CreateClientSocket(network.m_CameraTelnetSocket, cameraIP, cameraTelnetPort))
 		{
-			const std::string str{ "Unable to connect the Camera Command Socket. "
+			const std::string str{ "Unable to connect the Camera Telnet Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTelnetPort + ")" };
 			LOG_ERROR(str);
 			consolePanel.AddLog(str);
@@ -40,23 +40,30 @@ namespace Chesster
 			settingsPanel.SetCameraButtonStatus(false);
 			return;
 		}
-		LOG_INFO("Telnet Connected. (ip: {0}, port: {1})", cameraIP, cameraTelnetPort);
+		LOG_INFO("Telnet Connected. (IP: {0}, Port: {1})", cameraIP, cameraTelnetPort);
 
 		// Attempt to login to Cognex InSight-Explorer
 		network.SendToCamera("admin\r\n");
 		network.SendToCamera("\r\n");
 		network.SendToCamera("SE8\r\n");
 
-		// Keep thread alive waiting for any new data received from
-		// the InSight-Explorer Telnet socket
+		// Keep thread alive waiting for any new data
+		// received from the InSight-Explorer Telnet socket
 		while (true)
 		{
 			std::array<char, 128> buffer = {};
-			if (!network.RecvCameraTelnet(buffer))
+			if (network.RecvData(network.m_CameraTelnetSocket, buffer))
+			{
+				LOG_INFO("Telnet Buffer: {0}", buffer.data());
+				consolePanel.AddLog(buffer.data());
+			}
+			else
+			{
+				const std::string str{ "CameraTelnetThread ended." };
+				LOG_INFO(str);
+				consolePanel.AddLog(str);
 				break;
-
-			LOG_INFO("Telnet Buffer: {0}", buffer.data());			
-			consolePanel.AddLog(buffer.data());
+			}
 		}
 
 		network.DisconnectCamera();
@@ -74,7 +81,7 @@ namespace Chesster
 		const std::string& cameraTCPDevicePort = settingsPanel.m_CameraTCPDevicePort;
 		if (!network.CreateClientSocket(network.m_CameraTCPDeviceSocket, cameraIP, cameraTCPDevicePort))
 		{
-			const std::string str{ "Unable to connect the Camera Buffer Socket. "
+			const std::string str{ "Unable to connect the TCP Device Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTCPDevicePort + ")" };
 			LOG_ERROR(str);
 			consolePanel.AddLog(str);
@@ -82,23 +89,25 @@ namespace Chesster
 			settingsPanel.SetCameraButtonStatus(false);
 			return;
 		}
-		LOG_INFO("TCP Device Connected. (ip: {0}, port: {1})", cameraIP, cameraTCPDevicePort);
+		LOG_INFO("TCP Device Connected. (IP: {0}, Port: {1})", cameraIP, cameraTCPDevicePort);
 
-		// Keep thread alive waiting for any new data received from
-		// the InSight-Explorer TCP Device socket
+		// Keep thread alive waiting for any new data received
+		// from the InSight-Explorer TCP Device socket
 		while (true)
 		{
 			std::array<char, 256> buffer = {};
-			if (!network.RecvCameraData(buffer))
+			if (network.RecvData(network.m_CameraTCPDeviceSocket, buffer))
 			{
-				const std::string str{ "Stopped receiving camera data." };
+				m_CameraDataBuffer = buffer;
+				GameLayer::Get().SetCameraDataReceived(true);
+			}
+			else
+			{
+				const std::string str{ "CameraTCPDeviceThread ended." };
 				LOG_INFO(str);
 				consolePanel.AddLog(str);
 				break;
-			}
-
-			m_CameraDataBuffer = buffer;
-			LOG_INFO("TCP Device Buffer: {0}", m_CameraDataBuffer.data());
+			}			
 		}
 
 		network.DisconnectCamera();
@@ -147,13 +156,35 @@ namespace Chesster
 		// data received from the robot's client socket
 		while (true)
 		{
-			std::array<char, 256> buffer = {};
-			if (!network.RecvFromRobot(buffer))
+			std::array<char, 8> buffer = {};
+			if (network.RecvData(network.m_RobotClientSocket, buffer))
+			{
+				LOG_INFO("Received From Robot: {0}", buffer.data());
+				consolePanel.AddLog("Received From Robot: " + std::string(buffer.data()));
+
+				if (buffer.size() == 3)
+				{
+					GameLayer& gameLayer = GameLayer::Get();
+					if (buffer[0] == '1') { gameLayer.ResetGame(); }
+					if (buffer[1] == '1') { gameLayer.EndPlayerTurn(); network.SendToCamera("SE8\r\n"); }
+					if (buffer[2] == '1') { gameLayer.ArmIsSettled(); network.SendToCamera("SE8\r\n"); }
+				}				
+			}
+			else
+			{
+				LOG_INFO("ChessterRobotThread ended.");
 				break;
+			}
 		}
 
 		network.DisconnectRobot();
 		settingsPanel.SetRobotButtonStatus(false);
+	}
+
+	void Network::ShutdownCamera()
+	{
+		shutdown(m_CameraTelnetSocket, SD_BOTH);
+		shutdown(m_CameraTCPDeviceSocket, SD_BOTH);
 	}
 
 	void Network::DisconnectCamera()
@@ -174,97 +205,48 @@ namespace Chesster
 		m_RobotClientSocket = INVALID_SOCKET;
 	}
 
-	bool Network::SendToCamera(const std::string& command)
+	bool Network::SendToCamera(const std::string& data)
 	{
-		int iSendResult = send(m_CameraTelnetSocket, command.c_str(), command.length(), 0);
-		if (iSendResult == INVALID_SOCKET)
+		int sendResult = send(m_CameraTelnetSocket, data.c_str(), data.length(), 0);
+		if (sendResult == SOCKET_ERROR)
 		{
-			LOG_ERROR("SendToCamera failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("SendToCamera socket error: {0}", WSAGetLastError());
 			return false;
 		}
 
-		LOG_INFO("Sent To Camera: {0}", command);
+		LOG_INFO("Sent To Camera: {0}", data);
 
 		return true;
 	}
 
-	bool Network::SendToRobot(const std::string& command)
+	bool Network::SendToRobot(const std::string& data)
 	{
-		int iSendResult = send(m_RobotClientSocket, command.c_str(), command.length(), 0);
-		if (iSendResult == INVALID_SOCKET)
+		int sendResult = send(m_RobotClientSocket, data.c_str(), data.length(), 0);
+		if (sendResult == SOCKET_ERROR)
 		{
-			LOG_ERROR("SendToRobot failed with error: {0}", WSAGetLastError());
+			LOG_ERROR("SendToRobot socket error: {0}", WSAGetLastError());
 			return false;
 		}
 
-		LOG_INFO("Sent To Robot: {0}", command);
+		LOG_INFO("Sent To Robot: {0}", data);
 
 		return true;
-	}
-	
-	bool Network::RecvCameraTelnet(std::array<char, 128>& buffer)
+	}	
+
+	template<size_t S>
+	bool Network::RecvData(const SOCKET& socket, std::array<char, S>& buffer)
 	{
 		buffer = {};
-		int iRecvResult = recv(m_CameraTelnetSocket, buffer.data(), buffer.size(), 0);
-		if (iRecvResult == INVALID_SOCKET)
+		int recvResult = recv(socket, buffer.data(), buffer.size(), 0);
+		if (recvResult == SOCKET_ERROR)
 		{
-			LOG_ERROR("RecvCameraCommand failed with error: {0}. Disconnecting...", WSAGetLastError());
-			DisconnectCamera();
+			LOG_ERROR("RecvData socket error: {0}. Disconnecting...", WSAGetLastError());
 			return false;
 		}
 
-		return true;
-	}
+		if (recvResult > 0)
+			return true;
 
-	bool Network::RecvCameraData(std::array<char, 256>& buffer)
-	{
-		buffer = {};
-		int iRecvResult = recv(m_CameraTCPDeviceSocket, buffer.data(), buffer.size(), 0);
-		if (iRecvResult == SOCKET_ERROR)
-		{
-			LOG_ERROR("RecvCameraData failed with error: {0}. Disconnecting...", WSAGetLastError());
-			DisconnectCamera();
-			
-			LOG_INFO("Camera buffer disconnected.");
-			GameLayer::Get().GetConsolePanel().AddLog("Camera buffer disconnected.");
-			return false;
-		}
-		
-		if (iRecvResult > 0)
-			GameLayer::Get().SetCameraDataReceived(true);
-
-		return true;
-	}
-
-	bool Network::RecvFromRobot(std::array<char, 256>& buffer)
-	{
-		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
-		
-		LOG_INFO("Waiting to receive...");
-		consolePanel.AddLog("Waiting to receive...");
-
-		int iRecvResult = recv(m_RobotClientSocket, buffer.data(), buffer.size(), 0);
-		if (iRecvResult == INVALID_SOCKET)
-		{
-			LOG_ERROR("RecvFromRobot failed with error: {0}. Disconnecting...", WSAGetLastError());
-			return false;
-		}
-
-		if (iRecvResult > 0)
-		{
-			const std::string data{ buffer.data() };
-			LOG_INFO("Received From Robot: {0}", data);
-			consolePanel.AddLog("Received From Robot: " + data);
-
-			if (data.size() == 3)
-			{
-				GameLayer& gameLayer = GameLayer::Get();
-				if (data[0] == '1') { gameLayer.ResetGame(); }
-				if (data[1] == '1') { gameLayer.EndPlayerTurn(); SendToCamera("SE8\r\n"); }
-				if (data[2] == '1') { gameLayer.ArmIsSettled(); SendToCamera("SE8\r\n"); }
-			}
-		}
-
-		return true;
+		return false;
 	}
 }
