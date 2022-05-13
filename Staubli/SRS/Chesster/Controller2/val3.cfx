@@ -1,0 +1,1865 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<language>
+  <Version>~VAL3:s5.4</Version>
+  <Data>
+    <type index="0" >
+      <name>void</name>
+      <abstract />
+      <father />
+    </type>
+    <type index="1" >
+      <name>bool</name>
+      <abstract />
+      <father />
+      <operator index="0" >
+        <name>!</name>
+        <unary>true</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left />
+        <class>Function</class>
+      </operator>
+      <operator index="1" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>bool</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="2" >
+        <name>and</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>bool</left>
+        <class>Function</class>
+      </operator>
+      <operator index="3" >
+        <name>or</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>bool</left>
+        <class>Function</class>
+      </operator>
+      <operator index="4" >
+        <name>xor</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>bool</left>
+        <class>Function</class>
+      </operator>
+      <operator index="5" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>bool</left>
+        <class>Function</class>
+      </operator>
+      <operator index="6" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>bool</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="2" >
+      <name>num</name>
+      <abstract />
+      <father />
+      <operator index="0" >
+        <name>-</name>
+        <unary>true</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left />
+        <class>Function</class>
+      </operator>
+      <operator index="1" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="2" >
+        <name>+</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="3" >
+        <name>-</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="4" >
+        <name>*</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="5" >
+        <name>/</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="6" >
+        <name>%</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="7" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="8" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="9" >
+        <name>&gt;=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="10" >
+        <name>&gt;</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="11" >
+        <name>&lt;=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+      <operator index="12" >
+        <name>&lt;</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>num</right>
+        <left>num</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="3" >
+      <name>string</name>
+      <abstract />
+      <father />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>string</ret>
+        <right>string</right>
+        <left>string</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>+</name>
+        <unary>false</unary>
+        <ret>string</ret>
+        <right>string</right>
+        <left>string</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>string</right>
+        <left>string</left>
+        <class>Function</class>
+      </operator>
+      <operator index="3" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>string</right>
+        <left>string</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="4" >
+      <name>dio</name>
+      <abstract />
+      <father />
+      <operator index="0" >
+        <name>!</name>
+        <unary>true</unary>
+        <ret>bool</ret>
+        <right>dio</right>
+        <left />
+        <class>Function</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>dio</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>dio</right>
+        <left>bool</left>
+        <class>Function</class>
+      </operator>
+      <operator index="3" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>dio</right>
+        <left>dio</left>
+        <class>Function</class>
+      </operator>
+      <operator index="4" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>dio</left>
+        <class>Function</class>
+      </operator>
+      <operator index="5" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>dio</right>
+        <left>bool</left>
+        <class>Function</class>
+      </operator>
+      <operator index="6" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>dio</right>
+        <left>dio</left>
+        <class>Function</class>
+      </operator>
+      <operator index="7" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>bool</right>
+        <left>dio</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="8" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>dio</right>
+        <left>dio</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="9" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>dio</right>
+        <left>bool</left>
+        <class>Modifier</class>
+      </operator>
+    </type>
+    <type index="5" >
+      <name>aio</name>
+      <abstract />
+      <father />
+    </type>
+    <type index="6" >
+      <name>sio</name>
+      <abstract />
+      <father />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>string</ret>
+        <right>sio</right>
+        <left>string</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>sio</right>
+        <left>num</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="2" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>string</ret>
+        <right>string</right>
+        <left>sio</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="3" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>num</ret>
+        <right>num</right>
+        <left>sio</left>
+        <class>Modifier</class>
+      </operator>
+    </type>
+    <type index="7" >
+      <name>trsf</name>
+      <abstract />
+      <father />
+      <field index="0" name="x" type="num" isLinked="false" />
+      <field index="1" name="y" type="num" isLinked="false" />
+      <field index="2" name="z" type="num" isLinked="false" />
+      <field index="3" name="rx" type="num" isLinked="false" />
+      <field index="4" name="ry" type="num" isLinked="false" />
+      <field index="5" name="rz" type="num" isLinked="false" />
+      <operator index="0" >
+        <name>!</name>
+        <unary>true</unary>
+        <ret>trsf</ret>
+        <right>trsf</right>
+        <left />
+        <class>Function</class>
+      </operator>
+      <operator index="1" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>trsf</ret>
+        <right>trsf</right>
+        <left>trsf</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="2" >
+        <name>*</name>
+        <unary>false</unary>
+        <ret>trsf</ret>
+        <right>trsf</right>
+        <left>trsf</left>
+        <class>Function</class>
+      </operator>
+      <operator index="3" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>trsf</right>
+        <left>trsf</left>
+        <class>Function</class>
+      </operator>
+      <operator index="4" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>trsf</right>
+        <left>trsf</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="8" >
+      <name>tool</name>
+      <abstract />
+      <father>tool</father>
+      <field index="0" name="trsf" type="trsf" isLinked="false" />
+      <field index="1" name="gripper" type="dio" isLinked="true" />
+      <field index="2" name="otime" type="num" isLinked="false" />
+      <field index="3" name="ctime" type="num" isLinked="false" />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>tool</ret>
+        <right>tool</right>
+        <left>tool</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>tool</right>
+        <left>tool</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>tool</right>
+        <left>tool</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="9" >
+      <name>frame</name>
+      <abstract />
+      <father>frame</father>
+      <field index="0" name="trsf" type="trsf" isLinked="false" />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>frame</ret>
+        <right>frame</right>
+        <left>frame</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>frame</right>
+        <left>frame</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>frame</right>
+        <left>frame</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="10" >
+      <name>shoulder</name>
+      <abstract />
+      <father />
+      <constant index="0" >righty</constant>
+      <constant index="1" >lefty</constant>
+      <constant index="2" >sfree</constant>
+      <constant index="3" >ssame</constant>
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>shoulder</ret>
+        <right>shoulder</right>
+        <left>shoulder</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>shoulder</right>
+        <left>shoulder</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>shoulder</right>
+        <left>shoulder</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="11" >
+      <name>elbow</name>
+      <abstract />
+      <father />
+      <constant index="0" >enegative</constant>
+      <constant index="1" >epositive</constant>
+      <constant index="2" >efree</constant>
+      <constant index="3" >esame</constant>
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>elbow</ret>
+        <right>elbow</right>
+        <left>elbow</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>elbow</right>
+        <left>elbow</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>elbow</right>
+        <left>elbow</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="12" >
+      <name>wrist</name>
+      <abstract />
+      <father />
+      <constant index="0" >wnegative</constant>
+      <constant index="1" >wpositive</constant>
+      <constant index="2" >wfree</constant>
+      <constant index="3" >wsame</constant>
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>wrist</ret>
+        <right>wrist</right>
+        <left>wrist</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>wrist</right>
+        <left>wrist</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>wrist</right>
+        <left>wrist</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="13" >
+      <name>config</name>
+      <abstract />
+      <father />
+      <field index="0" name="shoulder" type="shoulder" isLinked="false" />
+      <field index="1" name="elbow" type="elbow" isLinked="false" />
+      <field index="2" name="wrist" type="wrist" isLinked="false" />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>config</ret>
+        <right>config</right>
+        <left>config</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>config</right>
+        <left>config</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>config</right>
+        <left>config</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="14" >
+      <name>aboveBelow</name>
+      <abstract />
+      <father />
+      <constant index="0" >below</constant>
+      <constant index="1" >above</constant>
+      <constant index="2" >free</constant>
+      <constant index="3" >same</constant>
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>aboveBelow</ret>
+        <right>aboveBelow</right>
+        <left>aboveBelow</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>aboveBelow</right>
+        <left>aboveBelow</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>aboveBelow</right>
+        <left>aboveBelow</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="15" >
+      <name>positiveNegative</name>
+      <abstract />
+      <father />
+      <constant index="0" >negative</constant>
+      <constant index="1" >positive</constant>
+      <constant index="2" >free</constant>
+      <constant index="3" >same</constant>
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>positiveNegative</ret>
+        <right>positiveNegative</right>
+        <left>positiveNegative</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>positiveNegative</right>
+        <left>positiveNegative</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>positiveNegative</right>
+        <left>positiveNegative</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="16" >
+      <name>point</name>
+      <abstract />
+      <father>frame</father>
+      <field index="0" name="trsf" type="trsf" isLinked="false" />
+      <field index="1" name="config" type="config" isLinked="false" />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>point</ret>
+        <right>point</right>
+        <left>point</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>point</right>
+        <left>point</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>point</right>
+        <left>point</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="17" >
+      <name>joint</name>
+      <abstract />
+      <father />
+      <field index="0" name="j1" type="num" isLinked="false" />
+      <field index="1" name="j2" type="num" isLinked="false" />
+      <field index="2" name="j3" type="num" isLinked="false" />
+      <field index="3" name="j4" type="num" isLinked="false" />
+      <field index="4" name="j5" type="num" isLinked="false" />
+      <field index="5" name="j6" type="num" isLinked="false" />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>joint</ret>
+        <right>joint</right>
+        <left>joint</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>joint</right>
+        <left>joint</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>joint</right>
+        <left>joint</left>
+        <class>Function</class>
+      </operator>
+      <operator index="3" >
+        <name>+</name>
+        <unary>false</unary>
+        <ret>joint</ret>
+        <right>joint</right>
+        <left>joint</left>
+        <class>Function</class>
+      </operator>
+      <operator index="4" >
+        <name>-</name>
+        <unary>false</unary>
+        <ret>joint</ret>
+        <right>joint</right>
+        <left>joint</left>
+        <class>Function</class>
+      </operator>
+      <operator index="5" >
+        <name>&gt;</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>joint</right>
+        <left>joint</left>
+        <class>Function</class>
+      </operator>
+      <operator index="6" >
+        <name>&lt;</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>joint</right>
+        <left>joint</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="18" >
+      <name>configRs</name>
+      <abstract>config</abstract>
+      <father />
+      <field index="0" name="shoulder" type="shoulder" isLinked="false" />
+    </type>
+    <type index="19" >
+      <name>pointRs</name>
+      <abstract>point</abstract>
+      <father>frame</father>
+      <field index="0" name="trsf" type="trsf" isLinked="false" />
+      <field index="1" name="config" type="configRs" isLinked="false" />
+    </type>
+    <type index="20" >
+      <name>jointRs</name>
+      <abstract>joint</abstract>
+      <father />
+      <field index="0" name="j1" type="num" isLinked="false" />
+      <field index="1" name="j2" type="num" isLinked="false" />
+      <field index="2" name="j3" type="num" isLinked="false" />
+      <field index="3" name="j4" type="num" isLinked="false" />
+    </type>
+    <type index="21" >
+      <name>configRx</name>
+      <abstract>config</abstract>
+      <father />
+      <field index="0" name="shoulder" type="shoulder" isLinked="false" />
+      <field index="1" name="elbow" type="elbow" isLinked="false" />
+      <field index="2" name="wrist" type="wrist" isLinked="false" />
+    </type>
+    <type index="22" >
+      <name>pointRx</name>
+      <abstract>point</abstract>
+      <father>frame</father>
+      <field index="0" name="trsf" type="trsf" isLinked="false" />
+      <field index="1" name="config" type="configRx" isLinked="false" />
+    </type>
+    <type index="23" >
+      <name>jointRx</name>
+      <abstract>joint</abstract>
+      <father />
+      <field index="0" name="j1" type="num" isLinked="false" />
+      <field index="1" name="j2" type="num" isLinked="false" />
+      <field index="2" name="j3" type="num" isLinked="false" />
+      <field index="3" name="j4" type="num" isLinked="false" />
+      <field index="4" name="j5" type="num" isLinked="false" />
+      <field index="5" name="j6" type="num" isLinked="false" />
+    </type>
+    <type index="24" >
+      <name>configVrb</name>
+      <abstract>config</abstract>
+      <father />
+      <field index="0" name="jnt1" type="aboveBelow" isLinked="false" />
+      <field index="1" name="jnt3" type="positiveNegative" isLinked="false" />
+      <field index="2" name="jnt5" type="positiveNegative" isLinked="false" />
+    </type>
+    <type index="25" >
+      <name>pointVrb</name>
+      <abstract>point</abstract>
+      <father>frame</father>
+      <field index="0" name="trsf" type="trsf" isLinked="false" />
+      <field index="1" name="config" type="configVrb" isLinked="false" />
+    </type>
+    <type index="26" >
+      <name>jointVrb</name>
+      <abstract>joint</abstract>
+      <father />
+      <field index="0" name="j1" type="num" isLinked="false" />
+      <field index="1" name="j2" type="num" isLinked="false" />
+      <field index="2" name="j3" type="num" isLinked="false" />
+      <field index="3" name="j4" type="num" isLinked="false" />
+      <field index="4" name="j5" type="num" isLinked="false" />
+      <field index="5" name="j6" type="num" isLinked="false" />
+    </type>
+    <type index="27" >
+      <name>blend</name>
+      <abstract />
+      <father />
+      <constant index="0" >off</constant>
+      <constant index="1" >joint</constant>
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>blend</ret>
+        <right>blend</right>
+        <left>blend</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>blend</right>
+        <left>blend</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>blend</right>
+        <left>blend</left>
+        <class>Function</class>
+      </operator>
+    </type>
+    <type index="28" >
+      <name>mdesc</name>
+      <abstract />
+      <father />
+      <field index="0" name="accel" type="num" isLinked="false" />
+      <field index="1" name="vel" type="num" isLinked="false" />
+      <field index="2" name="decel" type="num" isLinked="false" />
+      <field index="3" name="tvel" type="num" isLinked="false" />
+      <field index="4" name="rvel" type="num" isLinked="false" />
+      <field index="5" name="blend" type="blend" isLinked="false" />
+      <field index="6" name="leave" type="num" isLinked="false" />
+      <field index="7" name="reach" type="num" isLinked="false" />
+      <operator index="0" >
+        <name>=</name>
+        <unary>false</unary>
+        <ret>mdesc</ret>
+        <right>mdesc</right>
+        <left>mdesc</left>
+        <class>Modifier</class>
+      </operator>
+      <operator index="1" >
+        <name>==</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>mdesc</right>
+        <left>mdesc</left>
+        <class>Function</class>
+      </operator>
+      <operator index="2" >
+        <name>!=</name>
+        <unary>false</unary>
+        <ret>bool</ret>
+        <right>mdesc</right>
+        <left>mdesc</left>
+        <class>Function</class>
+      </operator>
+    </type>
+  </Data>
+  <Functions>
+    <func index="0" >
+      <name>#link</name>
+      <return>tool</return>
+      <param index="0" >tool</param>
+      <param index="1" >tool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="1" >
+      <name>#link</name>
+      <return>frame</return>
+      <param index="0" >frame</param>
+      <param index="1" >frame</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="2" >
+      <name>#link</name>
+      <return>point</return>
+      <param index="0" >point</param>
+      <param index="1" >frame</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="3" >
+      <name>$getMoveId</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="4" >
+      <name>$setMoveId</name>
+      <return>void</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="5" >
+      <name>abs</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="6" >
+      <name>abs</name>
+      <return>joint</return>
+      <param index="0" >joint</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="7" >
+      <name>acos</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="8" >
+      <name>aioGet</name>
+      <return>num</return>
+      <param index="0" >aio</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="9" >
+      <name>aioLink</name>
+      <return>void</return>
+      <param index="0" >aio</param>
+      <param index="1" >aio</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="10" >
+      <name>aioSet</name>
+      <return>num</return>
+      <param index="0" >aio</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="11" >
+      <name>alter</name>
+      <return>num</return>
+      <param index="0" >trsf</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="12" >
+      <name>alterBegin</name>
+      <return>num</return>
+      <param index="0" >frame</param>
+      <param index="1" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="13" >
+      <name>alterBegin</name>
+      <return>num</return>
+      <param index="0" >tool</param>
+      <param index="1" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="14" >
+      <name>alterEnd</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="15" >
+      <name>alterMovec</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >point</param>
+      <param index="2" >tool</param>
+      <param index="3" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="16" >
+      <name>alterMovej</name>
+      <return>num</return>
+      <param index="0" >joint</param>
+      <param index="1" >tool</param>
+      <param index="2" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="17" >
+      <name>alterMovej</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >tool</param>
+      <param index="2" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="18" >
+      <name>alterMovel</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >tool</param>
+      <param index="2" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="19" >
+      <name>alterStopTime</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="20" >
+      <name>appro</name>
+      <return>point</return>
+      <param index="0" >point</param>
+      <param index="1" >trsf</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="21" >
+      <name>asc</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="22" >
+      <name>asin</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="23" >
+      <name>atan</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="24" >
+      <name>autoConnectMove</name>
+      <return>void</return>
+      <param index="0" >bool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="25" >
+      <name>autoConnectMove</name>
+      <return>bool</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="26" >
+      <name>chr</name>
+      <return>string</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="27" >
+      <name>clearBuffer</name>
+      <return>num</return>
+      <param index="0" >sio</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="28" >
+      <name>clock</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="29" >
+      <name>close</name>
+      <return>void</return>
+      <param index="0" >tool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="30" >
+      <name>cls</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="31" >
+      <name>compose</name>
+      <return>point</return>
+      <param index="0" >point</param>
+      <param index="1" >frame</param>
+      <param index="2" >trsf</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="32" >
+      <name>config</name>
+      <return>config</return>
+      <param index="0" >joint</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="33" >
+      <name>cos</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="34" >
+      <name>delay</name>
+      <return>void</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="35" >
+      <name>delete</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <param index="2" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="36" >
+      <name>dioGet</name>
+      <return>num</return>
+      <param index="0" >dio</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="37" >
+      <name>dioLink</name>
+      <return>void</return>
+      <param index="0" >dio</param>
+      <param index="1" >dio</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="38" >
+      <name>dioSet</name>
+      <return>num</return>
+      <param index="0" >dio</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="39" >
+      <name>disablePower</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="40" >
+      <name>distance</name>
+      <return>num</return>
+      <param index="0" >trsf</param>
+      <param index="1" >trsf</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="41" >
+      <name>distance</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >point</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="42" >
+      <name>enablePower</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="43" >
+      <name>esStatus</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="44" >
+      <name>exp</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="45" >
+      <name>export</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="46" >
+      <name>find</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <param index="1" >string</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="47" >
+      <name>get</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="48" >
+      <name>get</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="49" >
+      <name>get</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="50" >
+      <name>getKey</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="51" >
+      <name>getLatch</name>
+      <return>bool</return>
+      <param index="0" >joint</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="52" >
+      <name>getProfile</name>
+      <return>string</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="53" >
+      <name>gotoxy</name>
+      <return>void</return>
+      <param index="0" >num</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="54" >
+      <name>help</name>
+      <return>string</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="55" >
+      <name>help</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="56" >
+      <name>here</name>
+      <return>point</return>
+      <param index="0" >tool</param>
+      <param index="1" >frame</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="57" >
+      <name>herej</name>
+      <return>joint</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="58" >
+      <name>insert</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >string</param>
+      <param index="2" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="59" >
+      <name>isCalibrated</name>
+      <return>bool</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="60" >
+      <name>isEmpty</name>
+      <return>bool</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="61" >
+      <name>isInRange</name>
+      <return>bool</return>
+      <param index="0" >joint</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="62" >
+      <name>isKeyPressed</name>
+      <return>bool</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="63" >
+      <name>isPowered</name>
+      <return>bool</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="64" >
+      <name>isSettled</name>
+      <return>bool</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="65" >
+      <name>jointToPoint</name>
+      <return>point</return>
+      <param index="0" >tool</param>
+      <param index="1" >frame</param>
+      <param index="2" >joint</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="66" >
+      <name>left</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="67" >
+      <name>len</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="68" >
+      <name>libDelete</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="69" >
+      <name>libList</name>
+      <return>bool</return>
+      <param index="0" >string</param>
+      <param index="1" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="70" >
+      <name>libPath</name>
+      <return>string</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="71" >
+      <name>libSave</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="72" >
+      <name>libSave</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="73" >
+      <name>limit</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <param index="1" >num</param>
+      <param index="2" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="74" >
+      <name>ln</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="75" >
+      <name>log</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="76" >
+      <name>logMsg</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="77" >
+      <name>max</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="78" >
+      <name>mid</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <param index="2" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="79" >
+      <name>min</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="80" >
+      <name>movec</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >point</param>
+      <param index="2" >tool</param>
+      <param index="3" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="81" >
+      <name>movej</name>
+      <return>num</return>
+      <param index="0" >joint</param>
+      <param index="1" >tool</param>
+      <param index="2" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="82" >
+      <name>movej</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >tool</param>
+      <param index="2" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="83" >
+      <name>movel</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >tool</param>
+      <param index="2" >mdesc</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="84" >
+      <name>open</name>
+      <return>void</return>
+      <param index="0" >tool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="85" >
+      <name>pointToJoint</name>
+      <return>bool</return>
+      <param index="0" >tool</param>
+      <param index="1" >joint</param>
+      <param index="2" >point</param>
+      <param index="3" >joint</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="86" >
+      <name>popUpMsg</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="87" >
+      <name>position</name>
+      <return>trsf</return>
+      <param index="0" >point</param>
+      <param index="1" >frame</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="88" >
+      <name>put</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="89" >
+      <name>put</name>
+      <return>void</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="90" >
+      <name>putln</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="91" >
+      <name>putln</name>
+      <return>void</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="92" >
+      <name>replace</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >string</param>
+      <param index="2" >num</param>
+      <param index="3" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="93" >
+      <name>resetMotion</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="94" >
+      <name>resetMotion</name>
+      <return>void</return>
+      <param index="0" >joint</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="95" >
+      <name>restartMove</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="96" >
+      <name>right</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="97" >
+      <name>round</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="98" >
+      <name>roundDown</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="99" >
+      <name>roundUp</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="100" >
+      <name>sel</name>
+      <return>num</return>
+      <param index="0" >bool</param>
+      <param index="1" >num</param>
+      <param index="2" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="101" >
+      <name>setFrame</name>
+      <return>num</return>
+      <param index="0" >point</param>
+      <param index="1" >point</param>
+      <param index="2" >point</param>
+      <param index="3" >frame</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="102" >
+      <name>setLatch</name>
+      <return>void</return>
+      <param index="0" >dio</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="103" >
+      <name>setMutex</name>
+      <return>void</return>
+      <param index="0" >bool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="104" >
+      <name>sin</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="105" >
+      <name>sioGet</name>
+      <return>num</return>
+      <param index="0" >sio</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="106" >
+      <name>sioLink</name>
+      <return>void</return>
+      <param index="0" >sio</param>
+      <param index="1" >sio</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="107" >
+      <name>sioSet</name>
+      <return>num</return>
+      <param index="0" >sio</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="108" >
+      <name>size</name>
+      <return>num</return>
+      <param index="0" >*</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="109" >
+      <name>speedScale</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="110" >
+      <name>sqrt</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="111" >
+      <name>stopMove</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="112" >
+      <name>tan</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="113" >
+      <name>taskError</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="114" >
+      <name>taskKill</name>
+      <return>bool</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="115" >
+      <name>taskResume</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="116" >
+      <name>taskStatus</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="117" >
+      <name>taskSuspend</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="118" >
+      <name>title</name>
+      <return>void</return>
+      <param index="0" >string</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="119" >
+      <name>toNum</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <param index="2" >bool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="120" >
+      <name>toString</name>
+      <return>string</return>
+      <param index="0" >string</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="121" >
+      <name>userPage</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="122" >
+      <name>userPage</name>
+      <return>void</return>
+      <param index="0" >bool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="123" >
+      <name>wait</name>
+      <return>void</return>
+      <param index="0" >bool</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="124" >
+      <name>waitEndMove</name>
+      <return>void</return>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="125" >
+      <name>watch</name>
+      <return>bool</return>
+      <param index="0" >bool</param>
+      <param index="1" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="126" >
+      <name>workingMode</name>
+      <return>num</return>
+      <lib>false</lib>
+      <class>Function</class>
+    </func>
+    <func index="127" >
+      <name>workingMode</name>
+      <return>num</return>
+      <param index="0" >num</param>
+      <lib>false</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="128" >
+      <name>libLoad</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>true</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="129" >
+      <name>libPath</name>
+      <return>string</return>
+      <lib>true</lib>
+      <class>Function</class>
+    </func>
+    <func index="130" >
+      <name>libSave</name>
+      <return>num</return>
+      <lib>true</lib>
+      <class>Modifier</class>
+    </func>
+    <func index="131" >
+      <name>libSave</name>
+      <return>num</return>
+      <param index="0" >string</param>
+      <lib>true</lib>
+      <class>Modifier</class>
+    </func>
+  </Functions>
+</language>

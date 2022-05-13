@@ -1,0 +1,25 @@
+﻿{
+  "programs": [
+    {
+      "mode": 3,
+      "name": "stop",
+      "nodes": []
+    },
+    {
+      "mode": 3,
+      "name": "start",
+      "nodes": [
+        {
+          "start": 746,
+          "end": 917,
+          "isCollapsed": false
+        },
+        {
+          "start": 1025,
+          "end": 1374,
+          "isCollapsed": false
+        }
+      ]
+    }
+  ]
+}

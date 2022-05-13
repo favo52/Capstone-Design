@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<plc>
+  <String name="overRunDoutName" value="dOverrun" />
+  <String name="rwErrorDoutName" value="dRwError" />
+  <Int name="port" value="1100" />
+  <Uint name="idleTime" value="50" />
+</plc>

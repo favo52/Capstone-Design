@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="start" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  //failsafe so robot doesn't try to grab a piece with a closed gripper
+  resetMotion()
+  
+  //initial state, opens the gripper and goes to starting position
+  open(tGripper)
+  nIsOpen = 1
+  movej(jStartPos, tGripper, mMoveSpeed)
+  waitEndMove()
+  //sets the board frame using A1 as its origin point
+  
+  nFrameError = setFrame(pOrigin,pX,pY,fBoard)
+  
+  if(nFrameError != 0)
+    putln("Error creating initial frame. Please check settings and try again.")
+    putln("Chesster will now shut down.")
+    delay(5)
+    return
+  endIf
+  
+  sSending = "Hello! I am connected and ready to receive data!"
+  //initialize buffer to 0
+  
+  for j=0 to 127
+    nSendbf[j]=0
+  endFor
+  //gets the length of the word typed
+  nOutput=len(sSending)
+  
+  //assign an ascii code to each letter to send to the PC
+  for j=0 to nOutput-1
+    nSendbf[j]=asc(sSending,j)
+  endFor
+  
+  //gets the entire length of converted ascii codes and sends to PC
+  nSend=sioSet(io:Chesster,nSendbf)
+  while true
+    
+    //initializes data to receive, confirmation code for data and receiving buffer
+    datarev = ""
+  
+    nData=0
+    for j=0 to size(nBuffer)-1
+      nBuffer[j]=0
+    endFor
+  
+    //gets data sent from PC
+    //nData = -1
+    //while nData != 0
+      nData=sioGet(io:Chesster, nBuffer)
+    //endWhile
+  
+    for j=0 to 1
+      sBuffer = chr(nBuffer[j])
+      datarev = datarev + sBuffer
+    endFor
+    sRecData[0] = datarev
+    datarev = ""
+  
+    for j=2 to 3
+      sBuffer = chr(nBuffer[j])
+      datarev = datarev + sBuffer
+    endFor
+    sRecData[1] = datarev
+    datarev = ""
+    //while true
+    //nData=sioGet(io:Chesster,buffer)
+    //sBuffer=chr(buffer)
+    //datarev=datarev+sBuffer
+    //endWhile
+
+    if nIsOpen == 0
+      open(tGripper)
+      nIsOpen = 1
+    endIf
+   
+    //runs twice, first time will pick a piece, second will place
+    for i = 0 to 1
+    
+      //A Column
+      if(sRecData[i] == "A1" or sRecData[i] == "a1")
+        pPick = compose(pOrigin,fBoard,trA[1])
+      endIf
+    
+      if(sRecData[i] == "A2" or sRecData[i] == "a2")
+        pPick = compose(pOrigin,fBoard,trA[2])
+      endIf
+  
+      if(sRecData[i] == "A3" or sRecData[i] == "a3")
+        pPick = compose(pOrigin,fBoard,trA[3])
+      endIf
+    
+      if(sRecData[i] == "A4" or sRecData[i] == "a4")
+        pPick = compose(pOrigin,fBoard,trA[4])
+      endIf
+    
+      if(sRecData[i] == "A5" or sRecData[i] == "a5")
+        pPick = compose(pOrigin,fBoard,trA[5])
+      endIf
+    
+      if(sRecData[i] == "A6" or sRecData[i] == "a6")
+        pPick = compose(pOrigin,fBoard,trA[6])
+      endIf
+    
+      if(sRecData[i] == "A7" or sRecData[i] == "a7")
+        pPick = compose(pOrigin,fBoard,trA[7])
+      endIf
+    
+      if(sRecData[i] == "A8" or sRecData[i] == "a8")
+        pPick = compose(pOrigin,fBoard,trA[8])
+      endIf
+    
+    
+      //B Column
+      if(sRecData[i] == "B1" or sRecData[i] == "b1")
+        pPick = compose(pOrigin,fBoard,trB[1])
+      endIf
+    
+      if(sRecData[i] == "B2" or sRecData[i] == "b2")
+        pPick = compose(pOrigin,fBoard,trB[2])
+      endIf
+  
+      if(sRecData[i] == "B3" or sRecData[i] == "b3")
+        pPick = compose(pOrigin,fBoard,trB[3])
+      endIf
+    
+      if(sRecData[i] == "B4" or sRecData[i] == "b4")
+        pPick = compose(pOrigin,fBoard,trB[4])
+      endIf
+    
+      if(sRecData[i] == "B5" or sRecData[i] == "b5")
+        pPick = compose(pOrigin,fBoard,trB[5])
+      endIf
+    
+      if(sRecData[i] == "B6" or sRecData[i] == "b6")
+        pPick = compose(pOrigin,fBoard,trB[6])
+      endIf
+    
+      if(sRecData[i] == "B7" or sRecData[i] == "b7")
+        pPick = compose(pOrigin,fBoard,trB[7])
+      endIf
+    
+      if(sRecData[i] == "B8" or sRecData[i] == "b8")
+        pPick = compose(pOrigin,fBoard,trB[8])
+      endIf
+    
+    
+      //C Column
+      if(sRecData[i] == "C1" or sRecData[i] == "c1")
+        pPick = compose(pOrigin,fBoard,trC[1])
+      endIf
+    
+      if(sRecData[i] == "C2" or sRecData[i] == "c2")
+        pPick = compose(pOrigin,fBoard,trC[2])
+      endIf
+  
+      if(sRecData[i] == "C3" or sRecData[i] == "c3")
+        pPick = compose(pOrigin,fBoard,trC[3])
+      endIf
+    
+      if(sRecData[i] == "C4" or sRecData[i] == "c4")
+        pPick = compose(pOrigin,fBoard,trC[4])
+      endIf
+    
+      if(sRecData[i] == "C5" or sRecData[i] == "c5")
+        pPick = compose(pOrigin,fBoard,trC[5])
+      endIf
+    
+      if(sRecData[i] == "C6" or sRecData[i] == "c6")
+        pPick = compose(pOrigin,fBoard,trC[6])
+      endIf
+    
+      if(sRecData[i] == "C7" or sRecData[i] == "c7")
+        pPick = compose(pOrigin,fBoard,trC[7])
+      endIf
+    
+      if(sRecData[i] == "C8" or sRecData[i] == "c8")
+        pPick = compose(pOrigin,fBoard,trC[8])
+      endIf
+    
+    
+      //D Column
+      if(sRecData[i] == "D1" or sRecData[i] == "d1")
+        pPick = compose(pOrigin,fBoard,trD[1])
+      endIf
+    
+      if(sRecData[i] == "D2" or sRecData[i] == "d2")
+        pPick = compose(pOrigin,fBoard,trD[2])
+      endIf
+  
+      if(sRecData[i] == "D3" or sRecData[i] == "d3")
+        pPick = compose(pOrigin,fBoard,trD[3])
+      endIf
+    
+      if(sRecData[i] == "D4" or sRecData[i] == "d4")
+        pPick = compose(pOrigin,fBoard,trD[4])
+      endIf
+    
+      if(sRecData[i] == "D5" or sRecData[i] == "d5")
+        pPick = compose(pOrigin,fBoard,trD[5])
+      endIf
+    
+      if(sRecData[i] == "D6" or sRecData[i] == "d6")
+        pPick = compose(pOrigin,fBoard,trD[6])
+      endIf
+    
+      if(sRecData[i] == "D7" or sRecData[i] == "d7")
+        pPick = compose(pOrigin,fBoard,trD[7])
+      endIf
+    
+      if(sRecData[i] == "D8" or sRecData[i] == "d8")
+        pPick = compose(pOrigin,fBoard,trD[8])
+      endIf
+    
+    
+      //E Column
+      if(sRecData[i] == "E1" or sRecData[i] == "e1")
+        pPick = compose(pOrigin,fBoard,trE[1])
+      endIf
+    
+      if(sRecData[i] == "E2" or sRecData[i] == "e2")
+        pPick = compose(pOrigin,fBoard,trE[2])
+      endIf
+  
+      if(sRecData[i] == "E3" or sRecData[i] == "e3")
+        pPick = compose(pOrigin,fBoard,trE[3])
+      endIf
+    
+      if(sRecData[i] == "E4" or sRecData[i] == "e4")
+        pPick = compose(pOrigin,fBoard,trE[4])
+      endIf
+    
+      if(sRecData[i] == "E5" or sRecData[i] == "e5")
+        pPick = compose(pOrigin,fBoard,trE[5])
+      endIf
+    
+      if(sRecData[i] == "E6" or sRecData[i] == "e6")
+        pPick = compose(pOrigin,fBoard,trE[6])
+      endIf
+    
+      if(sRecData[i] == "E7" or sRecData[i] == "e7")
+        pPick = compose(pOrigin,fBoard,trE[7])
+      endIf
+    
+      if(sRecData[i] == "E8" or sRecData[i] == "e8")
+        pPick = compose(pOrigin,fBoard,trE[8])
+      endIf
+    
+    
+      //F Column
+      if(sRecData[i] == "F1" or sRecData[i] == "f1")
+        pPick = compose(pOrigin,fBoard,trF[1])
+      endIf
+    
+      if(sRecData[i] == "F2" or sRecData[i] == "f2")
+        pPick = compose(pOrigin,fBoard,trF[2])
+      endIf
+  
+      if(sRecData[i] == "F3" or sRecData[i] == "f3")
+        pPick = compose(pOrigin,fBoard,trF[3])
+      endIf
+    
+      if(sRecData[i] == "F4" or sRecData[i] == "f4")
+        pPick = compose(pOrigin,fBoard,trF[4])
+      endIf
+    
+      if(sRecData[i] == "F5" or sRecData[i] == "f5")
+        pPick = compose(pOrigin,fBoard,trF[5])
+      endIf
+    
+      if(sRecData[i] == "F6" or sRecData[i] == "f6")
+        pPick = compose(pOrigin,fBoard,trF[6])
+      endIf
+    
+      if(sRecData[i] == "F7" or sRecData[i] == "f7")
+        pPick = compose(pOrigin,fBoard,trF[7])
+      endIf
+    
+      if(sRecData[i] == "F8" or sRecData[i] == "f8")
+        pPick = compose(pOrigin,fBoard,trF[8])
+      endIf
+    
+    
+      //G Column
+      if(sRecData[i] == "G1" or sRecData[i] == "g1")
+        pPick = compose(pOrigin,fBoard,trG[1])
+      endIf
+    
+      if(sRecData[i] == "G2" or sRecData[i] == "g2")
+        pPick = compose(pOrigin,fBoard,trG[2])
+      endIf
+  
+      if(sRecData[i] == "G3" or sRecData[i] == "g3")
+        pPick = compose(pOrigin,fBoard,trG[3])
+      endIf
+    
+      if(sRecData[i] == "G4" or sRecData[i] == "g4")
+        pPick = compose(pOrigin,fBoard,trG[4])
+      endIf
+    
+      if(sRecData[i] == "G5" or sRecData[i] == "g5")
+        pPick = compose(pOrigin,fBoard,trG[5])
+      endIf
+    
+      if(sRecData[i] == "G6" or sRecData[i] == "g6")
+        pPick = compose(pOrigin,fBoard,trG[6])
+      endIf
+    
+      if(sRecData[i] == "G7" or sRecData[i] == "g7")
+        pPick = compose(pOrigin,fBoard,trG[7])
+      endIf
+    
+      if(sRecData[i] == "G8" or sRecData[i] == "g8")
+        pPick = compose(pOrigin,fBoard,trG[8])
+      endIf
+    
+    
+      //H Column
+      if(sRecData[i] == "H1" or sRecData[i] == "h1")
+        pPick = compose(pOrigin,fBoard,trH[1])
+      endIf
+    
+      if(sRecData[i] == "H2" or sRecData[i] == "h2")
+        pPick = compose(pOrigin,fBoard,trH[2])
+      endIf
+  
+      if(sRecData[i] == "H3" or sRecData[i] == "h3")
+        pPick = compose(pOrigin,fBoard,trH[3])
+      endIf
+    
+      if(sRecData[i] == "H4" or sRecData[i] == "h4")
+        pPick = compose(pOrigin,fBoard,trH[4])
+      endIf
+    
+      if(sRecData[i] == "H5" or sRecData[i] == "h5")
+        pPick = compose(pOrigin,fBoard,trH[5])
+      endIf
+    
+      if(sRecData[i] == "H6" or sRecData[i] == "h6")
+        pPick = compose(pOrigin,fBoard,trH[6])
+      endIf
+    
+      if(sRecData[i] == "H7" or sRecData[i] == "h7")
+        pPick = compose(pOrigin,fBoard,trH[7])
+      endIf
+    
+      if(sRecData[i] == "H8" or sRecData[i] == "h8")
+        pPick = compose(pOrigin,fBoard,trH[8])
+      endIf
+      
+    
+      //on first run, will close and grab piece, on second run will open and let go
+      if i == 0
+        movej(jMiddlePos,tGripper,mMoveSpeed)
+        waitEndMove()
+        
+        movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
+        waitEndMove()
+        
+        movej(pPick, tGripper, mGrabSpeed)
+        close(tGripper)
+        waitEndMove()
+        nIsOpen = 0
+      else
+        movej(appro(pPick,trPlace), tGripper, mGrabSpeed)
+        open(tGripper)
+        waitEndMove()
+        nIsOpen = 1
+      endIf
+    
+      movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
+      waitEndMove()
+    
+    endFor
+    sRecData[0] = ""
+    sRecData[1] = ""
+    
+    //move back to starting position to keep camera view clear
+    movej(jStartPos, tGripper, mMoveSpeed)
+    waitEndMove()
+  endWhile
+end
+            </code>
+    </source>
+  </program>
+</programList>

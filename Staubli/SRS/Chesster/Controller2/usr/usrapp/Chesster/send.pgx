@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="send" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  //The send function runs when a button is pressed on the physical interface,
+  //either a new start game is being requested (via index 0), or when a player is confirming
+  //their turn is over (via index 1). Turn over calls send function twice, once to have
+  //Chesster decide what the AI should do, and the second time to have the
+  //camera take a picture to confirm the movements done by the arm were done
+  //correctly (via index 2).
+  
+  
+  //Initializes data sending for socket, and buffer to send.
+  //Resets nData/sioSet to -1  (default value when no data has been sent).
+  nData = -1
+  
+  //Repeats loop for nData until data is sent.
+  while nData == -1
+    nData=sioSet(sChesster,nSendBuffer)
+  endWhile
+  
+  //initializes receive function to wait for reply from Chesster
+  call receive()
+  
+  //initialize send buffer to 0 afterwards, cycle through array to go back to main loop.
+  for nIndex = 0 to size(nSendBuffer)-1
+    nSendBuffer[nIndex] = 0
+  endFor
+end</code>
+    </source>
+  </program>
+</programList>
