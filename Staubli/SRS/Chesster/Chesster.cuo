@@ -9,19 +9,23 @@
     <Nodes>
       <Node Path="Chesster" IsExpanded="true" />
       <Node Path="Chesster\Controller2" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\trsf" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\num" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\jointRx" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\pointRx" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\string" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\sio" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\tool" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\trsf" IsExpanded="true" />
     </Nodes>
   </Option>
   <Option Name="CellExplorer">
     <Nodes>
       <Node Path="Chesster" IsExpanded="true" />
       <Node Path="Chesster\Controller2" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\move" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\receive" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Tesster#Tesster.pjx" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Tesster#Tesster.pjx\start" IsExpanded="true" />
     </Nodes>
   </Option>

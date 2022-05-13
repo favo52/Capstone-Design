@@ -25,8 +25,8 @@
   open(tGripper)
   nIsOpen=1
   waitEndMove()
-  movej(jStartPos, tGripper, mMoveSpeed)
-  waitEndMove()
+  //movej(jStartPos, tGripper, mMoveSpeed)
+  //waitEndMove()
   //sets the board frame using A1 as its origin point
   nFrameError=setFrame(pOrigin,pX,pY,fBoard)
   if nFrameError!=0
@@ -39,7 +39,7 @@
   //waitEndMove()
   //movej(jMiddlePos,tGripper,mMoveSpeed)
   
-  for i= 1 to 1
+  for i= 1 to 8
     open(tGripper)
     nIsOpen=1
     waitEndMove()
