@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="start" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  cls()
+  userPage()
+  putln(" Polytechnic University of Puerto Rico")
+  putln("")
+  putln("Electrical and Computer Engineering and ")
+  putln("       Computer Science Department")
+  putln("")
+  putln("               CHESSTER")
+  putln("")
+  putln("             Instructions")
+  putln("1. Place pieces in starting position.")
+  putln("2. Player uses White pieces.")
+  putln("3. Press the Start button.")
+  putln("4. Wait for Computer confirmation.")
+  resetMotion()
+  //initial state, opens the gripper and goes to starting position
+  open(tGripper)
+  nIsOpen=1
+  waitEndMove()
+  movej(jStartPos, tGripper, mMoveSpeed)
+  waitEndMove()
+  //sets the board frame using A1 as its origin point
+  nFrameError=setFrame(pOrigin,pX,pY,fBoard)
+  if nFrameError!=0
+    putln("Error creating initial frame. Please check settings and try again.")
+    putln("Chesster will now shut down.")
+    delay(5)
+    return
+  endIf
+  //movej(jMiddlePos,tGripper,mMoveSpeed)
+  //waitEndMove()
+  //movej(jMiddlePos,tGripper,mMoveSpeed)
+  
+  for i= 1 to 1
+    open(tGripper)
+    nIsOpen=1
+    waitEndMove()
+    pMove=compose(pOrigin,fBoard,trH[i])
+    movej(appro(pMove,trApproach),tGripper,mMoveSpeed)
+    waitEndMove()
+    movej(pMove,tGripper,mGrabSpeed)
+    close(tGripper)
+    nIsOpen=0
+    waitEndMove()
+    movej(appro(pMove,trApproach),tGripper,mGrabSpeed)
+    waitEndMove()
+  endFor
+  //pMove=compose(pOrigin,fBoard,trH[3])
+    //movej(appro(pMove,trApproach),tGripper,mMoveSpeed)
+    //waitEndMove()
+    //movej(appro(pMove,trPlace),tGripper,mGrabSpeed)
+    //open(tGripper)
+    //nIsOpen=1
+    //waitEndMove()
+    //movej(appro(pMove,trApproach),tGripper,mGrabSpeed)
+    //waitEndMove()
+  
+  //movej(jBox,tGripper,mMoveSpeed)
+  //waitEndMove()
+  //movej(appro(pBox,trApproach), tGripper, mMoveSpeed)
+  //waitEndMove()
+  //movej(pBox, tGripper, mMoveSpeed)
+  //open(tGripper)
+  //nIsOpen = 1
+  //movej(appro(pBox,trApproach), tGripper, mMoveSpeed)
+  //waitEndMove()
+  movej(jMiddlePos,tGripper,mMoveSpeed)
+  waitEndMove()
+  //call Play()
+  movej(jStartPos, tGripper, mMoveSpeed)
+  waitEndMove()
+end
+
+      </code>
+    </source>
+  </program>
+</programList>

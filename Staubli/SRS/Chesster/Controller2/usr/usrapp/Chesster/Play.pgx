@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="Play" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  dioLink(dReset,io:valve2)
+  dioLink(dEndMove,io:valve1)
+  while true
+    while !dReset
+      while nIsCheckmate==0
+        nDataError=-1
+        while (nDataError&lt;0)
+          nDataError=sioGet(sChessterData,128)
+          sRecData[0]=sChessterData
+        endWhile
+        putln(sRecData)
+        clearBuffer(sChessterData)
+        delay(3)
+        return
+        //call Move()
+        //pMove = compose(pOrigin,fBoard,trF[8])
+        //movej(appro(pMove,trApproach), tGripper, mMoveSpeed)
+        //waitEndMove()
+        //movej(pMove, tGripper, mMoveSpeed)
+        //close(tGripper)
+        //nIsOpen = 0
+        //movej(appro(pMove,trApproach), tGripper, mMoveSpeed)
+        //waitEndMove()
+        //movej(appro(pBox,trApproach), tGripper, mMoveSpeed)
+        //movej(pBox, tGripper, mMoveSpeed)
+        //waitEndMove()
+        //open(tGripper)
+        //nIsOpen = 1
+        //movej(appro(pBox,trApproach), tGripper, mMoveSpeed)
+        //waitEndMove()
+        //movej(jStartPos, tGripper, mMoveSpeed)
+        //waitEndMove()
+      endWhile
+      if (isSettled()==false)
+        putln("Please wait until the arm finishes its movements.")
+      else
+        if (nNewGame==0)
+          putln("Please reposition all pieces to their starting positions and try again.")
+        else
+          putln("New Game has started!")
+        endIf
+      endIf
+    endWhile
+  endWhile
+end
+
+      </code>
+    </source>
+  </program>
+</programList>

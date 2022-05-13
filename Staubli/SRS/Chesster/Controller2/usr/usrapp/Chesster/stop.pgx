@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="stop" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  //When the program is stopped, the stop function begins.
+  //It automatically clears any sockets established, ensures the
+  //robot goes back to a resting position and safely releases
+  //any pieces it has gripped, if any.
+  
+  
+  //If the arm is still connected to Chesster, it closes the connection.
+  nData = 0
+  while nData == 0
+    nData = clearBuffer(io:Chesster)
+  endWhile
+  
+  //Initiates final movements to go back to resting position
+  popUpMsg("Other pending movements have been canceled. Chesster is now discarding held pieces (if any) and shutting down. Thanks for playing!")
+  
+  //Verifies if it has a piece gripped. If it does,
+  //safely discards it at the discard box first before
+  //returning to final resting position.
+  while bGripperIsOpen = false
+    movej(jBox,tGripper,mMoveSpeed)
+    waitEndMove()
+    open(tGripper)
+    bGripperIsOpen = true
+  endWhile
+  
+  //Returns arm to resting position, then shuts down program.
+  movej(jStartPos, tGripper, mMoveSpeed)
+  waitEndMove()
+  
+  //Final confirmation to stop further motions in case any are still active.
+  resetMotion()
+end         </code>
+    </source>
+  </program>
+</programList>

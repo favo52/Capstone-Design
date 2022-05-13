@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<dataList xmlns="DataNameSpace">
+  <aioSection />
+  <boolSection>
+    <bool name="bGripperIsOpen" public="false">
+      <valueBool value="true" index="0" />
+    </bool>
+    <bool name="bCapture" public="false">
+      <valueBool value="false" index="0" />
+    </bool>
+    <bool name="bGameActive" public="false">
+      <valueBool value="false" index="0" />
+    </bool>
+  </boolSection>
+  <configRsSection />
+  <configSection />
+  <dioSection>
+    <dio size="1" name="dNewGame" public="false" />
+    <dio size="1" name="dEndTurn" public="false" />
+  </dioSection>
+  <frameSection>
+    <frame name="world" public="false">
+      <fFather alias="" name="" fatherIndex="0" />
+      <valueFrame index="0">
+        <tfValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+      </valueFrame>
+    </frame>
+    <frame name="fBoard" public="false">
+      <fFather alias="" name="world" fatherIndex="0" />
+      <valueFrame index="0">
+        <tfValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+      </valueFrame>
+    </frame>
+  </frameSection>
+  <jointRsSection />
+  <jointSection>
+    <joint name="jStartPos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="49.51" j2="2.18" j3="122.61" j4="1.47" j5="48.06" j6="88.63" />
+      </valueJoint>
+    </joint>
+    <joint name="jMiddlePos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="-4.34" j2="25.5" j3="99.07" j4="-0.3" j5="48.13" j6="34.52" />
+      </valueJoint>
+    </joint>
+    <joint name="jBoxPos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="41.37" j2="50.62" j3="58.66" j4="0.23" j5="63.45" j6="79.76" />
+      </valueJoint>
+    </joint>
+  </jointSection>
+  <mdescSection>
+    <mdesc name="mMoveSpeed" public="true">
+      <valueMdesc index="0">
+        <mdescValue accel="5" vel="5" decel="5" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
+      </valueMdesc>
+    </mdesc>
+    <mdesc name="mGrabSpeed" public="false">
+      <valueMdesc index="0">
+        <mdescValue accel="2.5" vel="2.5" decel="2.5" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
+      </valueMdesc>
+    </mdesc>
+  </mdescSection>
+  <numSection>
+    <num name="nData" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nIndex" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nFrameError" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nRecvBuffer" public="false">
+      <valueNum value="0" index="0" />
+      <valueNum value="0" index="1" />
+      <valueNum value="0" index="2" />
+      <valueNum value="0" index="3" />
+      <valueNum value="0" index="4" />
+      <valueNum value="0" index="5" />
+      <valueNum value="0" index="6" />
+      <valueNum value="0" index="7" />
+      <valueNum value="0" index="8" />
+      <valueNum value="0" index="9" />
+      <valueNum value="0" index="10" />
+    </num>
+    <num name="nInitCol" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nInitRow" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nEndCol" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nEndRow" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nPromote" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nSendBuffer" public="false">
+      <valueNum value="0" index="0" />
+      <valueNum value="0" index="1" />
+      <valueNum value="0" index="2" />
+    </num>
+    <num name="nMove" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nSpecial" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nSpecialRow" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nSpecialCol" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+  </numSection>
+  <pointRsSection />
+  <pointSection>
+    <point name="pOrigin" public="false">
+      <pFather alias="" name="world" fatherIndex="0" />
+      <valuePoint index="0">
+        <tpValue x="525.437795" y="-147.54" z="-83.1" rx="-180" ry="0" rz="-180" />
+        <cpValue shoulder="lefty" elbow="epositive" wrist="wnegative" />
+      </valuePoint>
+    </point>
+    <point name="pX" public="false">
+      <pFather alias="" name="world" fatherIndex="0" />
+      <valuePoint index="0">
+        <tpValue x="525.437795" y="153.46" z="-283.1" rx="-180" ry="0" rz="180" />
+        <cpValue shoulder="lefty" elbow="epositive" wrist="wnegative" />
+      </valuePoint>
+    </point>
+    <point name="pY" public="false">
+      <pFather alias="" name="world" fatherIndex="0" />
+      <valuePoint index="0">
+        <tpValue x="224.437795" y="-147.54" z="-283.1" rx="-180" ry="0" rz="180" />
+        <cpValue shoulder="lefty" elbow="epositive" wrist="wnegative" />
+      </valuePoint>
+    </point>
+    <point name="pPick" public="false">
+      <pFather alias="" name="world" fatherIndex="0" />
+      <valuePoint index="0">
+        <tpValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+        <cpValue shoulder="ssame" elbow="esame" wrist="wsame" />
+      </valuePoint>
+    </point>
+    <point name="pPlace" public="false">
+      <pFather alias="" name="world" fatherIndex="0" />
+      <valuePoint index="0">
+        <tpValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+        <cpValue shoulder="ssame" elbow="esame" wrist="wsame" />
+      </valuePoint>
+    </point>
+  </pointSection>
+  <sioSection>
+    <sio size="1" name="sChesster" public="false" />
+  </sioSection>
+  <stringSection />
+  <toolSection>
+    <tool name="flange" public="false">
+      <tFather alias="" name="" fatherIndex="0" />
+      <valueTool index="0">
+        <ttValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+        <io alias="io" name="valve1" ioIndex="0" open="0" close="0" />
+      </valueTool>
+    </tool>
+    <tool name="tGripper" public="false">
+      <tFather alias="" name="flange" fatherIndex="0" />
+      <valueTool index="0">
+        <ttValue x="0.0321207543704531" y="0.176682254293155" z="49.2856281381648" rx="-0.137115482767231" ry="0" rz="0" />
+        <io alias="io" name="valve1" ioIndex="0" open="1" close="1" />
+      </valueTool>
+    </tool>
+  </toolSection>
+  <trsfSection>
+    <trsf name="trA" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="0" y="40" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="0" y="80" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="0" y="120" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="0" y="163" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="0" y="206" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="0" y="249" z="0" rx="1.62" ry="-0.11" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="-2.75" y="296.84" z="0" rx="1.62" ry="-0.11" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trB" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="45" y="-13" z="15" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="45" y="-13" z="15" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="46" y="33" z="26" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="47" y="73" z="38" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="48" y="113" z="50" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="49" y="153" z="61" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="49" y="193" z="71" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="46" y="238" z="82" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="43" y="288" z="92" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trC" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="88" y="-21" z="30" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="88" y="-21" z="30" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="90" y="21" z="42" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="92" y="56" z="53" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="92" y="98" z="64" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="94" y="140" z="75" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="96" y="182" z="86" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="97" y="227" z="97" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="98" y="268" z="108" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trD" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="134" y="-33" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="134" y="-33" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="136" y="8" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="139" y="48" z="0" rx="-1.4" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="144" y="92" z="0" rx="-1.4" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="147" y="132" z="0" rx="-1.4" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="149" y="175" z="0" rx="-1.4" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="150" y="215" z="0" rx="-1.4" ry="0" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="152" y="260" z="0" rx="-1.4" ry="0" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trE" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="172" y="-40" z="62" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="172" y="-40" z="62" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="175" y="0" z="73" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="179" y="40" z="84" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="183" y="80" z="95" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="187" y="120" z="106" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="191" y="165" z="120" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="195" y="205" z="132" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="199" y="245" z="144" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trF" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="222" y="-45" z="80" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="222" y="-45" z="80" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="223" y="-8" z="91" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="228" y="30" z="102" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="233" y="75" z="113" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="237" y="115" z="124" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="244" y="155" z="137" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="250" y="195" z="150" rx="0" ry="-2.74" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="250" y="235" z="164" rx="0" ry="-4.25" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trG" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="266" y="-54" z="96" rx="0" ry="-3" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="266" y="-54" z="96" rx="0" ry="-3" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="270" y="-14" z="108" rx="0" ry="-3" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="274" y="26" z="124" rx="0" ry="-3" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="280" y="62" z="136" rx="0" ry="-3.5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="284" y="108" z="148" rx="0" ry="-3.5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="287" y="145" z="160" rx="0" ry="-4" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="291" y="187" z="172" rx="0" ry="-5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="295" y="230" z="184" rx="0" ry="-6" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trH" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="308" y="-58" z="111" rx="0" ry="-3.5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="1">
+        <trsfValue x="308" y="-58" z="111" rx="0" ry="-3.5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="2">
+        <trsfValue x="312" y="-21" z="123" rx="0" ry="-3.5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="3">
+        <trsfValue x="318" y="18" z="136" rx="0" ry="-4" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="4">
+        <trsfValue x="325" y="60" z="152" rx="0" ry="-4.25" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="5">
+        <trsfValue x="329" y="100" z="166" rx="0" ry="-4.5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="6">
+        <trsfValue x="334" y="142" z="178" rx="0" ry="-4.75" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="7">
+        <trsfValue x="340" y="184" z="192" rx="0" ry="-5" rz="0" />
+      </valueTrsf>
+      <valueTrsf index="8">
+        <trsfValue x="348" y="226" z="206" rx="0" ry="-6" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trApproach" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="0" y="0" z="-100" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trRelease" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="0" y="0" z="-10" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trKnight" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+    </trsf>
+    <trsf name="trQueen" public="false">
+      <valueTrsf index="0">
+        <trsfValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
+      </valueTrsf>
+    </trsf>
+  </trsfSection>
+</dataList>
