@@ -1,5 +1,5 @@
 workspace "Capstone-Design" -- Solution name
-	architecture "x86_64"
+	architecture "x64"
 	configurations { "Debug", "Release", "Dist" }
 	startproject "Chesster"
 
@@ -17,14 +17,12 @@ IncludeDir["SDL2_image"] = "%{wks.location}/vendor/SDL2_image/include"
 IncludeDir["SDL2_ttf"] = "%{wks.location}/vendor/SDL2_ttf/include"
 IncludeDir["imgui"] = "%{wks.location}/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/vendor/glm"
-IncludeDir["Python"] = "%{wks.location}/vendor/Python/include"
 
 LibraryDir = {}
 LibraryDir["SDL2_Debug"] = "%{wks.location}/vendor/SDL2/lib/x64/Debug"
 LibraryDir["SDL2_Release"] = "%{wks.location}/vendor/SDL2/lib/x64/Release"
 LibraryDir["SDL2_image"] = "%{wks.location}/vendor/SDL2_image/lib/x64"
 LibraryDir["SDL2_ttf"] = "%{wks.location}/vendor/SDL2_ttf/lib/x64"
-LibraryDir["Python"] = "%{wks.location}/vendor/Python/libs"
 
 group "Dependencies"
 	include "vendor/imgui"

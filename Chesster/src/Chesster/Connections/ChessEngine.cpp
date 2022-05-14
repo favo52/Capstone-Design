@@ -3,9 +3,6 @@
 
 #include "Chesster/Layers/GameLayer.h"
 
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
 // "... do as the Romans do."
 
 namespace Chesster
@@ -30,8 +27,6 @@ namespace Chesster
 
 		if (!CreatePipe(&m_ReadPipe_IN, &m_WritePipe_IN, &m_SecAttr, 0))
 			throw std::runtime_error("CreatePipe IN failed.");
-
-		Py_Initialize();
 	}
 
 	ChessEngine::~ChessEngine()
@@ -48,8 +43,6 @@ namespace Chesster
 		CloseHandle(m_ProcessInfo.hThread);
 
 		LOG_INFO("Engine connection closed.");
-
-		Py_Finalize();
 	}
 
 	void ChessEngine::ConnectToEngine(const LPWSTR& path)

@@ -34,15 +34,13 @@ project "Chesster"
 		"%{IncludeDir.SDL2_image}",
 		"%{IncludeDir.SDL2_ttf}",
 		"%{IncludeDir.imgui}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.Python}"
+		"%{IncludeDir.glm}"
 	}
 
 	libdirs
 	{
 		"%{LibraryDir.SDL2_image}",
-		"%{LibraryDir.SDL2_ttf}",
-		"%{LibraryDir.Python}"
+		"%{LibraryDir.SDL2_ttf}"
 	}
 
 	links
@@ -52,7 +50,6 @@ project "Chesster"
 		"SDL2_image.lib",
 		"SDL2_ttf.lib",
 		"opengl32.lib",
-		"python310.lib",
 		"ImGui",
 	}
 
