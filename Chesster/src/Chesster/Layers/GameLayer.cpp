@@ -25,8 +25,9 @@ namespace Chesster
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
 	{
 		s_Instance = this;
-		
+
 		m_RobotCodes.fill('0');
+		std::sort(m_OldCameraData.begin(), m_OldCameraData.end());
 		m_Network = std::make_unique<Network>();
 	}
 
@@ -51,7 +52,10 @@ namespace Chesster
 			{
 				case SDL_KEYDOWN:
 				{
-					if (sdlEvent.key.keysym.sym == SDLK_F4 && sdlEvent.key.repeat == 0 && !a_IsComputerTurn)
+					const uint8_t* keyState = SDL_GetKeyboardState(nullptr);
+					bool lCtrlDown = keyState[SDL_SCANCODE_LCTRL];
+
+					if (lCtrlDown && sdlEvent.key.keysym.sym == SDLK_SPACE && sdlEvent.key.repeat == 0 && !a_IsComputerTurn)
 					{
 						a_IsComputerTurn = true;
 					}
@@ -119,9 +123,33 @@ namespace Chesster
 
 			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
 			
+			if (m_MoveHistory.empty())
+			{
+				if (m_NewCameraData == m_OldCameraData)
+				{
+					const std::string msg{ "Board is ready!." };
+					LOG_INFO(msg);
+					m_ConsolePanel.AddLog("\n" + msg);
+
+					UpdateRobotCode(Code::GameActive, '1');
+					m_Network->SendToRobot(m_RobotCodes.data());
+				}
+				else
+				{
+					const std::string msg{ "Please setup the board with the valid starting position." };
+					LOG_INFO(msg);
+					m_ConsolePanel.AddLog("\n" + msg);
+
+					UpdateRobotCode(Code::GameActive, '0');
+					m_Network->SendToRobot(m_RobotCodes.data());
+					m_CameraDataReceived = false;
+					return;
+				}
+			}
+
 			if (m_IsEndPlayerTurn)
 			{
-				UpdatePlayerCameraMove();					
+				UpdatePlayerCameraMove();
 				m_IsEndPlayerTurn = false;
 			}
 
@@ -225,8 +253,6 @@ namespace Chesster
 
 	void GameLayer::UpdateComputerMove()
 	{
-		m_RobotCodes = {};
-		m_RobotCodes.fill('0');
 		UpdateRobotCode(Code::GameActive, '1');
 		UpdateRobotCode(Code::Move, '1');
 
@@ -297,7 +323,10 @@ namespace Chesster
 
 		// The piece was not placed at a valid location
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
-		m_Network->SendToRobot("10000000000");
+
+		m_RobotCodes.fill('0');
+		UpdateRobotCode(Code::GameActive, '1');
+		m_Network->SendToRobot(m_RobotCodes.data());
 	}
 
 	void GameLayer::UpdatePlayerMouseMove()
@@ -347,6 +376,7 @@ namespace Chesster
 
 				++m_CurrentPlayer;
 				a_IsMovePlayed = true;
+				a_IsComputerTurn = true;
 
 				return;
 			}
@@ -577,10 +607,12 @@ namespace Chesster
 		{
 			if (a_IsMovePlayed)
 			{
-				// Update legal moves list
+				// Get the FEN notation of the current position
 				const std::string currentFEN = { "\"" + gameLayer.m_ChessEngine.GetFEN(gameLayer.m_MoveHistory) + "\"" };
+				if (currentFEN == "error") { LOG_INFO("Error acquiting FEN from engine."); continue; }
+
+				// Update legal moves list
 				gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(currentFEN);
-					
 				if (gameLayer.m_LegalMoves.empty())
 				{
 					gameLayer.m_CurrentGameState = GameState::Gameover;

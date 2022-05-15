@@ -152,8 +152,6 @@ namespace Chesster
 		LOG_INFO("Client accepted. CS8C Connected.");
 		consolePanel.AddLog("Client accepted. CS8C Connected.");
 
-		network.SendToRobot("10000000000");	// index [0] = GameActive
-
 		// Keep thread alive waiting for any new
 		// data received from the robot's client socket
 		while (true)

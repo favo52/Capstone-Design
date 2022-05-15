@@ -74,7 +74,7 @@ namespace Chesster
 	void Board::OnViewportResize(const glm::vec2& viewportSize)
 	{
 		// Offset is half of viewport size minus half of entire board's size
-		const glm::vec2 offset{ (viewportSize.x * 0.5) - (SQUARE_SIZE * 8.0f) * 0.5f ,
+		const glm::vec2 offset{ (viewportSize.x * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f ,
 						(viewportSize.y * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f };
 
 		// Update board squares position

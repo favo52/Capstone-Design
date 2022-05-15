@@ -241,6 +241,7 @@ namespace Chesster
 		static bool isMouseActive{ false };
 		if (ImGui::Checkbox("Allow Mouse/Keyboard events", &isMouseActive))
 			GameLayer::Get().SetEventsActive(isMouseActive);
+		ImGui::Text("Click pieces for drag and drop.\nPress LeftCtrl + Spacebar for computer play.");
 
 		ImGui::End(); // End "Settings"
     }
