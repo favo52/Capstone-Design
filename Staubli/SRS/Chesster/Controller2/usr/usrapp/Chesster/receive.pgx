@@ -19,17 +19,14 @@
 
 
   //Initializes data return for socket, and buffer to receive.
-  //Resets everything to null/0 and -1 for nData/sioGet (default value when no data has been obtained).
-  nData = -1
   for nIndex = 0 to size(nRecvBuffer)-1
     nRecvBuffer[nIndex] = 0
   endFor
   
-  //Repeats loop for nData until data is received.
-  while nData == -1
-    //gets data sent from Chesster
-    nData=sioGet(sChesster, nRecvBuffer)
-  endWhile
+ 
+  //gets data sent from Chesster
+  sioGet(sChesster, nRecvBuffer)
+
   
   //Confirms when a New Game has been started and valid, also confirms moves so far are valid.
   //Lastly, also confirms that a second picture is taken after the arm finishes moving.
@@ -39,12 +36,12 @@
     bGameActive = false
   endIf
   
-  if nSendBuffer[1] == 1 and bGameActive == true
+  if sSendString == "010" and bGameActive == true
     //Obtains data received from Chesster, runs a loop where positions to move, captures,
     //promotions are all stored as either ASCII values or codes.
     //If data received for any of the positions isn't valid, force exits loop. 
     for nIndex=1 to 10
-      //Runs switch &amp; case scenario 6 times, one for each index in array to assign values.
+      //Runs switch &amp; case scenario 10 times, one for each index in array to assign values.
       switch nIndex
         //First case assigns column of initial piece's position to move FROM A to H, if valid.
         //The value is assigned in ASCII to decode later.
@@ -121,12 +118,12 @@
         //moved or promoted on this turn. 0 = Move, 1 = Promotion.
         case 9
           nMove = nRecvBuffer[nIndex] - 48
-          if nMove == 0
+          if nMove == 1
             //If only moving is being done and no promotion, calls move function
             call move()
             
-            nSendBuffer[1] = 0
-            nSendBuffer[2] = 1
+            //command for informing camera the arm is settled and to take a picture
+            sSendString = "001"
             
             call send()
           endIf
@@ -137,12 +134,12 @@
         //Only valid if nMove = 1.
         case 10
           nPromote = nRecvBuffer[nIndex] - 48
-          if nMove == 1
+          if nMove == 2
             //if move wasn't called, confirms it's a promote and calls promote function
             call promote()
             
-            nSendBuffer[1] = 0
-            nSendBuffer[2] = 1
+            //command for informing camera the arm is settled and to take a picture
+            sSendString = "001"
             
             call send()
           endIf

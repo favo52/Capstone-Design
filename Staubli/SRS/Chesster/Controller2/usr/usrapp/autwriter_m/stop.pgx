@@ -8,6 +8,10 @@
       <code>begin
   popUpMsg("Pending movement commands have been canceled")
   resetMotion()
+  cls()
+  userPage()
+  put("CapstoneProyect Finish")
+  put("Made by Jaime Santana 121650")
 end
 
       </code>

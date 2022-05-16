@@ -18,6 +18,8 @@ namespace Chesster
 	class GameLayer : public Layer
 	{
 	public:
+		enum class GameState { Gameplay, Gameover, PawnPromotion };
+
 		GameLayer();
 
 		virtual void OnAttach() override;
@@ -38,6 +40,7 @@ namespace Chesster
 
 		void SetEventsActive(bool active) { m_IsEventsActive = active; }
 
+		GameState& GetGameState() { return m_CurrentGameState; }
 		Board& GetBoard() { return m_Board; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
@@ -67,9 +70,7 @@ namespace Chesster
 
 	private:
 		enum class Player { Black, White };
-		friend Player operator++(Player& player);
-
-		enum class GameState { Gameplay, Gameover, PawnPromotion };
+		friend Player operator++(Player& player);		
 
 	private:
 		ChessEngine m_ChessEngine;

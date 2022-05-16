@@ -18,6 +18,10 @@
   //the movements of the primary piece for this turn. 
   
   
+  //Move arm to the middle of the board, above it.
+  movej(jMiddlePos,tGripper,mMoveSpeed)
+  waitEndMove()
+  
   //First, the function verifies if there's a special movement being done this turn.
   if nSpecial != 0
     //Runs a loop to obtain the special movement piece to be acquired that turn on its current position.
@@ -67,10 +71,6 @@
     if nSpecial == 1
       //Takes the position of the Pawn to be captured due to En Passant and discards it in the box.
       
-      //Move arm to the middle of the board, above it.
-      movej(jMiddlePos,tGripper,mMoveSpeed)
-      waitEndMove()
-      
       //Move arm so it's above the selected piece to grab.
       movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
       waitEndMove()
@@ -106,9 +106,7 @@
       //Moves the rook first, then finishes castling the king during
       //the regular move phase.
       
-      //Move arm to the middle of the board, above it.
-      movej(jMiddlePos,tGripper,mMoveSpeed)
-      waitEndMove()
+
       
       //Move arm so it's above the selected piece to grab.  
       movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
@@ -237,10 +235,6 @@
   
     //Takes the position of the piece to be captured and discards it in the box.
       
-    //Move arm to the middle of the board, above it.
-    movej(jMiddlePos,tGripper,mMoveSpeed)
-    waitEndMove()
-      
     //Move arm so it's above the selected piece to grab.
     movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
     waitEndMove()
@@ -264,10 +258,6 @@
     bGripperIsOpen = true
     
   endIf
-  
-  //Move arm to the middle of the board, above it.
-  movej(jMiddlePos,tGripper,mMoveSpeed)
-  waitEndMove()      
   
   //Move arm so it's above the selected piece to grab.
   movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
@@ -298,9 +288,7 @@
   //Once the piece is released, the arm moves back up. 
   movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
   waitEndMove()
-  //Move arm to the middle of the board, above it.
-  movej(jMiddlePos,tGripper,mMoveSpeed)
-  waitEndMove()
+
   //Move arm to its resting position.
   movej(jStartPos,tGripper,mMoveSpeed)
   waitEndMove()

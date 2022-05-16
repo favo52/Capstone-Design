@@ -39,14 +39,15 @@
   //Gives a welcome screen and instructions to set up game on the arm's teach pendant.
   cls()
   userPage()
+  title("CHESSTER")
   putln(" Polytechnic University of Puerto Rico")
   putln("")
   putln("Electrical and Computer Engineering and ")
-  putln("       Computer Science Department")
+  putln("      Computer Science Department")
   putln("")
-  putln("               CHESSTER")
+  putln("              CHESSTER")
   putln("")
-  putln("             Instructions")
+  putln("            Instructions")
   putln("1. Connect PC to network.")
   putln("2. Run Chesster and connect arm/camera.")
   putln("3. Place pieces in starting position.")
@@ -63,29 +64,27 @@
   
   //Starts the main loop. Loop is endless until the program is manually closed.
   while true
-    //Core of the main program. Loop is infinite until two conditions are established simultaneously.
-    //First, a button must be pressed, either New Game or End Turn.
-    //The robot arm also MUST be stationary to exit the loop. Otherwise, the button press is ignored.
-    while(dNewGame == false or isSettled() == false) and (dEndTurn == false or isSettled() == false)
-  
-      //hi, nothing is going on here, move on :)
     
-    endWhile
+    //Core of the main program. Stays waiting until 2 conditions are met simultaneously.
+    //First, a button must be pressed, either New Game or End Turn.
+    //The robot arm also MUST be stationary to exit the wait line. Otherwise, the button press is ignored.
+    wait((dNewGame == true or dEndTurn == true) and isSettled() == true)
+    
     //If the above conditions are met, ensures that only ONE button was pressed at the same time.
-    //Otherwise, ignore the button press and goes back to main loop.
+    //Otherwise, ignore the button press and goes back to the wait line.
     //New Game button takes precedence over End Turn button. Asks the camera to take a picture.
-    //If everything is placed in the correct starting positions, Chesster activates the game.
+    //If everything is placed in the correct starting positions, Chesster activates the new game.
     if dNewGame == true and dEndTurn == false
       //Send function is called using the index that asks Chesster for a new game.
-      nSendBuffer[0] = 1
+      sSendString = "100"
       call send()
     else
       //End Turn button is only valid when it was the only button pressed and Chesster already
-      //has a game active, otherwise this is ignored and Chesster goes back to main loop.
+      //has a game active, otherwise this is ignored and Chesster goes back to the wait line.
       if dEndTurn == true and dNewGame == false and bGameActive == true
         //Send function is called using the index that asks Chesster to confirm the player's move was valid.
         //If valid, Chesster decides how to move and send the data back to the VAL3 program.
-        nSendBuffer[1] = 1
+        sSendString = "010"
         call send()
       endIf
     endIf

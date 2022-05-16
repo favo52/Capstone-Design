@@ -13,24 +13,34 @@
   //camera take a picture to confirm the movements done by the arm were done
   //correctly (via index 2).
   
+  //gets the length of the string command typed
+  nOutput=len(sSendString)
   
-  //Initializes data sending for socket, and buffer to send.
-  //Resets nData/sioSet to -1  (default value when no data has been sent).
+  //assign an ASCII code to each letter to send to the PC
+  for nIndex=0 to nOutput-1
+    nSendBuffer[nIndex]=asc(sSendString,nIndex)
+  endFor
+  
+  //assigns an initial value to nData, to ensure data is sent.
   nData = -1
-  
-  //Repeats loop for nData until data is sent.
   while nData == -1
-    nData=sioSet(sChesster,nSendBuffer)
+    //Repeats loop for nData until data is sent.
+    nData = sioSet(sChesster,nSendBuffer)
   endWhile
   
-  //initializes receive function to wait for reply from Chesster
-  call receive()
+    //initializes receive function to wait for reply from Chesster
+    call receive()
   
-  //initialize send buffer to 0 afterwards, cycle through array to go back to main loop.
-  for nIndex = 0 to size(nSendBuffer)-1
-    nSendBuffer[nIndex] = 0
-  endFor
-end</code>
+    //initialize send buffer to 0 afterwards, cycle through array to go back to main loop.
+    for nIndex = 0 to size(nSendBuffer)-1
+      nSendBuffer[nIndex] = 0
+    endFor
+  
+    //resets string value
+    sSendString = ""
+
+end
+</code>
     </source>
   </program>
 </programList>

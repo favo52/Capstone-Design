@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<programList xmlns="ProgramNameSpace" >
+  <program name="LetterTransf" public="false" >
+    <description />
+    <paramSection/>
+    <localSection>
+      <local name="pointer" type="num" size="1" />
+      <local name="pabove" type="point" size="1" />
+      <local name="paside" type="num" size="1" />
+      <local name="ooo" type="num" size="1" />
+      <local name="xxx" type="num" size="1" />
+      <local name="yyy" type="num" size="1" />
+    </localSection>
+    <source>
+      <code>begin
+  // Selects the letter called in the string and modifies its location
+  movej(jHome,tgriper,mnominal)
+  waitEndMove()
+  delay(0.5)
+  // Enters the loop for letter production
+  for pointer=0 to nCharlimit-1
+    if pointer!=0
+      //Picks the Actual location
+      //Picks the originals Trsf values
+      torigin=porigmovil.trsf
+      tx=pxmovil.trsf
+      ty=pymovil.trsf
+      //Picks the actual positions.
+      ooo=torigin.x
+      xxx=tx.x
+      yyy=ty.x
+      //modifies the picked up Trsf values
+      torigin.x=ooo+wide
+      tx.x=xxx+wide
+      ty.x=yyy+wide
+      //Re-Integrates the new Trs to the points
+      porigmovil.trsf=torigin
+      pxmovil.trsf=tx
+      pymovil.trsf=ty
+      //Inicialyze the Frame with the new poin data
+      setFrame(porigmovil,pxmovil,pymovil,fpapel)
+    endIf
+    call library(nCharString[pointer],pointer)
+    //calls the location of all the letter movements with Chars values.
+    if pointer==nCharlimit-1
+      reset=true
+      pCla.trsf={0,0,0,0,roty,rotz}
+      pAcondition=appro(pCla,tfar)
+      movel(pAcondition,tgriper,mnominal)
+      waitEndMove()
+      //Makes sure the last char of the string is completed on paper
+      //insert Signature move
+      call HomeReturn()
+      waitEndMove()
+    endIf
+  endFor
+end
+
+      </code>
+    </source>
+  </program>
+</programList>

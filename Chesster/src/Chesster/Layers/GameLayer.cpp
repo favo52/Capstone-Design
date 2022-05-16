@@ -324,11 +324,14 @@ namespace Chesster
 		}
 
 		// The piece was not placed at a valid location
+		LOG_INFO("Wait... that's illegal!\n");
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
 
-		m_RobotCodes.fill('0');
-		UpdateRobotCode(Code::GameActive, '1');
-		m_Network->SendToRobot(m_RobotCodes.data());
+		//m_RobotCodes = {};
+		//m_RobotCodes.fill('0');
+		//UpdateRobotCode(Code::GameActive, '1');
+		//m_Network->SendToRobot(m_RobotCodes.data());
+		m_Network->SendToRobot("10000000000");
 	}
 
 	void GameLayer::UpdatePlayerMouseMove()
@@ -435,6 +438,17 @@ namespace Chesster
 		std::vector<std::string> differenceOld = getDifference(m_OldCameraData, m_NewCameraData);
 		std::vector<std::string> differenceNew = getDifference(m_NewCameraData, m_OldCameraData);
 
+		std::string testFirstOld;
+		for (auto& move : differenceOld)
+			testFirstOld += move + " ";
+
+		std::string testFirstNew;
+		for (auto& move : differenceNew)
+			testFirstNew += move + " ";
+
+		LOG_INFO("testCaptureOld {0}", testFirstOld);
+		LOG_INFO("testCaptureNew {0}", testFirstNew);
+
 		/* This lambda erases any std::string from dataA that exists in both dataA and dataB. */
 		auto eraseDuplicate = [&](std::vector<std::string>& dataA, std::vector<std::string>& dataB)
 		{
@@ -462,6 +476,17 @@ namespace Chesster
 		if (differenceNew.size() > differenceOld.size())
 			eraseDuplicate(differenceNew, differenceOld);
 
+		std::string testCaptureOld;
+		for (auto& move : differenceOld)
+			testCaptureOld += move + " ";
+
+		std::string testCaptureNew;
+		for (auto& move : differenceNew)
+			testCaptureNew += move + " ";
+
+		LOG_INFO("testCaptureOld {0}", testCaptureOld);
+		LOG_INFO("testCaptureNew {0}", testCaptureNew);
+
 		// Deal with castling. If at this point the std::vectors have more than one
 		// notation, it could mean that two pieces were moved and don't share square
 		// notation (no capture). In example, it could have been a castling move.
@@ -483,6 +508,17 @@ namespace Chesster
 					&& newNotation != "c8k";
 			}), differenceNew.end());
 		}
+
+		std::string testOld;
+		for (auto& move : differenceOld)
+			testOld += move + " ";
+
+		std::string testNew;
+		for (auto& move : differenceNew)
+			testNew += move + " ";
+
+		LOG_INFO("testOld {0}", testOld);
+		LOG_INFO("testNew {0}", testNew);
 
 		// If there's only one notation in each std::vector, that's our move
 		if (differenceOld.size() == 1 && differenceNew.size() == 1)
@@ -544,7 +580,7 @@ namespace Chesster
 		ImGui::Begin("Gameover", nullptr, windowFlags);
 
 		const std::string winner = (m_CurrentPlayer == Player::Black) ?
-			"White Won!" : "Black Won!";
+			"Checkmate! White Won!" : "Checkmate! Black Won!";
 
 		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
 		ImGui::PushFont(boldFont);
@@ -626,9 +662,12 @@ namespace Chesster
 				gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(currentFEN);
 				if (gameLayer.m_LegalMoves.empty())
 				{
+					LOG_INFO("CHECKMATE!");
 					gameLayer.m_CurrentGameState = GameState::Gameover;
-					gameLayer.UpdateRobotCode(Code::GameActive, '0');
-					gameLayer.m_Network->SendToRobot(gameLayer.m_RobotCodes.data());
+					//gameLayer.m_Network->SendToRobot("00000000000");
+					a_IsMovePlayed = false;
+					a_IsComputerTurn = false;
+					continue;
 				}
 
 				a_IsMovePlayed = false;

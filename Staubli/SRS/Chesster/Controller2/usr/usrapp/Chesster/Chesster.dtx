@@ -46,26 +46,23 @@
     </joint>
     <joint name="jBoxPos" public="false">
       <valueJoint index="0">
-        <jointValue j1="41.37" j2="50.62" j3="58.66" j4="0.23" j5="63.45" j6="79.76" />
+        <jointValue j1="41.9" j2="49.13" j3="59.81" j4="-0.23" j5="63.28" j6="81.17" />
       </valueJoint>
     </joint>
   </jointSection>
   <mdescSection>
     <mdesc name="mMoveSpeed" public="true">
       <valueMdesc index="0">
-        <mdescValue accel="5" vel="5" decel="5" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
+        <mdescValue accel="15" vel="15" decel="15" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
       </valueMdesc>
     </mdesc>
     <mdesc name="mGrabSpeed" public="false">
       <valueMdesc index="0">
-        <mdescValue accel="2.5" vel="2.5" decel="2.5" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
+        <mdescValue accel="5" vel="5" decel="5" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
       </valueMdesc>
     </mdesc>
   </mdescSection>
   <numSection>
-    <num name="nData" public="false">
-      <valueNum value="0" index="0" />
-    </num>
     <num name="nIndex" public="false">
       <valueNum value="0" index="0" />
     </num>
@@ -117,6 +114,12 @@
     <num name="nSpecialCol" public="false">
       <valueNum value="0" index="0" />
     </num>
+    <num name="nOutput" public="false">
+      <valueNum value="0" index="0" />
+    </num>
+    <num name="nData" public="false">
+      <valueNum value="0" index="0" />
+    </num>
   </numSection>
   <pointRsSection />
   <pointSection>
@@ -159,7 +162,11 @@
   <sioSection>
     <sio size="1" name="sChesster" public="false" />
   </sioSection>
-  <stringSection />
+  <stringSection>
+    <string name="sSendString" public="false">
+      <valueString value="" index="0" />
+    </string>
+  </stringSection>
   <toolSection>
     <tool name="flange" public="false">
       <tFather alias="" name="" fatherIndex="0" />
@@ -377,7 +384,7 @@
         <trsfValue x="290" y="249" z="0" rx="0" ry="-5" rz="0" />
       </valueTrsf>
       <valueTrsf index="8">
-        <trsfValue x="293" y="293" z="0" rx="0" ry="-5" rz="0" />
+        <trsfValue x="297" y="296" z="0" rx="0" ry="-5" rz="0" />
       </valueTrsf>
     </trsf>
     <trsf name="trH" public="false">

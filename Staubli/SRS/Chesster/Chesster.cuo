@@ -1,20 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CellUserOptions>
   <Controller Name="Controller2">
+    <Application>Disk://autwriter_m/autwriter_m.pjx</Application>
+    <Application>#Computer://C:/Users/glazi/Documents/Staubli/SRS/Tesster/Tesster.pjx</Application>
     <Application>Disk://Calibresster/Calibresster.pjx</Application>
     <Application>Disk://Chesster/Chesster.pjx</Application>
-    <Application>Disk://Tesster/Tesster.pjx</Application>
   </Controller>
   <Option Name="DataTreeView">
     <Nodes>
       <Node Path="Chesster" IsExpanded="true" />
       <Node Path="Chesster\Controller2" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\frame" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\jointRx" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\pointRx" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\string" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\tool" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Calibresster#Calibresster.pjx\trsf" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\sio" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\tool" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\jointRx" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\pointRx" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\trsf" IsExpanded="true" />
     </Nodes>
   </Option>
@@ -23,10 +26,9 @@
       <Node Path="Chesster" IsExpanded="true" />
       <Node Path="Chesster\Controller2" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\move" IsExpanded="true" />
       <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\receive" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Tesster#Tesster.pjx" IsExpanded="true" />
-      <Node Path="Chesster\Controller2\Disk:##Tesster#Tesster.pjx\start" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\send" IsExpanded="true" />
+      <Node Path="Chesster\Controller2\Disk:##Chesster#Chesster.pjx\start" IsExpanded="true" />
     </Nodes>
   </Option>
   <Option Name="GeometryView">

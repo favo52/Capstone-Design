@@ -10,15 +10,19 @@
   //It automatically clears any sockets established, ensures the
   //robot goes back to a resting position and safely releases
   //any pieces it has gripped, if any.
+  cls()
+  
+  //closes communication socket with Chesster software
+  clearBuffer(sChesster)
   
   //Initiates final movements to go back to resting position
-  popUpMsg("Other pending movements have been canceled. Chesster is now discarding held pieces (if any) and shutting down. Thanks for playing!")
+  popUpMsg("Chesster is now discarding held pieces (if any) and shutting down. Thanks for playing!")
   
   //Verifies if it has a piece gripped. If it does,
   //safely discards it at the discard box first before
   //returning to final resting position.
-  while bGripperIsOpen = false
-    movej(jBox,tGripper,mMoveSpeed)
+  while bGripperIsOpen == false
+    movej(jBoxPos,tGripper,mMoveSpeed)
     waitEndMove()
     open(tGripper)
     bGripperIsOpen = true
@@ -30,6 +34,7 @@
   
   //Final confirmation to stop further motions in case any are still active.
   resetMotion()
+  
 end         </code>
     </source>
   </program>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<programList xmlns="ProgramNameSpace" >
+  <program name="Home" public="false" >
+    <description />
+    <paramSection/>
+    <localSection>
+      <local name="pabove" type="point" size="1" />
+      <local name="paside" type="point" size="1" />
+    </localSection>
+    <source>
+      <code>begin
+  //Guides the Manipulator to its starting position
+  paside=appro(pStart,tSide)
+  movej(pStart,tgriper,mnominal)
+  movel(pStart,tgriper,mnominal)
+  waitEndMove()
+  pabove=appro(pStart,taway)
+  movel(pabove,tgriper,mnominal)
+  waitEndMove()
+end
+
+      </code>
+    </source>
+  </program>
+</programList>

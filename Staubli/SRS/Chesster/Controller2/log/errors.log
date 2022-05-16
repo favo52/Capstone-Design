@@ -7305,3 +7305,84 @@
 [03/17/22 20:50:48]: (File start.pgx-line 36) 'io:Chesster' : invalid name
 [03/17/22 20:50:48]: (File start.pgx-line 50) 'io:Chesster' : invalid name
 [03/17/22 21:17:48]: Saving controller context...
+[05/14/22 19:48:34]: -----------------------------------------------
+[05/14/22 19:48:34]: Logger started
+[05/14/22 19:48:38]: Unknown event:Communication established
+[05/14/22 19:48:38]: Controller IP address could not be updated
+[05/14/22 19:48:38]: Error while trying to build Starc low level driver : starc board not detected on PCI bus
+[05/14/22 19:48:38]: Mcp = TSimulated
+[05/14/22 19:48:38]: Power shutdown delay set to 0 s
+[05/14/22 19:48:38]: Power hour count = 0
+[05/14/22 19:48:38]: Mac Address = 58-96-1d-17-59-85
+[05/14/22 19:48:38]: Working mode:invalid.
+[05/14/22 19:48:38]: PC-COM: server created on all interfaces [5653]
+[05/14/22 19:48:38]: VAL3: s5.4.1 Dec 22 2006
+[05/14/22 19:48:38]: Option remoteMcp: demo 
+[05/14/22 19:48:38]: Option plc: demo 
+[05/14/22 19:48:38]: Option testMode: demo 
+[05/14/22 19:48:38]: Configuration Version: D24265571A 
+[05/14/22 19:48:38]: Machine Number: ? 
+[05/14/22 19:48:38]: Arm: tx60-S1-R2 floor
+[05/14/22 19:48:38]: Arm serial number: ? 
+[05/14/22 19:48:38]: EP: s5.4 Dec 14 2006
+[05/14/22 19:48:38]: SCA: s5.4 Dec 14 2006
+[05/14/22 19:48:38]: PLC: s5.4 Dec 14 2006
+[05/14/22 19:48:38]: Options: s5.4 Dec 15 2006
+[05/14/22 19:48:38]: New profile : default
+[05/14/22 19:48:39]: End of arm power shutdown phase.
+[05/14/22 19:48:39]: Working mode:manual.
+[05/14/22 19:48:43]: (File start.pgx-line 56) 'io:Chesster' : invalid name
+[05/14/22 19:52:51]: -----------------------------------------------
+[05/14/22 19:52:51]: Logger started
+[05/14/22 19:52:55]: Unknown event:Communication established
+[05/14/22 19:52:55]: Controller IP address could not be updated
+[05/14/22 19:52:55]: Error while trying to build Starc low level driver : starc board not detected on PCI bus
+[05/14/22 19:52:55]: Mcp = TSimulated
+[05/14/22 19:52:55]: Power shutdown delay set to 0 s
+[05/14/22 19:52:55]: Power hour count = 0
+[05/14/22 19:52:55]: Mac Address = 58-96-1d-17-59-85
+[05/14/22 19:52:55]: PC-COM: server created on all interfaces [5653]
+[05/14/22 19:52:55]: Working mode:invalid.
+[05/14/22 19:52:55]: VAL3: s5.4.1 Dec 22 2006
+[05/14/22 19:52:55]: Option remoteMcp: demo 
+[05/14/22 19:52:55]: Option plc: demo 
+[05/14/22 19:52:55]: Option testMode: demo 
+[05/14/22 19:52:55]: Configuration Version: D24265571A 
+[05/14/22 19:52:55]: Machine Number: ? 
+[05/14/22 19:52:55]: Arm: tx60-S1-R2 floor
+[05/14/22 19:52:55]: Arm serial number: ? 
+[05/14/22 19:52:55]: EP: s5.4 Dec 14 2006
+[05/14/22 19:52:55]: SCA: s5.4 Dec 14 2006
+[05/14/22 19:52:55]: PLC: s5.4 Dec 14 2006
+[05/14/22 19:52:55]: Options: s5.4 Dec 15 2006
+[05/14/22 19:52:55]: New profile : default
+[05/14/22 19:52:56]: Working mode:manual.
+[05/14/22 19:52:56]: End of arm power shutdown phase.
+[05/14/22 19:53:01]: (File start.pgx-line 56) 'io:Chesster' : invalid name
+[05/16/22 07:50:53]: -----------------------------------------------
+[05/16/22 07:50:53]: Logger started
+[05/16/22 07:50:57]: Unknown event:Communication established
+[05/16/22 07:50:58]: Controller IP address could not be updated
+[05/16/22 07:50:58]: Error while trying to build Starc low level driver : starc board not detected on PCI bus
+[05/16/22 07:50:58]: Mcp = TSimulated
+[05/16/22 07:50:58]: Power shutdown delay set to 0 s
+[05/16/22 07:50:58]: Power hour count = 0
+[05/16/22 07:50:58]: Mac Address = 58-96-1d-17-59-85
+[05/16/22 07:50:58]: Working mode:invalid.
+[05/16/22 07:50:58]: PC-COM: server created on all interfaces [5653]
+[05/16/22 07:50:58]: VAL3: s5.4.1 Dec 22 2006
+[05/16/22 07:50:58]: Option remoteMcp: demo 
+[05/16/22 07:50:58]: Option plc: demo 
+[05/16/22 07:50:58]: Option testMode: demo 
+[05/16/22 07:50:58]: Configuration Version: D24265571A 
+[05/16/22 07:50:58]: Machine Number: ? 
+[05/16/22 07:50:58]: Arm: tx60-S1-R2 floor
+[05/16/22 07:50:58]: Arm serial number: ? 
+[05/16/22 07:50:58]: EP: s5.4 Dec 14 2006
+[05/16/22 07:50:58]: SCA: s5.4 Dec 14 2006
+[05/16/22 07:50:58]: PLC: s5.4 Dec 14 2006
+[05/16/22 07:50:58]: Options: s5.4 Dec 15 2006
+[05/16/22 07:50:58]: New profile : default
+[05/16/22 07:50:58]: End of arm power shutdown phase.
+[05/16/22 07:50:58]: Working mode:manual.
+[05/16/22 07:51:06]: (File start.pgx-line 56) 'io:Chesster' : invalid name

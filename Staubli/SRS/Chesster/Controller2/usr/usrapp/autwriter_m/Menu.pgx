@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<programList xmlns="ProgramNameSpace" >
+  <program name="Menu" public="false" >
+    <description />
+    <paramSection/>
+    <localSection>
+      <local name="F" type="num" size="1" />
+      <local name="Verified" type="bool" size="1" />
+      <local name="captured" type="bool" size="1" />
+    </localSection>
+    <source>
+      <code>begin
+  userPage()
+  do
+    cls()
+    //cls functions clears all userpage and sets cursor to (0,0) grid cordinate in menue.
+    title("ChessTer Robot/Writer: EE and CS Deprt.")
+    //tite functions writtes on top of the userpage creating a unique title.
+    Verified=true
+    // Verifies that the word has been inputed
+    reset=false
+    //reset is self explanatory.
+    captured=true
+    //word has been captured on the string.
+    if ON==false
+      gotoxy(34,13)
+      put("Reset")
+    endIf
+    F=getKey()
+    if F==278
+      ON=false
+      popUpMsg("Application will be stopped after task is completed")
+    endIf
+    while Verified==true and ON==false
+      //cls()
+      gotoxy(0,4)
+      putln("hello")
+      putln("Dance? press Y")
+      putln("if not press N to write ")
+      sInput=""
+      get(sInput)
+      if (sInput=="Y" or sInput=="y")
+        putln("Dancing!")
+        //movej(pDance[0],tgriper,mnominal)
+        movej(pDance[1],tgriper,mnominal)
+        movej(pDance[2],tgriper,mnominal)
+        movej(pDance[3],tgriper,mnominal)
+        movej(pDance[2],tgriper,mnominal)
+        movej(pDance[3],tgriper,mnominal)
+        movej(pDance[2],tgriper,mnominal)
+        movej(pDance[3],tgriper,mnominal)
+        movej(pDance[4],tgriper,mnominal)
+        movej(pDance[3],tgriper,mnominal)
+        movej(pDance[2],tgriper,mnominal)
+        movej(pDance[1],tgriper,mnominal)
+        //movej(pDance[0],tgriper,mnominal)
+        waitEndMove()
+      endIf
+      if (sInput=="N" or sInput=="n")
+        putln("Proceeding to write.")
+      endIf
+      cls()
+      gotoxy(0,4)
+      putln("Hello,enter your name")
+      putln("the word has limit of 10 letters")
+      putln("Only letters")
+      put("Type your name and press enter&gt;&gt;")
+      sInput=""
+      get(sInput)
+      //waiting for entrance of word
+      //Function get, garanties the save of the string
+      Verified=false
+      if sInput=="" or (len(sInput)==0)
+        Verified=true
+        captured=false
+      endIf
+    endWhile
+    if ON==false
+      do
+        cls()
+        gotoxy(0,2)
+        put("Name input:")
+        putln((sInput))
+        putln("please do not interupt to exit press reset")
+        gotoxy(34,13)
+        put("Reset")
+        F=getKey()
+        //works as a soft reset on the menu, buggy
+        if F==278
+          ON=true
+          reset=true
+          popUpMsg("Application will be stopped after word is writen")
+        endIf
+        if captured==true
+          call CharVerifier()
+        endIf
+      until reset
+    endIf
+  until ON
+end
+
+      </code>
+    </source>
+  </program>
+</programList>

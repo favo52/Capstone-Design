@@ -45,7 +45,7 @@ namespace Chesster
 		// Attempt to login to Cognex Camera
 		network.SendToCamera("admin\r\n");	// User
 		network.SendToCamera("\r\n");		// Password
-		network.SendToCamera("SE8\r\n");	// Take initial picture
+		//network.SendToCamera("SE8\r\n");	// Take initial picture
 
 		// Keep thread alive waiting for any new data
 		// received from the InSight-Explorer Telnet socket
@@ -61,7 +61,7 @@ namespace Chesster
 			{
 				const std::string str{ "CameraTelnetThread ended." };
 				LOG_INFO(str);
-				consolePanel.AddLog(str);
+				//consolePanel.AddLog(str);
 				break;
 			}
 		}
@@ -105,13 +105,13 @@ namespace Chesster
 			{
 				const std::string str{ "CameraTCPDeviceThread ended." };
 				LOG_INFO(str);
-				consolePanel.AddLog(str);
+				//consolePanel.AddLog(str);
 				break;
 			}			
 		}
 
 		network.DisconnectCamera();
-		settingsPanel.SetCameraButtonStatus(false);
+		//settingsPanel.SetCameraButtonStatus(false);
 	}
 
 	void Network::ChessterServerThread()
@@ -178,9 +178,16 @@ namespace Chesster
 					}
 					if (buffer[2] == '1')
 					{
-						gameLayer.ArmIsSettled();
-						network.SendToCamera("SE8\r\n");
-						network.SendToRobot("10000000000"); // 10 billones
+						if (gameLayer.GetGameState() == GameLayer::GameState::Gameplay)
+						{
+							gameLayer.ArmIsSettled();
+							network.SendToCamera("SE8\r\n");
+							network.SendToRobot("10000000000"); // 10 billones
+						}
+						else
+						{
+							network.SendToRobot("00000000000");
+						}
 					}
 				}
 			}

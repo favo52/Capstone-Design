@@ -181,16 +181,17 @@ namespace Chesster
 
 		// Check for Castling		// Move Rook
 		bool castling{ false };
-		if (currentMove == "e1g1") { MovePiece("h1f1"); castling = true; }
-		if (currentMove == "e8g8") { MovePiece("h8f8"); castling = true; }
-		if (currentMove == "e1c1") { MovePiece("a1d1"); castling = true; }
-		if (currentMove == "e8c8") { MovePiece("a8d8"); castling = true; }
+		std::string specialMove;
+		if (currentMove == "e1g1") { specialMove = "h1"; MovePiece("h1f1"); castling = true; }
+		if (currentMove == "e8g8") { specialMove = "h8"; MovePiece("h8f8"); castling = true; }
+		if (currentMove == "e1c1") { specialMove = "a1"; MovePiece("a1d1"); castling = true; }
+		if (currentMove == "e8c8") { specialMove = "a8"; MovePiece("a8d8"); castling = true; }
 		if (castling)
 		{
 			GameLayer& gameLayer = GameLayer::Get();
 			gameLayer.UpdateRobotCode(Code::Special, '2');
-			gameLayer.UpdateRobotCode(Code::SpecialCol, m_CurrentPiece->m_Notation[0]);
-			gameLayer.UpdateRobotCode(Code::SpecialRow, m_CurrentPiece->m_Notation[1]);
+			gameLayer.UpdateRobotCode(Code::SpecialCol, specialMove[0]);
+			gameLayer.UpdateRobotCode(Code::SpecialRow, specialMove[1]);
 		}
 
 		// Check for En Passant
