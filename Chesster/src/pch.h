@@ -11,6 +11,7 @@
 #include <array>
 #include <memory>
 #include <thread>
+#include <chrono>
 
 // Microsoft
 #ifdef _WIN32

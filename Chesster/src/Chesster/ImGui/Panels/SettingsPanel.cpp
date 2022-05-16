@@ -16,8 +16,8 @@ namespace Chesster
 		m_CameraIP{ "192.168.7.9" },
 		m_CameraTelnetPort{ "23" },
 		m_CameraTCPDevicePort{ "3000" },
-		m_RobotIP{ "192.168.7.10" },
-		m_RobotPort{ "15000" },
+		m_ServerIP{ "192.168.7.10" },
+		m_ServerPort{ "15000" },
 		m_SkillLevel{ 0 },
 		m_ELORating{ 1350 },
 		m_IsCameraConnected{ false },
@@ -76,7 +76,8 @@ namespace Chesster
 		return update;
 	}
 
-	static bool DrawInputText(const std::string& label, std::array<char, 64>& buffer, const std::string& text, float columnWidth = 100.0f)
+	template<size_t S>
+	static bool DrawInputText(const std::string& label, std::array<char, S>& buffer, const std::string& text, float columnWidth = 100.0f)
 	{
 		bool update{ false };
 
@@ -125,7 +126,7 @@ namespace Chesster
 		ImGui::Begin("Settings");
 
 		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
-
+		
 		class Cognex {};
 		DrawSection<Cognex>("Cognex Camera", [&]()
 		{
@@ -157,7 +158,7 @@ namespace Chesster
 			ImGui::Text("The IP Address is the Static IP assigned to the camera.\n"
 						"It can be verified in the In-Sight Explorer program.\n"
 						"The camera must act as a server.");
-			std::array<char, 64> buffer = {};
+			std::array<char, 32> buffer = {};
 			if (DrawInputText("IP Address", buffer, m_CameraIP, 120.0f))
 				m_CameraIP = std::string(buffer.data());
 
@@ -188,16 +189,16 @@ namespace Chesster
 
 			ImGui::Separator();
 			ImGui::Text("The Chesster application acts as a server.\n"
-						"The Staubli robot arm acts as a client.");
-			std::array<char, 64> buffer = {};
-			if (DrawInputText("IP Address", buffer, m_RobotIP, 100.0f))
-				m_RobotIP = std::string(buffer.data());
+				"The Staubli robot arm acts as a client.");
+			std::array<char, 32> buffer = {};
+			if (DrawInputText("IP Address", buffer, m_ServerIP, 100.0f))
+				m_ServerIP = std::string(buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("192.168.7.10");
 
-			if (DrawInputText("Port", buffer, m_RobotPort, 100.0f))
-				m_RobotPort = std::string(buffer.data());
+			if (DrawInputText("Port", buffer, m_ServerPort, 100.0f))
+				m_ServerPort = std::string(buffer.data());
 
 			ImGui::SameLine();
 			ImGui::Text("15000");
@@ -260,11 +261,8 @@ namespace Chesster
 		}
 		else
 		{
-			std::thread cameraTelnetThread(Network::CameraTelnetThread);
-			cameraTelnetThread.detach();
-
-			std::thread cameraTCPDeviceThread(Network::CameraTCPDeviceThread);
-			cameraTCPDeviceThread.detach();
+			std::thread(Network::CameraTelnetThread).detach();
+			std::thread(Network::CameraTCPDeviceThread).detach();
 			
 			m_IsCameraConnected = true;
 		}
@@ -284,9 +282,7 @@ namespace Chesster
 		}
 		else
 		{
-			std::thread chessterRobotThread(Network::ChessterRobotThread);
-			chessterRobotThread.detach();
-
+			std::thread(Network::ChessterServerThread).detach();
 			m_IsRobotConnected = true;
 		}
 	}

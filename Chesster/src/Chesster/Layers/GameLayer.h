@@ -24,19 +24,19 @@ namespace Chesster
 		virtual void OnDetach() override;
 
 		virtual void OnEvent(SDL_Event& sdlEvent) override;
-		virtual void OnUpdate(const std::chrono::duration<double>& dt) override;
+		virtual void OnUpdate(const Timestep& dt) override;
 		virtual void OnRender() override;
 		virtual void OnImGuiRender() override;
 
 		void ResetGame();
 
-		void SetCameraDataReceived(bool boolean) { m_CameraDataReceived = boolean; }
-
-		void SetEventsActive(bool active) { m_IsEventsActive = active; }
+		void CameraDataReceived() { m_CameraDataReceived = true; }
 
 		void UpdateRobotCode(Code code, char value);
 		void EndPlayerTurn() { m_IsEndPlayerTurn = true; }
 		void ArmIsSettled() { m_IsArmSettled = true; }
+
+		void SetEventsActive(bool active) { m_IsEventsActive = active; }
 
 		Board& GetBoard() { return m_Board; }
 

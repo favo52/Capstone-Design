@@ -43,7 +43,7 @@ namespace Chesster
 
 	private:
 		std::string m_CameraIP, m_CameraTelnetPort, m_CameraTCPDevicePort,
-					m_RobotIP, m_RobotPort;
+					m_ServerIP, m_ServerPort;
 
 		int m_SkillLevel;			// Defaults to 0 (Minimum)
 		int m_ELORating;			// Defaults to 1350 (Minimum)

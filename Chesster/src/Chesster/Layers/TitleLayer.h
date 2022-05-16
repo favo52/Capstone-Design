@@ -25,7 +25,7 @@ namespace Chesster
 
 		/** Changes TitleState from Splashscreen to MainMenu after 2 seconds.
 		 @param dt The delta time taken from Run(). */
-		virtual void OnUpdate(const std::chrono::duration<double>& dt) override;
+		virtual void OnUpdate(const Timestep& dt) override;
 
 		/* Draws all the Textures. */
 		virtual void OnRender() override;
@@ -64,7 +64,7 @@ namespace Chesster
 		std::unique_ptr<Texture> m_ExitText;
 
 		SDL_Point m_MousePos{ 0, 0 };
-		std::chrono::duration<double> m_SplashDuration{};
+		Duration m_SplashDuration{};
 		std::vector<const SDL_Rect*> m_MenuOptionsBounds;
 		
 		TitleState m_TitleState{ TitleState::Splashscreen };

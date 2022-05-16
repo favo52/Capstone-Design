@@ -43,8 +43,8 @@ namespace Chesster
 		LOG_INFO("Telnet Connected. (IP: {0}, Port: {1})", cameraIP, cameraTelnetPort);
 
 		// Attempt to login to Cognex Camera
-		network.SendToCamera("admin\r\n");
-		network.SendToCamera("\r\n");
+		network.SendToCamera("admin\r\n");	// User
+		network.SendToCamera("\r\n");		// Password
 		network.SendToCamera("SE8\r\n");	// Take initial picture
 
 		// Keep thread alive waiting for any new data
@@ -99,7 +99,7 @@ namespace Chesster
 			if (network.RecvData(network.m_CameraTCPDeviceSocket, buffer))
 			{
 				m_CameraDataBuffer = buffer;
-				GameLayer::Get().SetCameraDataReceived(true);
+				GameLayer::Get().CameraDataReceived();
 			}
 			else
 			{
@@ -114,17 +114,17 @@ namespace Chesster
 		settingsPanel.SetCameraButtonStatus(false);
 	}
 
-	void Network::ChessterRobotThread()
+	void Network::ChessterServerThread()
 	{
 		Network& network = GameLayer::Get().GetNetwork();
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 		SettingsPanel& settingsPanel = GameLayer::Get().GetSettingsPanel();
 		
-		const std::string& robotIP = settingsPanel.m_RobotIP;
-		const std::string& robotPort = settingsPanel.m_RobotPort;
-		if (!network.CreateServerSocket(network.m_ChessterListenSocket, robotIP, robotPort))
+		const std::string& serverIP = settingsPanel.m_ServerIP;
+		const std::string& serverPort = settingsPanel.m_ServerPort;
+		if (!network.CreateServerSocket(network.m_ChessterListenSocket, serverIP, serverPort))
 		{
-			const std::string str{ "Unable create server socket. (IP: " + robotIP + ", Port: " + robotPort + ")" };
+			const std::string str{ "Unable create server socket. (IP: " + serverIP + ", Port: " + serverPort + ")" };
 			LOG_ERROR(str);
 			consolePanel.AddLog(str);
 			network.DisconnectRobot();
@@ -186,7 +186,7 @@ namespace Chesster
 			}
 			else
 			{
-				LOG_INFO("ChessterRobotThread ended.");
+				LOG_INFO("ChessterServerThread ended.");
 				break;
 			}
 		}

@@ -13,6 +13,7 @@ namespace Chesster
 	Application::Application(const std::string& name) :
 		m_Running{ true }
 	{
+		assert(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
 		// Initialize the logger
@@ -45,7 +46,6 @@ namespace Chesster
 	void Application::Run()
 	{
 		using Clock = std::chrono::steady_clock;
-		using Duration = std::chrono::duration<double>;
 		using TimePoint = std::chrono::time_point<Clock, Duration>;
 
 		TimePoint currentTime = Clock::now();

@@ -12,7 +12,7 @@
 
 namespace Chesster
 {
-	/*	 */
+	/* Handles the TCP/IP communication between the Cognex camera and the Staubli robot. */
 	class Network : public Winsock
 	{
 	public:
@@ -35,9 +35,9 @@ namespace Chesster
 		static void CameraTCPDeviceThread();
 
 		/*	To be used when creating a new thread.
-			Enables the CHESSTER program to act as a TCP server. This allows the Staubli robot to
+			Enables the CHESSTER program to act as a TCP/IP server. This allows the Staubli robot to
 			connect as a client and establish TCP/IP communication. */
-		static void ChessterRobotThread();
+		static void ChessterServerThread();
 
 		/*	Signals that the Telnet and TCPDevice SOCKETs will not be sending any more data. */
 		void ShutdownCamera();

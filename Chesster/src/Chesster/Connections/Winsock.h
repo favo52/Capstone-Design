@@ -19,7 +19,7 @@ namespace Chesster
 		bool CreateClientSocket(SOCKET& m_socket, const std::string& ip, const std::string& port);
 		bool CreateServerSocket(SOCKET& m_socket, const std::string& ip, const std::string& port);
 
-		SOCKET AcceptClient(const SOCKET& listenSocket);
+		SOCKET AcceptClient(SOCKET& listenSocket);
 
 	private:
 		enum Result { Success, Failure };

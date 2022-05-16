@@ -24,6 +24,7 @@ namespace Chesster
 		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
 	{
+		assert(!s_Instance, "GameLayer already exists!");
 		s_Instance = this;
 
 		m_RobotCodes.fill('0');
@@ -100,7 +101,7 @@ namespace Chesster
 		}
 	}
 
-	void GameLayer::OnUpdate(const std::chrono::duration<double>& dt)
+	void GameLayer::OnUpdate(const Timestep& dt)
 	{
 		// On ImGui window resize
 		if (m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
@@ -164,7 +165,7 @@ namespace Chesster
 
 		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
-			m_Board.GetCurrentPiece().SetPosition(m_ViewportMousePos);
+			m_Board.GetCurrentPiece().SetPosition(m_ViewportMousePos);		
 	}
 
 	void GameLayer::OnRender()
@@ -253,6 +254,7 @@ namespace Chesster
 
 	void GameLayer::UpdateComputerMove()
 	{
+		m_RobotCodes.fill('0');
 		UpdateRobotCode(Code::GameActive, '1');
 		UpdateRobotCode(Code::Move, '1');
 
@@ -284,7 +286,6 @@ namespace Chesster
 		
 		++m_CurrentPlayer;
 		a_IsMovePlayed = true;
-		LOG_INFO("Robot Code: {0}", m_RobotCodes.data());
 	}
 
 	void GameLayer::UpdatePlayerCameraMove()
@@ -395,23 +396,32 @@ namespace Chesster
 
 	void GameLayer::UpdatePlayerPawnPromotion()
 	{
-		m_Board.GetCurrentPiece().Promote(m_CurrentMove);
-		m_Board.MovePiece(m_CurrentMove);
+		if (IsMoveLegal(m_CurrentMove))
+		{
+			m_Board.GetCurrentPiece().Promote(m_CurrentMove);
+			m_Board.MovePiece(m_CurrentMove);
 
-		// Capture a piece (if any)
-		m_Board.UpdatePieceCapture();
+			m_Board.UpdatePieceCapture();
+			m_Board.UpdateNewMove(m_CurrentMove);
+			m_Board.UpdateActiveSquares(m_CurrentMove);
 
-		// Update move history
-		m_MoveHistory += m_CurrentMove + ' ';
-		const std::string msg{ "Player moved: " + m_CurrentMove };
-		LOG_INFO(msg);
-		m_ConsolePanel.AddLog("\n" + msg);
+			// Update move history
+			m_MoveHistory += m_CurrentMove + ' ';
+
+			const std::string msg{ "Player moved: " + m_CurrentMove };
+			LOG_INFO(msg);
+			m_ConsolePanel.AddLog("\n" + msg);
+
+			++m_CurrentPlayer;
+			a_IsMovePlayed = true;
+			a_IsComputerTurn = true;
+		}
 	}
 
 	std::string GameLayer::GetCameraMove()
 	{
-		/** Retrieves the difference between two std::vector. 
-			This lambda basically does this: difference = dataA - dataB */
+		/* This lambda retrieves the difference between two std::vector. 
+			It basically does this: difference = dataA - dataB */
 		auto getDifference = [](std::vector<std::string>& dataA, std::vector<std::string>& dataB) -> std::vector<std::string>
 		{
 			std::vector<std::string> difference;
@@ -599,8 +609,8 @@ namespace Chesster
 	{
 		GameLayer& gameLayer = GameLayer::Get();
 
-		wchar_t path_Stockfish14_avx2[] = L"assets/engines/stockfish/stockfish_14.1_win_x64_avx2/stockfish_14.1_win_x64_avx2.exe";
-		gameLayer.m_ChessEngine.ConnectToEngine(path_Stockfish14_avx2);
+		wchar_t path_stockfish_15_x64_avx2[] = L"assets/engines/stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe";
+		gameLayer.m_ChessEngine.ConnectToEngine(path_stockfish_15_x64_avx2);
 		gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(START_FEN);
 		
 		while (a_IsChessEngineRunning)
@@ -609,7 +619,7 @@ namespace Chesster
 			{
 				// Get the FEN notation of the current position
 				const std::string currentFEN = { "\"" + gameLayer.m_ChessEngine.GetFEN(gameLayer.m_MoveHistory) + "\"" };
-				if (currentFEN == "error") { LOG_INFO("Error acquiting FEN from engine."); continue; }
+				if (currentFEN == "error") { LOG_INFO("Error acquiring FEN from engine."); continue; }
 
 				// Update legal moves list
 				gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(currentFEN);
@@ -634,7 +644,7 @@ namespace Chesster
 				{
 					LOG_ERROR("Failed to get engine move.");
 					gameLayer.m_ConsolePanel.AddLog("Failed to get engine move.");
-					gameLayer.m_ConsolePanel.AddLog("Enter <F4> to try again.");
+					gameLayer.m_ConsolePanel.AddLog("Enter Ctrl+Spacebar to try again.");
 				}
 				else
 				{

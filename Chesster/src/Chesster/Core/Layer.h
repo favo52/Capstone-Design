@@ -4,6 +4,9 @@
 
 namespace Chesster
 {
+	using Duration = std::chrono::duration<double>;
+	using Timestep = std::chrono::duration<double>;
+
 	/*	Base class to be inherited by the Title, Game, and ImGui layers.
 		It is not a pure virtual class to let the Layers decide what function to override. */
 	class Layer
@@ -27,7 +30,7 @@ namespace Chesster
 
 		/** Updates the application's logic.
 		 @param dt The delta time used for animations. */
-		virtual void OnUpdate(const std::chrono::duration<double>& dt) {}
+		virtual void OnUpdate(const Timestep& dt) {}
 
 		/*	Draws to the screen. */
 		virtual void OnRender() {}

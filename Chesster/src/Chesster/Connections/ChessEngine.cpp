@@ -75,6 +75,13 @@ namespace Chesster
 		LOG_INFO(engineMessage);
 		consolePanel.AddLog(engineMessage);
 
+		WriteToEngine("uci\n");
+
+		// Read the uci response
+		engineMessage = ReadFromEngine();
+		LOG_INFO(engineMessage);
+		consolePanel.AddLog(engineMessage + "\n");
+
 		SetDifficultyLevel();
 		SetDifficultyELO();
 
@@ -180,7 +187,7 @@ namespace Chesster
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		// Send position to engine
-		if (!WriteToEngine("position startpos moves " + moveHistory + "\ngo depth 5\nd\n"))
+		if (!WriteToEngine("position startpos moves " + moveHistory + "\ngo depth 1\nd\n"))
 		{
 			const std::string errorMsg{ "Unable to get chess engine's next move." };
 			LOG_WARN(errorMsg);

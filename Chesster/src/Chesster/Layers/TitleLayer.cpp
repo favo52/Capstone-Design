@@ -107,7 +107,7 @@ namespace Chesster
 		}
 	}
 
-	void TitleLayer::OnUpdate(const std::chrono::duration<double>& dt)
+	void TitleLayer::OnUpdate(const Timestep& dt)
 	{
 		m_SplashDuration += dt;
 

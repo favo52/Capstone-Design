@@ -12,8 +12,10 @@ namespace Chesster
 		m_ScrollToBottom{ false }
 	{
 		m_Commands.reserve(2);
-		m_Commands.emplace_back("HELP");
-		m_Commands.emplace_back("UCI");
+		m_Commands.emplace_back("help");
+		m_Commands.emplace_back("uci");
+		m_Commands.emplace_back("isready");
+		m_Commands.emplace_back("setoption name");
 		AddLog("Welcome to Chesster!");
 	}
 
@@ -111,23 +113,30 @@ namespace Chesster
 
 	void ConsolePanel::ExecCommand(std::string& command)
 	{
-		AddLog("# " + command + "\n");
+		AddLog("\n# " + command + "\n");
 
 		for (char& ch : command)
-			ch = toupper(ch);
+			ch = tolower(ch);
 
 		// Process commands
-		if (command == "HELP")
+		if (command == "help")
 		{
-			AddLog("Commands:");
+			AddLog("\nCommands:");
 			for (int i = 0; i < m_Commands.size(); i++)
 				AddLog("- " + m_Commands[i]);
+
+			m_ScrollToBottom = true;
+			return;
 		}
-		if (command == "UCI")
+
+		ChessEngine& chessEngine = GameLayer::Get().GetChessEngine();
+
+		command += '\n';
+		chessEngine.WriteToEngine(command);
+
+		if (command != "quit\n" || command != "ucinewgame\n")
 		{
-			GameLayer::Get().GetChessEngine().WriteToEngine("uci\n");
-			
-			const std::string engineReply = GameLayer::Get().GetChessEngine().ReadFromEngine();
+			std::string engineReply = chessEngine.ReadFromEngine();
 			GameLayer::Get().GetConsolePanel().AddLog("\n" + engineReply);
 		}
 

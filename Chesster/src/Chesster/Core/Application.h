@@ -17,7 +17,7 @@ namespace Chesster
 	class GameLayer;
 	class ImGuiLayer;
 
-	/*	The main application class. Creates a Window, handles all the events, and manages the layers. */
+	/*	Creates the Window, handles all the events, and manages the layers. Contains the main program loop. */
 	class Application
 	{
 	public:
@@ -28,10 +28,10 @@ namespace Chesster
 		/*	Calls OnDetach() on all remaining Layers and empties the LayerStack. */
 		virtual ~Application();
 
-		/*	Stops the application. Changes m_Running to false. */
+		/*	Stops the application. */
 		void Quit() { m_Running = false; }
 
-		/** Adds the specified LayerChange to the PendingChanges queue.
+		/** Adds the specified PendingChange to the PendingChanges queue.
 			The change will occur on the next loop iteration.
 		 @param layerAction The action to be performed on the Layer.
 		 @param layer The Layer to be pushed or popped. */
@@ -49,11 +49,11 @@ namespace Chesster
 	private:
 		/*	Contains the main program loop.
 			It handles events on queue, layer push/pop, updates game logic,
-			draws everything, and updates the screen. */
+			draws everything to screen, and updates the screen. */
 		void Run();
 
-		/** Handles events on queue. Events include Window events,
-			mouse and keyboard input, and
+		/** Handles events on queue. Events include Window events 
+			and mouse/keyboard input.
 		 @param sdlEvent The SDL event to handle. */
 		void OnEvent(SDL_Event& sdlEvent);
 
@@ -70,6 +70,7 @@ namespace Chesster
 		bool m_Running;
 
 		std::vector<std::shared_ptr<Layer>> m_LayerStack;
+		std::shared_ptr<ImGuiLayer> m_ImGuiLayer;
 
 		struct PendingChange
 		{
@@ -77,8 +78,6 @@ namespace Chesster
 			std::shared_ptr<Layer> Layer;
 		};
 		std::vector<PendingChange> m_PendingChanges;
-
-		std::shared_ptr<ImGuiLayer> m_ImGuiLayer;
 
 	private:
 		static Application* s_Instance;				// Pointer to this.
