@@ -124,7 +124,7 @@ namespace Chesster
 
 			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
 			
-			if (m_MoveHistory.empty())
+			if (m_MoveHistory.empty() && m_RobotCodes[0] == '0')
 			{
 				if (m_NewCameraData == m_OldCameraData)
 				{
@@ -133,7 +133,7 @@ namespace Chesster
 					m_ConsolePanel.AddLog("\n" + msg);
 
 					UpdateRobotCode(Code::GameActive, '1');
-					m_Network->SendToRobot(m_RobotCodes.data());
+					m_Network->SendToRobot(m_RobotCodes.data());					
 				}
 				else
 				{
@@ -143,9 +143,10 @@ namespace Chesster
 
 					UpdateRobotCode(Code::GameActive, '0');
 					m_Network->SendToRobot(m_RobotCodes.data());
-					m_CameraDataReceived = false;
-					return;
 				}
+
+				m_CameraDataReceived = false;
+				return;
 			}
 
 			if (m_IsEndPlayerTurn)
