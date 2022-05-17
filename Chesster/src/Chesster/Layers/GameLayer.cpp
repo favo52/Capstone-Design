@@ -327,10 +327,6 @@ namespace Chesster
 		LOG_INFO("Wait... that's illegal!\n");
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
 
-		//m_RobotCodes = {};
-		//m_RobotCodes.fill('0');
-		//UpdateRobotCode(Code::GameActive, '1');
-		//m_Network->SendToRobot(m_RobotCodes.data());
 		m_Network->SendToRobot("10000000000");
 	}
 
@@ -424,7 +420,42 @@ namespace Chesster
 
 	std::string GameLayer::GetCameraMove()
 	{
-		/* This lambda retrieves the difference between two std::vector. 
+		/* Captures
+		[09:55:38 PM][info] CHESSTER: testFirstOld a6P b7p
+		[09:55:38 PM][info] CHESSTER: testFirstNew b7P
+		[09:55:38 PM][info] CHESSTER: testCaptureOld a6P
+		[09:55:38 PM][info] CHESSTER: testCaptureNew b7P
+		*/
+
+		/* Castling
+		[09:50:07 PM][info] CHESSTER: testFirstOld e8k h8r
+		[09:50:07 PM][info] CHESSTER: testFirstNew f8r g8k
+		[09:50:07 PM][info] CHESSTER: testCaptureOld e8k h8r
+		[09:50:07 PM][info] CHESSTER: testCaptureNew f8r g8k
+		*/
+
+		/* En Passant
+		[May/16/2022][09:06:29 PM][info] CHESSTER: testFirstOld a5p b5P 
+		[May/16/2022][09:06:29 PM][info] CHESSTER: testFirstNew a6P 
+		[May/16/2022][09:06:29 PM][info] CHESSTER: testCaptureOld a5p b5P 
+		[May/16/2022][09:06:29 PM][info] CHESSTER: testCaptureNew a6P 
+		*/
+
+		/* Promotion
+		[10:02:48 PM][info] CHESSTER: testFirstOld b7P
+		[10:02:48 PM][info] CHESSTER: testFirstNew b8Q
+		[10:02:48 PM][info] CHESSTER: testCaptureOld b7P
+		[10:02:48 PM][info] CHESSTER: testCaptureNew b8Q
+		*/
+
+		/* Promotion Capture
+		[09:59:45 PM][info] CHESSTER: testFirstOld a8r b7P
+		[09:59:45 PM][info] CHESSTER: testFirstNew a8Q
+		[09:59:45 PM][info] CHESSTER: testCaptureOld b7P
+		[09:59:45 PM][info] CHESSTER: testCaptureNew a8Q
+		*/
+
+		/* This lambda retrieves the difference between two std::vector.
 			It basically does this: difference = dataA - dataB */
 		auto getDifference = [](std::vector<std::string>& dataA, std::vector<std::string>& dataB) -> std::vector<std::string>
 		{
@@ -438,6 +469,7 @@ namespace Chesster
 		std::vector<std::string> differenceOld = getDifference(m_OldCameraData, m_NewCameraData);
 		std::vector<std::string> differenceNew = getDifference(m_NewCameraData, m_OldCameraData);
 
+		// Test 1
 		std::string testFirstOld;
 		for (auto& move : differenceOld)
 			testFirstOld += move + " ";
@@ -487,8 +519,38 @@ namespace Chesster
 		LOG_INFO("testCaptureOld {0}", testCaptureOld);
 		LOG_INFO("testCaptureNew {0}", testCaptureNew);
 
+		// En passant
+		std::string pieceBehind;
+		if (differenceOld.size() > 1 && differenceNew.size() == 1)
+		{
+			for (auto& pieceOld : differenceOld)
+			{
+				if (pieceOld[2] != differenceNew.front()[2])
+				{
+					pieceBehind = pieceOld;					
+				}
+			}
+
+			auto itr = std::find_if(std::begin(differenceOld), std::end(differenceOld),
+				[&](std::string pieceO) { return pieceO == pieceBehind; });
+
+			if (itr != std::end(differenceOld))
+				differenceOld.erase(itr);
+		}
+
+		std::string enPassantOld;
+		for (auto& move : differenceOld)
+			enPassantOld += move + " ";
+
+		std::string enPassantNew;
+		for (auto& move : differenceNew)
+			enPassantNew += move + " ";
+
+		LOG_INFO("enPassantOld {0}", enPassantOld);
+		LOG_INFO("enPassantNew {0}", enPassantNew);
+
 		// Deal with promotions.
-		/*bool isPromotion{ false };
+		bool isPromotion{ false };
 		char promotionChar{ '0' };
 		for (auto& pieceOld : differenceOld)
 		{
@@ -505,15 +567,10 @@ namespace Chesster
 			}
 		}
 
-		if (isPromotion)
-		{
-
-		}*/
-
 		// Deal with castling. If at this point the std::vectors have more than one
 		// notation, it could mean that two pieces were moved and don't share square
 		// notation (no capture). In example, it could have been a castling move.
-		if (differenceOld.size() > 1 || differenceNew.size() > 1)
+		if (differenceOld.size() > 1 && differenceNew.size() > 1)
 		{
 			differenceOld.erase(std::remove_if(differenceOld.begin(), differenceOld.end(),
 			[](const std::string& oldNotation)
@@ -549,8 +606,8 @@ namespace Chesster
 			differenceOld.front().pop_back();
 			differenceNew.front().pop_back();
 
-			//if (isPromotion)
-			//	differenceNew.front().push_back(promotionChar);
+			if (isPromotion)
+				differenceNew.front().push_back(promotionChar);
 
 			return { differenceOld.front() + differenceNew.front() };
 		}
@@ -690,7 +747,7 @@ namespace Chesster
 				{
 					LOG_INFO("CHECKMATE!");
 					gameLayer.m_CurrentGameState = GameState::Gameover;
-					//gameLayer.m_Network->SendToRobot("00000000000");
+					gameLayer.m_Network->SendToRobot("00000000000");
 					a_IsMovePlayed = false;
 					a_IsComputerTurn = false;
 					continue;
