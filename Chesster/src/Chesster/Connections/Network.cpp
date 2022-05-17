@@ -67,7 +67,7 @@ namespace Chesster
 		}
 
 		network.DisconnectCamera();
-		settingsPanel.SetCameraButtonStatus(false);
+		//settingsPanel.SetCameraButtonStatus(false);
 	}
 
 	void Network::CameraTCPDeviceThread()

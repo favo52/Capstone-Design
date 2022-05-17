@@ -446,8 +446,8 @@ namespace Chesster
 		for (auto& move : differenceNew)
 			testFirstNew += move + " ";
 
-		LOG_INFO("testCaptureOld {0}", testFirstOld);
-		LOG_INFO("testCaptureNew {0}", testFirstNew);
+		LOG_INFO("testFirstOld {0}", testFirstOld);
+		LOG_INFO("testFirstNew {0}", testFirstNew);
 
 		/* This lambda erases any std::string from dataA that exists in both dataA and dataB. */
 		auto eraseDuplicate = [&](std::vector<std::string>& dataA, std::vector<std::string>& dataB)
@@ -487,6 +487,29 @@ namespace Chesster
 		LOG_INFO("testCaptureOld {0}", testCaptureOld);
 		LOG_INFO("testCaptureNew {0}", testCaptureNew);
 
+		// Deal with promotions.
+		/*bool isPromotion{ false };
+		char promotionChar{ '0' };
+		for (auto& pieceOld : differenceOld)
+		{
+			if (pieceOld[2] == 'P' && pieceOld[1] == '7')
+			{
+				for (auto& pieceNew : differenceNew)
+				{
+					if (pieceNew[1] == '8')
+					{
+						promotionChar = tolower(pieceNew[2]);
+						isPromotion = true;
+					}
+				}
+			}
+		}
+
+		if (isPromotion)
+		{
+
+		}*/
+
 		// Deal with castling. If at this point the std::vectors have more than one
 		// notation, it could mean that two pieces were moved and don't share square
 		// notation (no capture). In example, it could have been a castling move.
@@ -525,6 +548,9 @@ namespace Chesster
 		{
 			differenceOld.front().pop_back();
 			differenceNew.front().pop_back();
+
+			//if (isPromotion)
+			//	differenceNew.front().push_back(promotionChar);
 
 			return { differenceOld.front() + differenceNew.front() };
 		}
