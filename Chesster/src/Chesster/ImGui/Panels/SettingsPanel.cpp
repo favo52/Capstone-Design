@@ -20,6 +20,7 @@ namespace Chesster
 		m_ServerPort{ "15000" },
 		m_SkillLevel{ 0 },
 		m_ELORating{ 1350 },
+		m_MultiPV{ 1 },
 		m_IsCameraConnected{ false },
 		m_IsRobotConnected{ false },
 		m_ClearColor{ 0.0f, 0.0f, 0.0f, 1.0f },			// Black
@@ -208,16 +209,26 @@ namespace Chesster
 		DrawSection<DifficultySlider>("Engine Difficulty", [&]()
 		{
 			ChessEngine& chessEngine = GameLayer::Get().GetChessEngine();
+			
+			static bool isELOActive{ true };
 
+			ImGui::BeginDisabled(isELOActive);
 			if (DrawIntSliderControl("Skill Level", m_SkillLevel, 0, 20))
-				chessEngine.SetDifficultyLevel(m_SkillLevel);
+				chessEngine.SetDifficultyLevel(m_SkillLevel);			
+			ImGui::EndDisabled();
 
+			ImGui::BeginDisabled(!isELOActive);
 			if (DrawIntSliderControl("ELO Rating", m_ELORating, 1350, 2850))
 				chessEngine.SetDifficultyELO(m_ELORating);
 
-			static bool isELOActive;
+			if (DrawIntSliderControl("MultiPV", m_MultiPV, 1, 10))
+				chessEngine.SetMultiPV(m_MultiPV);
+			ImGui::EndDisabled();
+
 			if (ImGui::Checkbox("Activate ELO (Overrides Skill Level)", &isELOActive))
 				chessEngine.ToggleELO(isELOActive);
+
+			ImGui::Text("MultiPV increases the chance of a random move,\nmaking the game engine play weaker. (ELO only)");
 		});
 
 		static glm::vec4 clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };

@@ -56,15 +56,14 @@ namespace Chesster
 		void UpdateComputerMove();
 		void UpdatePlayerCameraMove();
 		void UpdatePlayerMouseMove();
-		void UpdatePlayerPawnPromotion();
 
 		std::string GetCameraMove();
 
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsMoveLegal(const std::string& notation);
 
-		void GameoverPopup();
-		void PawnPromotionPopup();
+		void GameoverPopupWindow();
+		void PawnPromotionPopupWindow();	// This popup only opens with player mouse moves
 
 		static void ChessEngineThread();	// Multithread
 

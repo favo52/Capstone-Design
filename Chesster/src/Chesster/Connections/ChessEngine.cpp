@@ -82,8 +82,10 @@ namespace Chesster
 		LOG_INFO(engineMessage);
 		consolePanel.AddLog(engineMessage + "\n");
 
+		WriteToEngine("setoption name MultiPV value 10\n");
 		SetDifficultyLevel();
 		SetDifficultyELO();
+		ToggleELO(true);
 
 		NewGame();
 	}
@@ -105,7 +107,7 @@ namespace Chesster
 		std::string engineMessage{ "NEW GAME\n" };
 		engineMessage += ReadFromEngine();
 		LOG_INFO(engineMessage);
-		consolePanel.AddLog("\n" + engineMessage);
+		consolePanel.AddLog("\n" + engineMessage + "\n");
 	}
 
 	void ChessEngine::EvaluateGame()
@@ -160,7 +162,7 @@ namespace Chesster
 		const std::string message = { "ELO Rating set to " + std::to_string(elo) + "." };
 		LOG_INFO(message);
 		consolePanel.AddLog(message);
-	}
+	}	
 
 	void ChessEngine::ToggleELO(bool boolean)
 	{
@@ -178,6 +180,23 @@ namespace Chesster
 
 		const std::string boolMsg = (boolean) ? "activated." : "deactivated.";
 		const std::string message = { "ELO Rating " + boolMsg };
+		LOG_INFO(message);
+		consolePanel.AddLog(message);
+	}
+
+	void ChessEngine::SetMultiPV(int multipv)
+	{
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
+
+		if (!WriteToEngine("setoption name MultiPV value " + std::to_string(multipv) + "\n"))
+		{
+			const std::string errorMsg{ "Unable to set MultiPV to " + std::to_string(multipv) + "." };
+			LOG_WARN(errorMsg);
+			consolePanel.AddLog(errorMsg);
+			return;
+		}
+
+		const std::string message = { "MultiPV " + std::to_string(multipv) + "." };
 		LOG_INFO(message);
 		consolePanel.AddLog(message);
 	}

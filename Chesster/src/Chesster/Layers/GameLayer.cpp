@@ -16,7 +16,7 @@ namespace Chesster
 	GameLayer* GameLayer::s_Instance{ nullptr };
 
 	GameLayer::GameLayer() :
-		m_Framebuffer{ 480, 360 },
+		m_Framebuffer{ 800, 800 },
 		m_ViewportSize{ 0.0f, 0.0f },
 		m_MousePos{ 0.0f, 0.0f },
 		m_ViewportMousePos{ 0.0f, 0.0f },
@@ -124,7 +124,7 @@ namespace Chesster
 
 			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
 			
-			if (m_MoveHistory.empty() && m_RobotCodes[0] == '0')
+			if (m_MoveHistory.empty() && m_RobotCodes[(int)Code::GameActive] == '0')
 			{
 				if (m_NewCameraData == m_OldCameraData)
 				{
@@ -172,7 +172,7 @@ namespace Chesster
 	void GameLayer::OnRender()
 	{
 		// Render to Viewport window
-		m_Framebuffer.Bind();
+		m_Framebuffer.Bind();		
 
 		Renderer::SetClearColor(m_SettingsPanel.GetClearColor());
 		Renderer::Clear();
@@ -241,11 +241,11 @@ namespace Chesster
 
 		// Gameover window
 		if (m_CurrentGameState == GameState::Gameover)
-			GameoverPopup();
+			GameoverPopupWindow();
 
 		// Pawn promotion prompt
 		if (m_CurrentGameState == GameState::PawnPromotion)
-			PawnPromotionPopup();
+			PawnPromotionPopupWindow();
 
 		ImGui::End(); // End "Viewport"
 		ImGui::PopStyleVar();
@@ -394,70 +394,11 @@ namespace Chesster
 			currentPiece.SetPosition(originalSquareItr->GetCenter());
 	}
 
-	void GameLayer::UpdatePlayerPawnPromotion()
-	{
-		if (IsMoveLegal(m_CurrentMove))
-		{
-			m_Board.GetCurrentPiece().Promote(m_CurrentMove);
-			m_Board.MovePiece(m_CurrentMove);
-
-			m_Board.UpdatePieceCapture();
-			m_Board.UpdateNewMove(m_CurrentMove);
-			m_Board.UpdateActiveSquares(m_CurrentMove);
-
-			// Update move history
-			m_MoveHistory += m_CurrentMove + ' ';
-
-			const std::string msg{ "Player moved: " + m_CurrentMove };
-			LOG_INFO(msg);
-			m_ConsolePanel.AddLog("\n" + msg);
-
-			++m_CurrentPlayer;
-			a_IsMovePlayed = true;
-			a_IsComputerTurn = true;
-		}
-	}
-
 	std::string GameLayer::GetCameraMove()
 	{
-		/* Captures
-		[09:55:38 PM][info] CHESSTER: testFirstOld a6P b7p
-		[09:55:38 PM][info] CHESSTER: testFirstNew b7P
-		[09:55:38 PM][info] CHESSTER: testCaptureOld a6P
-		[09:55:38 PM][info] CHESSTER: testCaptureNew b7P
-		*/
-
-		/* Castling
-		[09:50:07 PM][info] CHESSTER: testFirstOld e8k h8r
-		[09:50:07 PM][info] CHESSTER: testFirstNew f8r g8k
-		[09:50:07 PM][info] CHESSTER: testCaptureOld e8k h8r
-		[09:50:07 PM][info] CHESSTER: testCaptureNew f8r g8k
-		*/
-
-		/* En Passant
-		[May/16/2022][09:06:29 PM][info] CHESSTER: testFirstOld a5p b5P 
-		[May/16/2022][09:06:29 PM][info] CHESSTER: testFirstNew a6P 
-		[May/16/2022][09:06:29 PM][info] CHESSTER: testCaptureOld a5p b5P 
-		[May/16/2022][09:06:29 PM][info] CHESSTER: testCaptureNew a6P 
-		*/
-
-		/* Promotion
-		[10:02:48 PM][info] CHESSTER: testFirstOld b7P
-		[10:02:48 PM][info] CHESSTER: testFirstNew b8Q
-		[10:02:48 PM][info] CHESSTER: testCaptureOld b7P
-		[10:02:48 PM][info] CHESSTER: testCaptureNew b8Q
-		*/
-
-		/* Promotion Capture
-		[09:59:45 PM][info] CHESSTER: testFirstOld a8r b7P
-		[09:59:45 PM][info] CHESSTER: testFirstNew a8Q
-		[09:59:45 PM][info] CHESSTER: testCaptureOld b7P
-		[09:59:45 PM][info] CHESSTER: testCaptureNew a8Q
-		*/
-
 		/* This lambda retrieves the difference between two std::vector.
 			It basically does this: difference = dataA - dataB */
-		auto getDifference = [](std::vector<std::string>& dataA, std::vector<std::string>& dataB) -> std::vector<std::string>
+		auto getDifference = [](const std::vector<std::string>& dataA, const std::vector<std::string>& dataB) -> std::vector<std::string>
 		{
 			std::vector<std::string> difference;
 			std::set_difference(dataA.begin(), dataA.end(), dataB.begin(), dataB.end(),
@@ -466,23 +407,14 @@ namespace Chesster
 			return difference;
 		};
 
-		std::vector<std::string> differenceOld = getDifference(m_OldCameraData, m_NewCameraData);
-		std::vector<std::string> differenceNew = getDifference(m_NewCameraData, m_OldCameraData);
+		std::vector<std::string> differenceOldData = getDifference(m_OldCameraData, m_NewCameraData);
+		std::vector<std::string> differenceNewData = getDifference(m_NewCameraData, m_OldCameraData);
 
-		// Test 1
-		std::string testFirstOld;
-		for (auto& move : differenceOld)
-			testFirstOld += move + " ";
-
-		std::string testFirstNew;
-		for (auto& move : differenceNew)
-			testFirstNew += move + " ";
-
-		LOG_INFO("testFirstOld {0}", testFirstOld);
-		LOG_INFO("testFirstNew {0}", testFirstNew);
+		size_t oldDataSize = differenceOldData.size();
+		size_t newDataSize = differenceNewData.size();
 
 		/* This lambda erases any std::string from dataA that exists in both dataA and dataB. */
-		auto eraseDuplicate = [&](std::vector<std::string>& dataA, std::vector<std::string>& dataB)
+		auto eraseDuplicate = [&](std::vector<std::string>& dataA, const std::vector<std::string>& dataB)
 		{
 			auto itr = std::find_if(std::begin(dataA), std::end(dataA),
 			[&](std::string old)
@@ -502,61 +434,41 @@ namespace Chesster
 		};
 
 		// Deal with captures. Captured pieces share the same square notation as its capturer.
-		if (differenceOld.size() > differenceNew.size())
-			eraseDuplicate(differenceOld, differenceNew);
+		if (oldDataSize > newDataSize)
+			eraseDuplicate(differenceOldData, differenceNewData);
 
-		if (differenceNew.size() > differenceOld.size())
-			eraseDuplicate(differenceNew, differenceOld);
-
-		std::string testCaptureOld;
-		for (auto& move : differenceOld)
-			testCaptureOld += move + " ";
-
-		std::string testCaptureNew;
-		for (auto& move : differenceNew)
-			testCaptureNew += move + " ";
-
-		LOG_INFO("testCaptureOld {0}", testCaptureOld);
-		LOG_INFO("testCaptureNew {0}", testCaptureNew);
-
+		if (newDataSize > oldDataSize)
+			eraseDuplicate(differenceNewData, differenceOldData);
+		
 		// En passant
-		std::string pieceBehind;
-		if (differenceOld.size() > 1 && differenceNew.size() == 1)
+		if (oldDataSize > 1 && newDataSize == 1)
 		{
-			for (auto& pieceOld : differenceOld)
+			std::string pieceBehind;
+			for (auto& pieceOld : differenceOldData)
 			{
-				if (pieceOld[2] != differenceNew.front()[2])
-				{
-					pieceBehind = pieceOld;					
-				}
+				if (pieceOld[2] != differenceNewData.front()[2])
+					pieceBehind = pieceOld;
 			}
 
-			auto itr = std::find_if(std::begin(differenceOld), std::end(differenceOld),
-				[&](std::string pieceO) { return pieceO == pieceBehind; });
+			auto itr = std::find(std::begin(differenceOldData), std::end(differenceOldData), pieceBehind);
+			if (itr != std::end(differenceOldData))
+				differenceOldData.erase(itr);
 
-			if (itr != std::end(differenceOld))
-				differenceOld.erase(itr);
+			//differenceOldData.erase(std::remove_if(differenceOldData.begin(), differenceOldData.end(),
+			//	[&](const std::string& pieceOld)
+			//	{
+			//		return pieceOld[2] == differenceNewData.front()[2];
+			//	}), differenceOldData.end());
 		}
 
-		std::string enPassantOld;
-		for (auto& move : differenceOld)
-			enPassantOld += move + " ";
-
-		std::string enPassantNew;
-		for (auto& move : differenceNew)
-			enPassantNew += move + " ";
-
-		LOG_INFO("enPassantOld {0}", enPassantOld);
-		LOG_INFO("enPassantNew {0}", enPassantNew);
-
-		// Deal with promotions.
+		// Deal with pawn promotions. We need to acquire the 5th letter of the move. Ex. a7a8q
 		bool isPromotion{ false };
 		char promotionChar{ '0' };
-		for (auto& pieceOld : differenceOld)
+		for (auto& pieceOld : differenceOldData)
 		{
 			if (pieceOld[2] == 'P' && pieceOld[1] == '7')
 			{
-				for (auto& pieceNew : differenceNew)
+				for (auto& pieceNew : differenceNewData)
 				{
 					if (pieceNew[1] == '8')
 					{
@@ -570,46 +482,35 @@ namespace Chesster
 		// Deal with castling. If at this point the std::vectors have more than one
 		// notation, it could mean that two pieces were moved and don't share square
 		// notation (no capture). In example, it could have been a castling move.
-		if (differenceOld.size() > 1 && differenceNew.size() > 1)
+		if (oldDataSize > 1 && newDataSize > 1)
 		{
-			differenceOld.erase(std::remove_if(differenceOld.begin(), differenceOld.end(),
+			differenceOldData.erase(std::remove_if(differenceOldData.begin(), differenceOldData.end(),
 			[](const std::string& oldNotation)
 			{
 				return oldNotation != "e1K"
 					&& oldNotation != "e8k";
-			}), differenceOld.end());
+			}), differenceOldData.end());
 
-			differenceNew.erase(std::remove_if(differenceNew.begin(), differenceNew.end(),
+			differenceNewData.erase(std::remove_if(differenceNewData.begin(), differenceNewData.end(),
 			[](const std::string& newNotation)
 			{
 				return newNotation != "g1K"
 					&& newNotation != "g8k"
 					&& newNotation != "c1K"
 					&& newNotation != "c8k";
-			}), differenceNew.end());
+			}), differenceNewData.end());
 		}
 
-		std::string testOld;
-		for (auto& move : differenceOld)
-			testOld += move + " ";
-
-		std::string testNew;
-		for (auto& move : differenceNew)
-			testNew += move + " ";
-
-		LOG_INFO("testOld {0}", testOld);
-		LOG_INFO("testNew {0}", testNew);
-
 		// If there's only one notation in each std::vector, that's our move
-		if (differenceOld.size() == 1 && differenceNew.size() == 1)
+		if (oldDataSize == 1 && newDataSize == 1)
 		{
-			differenceOld.front().pop_back();
-			differenceNew.front().pop_back();
+			differenceOldData.front().pop_back();
+			differenceNewData.front().pop_back();
 
 			if (isPromotion)
-				differenceNew.front().push_back(promotionChar);
+				differenceNewData.front().push_back(promotionChar);
 
-			return { differenceOld.front() + differenceNew.front() };
+			return { differenceOldData.front() + differenceNewData.front() };
 		}
 
 		return "error";
@@ -655,7 +556,7 @@ namespace Chesster
 		return (itr != std::end(m_LegalMoves)) ? true : false;
 	}
 
-	void GameLayer::GameoverPopup()
+	void GameLayer::GameoverPopupWindow()
 	{
 		ImGui::SetNextWindowPos({ (m_ViewportSize.x / 2.0f) - 100, m_ViewportSize.y / 2.0f });
 		ImGui::SetNextWindowSize({ 200, 80 });
@@ -675,7 +576,7 @@ namespace Chesster
 		ImGui::End();	// End "Gameover"
 	}
 
-	void GameLayer::PawnPromotionPopup()
+	void GameLayer::PawnPromotionPopupWindow()
 	{
 		ImGui::SetNextWindowPos({ (m_ViewportSize.x / 2.0f) - 100, m_ViewportSize.y / 2.0f });
 		ImGui::SetNextWindowSize({ 200, 120 });
@@ -718,7 +619,27 @@ namespace Chesster
 
 		if (update)
 		{
-			UpdatePlayerPawnPromotion();
+			if (IsMoveLegal(m_CurrentMove))
+			{
+				m_Board.GetCurrentPiece().Promote(m_CurrentMove);
+				m_Board.MovePiece(m_CurrentMove);
+
+				m_Board.UpdatePieceCapture();
+				m_Board.UpdateNewMove(m_CurrentMove);
+				m_Board.UpdateActiveSquares(m_CurrentMove);
+
+				// Update move history
+				m_MoveHistory += m_CurrentMove + ' ';
+
+				const std::string msg{ "Player moved: " + m_CurrentMove };
+				LOG_INFO(msg);
+				m_ConsolePanel.AddLog("\n" + msg);
+
+				++m_CurrentPlayer;
+				a_IsMovePlayed = true;
+				a_IsComputerTurn = true;
+			}
+
 			m_CurrentGameState = GameState::Gameplay();
 		}
 
@@ -769,7 +690,7 @@ namespace Chesster
 					gameLayer.m_ConsolePanel.AddLog("Failed to get engine move.");
 					gameLayer.m_ConsolePanel.AddLog("Enter Ctrl+Spacebar to try again.");
 				}
-				else
+				else if (gameLayer.m_CurrentMove != "(none)")
 				{
 					gameLayer.UpdateComputerMove();
 					gameLayer.m_Network->SendToRobot(gameLayer.m_RobotCodes.data());

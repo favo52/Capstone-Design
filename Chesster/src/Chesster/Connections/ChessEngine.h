@@ -35,9 +35,14 @@ namespace Chesster
 		 @param elo The new ELO rating of the engine. */
 		void SetDifficultyELO(int elo = 1350); // Overrides skill level
 
+		/*	Sends a command to the UCI chess engine to change the MultiPV of the engine. 
+			The higher the MultiPV, the higher chance for a bad move.
+		 @param elo The new ELO rating of the engine. */
+		void SetMultiPV(int multipv = 1);
+
 		/*	Overrides the skill level for the ELO rating.
 		 @param boolean Toggles ELO if true, toggles skill level if false. */
-		void ToggleELO(bool boolean);
+		void ToggleELO(bool boolean);			
 
 		/*	Retrieves the next move of the chess engine.
 		 @param moveHistory The current move history of the chess game.

@@ -45,8 +45,9 @@ namespace Chesster
 		std::string m_CameraIP, m_CameraTelnetPort, m_CameraTCPDevicePort,
 					m_ServerIP, m_ServerPort;
 
-		int m_SkillLevel;			// Defaults to 0 (Minimum)
-		int m_ELORating;			// Defaults to 1350 (Minimum)
+		int m_SkillLevel;			// 0 to 20 (defaults to 0)
+		int m_ELORating;			// 1350 to 2850 (defaults to 1350)
+		int m_MultiPV;				// 1 to 500 (defaults to 1)
 
 		bool m_IsCameraConnected;	// Keeps track of the camera connection
 		bool m_IsRobotConnected;	// Keeps track of the robot connection
