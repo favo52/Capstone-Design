@@ -430,9 +430,6 @@ namespace Chesster
 		std::vector<std::string> differenceOldData = getDifference(m_OldCameraData, m_NewCameraData);
 		std::vector<std::string> differenceNewData = getDifference(m_NewCameraData, m_OldCameraData);
 
-		size_t oldDataSize = differenceOldData.size();
-		size_t newDataSize = differenceNewData.size();
-
 		/* This lambda erases any std::string from dataA that exists in both dataA and dataB. */
 		auto eraseDuplicate = [&](std::vector<std::string>& dataA, const std::vector<std::string>& dataB)
 		{
@@ -454,14 +451,14 @@ namespace Chesster
 		};
 
 		// Deal with captures. Captured pieces share the same square notation as its capturer.
-		if (oldDataSize > newDataSize)
+		if (differenceOldData.size() > differenceNewData.size())
 			eraseDuplicate(differenceOldData, differenceNewData);
 
-		if (newDataSize > oldDataSize)
+		if (differenceNewData.size() > differenceOldData.size())
 			eraseDuplicate(differenceNewData, differenceOldData);
 		
 		// En passant
-		if (oldDataSize > 1 && newDataSize == 1)
+		if (differenceOldData.size() > 1 && differenceNewData.size() == 1)
 		{
 			std::string pieceBehind;
 			for (auto& pieceOld : differenceOldData)
@@ -473,12 +470,6 @@ namespace Chesster
 			auto itr = std::find(std::begin(differenceOldData), std::end(differenceOldData), pieceBehind);
 			if (itr != std::end(differenceOldData))
 				differenceOldData.erase(itr);
-
-			//differenceOldData.erase(std::remove_if(differenceOldData.begin(), differenceOldData.end(),
-			//	[&](const std::string& pieceOld)
-			//	{
-			//		return pieceOld[2] == differenceNewData.front()[2];
-			//	}), differenceOldData.end());
 		}
 
 		// Deal with pawn promotions. We need to acquire the 5th letter of the move. Ex. a7a8q
@@ -502,7 +493,7 @@ namespace Chesster
 		// Deal with castling. If at this point the std::vectors have more than one
 		// notation, it could mean that two pieces were moved and don't share square
 		// notation (no capture). In example, it could have been a castling move.
-		if (oldDataSize > 1 && newDataSize > 1)
+		if (differenceOldData.size() > 1 && differenceNewData.size() > 1)
 		{
 			differenceOldData.erase(std::remove_if(differenceOldData.begin(), differenceOldData.end(),
 			[](const std::string& oldNotation)
@@ -521,8 +512,20 @@ namespace Chesster
 			}), differenceNewData.end());
 		}
 
+		// Take a peek at the data
+		std::string testOld;
+		for (auto& move : differenceOldData)
+			testOld += move + " ";
+
+		std::string testNew;
+		for (auto& move : differenceNewData)
+			testNew += move + " ";
+
+		LOG_INFO("Old: {0}", testOld);
+		LOG_INFO("New: {0}", testNew);
+
 		// If there's only one notation in each std::vector, that's our move
-		if (oldDataSize == 1 && newDataSize == 1)
+		if (differenceOldData.size() == 1 && differenceNewData.size() == 1)
 		{
 			differenceOldData.front().pop_back();
 			differenceNewData.front().pop_back();

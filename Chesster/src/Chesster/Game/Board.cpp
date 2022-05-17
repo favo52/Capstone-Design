@@ -200,16 +200,17 @@ namespace Chesster
 	{
 		if (currentMove.empty()) return;
 
-		// Check for Castling		// Move Rook
+		// Check for Castling
 		bool castling{ false };
-		std::string specialMove;
+		std::string specialMove;						// Move Rook
 		if (currentMove == "e1g1") { specialMove = "h1"; MovePiece("h1f1"); castling = true; }
-		if (currentMove == "e8g8") { specialMove = "h8"; MovePiece("h8f8"); castling = true; }
 		if (currentMove == "e1c1") { specialMove = "a1"; MovePiece("a1d1"); castling = true; }
+		if (currentMove == "e8g8") { specialMove = "h8"; MovePiece("h8f8"); castling = true; }
 		if (currentMove == "e8c8") { specialMove = "a8"; MovePiece("a8d8"); castling = true; }
 		if (castling)
 		{
 			GameLayer& gameLayer = GameLayer::Get();
+
 			gameLayer.UpdateRobotCode(Code::Special, '2');
 			gameLayer.UpdateRobotCode(Code::SpecialCol, specialMove[0]);
 			gameLayer.UpdateRobotCode(Code::SpecialRow, specialMove[1]);
