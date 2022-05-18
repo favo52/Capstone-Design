@@ -28,8 +28,10 @@
 
 #include "Chesster/Connections/ChessEngine.h"
 #include "Chesster/Connections/Network.h"
-#include "Chesster/ImGui/Panels/ConsolePanel.h"
-#include "Chesster/ImGui/Panels/SettingsPanel.h"
+
+#include "Chesster/ImGui/ConsolePanel.h"
+#include "Chesster/ImGui/LogPanel.h"
+#include "Chesster/ImGui/SettingsPanel.h"
 
 namespace Chesster
 {
@@ -65,7 +67,9 @@ namespace Chesster
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
 		Network& GetNetwork() { return *m_Network; }
+
 		ConsolePanel& GetConsolePanel() { return m_ConsolePanel; }
+		LogPanel& GetLogPanel() { return m_LogPanel; }
 		SettingsPanel& GetSettingsPanel() { return m_SettingsPanel; }
 
 		/** It is used to retrieve the instance of the current GameLayer.
@@ -82,7 +86,6 @@ namespace Chesster
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsMoveLegal(const std::string& notation);
 
-		void GameoverPopupWindow();
 		void PawnPromotionPopupWindow();	// This popup only opens with player mouse moves
 
 		static void ChessEngineThread();	// Multithread
@@ -105,8 +108,6 @@ namespace Chesster
 		// Moves/Notations
 		std::string m_CurrentMove;
 		std::string m_MoveHistory;
-		size_t m_MoveHistorySize{ 0 };
-
 		std::vector<std::string> m_LegalMoves;
 
 		bool m_CameraDataReceived{ false };
@@ -123,8 +124,14 @@ namespace Chesster
 		bool m_IsEventsActive{ false };
 		
 		std::unique_ptr<Network> m_Network;
+
+		// ImGui Panels
 		ConsolePanel m_ConsolePanel;
+		LogPanel m_LogPanel;
 		SettingsPanel m_SettingsPanel;
+
+		std::shared_ptr<Font> absEmpireFont;
+		std::unique_ptr<Texture> winnerText;
 
 	private:
 		static GameLayer* s_Instance;	// Pointer to this

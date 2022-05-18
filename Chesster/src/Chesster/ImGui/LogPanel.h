@@ -20,25 +20,22 @@
 
 #pragma once
 
+#include <imgui_internal.h>
+
 namespace Chesster
 {
-	class ConsolePanel
+	class LogPanel
 	{
 	public:
-		ConsolePanel();
+		LogPanel() = default;
 
 		void OnImGuiRender();
 
-		void AddLog(const std::string& msg);
+		void AddLog(std::string message);
+		void Clear();
 
 	private:
-		void PushFont(int index);
-		void ExecCommand(std::string& command);
-
-	private:
-		std::vector<std::string> m_Items;
-		std::vector<std::string> m_Commands;
-		
-		bool m_ScrollToBottom;
+		ImGuiTextBuffer m_Log;
+		//std::array<char, 64> m_Buffer;
 	};
 }

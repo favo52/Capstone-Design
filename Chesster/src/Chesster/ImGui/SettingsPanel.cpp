@@ -19,7 +19,7 @@
  @return What the function returns. */
 
 #include "pch.h"
-#include "Chesster/ImGui/Panels/SettingsPanel.h"
+#include "Chesster/ImGui/SettingsPanel.h"
 
 #include "Chesster/Layers/GameLayer.h"
 #include "Chesster/Connections/ChessEngine.h"
@@ -147,7 +147,7 @@ namespace Chesster
 		ImGui::Begin("Settings");
 
 		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
-		
+
 		class Cognex {};
 		DrawSection<Cognex>("Cognex Camera", [&]()
 		{
@@ -245,10 +245,12 @@ namespace Chesster
 				chessEngine.SetMultiPV(m_MultiPV);
 			ImGui::EndDisabled();
 
+			ImGui::PushFont(boldFont);
+			ImGui::Text("MultiPV (Principal Variation) increases the chance\nof a random move, making the game engine play\nweaker. (ELO only)");
+			ImGui::PopFont();
+
 			if (ImGui::Checkbox("Activate ELO (Overrides Skill Level)", &isELOActive))
 				chessEngine.ToggleELO(isELOActive);
-
-			ImGui::Text("MultiPV increases the chance of a random move,\nmaking the game engine play weaker. (ELO only)");
 		});
 
 		static glm::vec4 clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };

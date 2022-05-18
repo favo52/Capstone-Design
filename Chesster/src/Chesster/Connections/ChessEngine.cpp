@@ -216,7 +216,7 @@ namespace Chesster
 			return;
 		}
 
-		const std::string message = { "MultiPV " + std::to_string(multipv) + "." };
+		const std::string message = { "MultiPV set to " + std::to_string(multipv) + "." };
 		LOG_INFO(message);
 		consolePanel.AddLog(message);
 	}

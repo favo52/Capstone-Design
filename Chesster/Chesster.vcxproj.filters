@@ -61,10 +61,10 @@
     <ClInclude Include="src\Chesster\ImGui\ImGuiLayer.h">
       <Filter>src\Chesster\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\ImGui\Panels\ConsolePanel.h">
+    <ClInclude Include="src\Chesster\ImGui\ConsolePanel.h">
       <Filter>src\Chesster\ImGui\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\ImGui\Panels\SettingsPanel.h">
+    <ClInclude Include="src\Chesster\ImGui\SettingsPanel.h">
       <Filter>src\Chesster\ImGui\Panels</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Layers\GameLayer.h">
@@ -88,6 +88,7 @@
     <ClInclude Include="src\pch.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Chesster\ImGui\LogPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Chesster\Connections\ChessEngine.cpp">
@@ -120,10 +121,10 @@
     <ClCompile Include="src\Chesster\ImGui\ImGuiLayer.cpp">
       <Filter>src\Chesster\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\ImGui\Panels\ConsolePanel.cpp">
+    <ClCompile Include="src\Chesster\ImGui\ConsolePanel.cpp">
       <Filter>src\Chesster\ImGui\Panels</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\ImGui\Panels\SettingsPanel.cpp">
+    <ClCompile Include="src\Chesster\ImGui\SettingsPanel.cpp">
       <Filter>src\Chesster\ImGui\Panels</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Layers\GameLayer.cpp">
@@ -150,6 +151,7 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Chesster\ImGui\LogPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Chesster.aps" />

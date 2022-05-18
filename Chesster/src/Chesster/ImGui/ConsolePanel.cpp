@@ -19,7 +19,7 @@
  @return What the function returns. */
 
 #include "pch.h"
-#include "Chesster/ImGui/Panels/ConsolePanel.h"
+#include "Chesster/ImGui/ConsolePanel.h"
 
 #include "Chesster/Layers/GameLayer.h"
 #include "Chesster/Connections/ChessEngine.h"
@@ -29,7 +29,7 @@
 namespace Chesster
 {
 	ConsolePanel::ConsolePanel() :
-		m_ScrollToBottom{ false }
+		m_ScrollToBottom{ true }
 	{
 		m_Commands.reserve(2);
 		m_Commands.emplace_back("help");
@@ -46,6 +46,12 @@ namespace Chesster
 
 		ImGui::TextWrapped("This console is used to interact with the Chess Engine.");
 		ImGui::TextWrapped("Enter 'HELP' to see a list of commands.");
+
+		if (ImGui::IsWindowFocused())
+		{
+			m_ScrollToBottom = true;
+			ImGui::SetNextWindowFocus();
+		}
 
 		// Small buttons at top
 		if (ImGui::SmallButton("Clear")) m_Items.clear();
@@ -89,12 +95,11 @@ namespace Chesster
 
 		// Command-line Input
 		bool reclaimFocus{ false };
-		std::array<char, 256> InputBuffer = {};
+		std::array<char, 128> InputBuffer = {};
 		if (ImGui::InputText("Input", InputBuffer.data(), InputBuffer.size(), ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			std::string InputStr{ InputBuffer.data() };
-			if (!InputStr.empty())
-				ExecCommand(InputStr);
+			if (!InputBuffer.empty())
+				ExecCommand(std::string(InputBuffer.data()));
 
 			reclaimFocus = true;
 		}
@@ -123,6 +128,7 @@ namespace Chesster
 	void ConsolePanel::AddLog(const std::string& msg)
 	{
 		m_Items.emplace_back(msg);
+		m_ScrollToBottom = true;
 	}
 
 	void ConsolePanel::PushFont(int index)
@@ -133,7 +139,7 @@ namespace Chesster
 
 	void ConsolePanel::ExecCommand(std::string& command)
 	{
-		AddLog("\n# " + command + "\n");
+		AddLog("# " + command + "\n");
 
 		for (char& ch : command)
 			ch = tolower(ch);

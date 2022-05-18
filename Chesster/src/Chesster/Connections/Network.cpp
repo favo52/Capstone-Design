@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 
-/** Legend
- @param A parameter of the function.
- @return What the function returns. */
-
 #include "pch.h"
 #include "Chesster/Connections/Network.h"
 
@@ -44,7 +40,7 @@ namespace Chesster
 	void Network::CameraTelnetThread()
 	{
 		Network& network = GameLayer::Get().GetNetwork();
-		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
+		LogPanel& logPanel = GameLayer::Get().GetLogPanel();
 		SettingsPanel& settingsPanel = GameLayer::Get().GetSettingsPanel();
 
 		// For commanding the camera to take the picture
@@ -55,7 +51,7 @@ namespace Chesster
 			const std::string str{ "Unable to connect the Camera Telnet Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTelnetPort + ")" };
 			LOG_ERROR(str);
-			consolePanel.AddLog(str);
+			logPanel.AddLog(str);
 			network.DisconnectCamera();
 			settingsPanel.SetCameraButtonStatus(false);
 			return;
@@ -65,7 +61,6 @@ namespace Chesster
 		// Attempt to login to Cognex Camera
 		network.SendToCamera("admin\r\n");	// User
 		network.SendToCamera("\r\n");		// Password
-		//network.SendToCamera("SE8\r\n");	// Take initial picture
 
 		// Keep thread alive waiting for any new data
 		// received from the InSight-Explorer Telnet socket
@@ -75,25 +70,25 @@ namespace Chesster
 			if (network.RecvData(network.m_CameraTelnetSocket, buffer))
 			{
 				LOG_INFO("Telnet Buffer: {0}", buffer.data());
-				consolePanel.AddLog(buffer.data());
+				logPanel.AddLog(buffer.data());
 			}
 			else
 			{
 				const std::string str{ "CameraTelnetThread ended." };
 				LOG_INFO(str);
-				//consolePanel.AddLog(str);
+				logPanel.AddLog(str);
 				break;
 			}
 		}
 
 		network.DisconnectCamera();
-		//settingsPanel.SetCameraButtonStatus(false);
+		settingsPanel.SetCameraButtonStatus(false);
 	}
 
 	void Network::CameraTCPDeviceThread()
 	{
 		Network& network = GameLayer::Get().GetNetwork();
-		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
+		LogPanel& logPanel = GameLayer::Get().GetLogPanel();
 		SettingsPanel& settingsPanel = GameLayer::Get().GetSettingsPanel();
 
 		// For receiving data stream of physical board's status
@@ -104,7 +99,7 @@ namespace Chesster
 			const std::string str{ "Unable to connect the TCP Device Socket. "
 				"(IP: " + cameraIP + ", Port: " + cameraTCPDevicePort + ")" };
 			LOG_ERROR(str);
-			consolePanel.AddLog(str);
+			logPanel.AddLog(str);
 			network.DisconnectCamera();
 			settingsPanel.SetCameraButtonStatus(false);
 			return;
@@ -125,19 +120,19 @@ namespace Chesster
 			{
 				const std::string str{ "CameraTCPDeviceThread ended." };
 				LOG_INFO(str);
-				//consolePanel.AddLog(str);
+				logPanel.AddLog(str);
 				break;
 			}			
 		}
 
 		network.DisconnectCamera();
-		//settingsPanel.SetCameraButtonStatus(false);
+		settingsPanel.SetCameraButtonStatus(false);
 	}
 
 	void Network::ChessterServerThread()
 	{
 		Network& network = GameLayer::Get().GetNetwork();
-		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
+		LogPanel& logPanel = GameLayer::Get().GetLogPanel();
 		SettingsPanel& settingsPanel = GameLayer::Get().GetSettingsPanel();
 		
 		const std::string& serverIP = settingsPanel.m_ServerIP;
@@ -146,7 +141,7 @@ namespace Chesster
 		{
 			const std::string str{ "Unable create server socket. (IP: " + serverIP + ", Port: " + serverPort + ")" };
 			LOG_ERROR(str);
-			consolePanel.AddLog(str);
+			logPanel.AddLog(str);
 			network.DisconnectRobot();
 			settingsPanel.SetRobotButtonStatus(false);
 			return;
@@ -154,7 +149,7 @@ namespace Chesster
 
 		const std::string str{ "Chesster server is ready. Accepting client..." };
 		LOG_INFO(str);
-		consolePanel.AddLog(str);
+		logPanel.AddLog(str);
 
 		// Accept a client (the staubli robot)
 		network.m_RobotClientSocket = network.AcceptClient(network.m_ChessterListenSocket);
@@ -170,7 +165,7 @@ namespace Chesster
 		closesocket(network.m_ChessterListenSocket);
 
 		LOG_INFO("Client accepted. CS8C Connected.");
-		consolePanel.AddLog("Client accepted. CS8C Connected.");
+		logPanel.AddLog("Client accepted. CS8C Connected.");
 
 		// Keep thread alive waiting for any new
 		// data received from the robot's client socket
@@ -180,7 +175,7 @@ namespace Chesster
 			if (network.RecvData(network.m_RobotClientSocket, buffer))
 			{
 				LOG_INFO("Received From Robot: {0}", buffer.data());
-				consolePanel.AddLog("Received From Robot: " + std::string(buffer.data()));
+				//logPanel.AddLog("Received From Robot: " + std::string(buffer.data()));
 
 				if (buffer.size() > 2)
 				{
@@ -204,7 +199,7 @@ namespace Chesster
 							network.SendToCamera("SE8\r\n");
 							network.SendToRobot("10000000000"); // 10 billones
 						}
-						else
+						else // It's checkmate
 						{
 							network.SendToRobot("00000000000");
 						}

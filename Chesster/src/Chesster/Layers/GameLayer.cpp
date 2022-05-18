@@ -50,6 +50,8 @@ namespace Chesster
 		m_RobotCodes.fill('0');
 		std::sort(m_OldCameraData.begin(), m_OldCameraData.end());
 		m_Network = std::make_unique<Network>();
+
+		absEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 100);
 	}
 
 	void GameLayer::OnAttach()
@@ -150,7 +152,7 @@ namespace Chesster
 				{
 					const std::string msg{ "Board is ready!." };
 					LOG_INFO(msg);
-					m_ConsolePanel.AddLog("\n" + msg);
+					m_LogPanel.AddLog("\n" + msg);
 
 					UpdateRobotCode(Code::GameActive, '1');
 					m_Network->SendToRobot(m_RobotCodes.data());					
@@ -159,7 +161,7 @@ namespace Chesster
 				{
 					const std::string msg{ "Please setup the board with the valid starting position." };
 					LOG_INFO(msg);
-					m_ConsolePanel.AddLog("\n" + msg);
+					m_LogPanel.AddLog("\n" + msg);
 
 					UpdateRobotCode(Code::GameActive, '0');
 					m_Network->SendToRobot(m_RobotCodes.data());
@@ -203,9 +205,30 @@ namespace Chesster
 		// Draw a faded black screen when gameover
 		if (m_CurrentGameState == GameState::Gameover)
 		{
-			const SDL_Rect blackOverlayRect = { 0, 0, m_Framebuffer.GetWidth(), m_Framebuffer.GetHeight() };
+			uint32_t width = m_Framebuffer.GetWidth();
+			uint32_t height = m_Framebuffer.GetHeight();
+
+			// Fade the viewport black
+			const SDL_Rect blackOverlayRect = { 0, 0, width, height };
 			const glm::vec4 blackOverlayColor = { 0, 0, 0, 150 };
 			Renderer::DrawFilledRect(blackOverlayRect, blackOverlayColor);
+
+			// Set up text
+			const SDL_Color whiteColor = { 255, 255, 255, 255 };
+			std::string winnerMsg = (m_CurrentPlayer == Player::White) ? "WHITE WINS!" : "BLACK WINS!";
+			winnerText = std::make_unique<Texture>(absEmpireFont, winnerMsg, whiteColor);
+
+			int offsetX = winnerText->GetWidth() / 2.0f;
+			int offsetY = winnerText->GetHeight() / 2.0f;
+			winnerText->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY));
+
+			// Draw black rectangle behind text
+			const SDL_Rect blackRect = { winnerText->GetBounds().x - 2, winnerText->GetBounds().y - 6, winnerText->GetBounds().w, winnerText->GetBounds().h };
+			const glm::vec4 blackColor = { 0, 0, 0, 255 };
+			Renderer::DrawFilledRect(blackRect, blackColor);
+
+			// Draw text
+			Renderer::DrawTexture(winnerText);
 		}
 
 		m_Framebuffer.Unbind();
@@ -213,6 +236,7 @@ namespace Chesster
 
 	void GameLayer::OnImGuiRender()
 	{
+		// Configure
 		const ImGuiViewport* viewport{ ImGui::GetMainViewport() };
 		ImGui::SetNextWindowPos(viewport->WorkPos);
 		ImGui::SetNextWindowSize(viewport->WorkSize);
@@ -239,16 +263,16 @@ namespace Chesster
 
 		style.WindowMinSize.x = minWinSizeX;
 
-		// Settings Panel
+		// Panels
 		m_SettingsPanel.OnImGuiRender();
-
-		// Console Panel
 		m_ConsolePanel.OnImGuiRender();
+		m_LogPanel.OnImGuiRender();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//// Viewport Window ////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		ImGui::SetNextWindowSize(ImVec2(800.0f, 800.0f), ImGuiCond_FirstUseEver);
 		ImGui::Begin("Viewport");
 
 		m_ViewportMousePos.x = m_MousePos.x - ImGui::GetCursorScreenPos().x - ImGui::GetScrollX();
@@ -259,11 +283,7 @@ namespace Chesster
 		SDL_Texture* textureID{ m_Framebuffer.GetSDLTexture() };
 		ImGui::Image((ImTextureID*)(intptr_t)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y });
 
-		// Gameover window
-		if (m_CurrentGameState == GameState::Gameover)
-			GameoverPopupWindow();
-
-		// Pawn promotion prompt
+		// Mouse pawn promotion prompt
 		if (m_CurrentGameState == GameState::PawnPromotion)
 			PawnPromotionPopupWindow();
 
@@ -542,7 +562,7 @@ namespace Chesster
 	void GameLayer::ResetGame()
 	{
 		m_CurrentPlayer = Player::White;
-		m_CurrentGameState = GameState::Gameplay;
+		m_CurrentGameState = GameState::Gameover;
 
 		m_NewCameraData.clear();
 		m_OldCameraData = { "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
@@ -551,12 +571,15 @@ namespace Chesster
 
 		m_RobotCodes.fill('0');
 
+		m_ConsolePanel.ClearLog();
+		m_LogPanel.Clear();
+
 		m_CurrentMove.clear();
 		m_MoveHistory.clear();
-		m_MoveHistorySize = 0;
-		m_Board.ResetActiveSquares();
 
 		m_Board.ResetPieces();
+		m_Board.ResetActiveSquares();
+
 		m_ChessEngine.NewGame();
 		m_LegalMoves = m_ChessEngine.GetValidMoves(START_FEN);
 	}
@@ -577,27 +600,7 @@ namespace Chesster
 		// Compare current move to all the legal moves
 		auto itr = std::find(std::begin(m_LegalMoves), std::end(m_LegalMoves), notation);
 		return (itr != std::end(m_LegalMoves)) ? true : false;
-	}
-
-	void GameLayer::GameoverPopupWindow()
-	{
-		ImGui::SetNextWindowPos({ (m_ViewportSize.x / 2.0f) - 100, m_ViewportSize.y / 2.0f });
-		ImGui::SetNextWindowSize({ 200, 80 });
-		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNav;
-		ImGui::Begin("Gameover", nullptr, windowFlags);
-
-		const std::string winner = (m_CurrentPlayer == Player::Black) ?
-			"Checkmate! White Won!" : "Checkmate! Black Won!";
-
-		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
-		ImGui::PushFont(boldFont);
-		ImGui::Text(winner.c_str());
-		if (ImGui::Button("Play Again", { 200, 50 }))
-			ResetGame();
-		ImGui::PopFont();
-
-		ImGui::End();	// End "Gameover"
-	}
+	}	
 
 	void GameLayer::PawnPromotionPopupWindow()
 	{

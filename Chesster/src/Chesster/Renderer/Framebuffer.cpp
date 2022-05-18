@@ -39,19 +39,6 @@ namespace Chesster
 		// Make self render target
 		SDL_SetRenderTarget(Renderer::Get(), *m_Framebuffer);
 		Renderer::SetViewport(0, 0, m_Framebuffer->GetWidth(), m_Framebuffer->GetHeight());
-
-		float width = (float)m_Framebuffer->GetWidth();
-		float height = (float)m_Framebuffer->GetHeight();		
-
-		const glm::vec2 offset{ 0.0f, 0.0f };
-		//const glm::vec2 offset{ (width * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f ,
-		//				(height * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f };
-
-		float scaleX = width / (SQUARE_SIZE * 8.0f - offset.x);
-		float scaleY = height / (SQUARE_SIZE * 8.0f - offset.y);
-
-		SDL_RenderSetScale(Renderer::Get(), scaleX, scaleY);
-		//SDL_RenderSetScale(Renderer::Get(), std::min(scaleX, 1.0f), std::min(scaleY, 1.0f));
 	}
 
 	void Framebuffer::Unbind()
