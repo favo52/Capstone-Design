@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="start" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  //Chesster is a VAL3 application designed to run in conjunction with
+  //Chesster's PC program, as well as the Cognex8405 camera program.
+  //Chesster starts up a chess game with varying difficulties in order
+  //to train/play with human opponents. The program is designed to move
+  //black by itself, all the player needs to do is follow start up 
+  //instructions and play to the best of their ability.
+  
+  
+  //Failsafe so robot doesn't try to grab a piece or move with a closed gripper.
+  resetMotion()
+  
+  //Initial state, opens the gripper and goes to starting position
+  //if it isn't already there.
+  open(tGripper)
+  waitEndMove()
+  bGripperIsOpen = true
+  movej(jStartPos, tGripper, mMoveSpeed)
+  waitEndMove()
+  
+  //Sets the board frame using A1 as its origin point
+  nFrameError = setFrame(pOrigin,pX,pY,fBoard)
+  
+  //If the frame can't be set, exits VAL3 program
+  if(nFrameError != 0)
+    putln("Error creating initial frame. Please check settings and try again.")
+    putln("Chesster will now shut down.")
+    delay(5)
+    return
+  endIf
+
+  sioLink(sChesster,io:Chesster)
+  for nIndex = 0 to size(nRecvBuffer)-1
+    nRecvBuffer[nIndex] = 0
+  endFor
+  //Starts the main loop. Loop is endless until the program is manually closed.
+  while true
+    
+     //Initializes data return for socket, and buffer to receive
+      nData = sioGet(sChesster,nRecvBuffer)
+    call receive()
+  endWhile
+  
+end</code>
+    </source>
+  </program>
+</programList>

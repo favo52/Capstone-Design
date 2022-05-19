@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project xmlns="ProjectNameSpace">
+  <parameters version="s5.4.1" stackSize="5000" millimeterUnit="true" />
+  <programSection>
+    <program file="move.pgx" />
+    <program file="promote.pgx" />
+    <program file="receive.pgx" />
+    <program file="send.pgx" />
+    <program file="start.pgx" />
+    <program file="stop.pgx" />
+  </programSection>
+  <dataSection>
+    <data file="Casstler.dtx" />
+  </dataSection>
+  <aliasSection>
+    <alias name="io" interface="io" autoload="true" />
+  </aliasSection>
+</project>

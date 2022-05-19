@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="promote" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  //The Promote function runs when Chesster decides to move a Pawn for promotion,
+  //discaring it and placing either a Queen or Knight where it would have moved to.
+  //Corresponding data to receive includes where to have the robot arm move pieces,
+  //if the move requires a piece to be discarded, and which piece is a pawn being promoted to.
+  //
+
+  //Move arm to the middle of the board, above it.
+  movej(jMiddlePos,tGripper,mMoveSpeed)
+  waitEndMove()
+  
+  //Runs a loop to obtain the piece to be moved that turn based on its current position.
+  for nIndex = 1 to 8
+    //Decodes the ASCII code for Rank value first, then decodes the ASCII code for File value.
+    //Once the loop finds the correct Rank and File, the pPick is assigned to the correct position to grab.
+    if nInitRank == nIndex + 48
+      switch nInitFile
+        case 97
+          pPick = compose(pOrigin,fBoard,trA[nIndex])
+        break
+      
+        case 98
+          pPick = compose(pOrigin,fBoard,trB[nIndex])
+        break
+
+        case 99
+          pPick = compose(pOrigin,fBoard,trC[nIndex])
+        break
+      
+        case 100
+          pPick = compose(pOrigin,fBoard,trD[nIndex])
+        break
+            
+        case 101
+          pPick = compose(pOrigin,fBoard,trE[nIndex])
+        break
+
+        case 102
+          pPick = compose(pOrigin,fBoard,trF[nIndex])
+        break
+            
+        case 103
+          pPick = compose(pOrigin,fBoard,trG[nIndex])
+        break
+            
+        case 104
+          pPick = compose(pOrigin,fBoard,trH[nIndex])
+        break
+      endSwitch
+      //Once position of piece is found, loop is ended.
+      nIndex = nIndex + 8
+      
+    endIf
+  endFor
+  
+  //Runs a loop to move the piece grabbed that turn and decode where to place it.
+  //This information is also necessary in case the current movement this turn requires
+  //discarding an opposing piece.
+  for nIndex = 1 to 8
+    if nEndRank == nIndex + 48
+      switch nEndFile
+        case 97
+          pPlace = compose(pOrigin,fBoard,trA[nIndex])
+        break
+      
+        case 98
+          pPlace = compose(pOrigin,fBoard,trB[nIndex])
+        break
+
+        case 99
+          pPlace = compose(pOrigin,fBoard,trC[nIndex])
+        break
+      
+        case 100
+          pPlace = compose(pOrigin,fBoard,trD[nIndex])
+        break
+            
+        case 101
+          pPlace = compose(pOrigin,fBoard,trE[nIndex])
+        break
+
+        case 102
+          pPlace = compose(pOrigin,fBoard,trF[nIndex])
+        break
+            
+        case 103
+          pPlace = compose(pOrigin,fBoard,trG[nIndex])
+        break
+            
+        case 104
+          pPlace = compose(pOrigin,fBoard,trH[nIndex])
+        break
+      endSwitch
+      
+      nIndex = nIndex + 8
+    
+    endIf
+  endFor
+  
+  //Captures a piece and discards it first before moving the piece for the turn.
+  if bCapture == true
+  
+    //Takes the position of the piece to be captured and discards it in the box.
+      
+    //Move arm so it's above the selected piece to grab.
+    movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
+    waitEndMove()
+        
+    //Approaches the piece from above, then grabs it with the gripper.
+    movej(pPlace, tGripper, mGrabSpeed)
+    close(tGripper)
+    waitEndMove()
+    bGripperIsOpen = false
+    
+    //Once the piece is grabbed, the arm moves back up.  
+    movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
+    waitEndMove()
+    
+    //Move the grabbed piece so it's located above the discard box.
+    //The gripper then opens and the piece naturally falls into the box.
+    movej(jBoxPos,tGripper,mMoveSpeed)
+    waitEndMove()  
+    open(tGripper)
+    waitEndMove()
+    bGripperIsOpen = true
+    
+  endIf
+  
+  //Move arm so it's above the selected piece to grab.
+  movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
+  waitEndMove()      
+  
+  //Approaches the piece from above, then grabs it with the gripper.
+  movej(pPick, tGripper, mGrabSpeed)
+  close(tGripper)
+  waitEndMove()
+  bGripperIsOpen = false  
+  
+  //Once the piece is grabbed, the arm moves back up. 
+  movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
+  waitEndMove()
+  
+  //Move arm so it's above the box to be discarded.
+  movej(jBoxPos,tGripper,mMoveSpeed)
+  open(tGripper)
+  waitEndMove()
+  bGripperIsOpen = true
+  
+  //Verifies whether the piece is being upgraded to Knight or Queen.
+  //Then selects the piece accordingly to finish promoting.
+  if nPromote == 2
+    pPick = compose(pOrigin,fBoard,trKnight)
+  else
+    if nPromote == 4
+      pPick = compose(pOrigin,fBoard,trQueen)
+    endIf
+  endIf
+    
+  //Move arm so it's above the selected piece to grab.
+  movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
+  waitEndMove() 
+  
+  //Approaches the piece from above, then grabs it with the gripper.
+  movej(pPick, tGripper, mGrabSpeed)
+  close(tGripper)
+  waitEndMove()
+  bGripperIsOpen = false  
+  
+  //Once the piece is grabbed, the arm moves back up. 
+  movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
+  waitEndMove()      
+  
+  //Approaches the space from above, then releases the gripper.
+  //trRelease is order to release the piece slightly above where it was grabbed.
+  //This is done to prevent the robot arm from running into unnecessary friction.
+  //Once the piece is released, the arm moves back up. 
+  movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
+  waitEndMove()   
+  movej(appro(pPlace,trRelease), tGripper, mGrabSpeed)
+  open(tGripper)
+  waitEndMove()
+  bGripperIsOpen = true 
+  movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
+  waitEndMove() 
+  
+  //Move arm to its resting position.
+  movej(jStartPos,tGripper,mMoveSpeed)
+  waitEndMove()
+end</code>
+    </source>
+  </program>
+</programList>

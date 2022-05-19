@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="start" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  //Chesster is a VAL3 application designed to run in conjunction with
+  //Chesster's PC program, as well as the Cognex8405 camera program.
+  //Chesster starts up a chess game with varying difficulties in order
+  //to train/play with human opponents. The program is designed to move
+  //black by itself, all the player needs to do is follow start up 
+  //instructions and play to the best of their ability.
+  
+  
+  //Failsafe so robot doesn't try to grab a piece or move with a closed gripper.
+  resetMotion()
+  
+  //Initial state, opens the gripper and goes to starting position
+  //if it isn't already there.
+  open(tGripper)
+  waitEndMove()
+  bGripperIsOpen = true
+  movej(jStartPos, tGripper, mMoveSpeed)
+  waitEndMove()
+  
+  //Sets the board frame using A1 as its origin point
+  nFrameError = setFrame(pOrigin,pX,pY,fBoard)
+  
+  //If the frame can't be set, exits VAL3 program
+  if(nFrameError != 0)
+    putln("Error creating initial frame. Please check settings and try again.")
+    putln("Chesster will now shut down.")
+    delay(5)
+    return
+  endIf
+  
+  //Gives a welcome screen and instructions to set up game on the arm's teach pendant.
+  cls()
+  userPage()
+  title("CHESSTER")
+  putln(" Polytechnic University of Puerto Rico")
+  putln("")
+  putln("Electrical and Computer Engineering and ")
+  putln("      Computer Science Department")
+  putln("")
+  putln("              CHESSTER")
+  putln("")
+  putln("            Instructions")
+  putln("1. Connect PC to network.")
+  putln("2. Run Chesster and connect arm/camera.")
+  putln("3. Place pieces in starting position.")
+  putln("4. Press New Game button.")
+  putln("5. Wait for PC confirmation.")
+  
+  //Sets aliases to New Game and End Turn push buttons,
+  //as well as communication sockets for Chesster.
+  //Chesster communication socket was defined in the CS8 beforehand
+  //using IP address 192.168.7.10 and port 150000 
+  dioLink(dNewGame,io:usrIn0)
+  dioLink(dEndTurn,io:usrIn1)
+  sioLink(sChesster,io:Chesster)
+  
+  //Starts the main loop. Loop is endless until the program is manually closed.
+  while true
+    
+    //Core of the main program. Stays waiting until 2 conditions are met simultaneously.
+    //First, a button must be pressed, either New Game or End Turn.
+    //The robot arm also MUST be stationary to exit the wait line. Otherwise, the button press is ignored.
+    wait((dNewGame == true or dEndTurn == true) and isSettled() == true)
+    
+    //If the above conditions are met, ensures that only ONE button was pressed at the same time.
+    //Otherwise, ignore the button press and goes back to the wait line.
+    //New Game button takes precedence over End Turn button. Asks the camera to take a picture.
+    //If everything is placed in the correct starting positions, Chesster activates the new game.
+    if dNewGame == true and dEndTurn == false
+      //Send function is called using the index that asks Chesster for a new game.
+      sSendString = "100"
+      call send()
+    else
+      //End Turn button is only valid when it was the only button pressed and Chesster already
+      //has a game active, otherwise this is ignored and Chesster goes back to the wait line.
+      if dEndTurn == true and dNewGame == false and bGameActive == true
+        //Send function is called using the index that asks Chesster to confirm the player's move was valid.
+        //If valid, Chesster decides how to move and send the data back to the VAL3 program.
+        sSendString = "010"
+        call send()
+      endIf
+    endIf
+  endWhile
+end</code>
+    </source>
+  </program>
+</programList>

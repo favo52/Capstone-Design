@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cell version="2019.10.1" xmlns="http://www.staubli.com/robotics/cell/1">
+  <File path="Controller2\Controller2.controller" />
+</Cell>

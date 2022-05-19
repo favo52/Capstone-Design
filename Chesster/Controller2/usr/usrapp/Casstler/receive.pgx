@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<programList xmlns="ProgramNameSpace">
+  <program name="receive" public="false">
+    <description />
+    <paramSection />
+    <localSection />
+    <source>
+      <code>begin
+  //The receive functions runs when Chesster needs to confirm data sent;
+  //it can reply with data needed for the arm to make the corresponding move.
+  //Corresponding data to receive includes where to have the robot arm move pieces,
+  //if the move requires a piece to be discarded, is the move is a promotion,
+  //and which piece is a pawn being promoted to.
+  //
+  //The last piece of information Chesster sends is to confirm whether the robot
+  //can move at all via a security lock, either for a new game, or to reset a current game, 
+  //or to recover if an emergency stop was placed. The arm doesn't move until instructed
+  //to by Chesster.
+  
+  //Confirms when a New Game has been started and valid, also confirms moves so far are valid.
+  //Lastly, also confirms that a second picture is taken after the arm finishes moving.
+
+    //Obtains data received from Chesster, runs a loop where positions to move, captures,
+    //promotions are all stored as either ASCII values or codes.
+    //If data received for any of the positions isn't valid, force exits loop. 
+  for nIndex=1 to 10
+    //Runs switch &amp; case scenario 10 times, one for each index in array to assign values.
+    switch nIndex
+      //First case assigns column of initial piece's position to move FROM A to H, if valid.
+      //The value is assigned in ASCII to decode later.
+      case 1
+        if nRecvBuffer[nIndex] == 0
+          nIndex = nIndex + 6
+        else
+          nInitFile = nRecvBuffer[nIndex]
+        endIf
+      break
+      
+      //Second case assigns row of initial piece's position to move FROM 1 to 8, if valid.
+      //The value is assigned in ASCII to decode later.
+      case 2
+        if nRecvBuffer[nIndex] == 0
+          nIndex = nIndex + 6
+        else
+          nInitRank = nRecvBuffer[nIndex]
+        endIf
+      break
+      
+      //Third case assigns column of initial piece's position to move TO A to H, if valid.
+      //The value is assigned in ASCII to decode later.
+      case 3
+        if nRecvBuffer[nIndex] == 0
+          nIndex = nIndex + 6
+        else
+          nEndFile = nRecvBuffer[nIndex]
+        endIf
+      break
+      
+      //Fourth case assigns row of initial piece's position to move TO 1 to 8, if valid.
+      //The value is assigned in ASCII to decode later.
+      case 4
+        if nRecvBuffer[nIndex] == 0
+          nIndex = nIndex + 6
+        else
+          nEndRank = nRecvBuffer[nIndex]
+        endIf
+      break
+        
+      //Fifth case decodes ASCII value of nSpecial and assigns whether a special code 
+      //to indicate if there is special movement involved this turn.
+      //0 = No special movement
+      //1 = En Passant
+      //2 = Castling
+      case 5
+        nSpecial = nRecvBuffer[nIndex] - 48
+      break
+        
+      //Sixth case assigns letter of piece involved in special movement, whether it's
+      //castling or en passant. This value is only used if nSpecial isn't 0. 
+      case 6
+        nSpecialFile = nRecvBuffer[nIndex]
+      break
+        
+      //Seventh case assigns number of piece involved in special movement, whether it's
+      //castling or en passant. This value is only used if nSpecial isn't 0.
+      case 7
+        nSpecialRank = nRecvBuffer[nIndex]
+      break
+        
+      //Eight case decodes ASCII value of bCapture and assigns whether a piece is being 
+      //captured on this turn.
+      case 8
+        if nRecvBuffer[nIndex] == 49
+          bCapture = true
+        else
+          bCapture = false
+        endIf
+      break
+      
+      //Ninth case decodes ASCII value of nMove and determines whether a piece is being 
+      //moved or promoted on this turn. 0 = Move, 1 = Promotion.
+      case 9
+        nMove = nRecvBuffer[nIndex] - 48
+        if nMove == 1
+          //If only moving is being done and no promotion, calls move function
+          call move()
+
+        endIf
+      break
+      
+      //Tenth and final case decodes ASCII value of nPromote and determines what piece 
+      //a pawn is being promoted to. 2 = Knight, 4 = Queen.
+      //Only valid if nMove = 1.
+      case 10
+        nPromote = nRecvBuffer[nIndex] - 48
+        if nMove == 2
+          //if move wasn't called, confirms it's a promote and calls promote function
+          call promote()
+
+        endIf
+      break
+    endSwitch
+  endFor
+  for nIndex = 0 to size(nRecvBuffer)-1
+    nRecvBuffer[nIndex] = 0
+  endFor
+end</code>
+    </source>
+  </program>
+</programList>
