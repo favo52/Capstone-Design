@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 
-/** Legend
- @param A parameter of the function.
- @return What the function returns. */
-
 #include "pch.h"
 #include "Chesster/Game/Board.h"
 
@@ -242,8 +238,8 @@ namespace Chesster
 				{
 					GameLayer& gameLayer = GameLayer::Get();
 					gameLayer.UpdateRobotCode(Code::Special, '1');
-					gameLayer.UpdateRobotCode(Code::SpecialCol, pieceBehind->m_Position[0]);
-					gameLayer.UpdateRobotCode(Code::SpecialRow, pieceBehind->m_Position[1]);
+					gameLayer.UpdateRobotCode(Code::SpecialCol, pieceBehind->m_Notation[0]);
+					gameLayer.UpdateRobotCode(Code::SpecialRow, pieceBehind->m_Notation[1]);
 					pieceBehind->Capture();
 				}
 			}

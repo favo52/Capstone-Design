@@ -62,7 +62,7 @@ namespace Chesster
 
 		/*	Overrides the skill level for the ELO rating.
 		 @param boolean Toggles ELO if true, toggles skill level if false. */
-		void ToggleELO(bool boolean);			
+		void ToggleELO(bool boolean);
 
 		/*	Retrieves the next move of the chess engine.
 		 @param moveHistory The current move history of the chess game.
@@ -71,16 +71,21 @@ namespace Chesster
 				 returns "error" if it was unable to get the engine's move. */
 		std::string GetNextMove(const std::string& moveHistory);
 
+		/*	Retrieves the current FEN notation from the chess engine with the given move history.
+		 @param moveHistory The move history of the current game.
+		 @return A string of the FEN notation from the given move history. */
+		std::string GetFEN(const std::string& moveHistory);
+
 		/*	Executes the python script to acquire all the valid moves in the current position of the board.
 		 @param path The filepath of the python script.
 		 @param fen The FEN notation of the current board position.
 		 @return A list of all the valid moves in the current positon separated by whitespace. */
 		std::vector<std::string> GetValidMoves(const std::string& fen);
 
-		/*	Retrieves the current FEN notation from the chess engine of the given move history.
-		 @param moveHistory The current move history of the board.
-		 @return A string of the FEN notation from the given move history. */
-		std::string GetFEN(const std::string& moveHistory);
+		/* Used to check if the game ended in stalemate.
+		 @param fen The FEN notation of the current board position.
+		 @return True if game ended in stalemate, false otherwise. */
+		bool IsStalemate(const std::string& fen);
 
 		/**	Sends the data to the chess engine.
 		 @param data The data to send, usually an UCI chess engine command.

@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 
-/** Legend
- @param A parameter of the function.
- @return What the function returns. */
-
 #include "pch.h"
 #include "Chesster/ImGui/SettingsPanel.h"
 
@@ -160,17 +156,7 @@ namespace Chesster
 			ImGui::BeginDisabled(!m_IsCameraConnected);
 
 			if (ImGui::Button("Take Picture", { 100, 50 }))
-			{
-				GameLayer::Get().EndPlayerTurn();
 				GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
-			}
-
-			ImGui::SameLine();
-			if (ImGui::Button("ArmSettled", { 100, 50 }))
-			{
-				GameLayer::Get().ArmIsSettled();
-				GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
-			}
 
 			ImGui::EndDisabled();
 			ImGui::PopFont();
@@ -288,7 +274,7 @@ namespace Chesster
 
 			const std::string msg{ "Camera disconnected." };
 			LOG_INFO(msg);
-			GameLayer::Get().GetConsolePanel().AddLog(msg);
+			GameLayer::Get().GetLogPanel().AddLog(msg);
 
 			m_IsCameraConnected = false;
 		}
@@ -309,7 +295,7 @@ namespace Chesster
 
 			const std::string msg{ "Chesster server shut down." };
 			LOG_INFO(msg);
-			GameLayer::Get().GetConsolePanel().AddLog(msg);
+			GameLayer::Get().GetLogPanel().AddLog(msg);
 
 			m_IsRobotConnected = false;
 		}

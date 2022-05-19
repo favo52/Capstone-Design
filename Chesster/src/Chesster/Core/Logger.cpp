@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 
-/** Legend
- @param A parameter of the function.
- @return What the function returns. */
-
 #include "pch.h"
 #include "Chesster/Core/Logger.h"
 

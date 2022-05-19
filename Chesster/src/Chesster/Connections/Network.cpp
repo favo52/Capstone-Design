@@ -69,8 +69,11 @@ namespace Chesster
 			std::array<char, 128> buffer = {};
 			if (network.RecvData(network.m_CameraTelnetSocket, buffer))
 			{
-				LOG_INFO("Telnet Buffer: {0}", buffer.data());
-				logPanel.AddLog(buffer.data());
+				if (buffer.data() != "1");
+				{
+					LOG_INFO("Telnet Buffer: {0}", buffer.data());
+					logPanel.AddLog("Telnet Buffer: " + std::string(buffer.data()));
+				}
 			}
 			else
 			{
@@ -175,7 +178,6 @@ namespace Chesster
 			if (network.RecvData(network.m_RobotClientSocket, buffer))
 			{
 				LOG_INFO("Received From Robot: {0}", buffer.data());
-				//logPanel.AddLog("Received From Robot: " + std::string(buffer.data()));
 
 				if (buffer.size() > 2)
 				{

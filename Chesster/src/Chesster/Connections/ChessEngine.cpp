@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 
-/** Legend
- @param A parameter of the function.
- @return What the function returns. */
-
 #include "pch.h"
 #include "Chesster/Connections/ChessEngine.h"
 
@@ -102,7 +98,6 @@ namespace Chesster
 		LOG_INFO(engineMessage);
 		consolePanel.AddLog(engineMessage + "\n");
 
-		WriteToEngine("setoption name MultiPV value 10\n");
 		SetDifficultyLevel();
 		SetDifficultyELO();
 		ToggleELO(true);
@@ -182,7 +177,24 @@ namespace Chesster
 		const std::string message = { "ELO Rating set to " + std::to_string(elo) + "." };
 		LOG_INFO(message);
 		consolePanel.AddLog(message);
-	}	
+	}
+
+	void ChessEngine::SetMultiPV(int multipv)
+	{
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
+
+		if (!WriteToEngine("setoption name MultiPV value " + std::to_string(multipv) + "\n"))
+		{
+			const std::string errorMsg{ "Unable to set MultiPV to " + std::to_string(multipv) + "." };
+			LOG_WARN(errorMsg);
+			consolePanel.AddLog(errorMsg);
+			return;
+		}
+
+		const std::string message = { "MultiPV set to " + std::to_string(multipv) + "." };
+		LOG_INFO(message);
+		consolePanel.AddLog(message);
+	}
 
 	void ChessEngine::ToggleELO(bool boolean)
 	{
@@ -204,29 +216,12 @@ namespace Chesster
 		consolePanel.AddLog(message);
 	}
 
-	void ChessEngine::SetMultiPV(int multipv)
-	{
-		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
-
-		if (!WriteToEngine("setoption name MultiPV value " + std::to_string(multipv) + "\n"))
-		{
-			const std::string errorMsg{ "Unable to set MultiPV to " + std::to_string(multipv) + "." };
-			LOG_WARN(errorMsg);
-			consolePanel.AddLog(errorMsg);
-			return;
-		}
-
-		const std::string message = { "MultiPV set to " + std::to_string(multipv) + "." };
-		LOG_INFO(message);
-		consolePanel.AddLog(message);
-	}
-
 	std::string ChessEngine::GetNextMove(const std::string& moveHistory)
 	{
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
 		// Send position to engine
-		if (!WriteToEngine("position startpos moves " + moveHistory + "\ngo depth 1\nd\n"))
+		if (!WriteToEngine("position startpos moves " + moveHistory + "\ngo depth 1\n"))
 		{
 			const std::string errorMsg{ "Unable to get chess engine's next move." };
 			LOG_WARN(errorMsg);
@@ -252,6 +247,48 @@ namespace Chesster
 		}
 		
 		return "error"; // If no bestmove is found
+	}
+
+	std::string ChessEngine::GetFEN(const std::string& moveHistory)
+	{
+		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
+
+		// Send position to engine
+		if (!WriteToEngine("position startpos moves " + moveHistory + "\nd\n"))
+		{
+			const std::string errorMsg{ "Unable to get FEN from engine." };
+			LOG_ERROR(errorMsg);
+			consolePanel.AddLog(errorMsg);
+			return "error";
+		}
+
+		// Read engine's reply and print it
+		std::string engineMessage = ReadFromEngine();
+		LOG_INFO(engineMessage);
+		consolePanel.AddLog(engineMessage);
+
+		// Grab the FEN string
+		size_t found = engineMessage.find("Fen:");
+		if (found != std::string::npos)
+		{
+			// Erase everything up to and including "Fen:"
+			engineMessage.erase(0, found + sizeof("Fen:"));
+
+			// Grab everything until "Key:" is reached
+			std::istringstream iss{ engineMessage };
+			engineMessage.clear();
+			for (std::string str; iss >> str; )
+			{
+				if (str == "Key:")
+				{
+					engineMessage.pop_back(); // delete last whitespace
+					return engineMessage;	  // only the FEN notation is left, return it
+				}
+				engineMessage += str + ' ';
+			}
+		}
+
+		return "error"; // If no FEN string is found
 	}
 
 	// Runs a Python script
@@ -303,47 +340,34 @@ namespace Chesster
 		return validMoves;
 	}
 
-	std::string ChessEngine::GetFEN(const std::string& moveHistory)
+	bool ChessEngine::IsStalemate(const std::string& fen)
 	{
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
 
-		// Send position to engine
-		if (!WriteToEngine("position startpos moves " + moveHistory + "\nd\n"))
+		if (!WriteToEngine("position fen " + fen + "\nd\n"))
 		{
-			const std::string errorMsg{ "Unable to get FEN from engine." };
-			LOG_ERROR(errorMsg);
+			const std::string errorMsg{ "Failed to check if it's a stalemate." };
+			LOG_WARN(errorMsg);
 			consolePanel.AddLog(errorMsg);
-			return "error";
+			return false;
 		}
 
-		// Read engine's reply and print it
 		std::string engineMessage = ReadFromEngine();
-		LOG_INFO(engineMessage);
-		consolePanel.AddLog(engineMessage);
-		engineMessage.pop_back();
 
-		// Grab the FEN string
-		size_t found = engineMessage.find("Fen:");
+		// Grab the Checkers string if any
+		size_t found = engineMessage.find("Checkers:");
 		if (found != std::string::npos)
 		{
-			// Erase everything up to and including "Fen:"
-			engineMessage.erase(0, found + sizeof("Fen:"));
+			// Erase everything up to and including "Checkers:"
+			engineMessage.erase(0, found + sizeof("Checkers:"));
 
-			// Grab everything until "Key:" is reached
+			// It's a stalemate if there are no checkers
 			std::istringstream iss{ engineMessage };
-			engineMessage.clear();
-			for (std::string str; iss >> str; )
-			{
-				if (str == "Key:")
-				{
-					engineMessage.pop_back(); // delete last whitespace
-					return engineMessage;	  // only the FEN notation is left, return it
-				}
-				engineMessage += str + ' ';
-			}
+			std::string str;
+			return (iss >> str) ? false : true;
 		}
 
-		return "error"; // If no FEN string is found
+		return false;
 	}
 
 	bool ChessEngine::WriteToEngine(const std::string& data)

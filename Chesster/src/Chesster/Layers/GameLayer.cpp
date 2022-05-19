@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 
-/** Legend
- @param A parameter of the function.
- @return What the function returns. */
-
 #include "pch.h"
 #include "Chesster/Layers/GameLayer.h"
 
@@ -51,7 +47,7 @@ namespace Chesster
 		std::sort(m_OldCameraData.begin(), m_OldCameraData.end());
 		m_Network = std::make_unique<Network>();
 
-		absEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 100);
+		m_AbsEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 100);
 	}
 
 	void GameLayer::OnAttach()
@@ -65,6 +61,8 @@ namespace Chesster
 	void GameLayer::OnDetach()
 	{
 		a_IsChessEngineRunning = false;
+
+		m_Network.reset();
 	}
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
@@ -146,6 +144,7 @@ namespace Chesster
 
 			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
 			
+			// Verify the board is set up correctly
 			if (m_MoveHistory.empty() && m_RobotCodes[(int)Code::GameActive] == '0')
 			{
 				if (m_NewCameraData == m_OldCameraData)
@@ -202,34 +201,8 @@ namespace Chesster
 		// Draw all the chess board squares and chess pieces
 		m_Board.OnRender();
 
-		// Draw a faded black screen when gameover
-		if (m_CurrentGameState == GameState::Gameover)
-		{
-			uint32_t width = m_Framebuffer.GetWidth();
-			uint32_t height = m_Framebuffer.GetHeight();
-
-			// Fade the viewport black
-			const SDL_Rect blackOverlayRect = { 0, 0, width, height };
-			const glm::vec4 blackOverlayColor = { 0, 0, 0, 150 };
-			Renderer::DrawFilledRect(blackOverlayRect, blackOverlayColor);
-
-			// Set up text
-			const SDL_Color whiteColor = { 255, 255, 255, 255 };
-			std::string winnerMsg = (m_CurrentPlayer == Player::White) ? "WHITE WINS!" : "BLACK WINS!";
-			winnerText = std::make_unique<Texture>(absEmpireFont, winnerMsg, whiteColor);
-
-			int offsetX = winnerText->GetWidth() / 2.0f;
-			int offsetY = winnerText->GetHeight() / 2.0f;
-			winnerText->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY));
-
-			// Draw black rectangle behind text
-			const SDL_Rect blackRect = { winnerText->GetBounds().x - 2, winnerText->GetBounds().y - 6, winnerText->GetBounds().w, winnerText->GetBounds().h };
-			const glm::vec4 blackColor = { 0, 0, 0, 255 };
-			Renderer::DrawFilledRect(blackRect, blackColor);
-
-			// Draw text
-			Renderer::DrawTexture(winnerText);
-		}
+		if (m_CurrentGameState != GameState::Gameplay)
+			GameoverScreen();
 
 		m_Framebuffer.Unbind();
 	}
@@ -562,7 +535,7 @@ namespace Chesster
 	void GameLayer::ResetGame()
 	{
 		m_CurrentPlayer = Player::White;
-		m_CurrentGameState = GameState::Gameover;
+		m_CurrentGameState = GameState::Gameplay;
 
 		m_NewCameraData.clear();
 		m_OldCameraData = { "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
@@ -672,6 +645,55 @@ namespace Chesster
 		ImGui::End();	// End "PawnPromo"
 	}
 
+	void GameLayer::GameoverScreen()
+	{
+		uint32_t width = m_Framebuffer.GetWidth();
+		uint32_t height = m_Framebuffer.GetHeight();
+
+		// Fade the viewport black
+		const SDL_Rect blackOverlayRect = { 0, 0, width, height };
+		const glm::vec4 blackOverlayColor = { 0, 0, 0, 150 };
+		Renderer::DrawFilledRect(blackOverlayRect, blackOverlayColor);
+
+		// Set up text
+		SDL_Color textColor = { 0, 0, 0, 255 };
+		glm::vec4 rectColor = { 255, 255, 255, 255 };
+		std::string gameoverMsg = "BLACK WINS!";
+		switch (m_CurrentGameState)
+		{
+			case GameState::Checkmate:
+			{
+				if (m_CurrentPlayer == Player::White)
+				{
+					textColor = { 255, 255, 255, 255 };
+					rectColor = { 0, 0, 0, 255 };
+					gameoverMsg = "WHITE WINS!";
+				}
+				break;
+			}
+
+			case GameState::Stalemate:
+			{
+				textColor = { 255, 0, 0, 255 };
+				rectColor = { 0, 0, 0, 255 };
+				gameoverMsg = "STALEMATE!";
+				break;
+			}
+		}
+		m_GameoverTextTexture = std::make_unique<Texture>(m_AbsEmpireFont, gameoverMsg, textColor);
+
+		int offsetX = m_GameoverTextTexture->GetWidth() / 2.0f;
+		int offsetY = m_GameoverTextTexture->GetHeight() / 2.0f;
+		m_GameoverTextTexture->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY));
+
+		// Rectangle behind text
+		const SDL_Rect blackRect = { m_GameoverTextTexture->GetBounds().x - 2, m_GameoverTextTexture->GetBounds().y - 6, m_GameoverTextTexture->GetBounds().w, m_GameoverTextTexture->GetBounds().h };
+		Renderer::DrawFilledRect(blackRect, rectColor);
+
+		// Draw text
+		Renderer::DrawTexture(m_GameoverTextTexture);
+	}
+
 	void GameLayer::ChessEngineThread()
 	{
 		GameLayer& gameLayer = GameLayer::Get();
@@ -692,9 +714,21 @@ namespace Chesster
 				gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(currentFEN);
 				if (gameLayer.m_LegalMoves.empty())
 				{
-					LOG_INFO("CHECKMATE!");
-					gameLayer.m_CurrentGameState = GameState::Gameover;
+					if (gameLayer.m_ChessEngine.IsStalemate(currentFEN))
+					{
+						LOG_INFO("STALEMATE!");
+						gameLayer.GetConsolePanel().AddLog("STALEMATE!");
+						gameLayer.m_CurrentGameState = GameState::Stalemate;
+					}
+					else
+					{
+						LOG_INFO("CHECKMATE!");
+						gameLayer.GetConsolePanel().AddLog("CHECKMATE!");
+						gameLayer.m_CurrentGameState = GameState::Checkmate;
+					}
+
 					gameLayer.m_Network->SendToRobot("00000000000");
+					++gameLayer.m_CurrentPlayer;
 					a_IsMovePlayed = false;
 					a_IsComputerTurn = false;
 					continue;

@@ -43,6 +43,10 @@ namespace Chesster
 		 @param toggle The new true or false state. */
 		void SetRobotButtonStatus(bool toggle) { m_IsRobotConnected = toggle; }
 
+		/* Checks if there's communication with the Cognex camera.
+		 @return True if camera is connected, false otherwise. */
+		bool IsCameraConnected() const { return m_IsCameraConnected; }
+
 		/**	Retrieves the Clear Color from the Settings Panel.
 		 @return A glm::vec4 of the Clear Color. */
 		const glm::vec4& GetClearColor() { return m_ClearColor; }

@@ -40,7 +40,7 @@ namespace Chesster
 	class GameLayer : public Layer
 	{
 	public:
-		enum class GameState { Gameplay, Gameover, PawnPromotion };
+		enum class GameState { Gameplay, Checkmate, Stalemate, PawnPromotion };
 
 		GameLayer();
 
@@ -87,6 +87,7 @@ namespace Chesster
 		bool IsMoveLegal(const std::string& notation);
 
 		void PawnPromotionPopupWindow();	// This popup only opens with player mouse moves
+		void GameoverScreen();
 
 		static void ChessEngineThread();	// Multithread
 
@@ -130,8 +131,8 @@ namespace Chesster
 		LogPanel m_LogPanel;
 		SettingsPanel m_SettingsPanel;
 
-		std::shared_ptr<Font> absEmpireFont;
-		std::unique_ptr<Texture> winnerText;
+		std::shared_ptr<Font> m_AbsEmpireFont;
+		std::unique_ptr<Texture> m_GameoverTextTexture;
 
 	private:
 		static GameLayer* s_Instance;	// Pointer to this

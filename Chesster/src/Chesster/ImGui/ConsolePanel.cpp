@@ -14,10 +14,6 @@
 * limitations under the License.
 */
 
-/** Legend
- @param A parameter of the function.
- @return What the function returns. */
-
 #include "pch.h"
 #include "Chesster/ImGui/ConsolePanel.h"
 
@@ -119,6 +115,24 @@ namespace Chesster
 		if (ImGui::Button("Evaluate", ImVec2(100, 50)))
 			GameLayer::Get().GetChessEngine().EvaluateGame();
 
+		ImGui::SameLine();
+		ImGui::BeginDisabled(!GameLayer::Get().GetSettingsPanel().IsCameraConnected());
+
+		if (ImGui::Button("\t\tEnd\nHuman Turn", { 100, 50 }))
+		{
+			GameLayer::Get().EndPlayerTurn();
+			GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Fix Board", { 100, 50 }))
+		{
+			GameLayer::Get().ArmIsSettled();
+			GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
+		}
+
+		ImGui::EndDisabled();
+
 		ImGui::PopFont();
 		ImGui::Separator();
 
@@ -162,8 +176,15 @@ namespace Chesster
 
 		if (command != "quit\n" || command != "ucinewgame\n")
 		{
-			std::string engineReply = chessEngine.ReadFromEngine();
-			GameLayer::Get().GetConsolePanel().AddLog("\n" + engineReply);
+			std::string test;
+			std::istringstream iss{ command };
+			iss >> test;
+
+			if (test != "position\n");
+			{
+				//std::string engineReply = chessEngine.ReadFromEngine();
+				//GameLayer::Get().GetConsolePanel().AddLog("\n" + engineReply);
+			}
 		}
 
 		m_ScrollToBottom = true;
