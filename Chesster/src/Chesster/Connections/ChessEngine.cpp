@@ -219,31 +219,35 @@ namespace Chesster
 	std::string ChessEngine::GetNextMove(const std::string& moveHistory)
 	{
 		ConsolePanel& consolePanel = GameLayer::Get().GetConsolePanel();
+		const int depth = GameLayer::Get().GetSettingsPanel().GetDepth();
 
 		// Send position to engine
-		if (!WriteToEngine("position startpos moves " + moveHistory + "\ngo depth 1\n"))
+		if (!WriteToEngine("position startpos moves " + moveHistory + "\ngo depth " + std::to_string(depth) + "\n"))
 		{
 			const std::string errorMsg{ "Unable to get chess engine's next move." };
 			LOG_WARN(errorMsg);
 			consolePanel.AddLog(errorMsg);
 			return "error";
 		}
-		
-		// Read engine's reply
-		std::string engineMessage = ReadFromEngine();
-		LOG_INFO(engineMessage);
 
 		// Grab the engine's move
-		size_t found = engineMessage.find("bestmove");
-		if (found != std::string::npos)
+		while (true)
 		{
-			// Erase everything up to and including "bestmove"
-			engineMessage.erase(0, found + sizeof("bestmove"));
-			std::istringstream iss{ engineMessage };
-			engineMessage.clear();
-			iss >> engineMessage; // grab the move
+			// Read engine's reply
+			std::string engineMessage = ReadFromEngine();
+			LOG_INFO(engineMessage);
 
-			return engineMessage;
+			size_t found = engineMessage.find("bestmove");
+			if (found != std::string::npos)
+			{
+				// Erase everything up to and including "bestmove"
+				engineMessage.erase(0, found + sizeof("bestmove"));
+				std::istringstream iss{ engineMessage };
+				engineMessage.clear();
+				iss >> engineMessage; // grab the move
+
+				return engineMessage;
+			}
 		}
 		
 		return "error"; // If no bestmove is found
@@ -398,7 +402,7 @@ namespace Chesster
 
 	const std::string ChessEngine::ReadFromEngine()
 	{
-		Sleep(200);
+		Sleep(300);
 
 		std::array<char, 2048> buffer = {};
 		std::string msg{};

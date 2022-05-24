@@ -37,6 +37,7 @@ namespace Chesster
 		m_SkillLevel{ 0 },
 		m_ELORating{ 1350 },
 		m_MultiPV{ 1 },
+		m_Depth{ 10 },
 		m_IsCameraConnected{ false },
 		m_IsRobotConnected{ false },
 		m_ClearColor{ 0.0f, 0.0f, 0.0f, 1.0f },			// Black
@@ -217,6 +218,14 @@ namespace Chesster
 			ChessEngine& chessEngine = GameLayer::Get().GetChessEngine();
 			
 			static bool isELOActive{ true };
+
+			if (DrawIntSliderControl("Depth", m_Depth, 1, 25))
+			{
+				LOG_INFO("Depth set to {0}.", m_Depth);
+				GameLayer::Get().GetConsolePanel().AddLog("Depth set to " + std::to_string(m_Depth) + ".");
+			}
+
+			ImGui::Separator();
 
 			ImGui::BeginDisabled(isELOActive);
 			if (DrawIntSliderControl("Skill Level", m_SkillLevel, 0, 20))

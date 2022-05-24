@@ -28,6 +28,7 @@ namespace Chesster
 	{
 	public:
 		LogPanel() = default;
+		~LogPanel();
 
 		void OnImGuiRender();
 
@@ -36,6 +37,5 @@ namespace Chesster
 
 	private:
 		ImGuiTextBuffer m_Log;
-		//std::array<char, 64> m_Buffer;
 	};
 }

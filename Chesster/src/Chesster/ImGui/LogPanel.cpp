@@ -21,6 +21,11 @@
 
 namespace Chesster
 {
+	LogPanel::~LogPanel()
+	{
+		Clear();
+	}
+
 	void LogPanel::OnImGuiRender()
 	{
 		ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);

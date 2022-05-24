@@ -50,8 +50,6 @@ namespace Chesster
 
 	void Piece::Capture()
 	{
-		std::string capturedAtNotation{ m_Notation };
-
 		m_Notation = "00";
 		m_Position = { -3000.0f, -3000.0f }; // ridiculous distance offscreen
 		m_IsCaptured = true;

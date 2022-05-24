@@ -47,6 +47,10 @@ namespace Chesster
 		 @return True if camera is connected, false otherwise. */
 		bool IsCameraConnected() const { return m_IsCameraConnected; }
 
+		/**	Retrieves the Depth value from the Settings Panel.
+		 @return An int of the Depth value given to the chess engine. */
+		const int& GetDepth() const { return m_Depth; }
+
 		/**	Retrieves the Clear Color from the Settings Panel.
 		 @return A glm::vec4 of the Clear Color. */
 		const glm::vec4& GetClearColor() { return m_ClearColor; }
@@ -72,6 +76,7 @@ namespace Chesster
 		int m_SkillLevel;			// 0 to 20 (defaults to 0)
 		int m_ELORating;			// 1350 to 2850 (defaults to 1350)
 		int m_MultiPV;				// 1 to 500 (defaults to 1)
+		int m_Depth;				// 1 to 10 (defaults to 1)
 
 		bool m_IsCameraConnected;	// Keeps track of the camera connection
 		bool m_IsRobotConnected;	// Keeps track of the robot connection

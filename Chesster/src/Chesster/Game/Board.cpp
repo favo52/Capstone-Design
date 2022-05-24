@@ -173,6 +173,8 @@ namespace Chesster
 			piece.m_EnPassant = false;
 			piece.m_IsCaptured = false;
 			++index;
+
+			LOG_INFO("piece type: {0}, color: {1}, notation: {2}", piece.m_Type, piece.GetColor(), piece.m_Notation);
 		}
 
 		m_CurrentPiece = &m_ChessPieces[0];

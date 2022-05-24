@@ -149,7 +149,7 @@ namespace Chesster
 			{
 				if (m_NewCameraData == m_OldCameraData)
 				{
-					const std::string msg{ "Board is ready!." };
+					const std::string msg{ "Board is ready!" };
 					LOG_INFO(msg);
 					m_LogPanel.AddLog("\n" + msg);
 
