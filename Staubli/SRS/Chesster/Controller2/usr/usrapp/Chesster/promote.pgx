@@ -11,13 +11,17 @@
   //Corresponding data to receive includes where to have the robot arm move pieces,
   //if the move requires a piece to be discarded, and which piece is a pawn being promoted to.
   //
+
+  //Move arm to the middle of the board, above it.
+  movej(jMiddlePos,tGripper,mMoveSpeed)
+  waitEndMove()
   
   //Runs a loop to obtain the piece to be moved that turn based on its current position.
   for nIndex = 1 to 8
-    //Decodes the ASCII code for row number first, then decodes the ASCII code for column letter.
-    //Once the loop finds the correct row and column, the pPick is assigned to the correct position to grab.
-    if nInitRow == nIndex + 48
-      switch nInitCol
+    //Decodes the ASCII code for Rank value first, then decodes the ASCII code for File value.
+    //Once the loop finds the correct Rank and File, the pPick is assigned to the correct position to grab.
+    if nInitRank == nIndex + 48
+      switch nInitFile
         case 97
           pPick = compose(pOrigin,fBoard,trA[nIndex])
         break
@@ -60,8 +64,8 @@
   //This information is also necessary in case the current movement this turn requires
   //discarding an opposing piece.
   for nIndex = 1 to 8
-    if nEndRow == nIndex + 48
-      switch nEndCol
+    if nEndRank == nIndex + 48
+      switch nEndFile
         case 97
           pPlace = compose(pOrigin,fBoard,trA[nIndex])
         break
@@ -105,10 +109,6 @@
   
     //Takes the position of the piece to be captured and discards it in the box.
       
-    //Move arm to the middle of the board, above it.
-    movej(jMiddlePos,tGripper,mMoveSpeed)
-    waitEndMove()
-      
     //Move arm so it's above the selected piece to grab.
     movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
     waitEndMove()
@@ -132,10 +132,6 @@
     bGripperIsOpen = true
     
   endIf
-  
-  //Move arm to the middle of the board, above it.
-  movej(jMiddlePos,tGripper,mMoveSpeed)
-  waitEndMove()      
   
   //Move arm so it's above the selected piece to grab.
   movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
@@ -168,7 +164,7 @@
   endIf
     
   //Move arm so it's above the selected piece to grab.
-  movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
+  movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
   waitEndMove() 
   
   //Approaches the piece from above, then grabs it with the gripper.
@@ -185,17 +181,15 @@
   //trRelease is order to release the piece slightly above where it was grabbed.
   //This is done to prevent the robot arm from running into unnecessary friction.
   //Once the piece is released, the arm moves back up. 
-  movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
+  movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
   waitEndMove()   
   movej(appro(pPlace,trRelease), tGripper, mGrabSpeed)
   open(tGripper)
   waitEndMove()
-  bGripperIsOpen = true
+  bGripperIsOpen = true 
+  movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
+  waitEndMove() 
   
-  
-  //Move arm to the middle of the board, above it.
-  movej(jMiddlePos,tGripper,mMoveSpeed)
-  waitEndMove()
   //Move arm to its resting position.
   movej(jStartPos,tGripper,mMoveSpeed)
   waitEndMove()

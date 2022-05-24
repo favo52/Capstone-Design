@@ -49,7 +49,7 @@
           if nRecvBuffer[nIndex] == 0
             nIndex = nIndex + 6
           else
-            nInitCol = nRecvBuffer[nIndex]
+            nInitFile = nRecvBuffer[nIndex]
           endIf
         break
       
@@ -59,7 +59,7 @@
           if nRecvBuffer[nIndex] == 0
             nIndex = nIndex + 6
           else
-            nInitRow = nRecvBuffer[nIndex]
+            nInitRank = nRecvBuffer[nIndex]
           endIf
         break
       
@@ -69,7 +69,7 @@
           if nRecvBuffer[nIndex] == 0
             nIndex = nIndex + 6
           else
-            nEndCol = nRecvBuffer[nIndex]
+            nEndFile = nRecvBuffer[nIndex]
           endIf
         break
       
@@ -79,7 +79,7 @@
           if nRecvBuffer[nIndex] == 0
             nIndex = nIndex + 6
           else
-            nEndRow = nRecvBuffer[nIndex]
+            nEndRank = nRecvBuffer[nIndex]
           endIf
         break
         
@@ -95,13 +95,13 @@
         //Sixth case assigns letter of piece involved in special movement, whether it's
         //castling or en passant. This value is only used if nSpecial isn't 0. 
         case 6
-          nSpecialCol = nRecvBuffer[nIndex]
+          nSpecialFile = nRecvBuffer[nIndex]
         break
         
         //Seventh case assigns number of piece involved in special movement, whether it's
         //castling or en passant. This value is only used if nSpecial isn't 0.
         case 7
-          nSpecialRow = nRecvBuffer[nIndex]
+          nSpecialRank = nRecvBuffer[nIndex]
         break        
         
         //Eight case decodes ASCII value of bCapture and assigns whether a piece is being 
