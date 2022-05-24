@@ -90,7 +90,6 @@ namespace Chesster
 	void Board::OnViewportResize(const glm::vec2& viewportSize)
 	{
 		// Offset is half of viewport size minus half of entire board's size
-		//const glm::vec2 offset{ 0.0f, 0.0f };
 		const glm::vec2 offset{ (viewportSize.x * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f ,
 						(viewportSize.y * 0.5f) - (SQUARE_SIZE * 8.0f) * 0.5f };
 
@@ -173,8 +172,6 @@ namespace Chesster
 			piece.m_EnPassant = false;
 			piece.m_IsCaptured = false;
 			++index;
-
-			LOG_INFO("piece type: {0}, color: {1}, notation: {2}", piece.m_Type, piece.GetColor(), piece.m_Notation);
 		}
 
 		m_CurrentPiece = &m_ChessPieces[0];

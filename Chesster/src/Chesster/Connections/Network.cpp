@@ -69,7 +69,9 @@ namespace Chesster
 			std::array<char, 128> buffer = {};
 			if (network.RecvData(network.m_CameraTelnetSocket, buffer))
 			{
-				if (buffer.data() != "1");
+				if (buffer.front() == '1')
+					logPanel.AddLog("Picture taken.");
+				else
 				{
 					LOG_INFO("Telnet Buffer: {0}", buffer.data());
 					logPanel.AddLog("Telnet Buffer: " + std::string(buffer.data()));
@@ -83,9 +85,6 @@ namespace Chesster
 				break;
 			}
 		}
-
-		network.DisconnectCamera();
-		settingsPanel.SetCameraButtonStatus(false);
 	}
 
 	void Network::CameraTCPDeviceThread()
@@ -125,11 +124,8 @@ namespace Chesster
 				LOG_INFO(str);
 				logPanel.AddLog(str);
 				break;
-			}			
+			}
 		}
-
-		network.DisconnectCamera();
-		settingsPanel.SetCameraButtonStatus(false);
 	}
 
 	void Network::ChessterServerThread()

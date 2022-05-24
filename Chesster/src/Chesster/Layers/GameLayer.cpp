@@ -54,15 +54,12 @@ namespace Chesster
 	{
 		// Connect Stockfish
 		a_IsChessEngineRunning = true;
-		std::thread engineThread(ChessEngineThread);
-		engineThread.detach();
+		std::thread(ChessEngineThread).detach();
 	}
 
 	void GameLayer::OnDetach()
 	{
 		a_IsChessEngineRunning = false;
-
-		m_Network.reset();
 	}
 
 	void GameLayer::OnEvent(SDL_Event& sdlEvent)
