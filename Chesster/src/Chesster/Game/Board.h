@@ -44,6 +44,8 @@ namespace Chesster
 	public:
 		Board();
 
+		void Construct();
+
 		/*	Draws all the 64 squares of the chess board. */
 		void OnRender();
 

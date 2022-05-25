@@ -42,6 +42,9 @@ namespace Chesster
 	public:
 		enum class GameState { Gameplay, Checkmate, Stalemate, PawnPromotion };
 
+		enum class Player { Black = 1, White };
+		friend Player operator++(Player& player);
+
 		GameLayer();
 
 		virtual void OnAttach() override;
@@ -63,6 +66,7 @@ namespace Chesster
 		void SetEventsActive(bool active) { m_IsEventsActive = active; }
 
 		GameState& GetGameState() { return m_CurrentGameState; }
+		Player& GetHumanPlayer() { return m_HumanPlayer; }
 		Board& GetBoard() { return m_Board; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
@@ -92,10 +96,6 @@ namespace Chesster
 		static void ChessEngineThread();	// Multithread
 
 	private:
-		enum class Player { Black, White };
-		friend Player operator++(Player& player);		
-
-	private:
 		ChessEngine m_ChessEngine;
 		
 		Framebuffer m_Framebuffer;
@@ -121,6 +121,7 @@ namespace Chesster
 		bool m_IsArmSettled{ false };
 
 		Player m_CurrentPlayer{ Player::White };
+		Player m_HumanPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
 		bool m_IsEventsActive{ false };

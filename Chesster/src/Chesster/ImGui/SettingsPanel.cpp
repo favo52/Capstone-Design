@@ -249,8 +249,20 @@ namespace Chesster
 		});
 
 		static glm::vec4 clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-		DrawSection<glm::vec4>("Colors", [&]()
+		class Board {};
+		DrawSection<Board>("Board", [&]()
 		{
+			if (ImGui::Button("Flip Board", { 100, 50 }))
+			{
+				GameLayer::Player& humanPlayer = GameLayer::Get().GetHumanPlayer();
+				humanPlayer = (humanPlayer == GameLayer::Player::White) ?
+					GameLayer::Player::Black : GameLayer::Player::White;
+
+				GameLayer::Get().GetBoard().Construct();
+			}
+
+			ImGui::Separator();
+			ImGui::Text("Colors");
 			if (DrawColorEdit4Control("Border", clearColor, 60.0f))
 				m_ClearColor = clearColor * 255.0f;
 

@@ -44,6 +44,8 @@ namespace Chesster
 		assert(!s_Instance, "GameLayer already exists!");
 		s_Instance = this;
 
+		m_Board.Construct();
+
 		m_RobotCodes.fill('0');
 		std::sort(m_OldCameraData.begin(), m_OldCameraData.end());
 		m_Network = std::make_unique<Network>();
@@ -98,6 +100,7 @@ namespace Chesster
 						{
 							if (IsPointInRect(m_ViewportMousePos, piece.GetBounds()) && !s_IsHoldingPiece)
 							{
+								LOG_INFO("Piece: {0}", piece.GetNotation());
 								m_MousePiece = &piece;
 								s_IsHoldingPiece = true;
 							}
