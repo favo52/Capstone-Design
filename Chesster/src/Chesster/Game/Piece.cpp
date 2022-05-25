@@ -55,15 +55,12 @@ namespace Chesster
 		m_IsCaptured = true;
 	}
 
-	void Piece::UpdateEnPassant(const std::string& oldPos)
+	void Piece::CheckEnPassant(const std::string& oldPos, const std::string& newPos)
 	{
 		if (IsPawn())
 		{
-			if (m_EnPassant)
-				m_EnPassant = false;
-
-			// If pawn moved two squares
-			if (((oldPos[1] - '0') + (m_Notation[1] - '0')) % 2 == 0)
+			// Check if a Pawn moved two squares
+			if ((((oldPos[1] - '0') + (newPos[1] - '0')) % 2) == 0)
 				m_EnPassant = true;
 		}
 	}

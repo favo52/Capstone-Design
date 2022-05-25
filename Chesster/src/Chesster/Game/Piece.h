@@ -55,8 +55,9 @@ namespace Chesster
 
 		/** Sets the En Passant flag to false if it was set to true on the previous turn. 
 			Sets the En Passant flag to true if the Piece has moved two squares during the current turn.
-		 @param oldPos The original position of this Piece during the current turn. */
-		void UpdateEnPassant(const std::string& oldPos);
+		 @param oldPos The original position of this Piece during the current turn.
+		 @param newPos The new position of this Piece during the current turn. */
+		void CheckEnPassant(const std::string& oldPos, const std::string& newPos);
 
 		/**	Check wether the Piece is a pawn or not.
 		 @return True is the Piece is a pawn, false if not. */

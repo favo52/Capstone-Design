@@ -22,7 +22,8 @@
 namespace Chesster
 {
 	Board::Board() :
-		m_CurrentPiece{ nullptr }
+		m_CurrentPiece{ nullptr },
+		m_PreviousPiece{ nullptr }
 	{
 		// Load and setup the sprite sheet image
 		m_PieceSpriteSheetTexture = std::make_unique<Texture>("assets/textures/ChessPieces.png");
@@ -131,14 +132,15 @@ namespace Chesster
 			// Find piece and move it to new square
 			for (Piece& piece : m_ChessPieces)
 			{
-				piece.UpdateEnPassant(oldPos);
 				if (piece.m_Notation == oldPos)
 				{
-					m_CurrentPiece = &piece;
+					m_PreviousPiece->m_EnPassant = false;
+					m_PreviousPiece = m_CurrentPiece;
 
-					piece.SetPosition(targetSquareItr->GetCenter());
-					piece.m_Notation = newPos;
-					break;
+					m_CurrentPiece = &piece;
+					m_CurrentPiece->SetPosition(targetSquareItr->GetCenter());
+					m_CurrentPiece->m_Notation = newPos;
+					m_CurrentPiece->CheckEnPassant(oldPos, newPos);
 				}
 			}
 		}
@@ -175,6 +177,7 @@ namespace Chesster
 		}
 
 		m_CurrentPiece = &m_ChessPieces[0];
+		m_PreviousPiece = &m_ChessPieces[0];
 	}
 
 	void Board::UpdatePieceCapture()
@@ -230,17 +233,16 @@ namespace Chesster
 			}
 
 			// Capture the correct pawn when en passant
-			if (pieceBehind)
+			if (pieceBehind &&
+				pieceBehind->IsPawn() &&
+				pieceBehind->m_Color != m_CurrentPiece->m_Color &&
+				pieceBehind->m_EnPassant)
 			{
-				if (pieceBehind->IsPawn() && pieceBehind->m_Color != m_CurrentPiece->m_Color &&
-					pieceBehind->m_EnPassant)
-				{
-					GameLayer& gameLayer = GameLayer::Get();
-					gameLayer.UpdateRobotCode(Code::Special, '1');
-					gameLayer.UpdateRobotCode(Code::SpecialCol, pieceBehind->m_Notation[0]);
-					gameLayer.UpdateRobotCode(Code::SpecialRow, pieceBehind->m_Notation[1]);
-					pieceBehind->Capture();
-				}
+				GameLayer& gameLayer = GameLayer::Get();
+				gameLayer.UpdateRobotCode(Code::Special, '1');
+				gameLayer.UpdateRobotCode(Code::SpecialCol, pieceBehind->m_Notation[0]);
+				gameLayer.UpdateRobotCode(Code::SpecialRow, pieceBehind->m_Notation[1]);
+				pieceBehind->Capture();
 			}
 		}
 	}

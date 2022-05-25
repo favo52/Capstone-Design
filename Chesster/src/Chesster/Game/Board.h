@@ -22,9 +22,6 @@
 
 #include "Chesster/Game/Piece.h"
 
-/* LEGEND
-*/
-
 namespace Chesster
 {
 	constexpr int SQUARE_SIZE{ 100 };
@@ -61,8 +58,6 @@ namespace Chesster
 		void UpdateActiveSquares(const std::string& currentMove);
 		void ResetActiveSquares();
 
-		void SetCurrentPiece(Piece* currentPiece) { m_CurrentPiece = currentPiece; }
-
 		/**	Used to retrieve the board squares.
 		 @return Returns an array of all 64 individual squares of the board. */
 		std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
@@ -78,7 +73,9 @@ namespace Chesster
 		std::array<Square, 2> m_ActiveSquares;	// The two highlighted squares
 
 		std::array<Piece, 32> m_ChessPieces;	// The 32 chess pieces
+		
 		Piece* m_CurrentPiece;					// A pointer to the currently held piece
+		Piece* m_PreviousPiece;					// A pointer to the previously held piece
 
 		std::unique_ptr<Texture> m_PieceSpriteSheetTexture;
 	};

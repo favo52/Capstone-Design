@@ -101,10 +101,11 @@ namespace Chesster
 		Framebuffer m_Framebuffer;
 		glm::vec2 m_ViewportSize;
 
-		Board m_Board;					// Holds all 64 squares of the board
+		Board m_Board;					// Holds all 64 squares of the board and all 32 chess pieces
 
 		glm::vec2 m_MousePos;			// The mouse position relative to the window
 		glm::vec2 m_ViewportMousePos;	// The mouse position within the viewport window
+		Piece* m_MousePiece;			// A pointer to the current piece clicked by the mouse
 
 		// Moves/Notations
 		std::string m_CurrentMove;

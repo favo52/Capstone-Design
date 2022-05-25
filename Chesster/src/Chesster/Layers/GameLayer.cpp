@@ -36,6 +36,7 @@ namespace Chesster
 		m_ViewportSize{ 0.0f, 0.0f },
 		m_MousePos{ 0.0f, 0.0f },
 		m_ViewportMousePos{ 0.0f, 0.0f },
+		m_MousePiece{ nullptr },
 		m_OldCameraData{ "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
 		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
@@ -97,7 +98,7 @@ namespace Chesster
 						{
 							if (IsPointInRect(m_ViewportMousePos, piece.GetBounds()) && !s_IsHoldingPiece)
 							{
-								m_Board.SetCurrentPiece(&piece);
+								m_MousePiece = &piece;
 								s_IsHoldingPiece = true;
 							}
 						}
@@ -144,6 +145,7 @@ namespace Chesster
 			// Verify the board is set up correctly
 			if (m_MoveHistory.empty() && m_RobotCodes[(int)Code::GameActive] == '0')
 			{
+				m_RobotCodes.fill('0');
 				if (m_NewCameraData == m_OldCameraData)
 				{
 					const std::string msg{ "Board is ready!" };
@@ -168,7 +170,7 @@ namespace Chesster
 			}
 
 			if (m_IsEndPlayerTurn)
-			{
+			{				
 				UpdatePlayerCameraMove();
 				m_IsEndPlayerTurn = false;
 			}
@@ -184,7 +186,7 @@ namespace Chesster
 
 		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
-			m_Board.GetCurrentPiece().SetPosition(m_ViewportMousePos);		
+			m_MousePiece->SetPosition(m_ViewportMousePos);
 	}
 
 	void GameLayer::OnRender()
@@ -297,6 +299,8 @@ namespace Chesster
 		
 		++m_CurrentPlayer;
 		a_IsMovePlayed = true;
+
+		m_Network->SendToRobot(m_RobotCodes.data());
 	}
 
 	void GameLayer::UpdatePlayerCameraMove()
@@ -342,8 +346,6 @@ namespace Chesster
 
 	void GameLayer::UpdatePlayerMouseMove()
 	{
-		Piece& currentPiece = m_Board.GetCurrentPiece();
-		
 		// Find the square where the piece was dropped at
 		auto& boardSquares = m_Board.GetBoardSquares();
 		auto targetSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
@@ -351,19 +353,19 @@ namespace Chesster
 
 		if (targetSquareItr != std::end(boardSquares))
 		{
-			// If piece was released at same position it was
-			if (currentPiece.GetNotation() == targetSquareItr->Notation)
+			// If piece was released at same position it was originally
+			if (m_MousePiece->GetNotation() == targetSquareItr->Notation)
 			{
-				currentPiece.SetPosition(targetSquareItr->GetCenter());
+				m_MousePiece->SetPosition(targetSquareItr->GetCenter());
 				return;
 			}
 
 			// Current move is the original piece notation + notation of the square it was dropped at
-			m_CurrentMove = { currentPiece.GetNotation() + targetSquareItr->Notation };
+			m_CurrentMove = { m_MousePiece->GetNotation() + targetSquareItr->Notation };
 
 			// Pawn Promotions
-			if (currentPiece.IsPromotion(m_CurrentMove)
-				&& (int)currentPiece.GetColor() == (int)m_CurrentPlayer + 1)
+			if (m_MousePiece->IsPromotion(m_CurrentMove)
+				&& (int)m_MousePiece->GetColor() == (int)m_CurrentPlayer + 1)
 			{
 				m_CurrentGameState = GameState::PawnPromotion;
 				return;
@@ -388,7 +390,6 @@ namespace Chesster
 				++m_CurrentPlayer;
 				a_IsMovePlayed = true;
 				a_IsComputerTurn = true;
-
 				return;
 			}
 		}
@@ -397,11 +398,11 @@ namespace Chesster
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
 
 		auto originalSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
-			[&](const Board::Square& sq) { return currentPiece.GetNotation() == sq.Notation; });
+			[&](const Board::Square& sq) { return m_MousePiece->GetNotation() == sq.Notation; });
 		
 		// Move it back to its original square
 		if (originalSquareItr != std::end(boardSquares))
-			currentPiece.SetPosition(originalSquareItr->GetCenter());
+			m_MousePiece->SetPosition(originalSquareItr->GetCenter());
 	}
 
 	std::string GameLayer::GetCameraMove()
@@ -724,7 +725,6 @@ namespace Chesster
 						gameLayer.m_CurrentGameState = GameState::Checkmate;
 					}
 
-					gameLayer.m_Network->SendToRobot("00000000000");
 					++gameLayer.m_CurrentPlayer;
 					a_IsMovePlayed = false;
 					a_IsComputerTurn = false;
@@ -741,16 +741,15 @@ namespace Chesster
 
 				// Get computer's move
 				gameLayer.m_CurrentMove = gameLayer.m_ChessEngine.GetNextMove(gameLayer.m_MoveHistory);
-				if (gameLayer.m_CurrentMove == "error")
+				if (gameLayer.m_CurrentMove == "error" || gameLayer.m_CurrentMove == "(none)")
 				{
 					LOG_ERROR("Failed to get engine move.");
 					gameLayer.m_ConsolePanel.AddLog("Failed to get engine move.");
 					gameLayer.m_ConsolePanel.AddLog("Enter Ctrl+Spacebar to try again.");
 				}
-				else if (gameLayer.m_CurrentMove != "(none)")
+				else
 				{
 					gameLayer.UpdateComputerMove();
-					gameLayer.m_Network->SendToRobot(gameLayer.m_RobotCodes.data());
 				}
 
 				a_IsComputerTurn = false;
