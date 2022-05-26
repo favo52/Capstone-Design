@@ -124,7 +124,7 @@ namespace Chesster
 	static void DrawSection(const std::string& name, UIFunction uiFunction)
 	{
 		const ImGuiTreeNodeFlags treeNodeFlags =
-			ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
+			ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
 			ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
@@ -145,17 +145,26 @@ namespace Chesster
 
 		auto boldFont = ImGui::GetIO().Fonts->Fonts[2];
 
+		ImGui::PushFont(boldFont);
+
+		const char* robotButtonText = (!m_IsRobotConnected) ? " Start Server" : " Stop Server";
+		if (ImGui::Button(robotButtonText, { 150, 80 }))
+			OnRobotButtonPressed();
+
+		ImGui::SameLine();
+
+		const char* cameraButtonText = (!m_IsCameraConnected) ? "Connect Camera" : "Disconnect Camera";
+		if (ImGui::Button(cameraButtonText, { 150, 80 }))
+			OnCameraButtonPressed();
+
+		ImGui::PopFont();
+
 		class Cognex {};
 		DrawSection<Cognex>("Cognex Camera", [&]()
 		{
-			ImGui::PushFont(boldFont);
-			const char* buttonText = (!m_IsCameraConnected) ? "Connect" : "Disconnect";
-			if (ImGui::Button(buttonText, { 100, 50 }))
-				OnCameraButtonPressed();
-
-			ImGui::SameLine();
 			ImGui::BeginDisabled(!m_IsCameraConnected);
 
+			ImGui::PushFont(boldFont);
 			if (ImGui::Button("Take Picture", { 100, 50 }))
 				GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
 
@@ -189,12 +198,6 @@ namespace Chesster
 		class Staubli {};
 		DrawSection<Staubli>("Staubli Robotic Arm", [&]()
 		{
-			ImGui::PushFont(boldFont);
-			const char* buttonText = (!m_IsRobotConnected) ? " Start\nServer" : " Stop\nServer";
-			if (ImGui::Button(buttonText, { 100, 50 }))
-				OnRobotButtonPressed();
-			ImGui::PopFont();
-
 			ImGui::Separator();
 			ImGui::Text("The Chesster application acts as a server.\n"
 				"The Staubli robot arm acts as a client.");
@@ -252,15 +255,6 @@ namespace Chesster
 		class Board {};
 		DrawSection<Board>("Board", [&]()
 		{
-			//if (ImGui::Button("Flip Board", { 100, 50 }))
-			//{
-			//	GameLayer::Player& humanPlayer = GameLayer::Get().GetHumanPlayer();
-			//	humanPlayer = (humanPlayer == GameLayer::Player::White) ?
-			//		GameLayer::Player::Black : GameLayer::Player::White;
-			//
-			//	GameLayer::Get().GetBoard().Construct();
-			//}
-
 			ImGui::Separator();
 			ImGui::Text("Colors");
 			if (DrawColorEdit4Control("Border", clearColor, 60.0f))

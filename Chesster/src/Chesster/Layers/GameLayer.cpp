@@ -100,7 +100,6 @@ namespace Chesster
 						{
 							if (IsPointInRect(m_ViewportMousePos, piece.GetBounds()) && !s_IsHoldingPiece)
 							{
-								LOG_INFO("Piece: {0}", piece.GetNotation());
 								m_MousePiece = &piece;
 								s_IsHoldingPiece = true;
 							}
@@ -155,15 +154,8 @@ namespace Chesster
 					LOG_INFO(msg);
 					m_LogPanel.AddLog("\n" + msg);
 
-					//if (m_HumanPlayer == Player::Black)
-					//{
-					//	a_IsComputerTurn = true;
-					//}
-					//else
-					//{
-						UpdateRobotCode(Code::GameActive, '1');
-						m_Network->SendToRobot(m_RobotCodes.data());
-					//}
+					UpdateRobotCode(Code::GameActive, '1');
+					m_Network->SendToRobot(m_RobotCodes.data());
 				}
 				else
 				{

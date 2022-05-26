@@ -36,16 +36,14 @@ namespace Chesster
 		const glm::vec4 BlueColor = { 0.084f, 0.342f, 0.517f, 1.0f };
 		const glm::vec4 WhiteColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-		GameLayer::Player humanPlayer = GameLayer::Get().GetHumanPlayer();
-
 		// Create all 64 squares
 		for (size_t x = 0; x < 8; ++x)
 		{
-			const char file = (humanPlayer == GameLayer::Player::White) ? 'a' + x : 'h' - x;
+			const char file = 'a' + x;
 			for (size_t y = 0; y < 8; ++y)
 			{
 				// Set corresponding notation
-				const char rank = (humanPlayer == GameLayer::Player::White) ? '8' - y : '1' + y;
+				const char rank = '8' - y;
 				std::string squareNotation{ file };
 				squareNotation += rank;
 
@@ -56,8 +54,6 @@ namespace Chesster
 				Square* square = &m_BoardSquares[x + y * 8];
 				square->Color = color * 255.0f;
 				square->Notation = squareNotation;
-
-				LOG_INFO("Square: {0}", square->Notation);
 			}
 		}
 
@@ -155,8 +151,6 @@ namespace Chesster
 
 	void Board::ResetPieces()
 	{
-		GameLayer::Player humanPlayer = GameLayer::Get().GetHumanPlayer();
-
 		// The numbers are according to the enum class Piece::Type values
 		int pieceLocations[8 * 4] =
 		{
@@ -166,16 +160,7 @@ namespace Chesster
 			1, 2, 3, 4, 5, 3, 2, 1
 		};
 
-		// Swap King and Queens for black
-		if (humanPlayer == GameLayer::Player::Black)
-		{
-			pieceLocations[3] = 5;
-			pieceLocations[4] = 4;
-			pieceLocations[27] = 5;
-			pieceLocations[28] = 4;
-		}
-
-		Piece::Color color = (humanPlayer == GameLayer::Player::White) ? Piece::Color::Black : Piece::Color::White;
+		Piece::Color color = Piece::Color::Black;
 
 		size_t index{ 0 };
 		uint32_t offset{ 0 };
@@ -184,7 +169,7 @@ namespace Chesster
 			if (index > 15)
 			{
 				offset = 32;
-				color = (humanPlayer == GameLayer::Player::White) ? Piece::Color::White : Piece::Color::Black;
+				color = Piece::Color::White;
 			}
 
 			// Set up the piece properties

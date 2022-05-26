@@ -69,7 +69,6 @@ namespace Chesster
 		void SetEventsActive(bool active) { m_IsEventsActive = active; }
 
 		GameState& GetGameState() { return m_CurrentGameState; }
-		Player& GetHumanPlayer() { return m_HumanPlayer; }
 		Board& GetBoard() { return m_Board; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
@@ -124,7 +123,6 @@ namespace Chesster
 		bool m_IsArmSettled{ false };
 
 		Player m_CurrentPlayer{ Player::White };
-		Player m_HumanPlayer{ Player::White };
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
 		bool m_IsEventsActive{ false };

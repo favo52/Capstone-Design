@@ -27,11 +27,6 @@ namespace Chesster
 	ConsolePanel::ConsolePanel() :
 		m_ScrollToBottom{ true }
 	{
-		m_Commands.reserve(2);
-		m_Commands.emplace_back("help");
-		m_Commands.emplace_back("uci");
-		m_Commands.emplace_back("isready");
-		m_Commands.emplace_back("setoption name");
 		AddLog("Welcome to Chesster!");
 	}
 
@@ -63,7 +58,7 @@ namespace Chesster
 
 		// Reserve enough left-over height for 1 separator + 1 input text
 		const float FooterHeightToReserve = (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetFrameHeightWithSpacing();
-		ImGui::BeginChild("ScrollingRegion", ImVec2(0, -FooterHeightToReserve - 54), false, ImGuiWindowFlags_HorizontalScrollbar);
+		ImGui::BeginChild("ScrollingRegion", ImVec2(0, -FooterHeightToReserve - 20), false, ImGuiWindowFlags_HorizontalScrollbar);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 		PushFont(1);
@@ -86,24 +81,6 @@ namespace Chesster
 		ImGui::PopFont();
 		ImGui::PopStyleVar();
 		ImGui::EndChild();	// End "ScrollingRegion"
-		
-		ImGui::Separator();
-
-		// Command-line Input
-		bool reclaimFocus{ false };
-		std::array<char, 128> InputBuffer = {};
-		if (ImGui::InputText("Input", InputBuffer.data(), InputBuffer.size(), ImGuiInputTextFlags_EnterReturnsTrue))
-		{
-			if (!InputBuffer.empty())
-				ExecCommand(std::string(InputBuffer.data()));
-
-			reclaimFocus = true;
-		}
-
-		// Auto-focus on window apparition
-		ImGui::SetItemDefaultFocus();
-		if (reclaimFocus)
-			ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
 
 		// Reset and Evaluate buttons
 		ImGui::Separator();
@@ -116,15 +93,10 @@ namespace Chesster
 			GameLayer::Get().GetChessEngine().EvaluateGame();
 
 		ImGui::SameLine();
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+		ImGui::SameLine();
 		ImGui::BeginDisabled(!GameLayer::Get().GetSettingsPanel().IsCameraConnected());
 
-		if (ImGui::Button("\t\tEnd\nHuman Turn", { 100, 50 }))
-		{
-			GameLayer::Get().EndPlayerTurn();
-			GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
-		}
-
-		ImGui::SameLine();
 		if (ImGui::Button("Fix Board", { 100, 50 }))
 		{
 			GameLayer::Get().ArmIsSettled();
@@ -149,44 +121,5 @@ namespace Chesster
 	{
 		ImFont* font = ImGui::GetIO().Fonts->Fonts[index];
 		ImGui::PushFont(font);
-	}
-
-	void ConsolePanel::ExecCommand(std::string& command)
-	{
-		AddLog("# " + command + "\n");
-
-		for (char& ch : command)
-			ch = tolower(ch);
-
-		// Process commands
-		if (command == "help")
-		{
-			AddLog("\nCommands:");
-			for (int i = 0; i < m_Commands.size(); i++)
-				AddLog("- " + m_Commands[i]);
-
-			m_ScrollToBottom = true;
-			return;
-		}
-
-		ChessEngine& chessEngine = GameLayer::Get().GetChessEngine();
-
-		command += '\n';
-		chessEngine.WriteToEngine(command);
-
-		if (command != "quit\n" || command != "ucinewgame\n")
-		{
-			std::string test;
-			std::istringstream iss{ command };
-			iss >> test;
-
-			if (test != "position\n");
-			{
-				//std::string engineReply = chessEngine.ReadFromEngine();
-				//GameLayer::Get().GetConsolePanel().AddLog("\n" + engineReply);
-			}
-		}
-
-		m_ScrollToBottom = true;
 	}
 }

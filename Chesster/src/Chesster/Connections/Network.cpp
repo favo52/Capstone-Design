@@ -186,16 +186,8 @@ namespace Chesster
 					}
 					if (buffer[1] == '1')
 					{
-						//if (gameLayer.IsStartingPosition() &&
-						//	gameLayer.GetHumanPlayer() == GameLayer::Player::Black)
-						//{
-						//	gameLayer.ComputerGo();
-						//}
-						//else
-						//{
-							gameLayer.EndPlayerTurn();
-							network.SendToCamera("SE8\r\n");
-						//}
+						gameLayer.EndPlayerTurn();
+						network.SendToCamera("SE8\r\n");
 					}
 					if (buffer[2] == '1')
 					{
