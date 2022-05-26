@@ -252,14 +252,14 @@ namespace Chesster
 		class Board {};
 		DrawSection<Board>("Board", [&]()
 		{
-			if (ImGui::Button("Flip Board", { 100, 50 }))
-			{
-				GameLayer::Player& humanPlayer = GameLayer::Get().GetHumanPlayer();
-				humanPlayer = (humanPlayer == GameLayer::Player::White) ?
-					GameLayer::Player::Black : GameLayer::Player::White;
-
-				GameLayer::Get().GetBoard().Construct();
-			}
+			//if (ImGui::Button("Flip Board", { 100, 50 }))
+			//{
+			//	GameLayer::Player& humanPlayer = GameLayer::Get().GetHumanPlayer();
+			//	humanPlayer = (humanPlayer == GameLayer::Player::White) ?
+			//		GameLayer::Player::Black : GameLayer::Player::White;
+			//
+			//	GameLayer::Get().GetBoard().Construct();
+			//}
 
 			ImGui::Separator();
 			ImGui::Text("Colors");

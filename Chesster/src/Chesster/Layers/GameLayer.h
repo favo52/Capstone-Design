@@ -63,6 +63,9 @@ namespace Chesster
 		void EndPlayerTurn() { m_IsEndPlayerTurn = true; }
 		void ArmIsSettled() { m_IsArmSettled = true; }
 
+		bool IsStartingPosition() const { return m_MoveHistory.empty(); }
+		//void ComputerGo();
+
 		void SetEventsActive(bool active) { m_IsEventsActive = active; }
 
 		GameState& GetGameState() { return m_CurrentGameState; }

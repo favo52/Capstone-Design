@@ -146,7 +146,7 @@ namespace Chesster
 			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
 			
 			// Verify the board is set up correctly
-			if (m_MoveHistory.empty() && m_RobotCodes[(int)Code::GameActive] == '0')
+			if (IsStartingPosition() && m_RobotCodes[(int)Code::GameActive] == '0')
 			{
 				m_RobotCodes.fill('0');
 				if (m_NewCameraData == m_OldCameraData)
@@ -155,8 +155,15 @@ namespace Chesster
 					LOG_INFO(msg);
 					m_LogPanel.AddLog("\n" + msg);
 
-					UpdateRobotCode(Code::GameActive, '1');
-					m_Network->SendToRobot(m_RobotCodes.data());					
+					//if (m_HumanPlayer == Player::Black)
+					//{
+					//	a_IsComputerTurn = true;
+					//}
+					//else
+					//{
+						UpdateRobotCode(Code::GameActive, '1');
+						m_Network->SendToRobot(m_RobotCodes.data());
+					//}
 				}
 				else
 				{
@@ -173,7 +180,7 @@ namespace Chesster
 			}
 
 			if (m_IsEndPlayerTurn)
-			{				
+			{
 				UpdatePlayerCameraMove();
 				m_IsEndPlayerTurn = false;
 			}
@@ -562,6 +569,11 @@ namespace Chesster
 	{
 		m_RobotCodes[(int)code] = value;
 	}
+
+	//void GameLayer::ComputerGo()
+	//{
+	//	a_IsComputerTurn = true;
+	//}
 
 	bool GameLayer::IsPointInRect(const glm::vec2& point, const RectBounds& rect)
 	{
