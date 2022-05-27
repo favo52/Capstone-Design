@@ -37,7 +37,7 @@ namespace Chesster
 		m_SkillLevel{ 0 },
 		m_ELORating{ 1350 },
 		m_MultiPV{ 1 },
-		m_Depth{ 10 },
+		m_Depth{ 5 },
 		m_IsCameraConnected{ false },
 		m_IsRobotConnected{ false },
 		m_ClearColor{ 0.0f, 0.0f, 0.0f, 1.0f },			// Black
@@ -147,15 +147,15 @@ namespace Chesster
 
 		ImGui::PushFont(boldFont);
 
-		const char* robotButtonText = (!m_IsRobotConnected) ? " Start Server" : " Stop Server";
-		if (ImGui::Button(robotButtonText, { 150, 80 }))
-			OnRobotButtonPressed();
-
-		ImGui::SameLine();
-
 		const char* cameraButtonText = (!m_IsCameraConnected) ? "Connect Camera" : "Disconnect Camera";
 		if (ImGui::Button(cameraButtonText, { 150, 80 }))
 			OnCameraButtonPressed();
+
+		ImGui::SameLine();
+
+		const char* robotButtonText = (!m_IsRobotConnected) ? " Start Server" : " Stop Server";
+		if (ImGui::Button(robotButtonText, { 150, 80 }))
+			OnRobotButtonPressed();
 
 		ImGui::PopFont();
 

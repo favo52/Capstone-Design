@@ -31,11 +31,11 @@ namespace Chesster
 		/*	Initializes the Texture to nullptr and zeros. */
 		Texture() = default;
 
-		/** Creates a texture with the image at specified path.
+		/** Creates an image texture with the image at specified path.
 		 @param filepath The filepath of the image. */
 		Texture(const std::string& filepath);
 
-		/** Creates a text texture with the provided font, text and color.
+		/** Creates a text texture with the provided font, text message and color.
 		 @param font The text's font.
 		 @param textureText The text's message.
 		 @param color The color of the text. */

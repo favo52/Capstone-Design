@@ -45,8 +45,7 @@ namespace Chesster
 		s_Instance = this;
 
 		m_Board.Construct();
-
-		m_RobotCodes.fill('0');
+		
 		std::sort(m_OldCameraData.begin(), m_OldCameraData.end());
 		m_Network = std::make_unique<Network>();
 
@@ -134,6 +133,7 @@ namespace Chesster
 		// Camera taking pictures
 		if (m_CameraDataReceived)
 		{
+			// Grab the picture data
 			m_NewCameraData.clear();
 			std::istringstream iss{ m_Network->GetCameraBuffer().data() };
 			for (std::string piece; iss >> piece;)
@@ -141,32 +141,13 @@ namespace Chesster
 				if (piece.front() != '0')
 					m_NewCameraData.push_back(piece);
 			}
-
-			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());
+			std::sort(m_NewCameraData.begin(), m_NewCameraData.end());			
 			
-			// Verify the board is set up correctly
-			if (IsStartingPosition() && m_RobotCodes[(int)Code::GameActive] == '0')
+			if (m_IsNewGameButtonPressed)
 			{
-				m_RobotCodes.fill('0');
-				if (m_NewCameraData == m_OldCameraData)
-				{
-					const std::string msg{ "Board is ready!" };
-					LOG_INFO(msg);
-					m_LogPanel.AddLog("\n" + msg);
-
-					UpdateRobotCode(Code::GameActive, '1');
-					m_Network->SendToRobot(m_RobotCodes.data());
-				}
-				else
-				{
-					const std::string msg{ "Please setup the board with the valid starting position." };
-					LOG_INFO(msg);
-					m_LogPanel.AddLog("\n" + msg);
-
-					UpdateRobotCode(Code::GameActive, '0');
-					m_Network->SendToRobot(m_RobotCodes.data());
-				}
-
+				// Verify the board is set up correctly
+				OnNewGameButtonPressed();
+				m_IsNewGameButtonPressed = false;
 				m_CameraDataReceived = false;
 				return;
 			}
@@ -203,7 +184,7 @@ namespace Chesster
 		m_Board.OnRender();
 
 		if (m_CurrentGameState != GameState::Gameplay)
-			GameoverScreen();
+			DrawGameoverScreen();
 
 		m_Framebuffer.Unbind();
 	}
@@ -343,7 +324,7 @@ namespace Chesster
 		LOG_INFO("Wait... that's illegal!\n");
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
 
-		m_Network->SendToRobot("10000000000");
+		m_Network->SendToRobot(GAME_ACTIVE); // Obligatory Send, keep playing
 	}
 
 	void GameLayer::UpdatePlayerMouseMove()
@@ -542,8 +523,6 @@ namespace Chesster
 		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
 		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" };
 
-		m_RobotCodes.fill('0');
-
 		m_ConsolePanel.ClearLog();
 		m_LogPanel.Clear();
 
@@ -562,11 +541,6 @@ namespace Chesster
 		m_RobotCodes[(int)code] = value;
 	}
 
-	//void GameLayer::ComputerGo()
-	//{
-	//	a_IsComputerTurn = true;
-	//}
-
 	bool GameLayer::IsPointInRect(const glm::vec2& point, const RectBounds& rect)
 	{
 		return ((point.x >= rect.left) && (point.x <= rect.right) &&
@@ -579,6 +553,41 @@ namespace Chesster
 		auto itr = std::find(std::begin(m_LegalMoves), std::end(m_LegalMoves), notation);
 		return (itr != std::end(m_LegalMoves)) ? true : false;
 	}	
+
+	void GameLayer::OnNewGameButtonPressed()
+	{		
+		if (IsStartingPosition())
+		{
+			if (m_NewCameraData == m_OldCameraData)
+			{
+				ResetGame();
+
+				const std::string msg{ "Board is ready!" };
+				LOG_INFO(msg.c_str());
+				m_LogPanel.AddLog("\n" + msg);
+
+				m_Network->SendToRobot(GAME_ACTIVE); // begin new game
+			}
+			else
+			{
+				const std::string msg{ "Please setup the board with the valid starting position." };
+				LOG_INFO(msg);
+				m_LogPanel.AddLog("\n" + msg);
+
+				m_Network->SendToRobot(GAME_LOCKED);
+			}
+		}
+		else
+		{
+			const std::string msg{ "Please setup the board with the valid\n"
+									"starting position and then press the\n"
+									"New Game button to start again." };
+			LOG_INFO(msg);
+			m_LogPanel.AddLog("\n" + msg);
+
+			m_Network->SendToRobot(GAME_ACTIVE); // Obligatory send, keep playing
+		}
+	}
 
 	void GameLayer::PawnPromotionPopupWindow()
 	{
@@ -650,7 +659,7 @@ namespace Chesster
 		ImGui::End();	// End "PawnPromo"
 	}
 
-	void GameLayer::GameoverScreen()
+	void GameLayer::DrawGameoverScreen()
 	{
 		uint32_t width = m_Framebuffer.GetWidth();
 		uint32_t height = m_Framebuffer.GetHeight();
@@ -679,7 +688,7 @@ namespace Chesster
 
 			case GameState::Stalemate:
 			{
-				textColor = { 255, 0, 0, 255 };
+				textColor = { 255, 255, 0, 255 }; // Yellow
 				rectColor = { 0, 0, 0, 255 };
 				gameoverMsg = "STALEMATE!";
 				break;
@@ -732,6 +741,7 @@ namespace Chesster
 						gameLayer.m_CurrentGameState = GameState::Checkmate;
 					}
 
+					gameLayer.m_MoveHistory.clear();
 					++gameLayer.m_CurrentPlayer;
 					a_IsMovePlayed = false;
 					a_IsComputerTurn = false;

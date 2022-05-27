@@ -60,15 +60,16 @@ namespace Chesster
 		void CameraDataReceived() { m_CameraDataReceived = true; }
 
 		void UpdateRobotCode(Code code, char value);
+		void NewGameButtonPressed() { m_IsNewGameButtonPressed = true; }
 		void EndPlayerTurn() { m_IsEndPlayerTurn = true; }
 		void ArmIsSettled() { m_IsArmSettled = true; }
 
 		bool IsStartingPosition() const { return m_MoveHistory.empty(); }
-		//void ComputerGo();
 
 		void SetEventsActive(bool active) { m_IsEventsActive = active; }
 
 		GameState& GetGameState() { return m_CurrentGameState; }
+		Player& GetCurrentPlayer() { return m_CurrentPlayer; }
 		Board& GetBoard() { return m_Board; }
 
 		ChessEngine& GetChessEngine() { return m_ChessEngine; }
@@ -92,8 +93,10 @@ namespace Chesster
 		bool IsPointInRect(const glm::vec2& point, const RectBounds& rectBounds);
 		bool IsMoveLegal(const std::string& notation);
 
+		void OnNewGameButtonPressed();
+
 		void PawnPromotionPopupWindow();	// This popup only opens with player mouse moves
-		void GameoverScreen();
+		void DrawGameoverScreen();		
 
 		static void ChessEngineThread();	// Multithread
 
@@ -117,8 +120,9 @@ namespace Chesster
 		bool m_CameraDataReceived{ false };
 		std::vector<std::string> m_NewCameraData;
 		std::vector<std::string> m_OldCameraData;
-
+		
 		std::array<char, 11> m_RobotCodes;
+		bool m_IsNewGameButtonPressed{ false };
 		bool m_IsEndPlayerTurn{ false };
 		bool m_IsArmSettled{ false };
 
@@ -143,7 +147,7 @@ namespace Chesster
 
 	enum class Code
 	{
-		GameActive,	// Code for playing. 0 = lock, 1 = playing.
+		GameActive,	// Code for playing. 0 = lock, 1 = playing, 2 = white won, 3 = black won.
 		InitCol,	// First letter of initial position in ASCII code.
 		InitRow,	// First number of initial position in ASCII code.
 		EndCol,		// First letter of ending position in ASCII code.
@@ -155,4 +159,9 @@ namespace Chesster
 		Move,		// Move Code. 1 = move, 2 = promote
 		Promote		// Promote Code. 2 = Knight, 4 = Queen.
 	};
+
+	constexpr char* GAME_LOCKED{ "00000000000" };
+	constexpr char* GAME_ACTIVE{ "10000000000" };
+	constexpr char* WHITE_WON{ "20000000000" };
+	constexpr char* BLACK_WON{ "30000000000" };
 }

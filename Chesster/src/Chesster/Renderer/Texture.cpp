@@ -91,7 +91,7 @@ namespace Chesster
 		FreeTexture();
 
 		// Render text surface
-		SDL_Surface* textSurface = TTF_RenderText_Solid(font->GetTTF(), textureText.c_str(), color);
+		SDL_Surface* textSurface = TTF_RenderText_Blended(font->GetTTF(), textureText.c_str(), color);
 		if (textSurface == nullptr)
 		{
 			LOG_ERROR("Unable to render text surface! SDL_ttf error: {0}", TTF_GetError());

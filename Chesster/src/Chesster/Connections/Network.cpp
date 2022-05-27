@@ -179,27 +179,37 @@ namespace Chesster
 				{
 					GameLayer& gameLayer = GameLayer::Get();
 					
-					if (buffer[0] == '1')
+					if (buffer[0] == '1') // Green button pressed
 					{
-						gameLayer.ResetGame();
+						gameLayer.NewGameButtonPressed();
 						network.SendToCamera("SE8\r\n");
 					}
-					if (buffer[1] == '1')
+
+					if (buffer[1] == '1') // Black button is pressed
 					{
 						gameLayer.EndPlayerTurn();
 						network.SendToCamera("SE8\r\n");
 					}
-					if (buffer[2] == '1')
+
+					if (buffer[2] == '1') // ArmSettled
 					{
 						if (gameLayer.GetGameState() == GameLayer::GameState::Gameplay)
 						{
 							gameLayer.ArmIsSettled();
 							network.SendToCamera("SE8\r\n");
-							network.SendToRobot("10000000000"); // 10 billones
+							network.SendToRobot(GAME_ACTIVE);
 						}
-						else // It's checkmate
+						else if (gameLayer.GetGameState() == GameLayer::GameState::Checkmate)
 						{
-							network.SendToRobot("00000000000");
+							GameLayer::Player& currentPlayer = gameLayer.GetCurrentPlayer();
+							const std::string sendCode = (currentPlayer == GameLayer::Player::White) ?
+								WHITE_WON : BLACK_WON;
+
+							network.SendToRobot(sendCode);
+						}
+						else // It's stalemate
+						{
+							network.SendToRobot(GAME_LOCKED); // Don't do anything when Stalemate
 						}
 					}
 				}
