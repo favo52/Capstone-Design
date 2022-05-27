@@ -8,12 +8,12 @@
       <code>begin
   //The send function runs when a button is pressed on the physical interface,
   //either a new start game is being requested (via index 0), or when a player is confirming
-  //their turn is over (via index 1). Turn over calls send function twice, once to have
-  //Chesster decide what the AI should do, and the second time to have the
-  //camera take a picture to confirm the movements done by the arm were done
+  //their turn is over (via index 1). End Turn calls send function twice, once to have
+  //Chesster decide what the algorithm should do, and the second time to have the
+  //camera take a picture after confirming the movements done by the arm were done
   //correctly (via index 2).
   
-  //gets the length of the string command typed
+  //gets the length of the string typed
   nOutput=len(sSendString)
   
   //assign an ASCII code to each letter to send to the PC
@@ -21,10 +21,13 @@
     nSendBuffer[nIndex]=asc(sSendString,nIndex)
   endFor
   
-  //assigns an initial value to nData, to ensure data is sent.
+  //assigns an initial value to nData, which loops infinitely
+  //to ensure data is sent.
   nData = -1
+  //Until the program confirms the other side has received data,
+  //this function loops infinitely.
   while nData == -1
-    //Repeats loop for nData until data is sent.
+    //Accesses the socket created to send data to the algorithm.
     nData = sioSet(sChesster,nSendBuffer)
   endWhile
   

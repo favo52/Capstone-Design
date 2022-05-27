@@ -10,6 +10,7 @@
   //It automatically clears any sockets established, ensures the
   //robot goes back to a resting position and safely releases
   //any pieces it has gripped, if any.
+  resetMotion()
   cls()
   
   //closes communication socket with Chesster software

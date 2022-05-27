@@ -8,9 +8,6 @@
     <bool name="bCapture" public="false">
       <valueBool value="false" index="0" />
     </bool>
-    <bool name="bGameActive" public="false">
-      <valueBool value="false" index="0" />
-    </bool>
   </boolSection>
   <configRsSection />
   <configSection />
@@ -39,26 +36,51 @@
         <jointValue j1="49.51" j2="2.18" j3="122.61" j4="1.47" j5="48.06" j6="88.63" />
       </valueJoint>
     </joint>
-    <joint name="jMiddlePos" public="false">
-      <valueJoint index="0">
-        <jointValue j1="-4.34" j2="25.5" j3="99.07" j4="-0.3" j5="48.13" j6="34.52" />
-      </valueJoint>
-    </joint>
     <joint name="jBoxPos" public="false">
       <valueJoint index="0">
         <jointValue j1="41.9" j2="49.13" j3="59.81" j4="-0.23" j5="63.28" j6="81.17" />
+      </valueJoint>
+    </joint>
+    <joint name="jConfirmPos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="49.51" j2="2.18" j3="108" j4="1.47" j5="48.06" j6="88.63" />
+      </valueJoint>
+    </joint>
+    <joint name="jSulkPos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="-124.13" j2="2.18" j3="122.61" j4="1.47" j5="48.06" j6="88.63" />
+      </valueJoint>
+    </joint>
+    <joint name="jSulk2Pos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="-124.13" j2="25.87" j3="123.19" j4="2.31" j5="23.7" j6="88.63" />
+      </valueJoint>
+    </joint>
+    <joint name="jWinPos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="-1.98" j2="2.27" j3="121.8" j4="-1.14" j5="48.94" j6="36.52" />
+      </valueJoint>
+    </joint>
+    <joint name="jWin2Pos" public="false">
+      <valueJoint index="0">
+        <jointValue j1="-1.98" j2="6.77" j3="121.8" j4="-1.14" j5="48.94" j6="36.52" />
       </valueJoint>
     </joint>
   </jointSection>
   <mdescSection>
     <mdesc name="mMoveSpeed" public="true">
       <valueMdesc index="0">
-        <mdescValue accel="15" vel="15" decel="15" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
+        <mdescValue accel="40" vel="40" decel="40" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
       </valueMdesc>
     </mdesc>
     <mdesc name="mGrabSpeed" public="false">
       <valueMdesc index="0">
-        <mdescValue accel="5" vel="5" decel="5" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
+        <mdescValue accel="20" vel="20" decel="20" tmax="9999" rmax="9999" blend="off" leave="50" reach="50" />
+      </valueMdesc>
+    </mdesc>
+    <mdesc name="mSulkSpeed" public="false">
+      <valueMdesc index="0">
+        <mdescValue accel="5" vel="5" decel="5" tmax="99999" rmax="99999" blend="off" leave="50" reach="50" />
       </valueMdesc>
     </mdesc>
   </mdescSection>
@@ -114,10 +136,13 @@
     <num name="nSpecialFile" public="false">
       <valueNum value="0" index="0" />
     </num>
+    <num name="nData" public="false">
+      <valueNum value="0" index="0" />
+    </num>
     <num name="nOutput" public="false">
       <valueNum value="0" index="0" />
     </num>
-    <num name="nData" public="false">
+    <num name="nGameActive" public="false">
       <valueNum value="0" index="0" />
     </num>
   </numSection>
@@ -179,7 +204,7 @@
       <tFather alias="" name="flange" fatherIndex="0" />
       <valueTool index="0">
         <ttValue x="0" y="0" z="0" rx="0" ry="0" rz="0" />
-        <io alias="io" name="valve1" ioIndex="0" open="1" close="1" />
+        <io alias="io" name="valve1" ioIndex="0" open="0.5" close="0.5" />
       </valueTool>
     </tool>
   </toolSection>
@@ -418,7 +443,7 @@
     </trsf>
     <trsf name="trApproach" public="false">
       <valueTrsf index="0">
-        <trsfValue x="0" y="0" z="-100" rx="0" ry="0" rz="0" />
+        <trsfValue x="0" y="0" z="-150" rx="0" ry="0" rz="0" />
       </valueTrsf>
     </trsf>
     <trsf name="trRelease" public="false">
