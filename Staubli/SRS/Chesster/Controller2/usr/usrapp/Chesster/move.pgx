@@ -18,9 +18,8 @@
   //the movements of the primary piece for this turn. 
   
   
-  //Move arm to the middle of the board, above it.
-  movej(jMiddlePos,tGripper,mMoveSpeed)
-  waitEndMove()
+  //Move robotic arm to the middle of the board, above it.
+  //movej(jMiddlePos,tGripper,mMoveSpeed)
   
   //First, the function verifies if there's a special movement being done this turn.
   //First checks if the special movement is En Passant.
@@ -72,24 +71,19 @@
       
     //Move arm so it's above the selected piece to grab.
     movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
-    waitEndMove()
         
     //Approaches the piece from above, then grabs it with the gripper.
     movej(pPick, tGripper, mGrabSpeed)
     close(tGripper)
-    waitEndMove()
     bGripperIsOpen = false
     
     //Once the piece is grabbed, the arm moves back up.  
     movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
-    waitEndMove()
     
     //Move the grabbed piece so it's located above the discard box.
     //The gripper then opens and the piece naturally falls into the box.
-    movej(jBoxPos,tGripper,mMoveSpeed)
-    waitEndMove()  
+    movej(jBoxPos,tGripper,mMoveSpeed)  
     open(tGripper)
-    waitEndMove()
     bGripperIsOpen = true
   endIf
 
@@ -190,57 +184,46 @@
       
     //Move arm so it's above the selected piece to grab.
     movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
-    waitEndMove()
         
     //Approaches the piece from above, then grabs it with the gripper.
     movej(pPlace, tGripper, mGrabSpeed)
     close(tGripper)
-    waitEndMove()
     bGripperIsOpen = false
     
     //Once the piece is grabbed, the arm moves back up.  
     movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
-    waitEndMove()
     
     //Move the grabbed piece so it's located above the discard box.
     //The gripper then opens and the piece naturally falls into the box.
-    movej(jBoxPos,tGripper,mMoveSpeed)
-    waitEndMove()  
+    movej(jBoxPos,tGripper,mMoveSpeed)  
     open(tGripper)
-    waitEndMove()
     bGripperIsOpen = true
     
   endIf
   
   //Move arm so it's above the selected piece to grab.
   movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
-  waitEndMove()      
   
   //Approaches the piece from above, then grabs it with the gripper.
   movej(pPick, tGripper, mGrabSpeed)
   close(tGripper)
-  waitEndMove()
   bGripperIsOpen = false  
   
   //Once the piece is grabbed, the arm moves back up. 
   movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
-  waitEndMove()
   
   //Move arm so it's above the selected space to place piece in.
-  movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
-  waitEndMove()      
+  movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)      
   
   //Approaches the space from above, then releases the gripper.
   //trRelease is order to release the piece slightly above where it was grabbed.
   //This is done to prevent the robot arm from running into unnecessary friction.
   movej(appro(pPlace,trRelease), tGripper, mGrabSpeed)
   open(tGripper)
-  waitEndMove()
   bGripperIsOpen = true
   
   //Once the piece is released, the arm moves back up. 
   movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
-  waitEndMove()
   
   //Castling is checked last to ensure King is moved first, according to Chess rules.
   if nSpecial == 2
@@ -304,33 +287,27 @@
       
     //Move arm so it's above the selected piece to grab.  
     movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
-    waitEndMove()
       
     //Approaches the piece from above, then grabs it with the gripper.      
     movej(pPick, tGripper, mGrabSpeed)
     close(tGripper)
-    waitEndMove()
     bGripperIsOpen = false
       
     //Once the piece is grabbed, the arm moves back up. 
     movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
-    waitEndMove()
       
     //The arm then move to stop above where the piece will be placed.
     movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
-    waitEndMove()
       
     //Approaches the space from above, then releases the gripper.
     //trRelease is order to release the piece slightly above where it was grabbed.
     //This is done to prevent the robot arm from running into unnecessary friction.
     movej(appro(pPlace,trRelease), tGripper, mGrabSpeed)
     open(tGripper)
-    waitEndMove()
     bGripperIsOpen = true
     
     //Moves arm to far above the space the piece was set, and awaits for next set of commands.
     movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
-    waitEndMove()
   endIf
   
    //Move arm to its resting position.

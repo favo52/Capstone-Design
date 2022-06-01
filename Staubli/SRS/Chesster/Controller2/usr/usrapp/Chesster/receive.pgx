@@ -6,37 +6,33 @@
     <localSection />
     <source>
       <code>begin
-  //The receive functions runs when Chesster needs to confirm data sent;
+  //The receive functions runs when the algorithm needs to confirm data sent;
   //it can reply with data needed for the arm to make the corresponding move.
   //Corresponding data to receive includes where to have the robot arm move pieces,
   //if the move requires a piece to be discarded, is the move is a promotion,
   //and which piece is a pawn being promoted to.
   //
-  //The last piece of information Chesster sends is to confirm whether the robot
+  //The last piece of information the robotic arm sends is to confirm whether the robot
   //can move at all via a security lock, either for a new game, or to reset a current game, 
   //or to recover if an emergency stop was placed. The arm doesn't move until instructed
-  //to by Chesster.
+  //to by the algorithm.
 
 
-  //Initializes data return for socket, and buffer to receive.
+  //Initializes data return variable for socket communication, as well as buffer to receive.
   for nIndex = 0 to size(nRecvBuffer)-1
     nRecvBuffer[nIndex] = 0
   endFor
   
  
-  //gets data sent from Chesster
+  //Accesses the socket created to receive data from the algorithm.
   sioGet(sChesster, nRecvBuffer)
 
   
   //Confirms when a New Game has been started and valid, also confirms moves so far are valid.
   //Lastly, also confirms that a second picture is taken after the arm finishes moving.
-  if nRecvBuffer[0] == 49
-    bGameActive = true
-  else
-    bGameActive = false
-  endIf
+    nGameActive = nRecvBuffer[0] - 48
   
-  if sSendString == "010" and bGameActive == true
+  if sSendString == "010" and nGameActive == 1
     //Obtains data received from Chesster, runs a loop where positions to move, captures,
     //promotions are all stored as either ASCII values or codes.
     //If data received for any of the positions isn't valid, force exits loop. 
@@ -102,7 +98,7 @@
         //castling or en passant. This value is only used if nSpecial isn't 0.
         case 7
           nSpecialRank = nRecvBuffer[nIndex]
-        break        
+        break
         
         //Eight case decodes ASCII value of bCapture and assigns whether a piece is being 
         //captured on this turn.
@@ -123,6 +119,9 @@
             call move()
             
             //command for informing camera the arm is settled and to take a picture
+            //1 on the third index of the string lets the camera know the arm is not
+            //obctructing its view anymore, and it is free to take a new picture
+            //of the current state of the board.
             sSendString = "001"
             
             call send()
@@ -146,6 +145,47 @@
         break
       endSwitch
     endFor
+  endIf
+  if sSendString == "100" or sSendString == ""
+    switch nGameActive
+      case 0
+      break
+      case 1
+        movej(jConfirmPos, tGripper, mMoveSpeed)
+        movej(jStartPos, tGripper, mMoveSpeed)
+      break
+      case 2
+        movej(jSulkPos, tGripper, mMoveSpeed)
+        waitEndMove()
+        delay(1)
+        movej(jSulk2Pos,tGripper,mSulkSpeed)
+        waitEndMove()
+        delay(3)
+        movej(jSulkPos,tGripper,mSulkSpeed)
+        waitEndMove()
+        delay(1)
+        movej(jStartPos,tGripper,mMoveSpeed)
+        nGameActive = 0
+      break
+      case 3
+        movej(jWinPos, tGripper,mMoveSpeed)
+        waitEndMove()
+        delay(1)
+        for nIndex = 0 to 3
+          movej(jWin2Pos, tGripper, mMoveSpeed)
+          movej(jWinPos, tGripper, mMoveSpeed)
+        endFor
+        waitEndMove()
+        close(tGripper)
+        open(tGripper)
+        close(tGripper)
+        open(tGripper)
+        delay(1)
+        movej(jStartPos,tGripper,mMoveSpeed)
+        waitEndMove()
+        nGameActive = 0
+      break
+    endSwitch
   endIf
 end</code>
     </source>

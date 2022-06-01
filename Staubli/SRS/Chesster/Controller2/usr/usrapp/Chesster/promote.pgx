@@ -12,9 +12,9 @@
   //if the move requires a piece to be discarded, and which piece is a pawn being promoted to.
   //
 
-  //Move arm to the middle of the board, above it.
-  movej(jMiddlePos,tGripper,mMoveSpeed)
-  waitEndMove()
+  //Move robotic arm to the middle of the board, above it.
+  //movej(jMiddlePos,tGripper,mMoveSpeed)
+  
   
   //Runs a loop to obtain the piece to be moved that turn based on its current position.
   for nIndex = 1 to 8
@@ -111,46 +111,46 @@
       
     //Move arm so it's above the selected piece to grab.
     movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
-    waitEndMove()
+    
         
     //Approaches the piece from above, then grabs it with the gripper.
     movej(pPlace, tGripper, mGrabSpeed)
     close(tGripper)
-    waitEndMove()
+    
     bGripperIsOpen = false
     
     //Once the piece is grabbed, the arm moves back up.  
     movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
-    waitEndMove()
+    
     
     //Move the grabbed piece so it's located above the discard box.
     //The gripper then opens and the piece naturally falls into the box.
     movej(jBoxPos,tGripper,mMoveSpeed)
-    waitEndMove()  
+      
     open(tGripper)
-    waitEndMove()
+    
     bGripperIsOpen = true
     
   endIf
   
   //Move arm so it's above the selected piece to grab.
   movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
-  waitEndMove()      
+        
   
   //Approaches the piece from above, then grabs it with the gripper.
   movej(pPick, tGripper, mGrabSpeed)
   close(tGripper)
-  waitEndMove()
+  
   bGripperIsOpen = false  
   
   //Once the piece is grabbed, the arm moves back up. 
   movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
-  waitEndMove()
+  
   
   //Move arm so it's above the box to be discarded.
   movej(jBoxPos,tGripper,mMoveSpeed)
   open(tGripper)
-  waitEndMove()
+  
   bGripperIsOpen = true
   
   //Verifies whether the piece is being upgraded to Knight or Queen.
@@ -165,30 +165,30 @@
     
   //Move arm so it's above the selected piece to grab.
   movej(appro(pPick,trApproach), tGripper, mMoveSpeed)
-  waitEndMove() 
+   
   
   //Approaches the piece from above, then grabs it with the gripper.
   movej(pPick, tGripper, mGrabSpeed)
   close(tGripper)
-  waitEndMove()
+  
   bGripperIsOpen = false  
   
   //Once the piece is grabbed, the arm moves back up. 
   movej(appro(pPick,trApproach), tGripper, mGrabSpeed)
-  waitEndMove()      
+        
   
   //Approaches the space from above, then releases the gripper.
-  //trRelease is order to release the piece slightly above where it was grabbed.
+  //trRelease is used in order to release the piece slightly above where it was grabbed.
   //This is done to prevent the robot arm from running into unnecessary friction.
   //Once the piece is released, the arm moves back up. 
   movej(appro(pPlace,trApproach), tGripper, mMoveSpeed)
-  waitEndMove()   
+     
   movej(appro(pPlace,trRelease), tGripper, mGrabSpeed)
   open(tGripper)
-  waitEndMove()
+  
   bGripperIsOpen = true 
   movej(appro(pPlace,trApproach), tGripper, mGrabSpeed)
-  waitEndMove() 
+   
   
   //Move arm to its resting position.
   movej(jStartPos,tGripper,mMoveSpeed)
