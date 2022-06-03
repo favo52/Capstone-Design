@@ -36,14 +36,12 @@ namespace Chesster
 		m_ViewportSize{ 0.0f, 0.0f },
 		m_MousePos{ 0.0f, 0.0f },
 		m_ViewportMousePos{ 0.0f, 0.0f },
-		m_MousePiece{ nullptr },
-		m_OldCameraData{ "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
-		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
-		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" }
+		m_MousePiece{ nullptr }
 	{
 		assert(!s_Instance, "GameLayer already exists!");
 		s_Instance = this;
 
+		ResetOldCameraData();
 		m_Board.Construct();
 		
 		std::sort(m_OldCameraData.begin(), m_OldCameraData.end());
@@ -519,9 +517,7 @@ namespace Chesster
 		m_CurrentGameState = GameState::Gameplay;
 
 		m_NewCameraData.clear();
-		m_OldCameraData = { "a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B",
-		"c2P", "c7p", "c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B",
-		"f2P", "f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r" };
+		ResetOldCameraData();
 
 		m_ConsolePanel.ClearLog();
 		m_LogPanel.Clear();
@@ -534,6 +530,16 @@ namespace Chesster
 
 		m_ChessEngine.NewGame();
 		m_LegalMoves = m_ChessEngine.GetValidMoves(START_FEN);
+	}
+
+	void GameLayer::ResetOldCameraData()
+	{
+		m_OldCameraData =
+		{
+			"a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B", "c2P", "c7p",
+			"c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B", "f2P",
+			"f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r"
+		};
 	}
 
 	void GameLayer::UpdateRobotCode(Code code, char value)
@@ -558,6 +564,19 @@ namespace Chesster
 	{		
 		if (IsStartingPosition())
 		{
+			// Take a peek at the data
+			std::string testOld;
+			for (auto& move : m_OldCameraData)
+				testOld += move + " ";
+
+			std::string testNew;
+			for (auto& move : m_NewCameraData)
+				testNew += move + " ";
+
+			LOG_INFO("Old: {0}", testOld);
+			LOG_INFO("New: {0}", testNew);
+
+
 			if (m_NewCameraData == m_OldCameraData)
 			{
 				ResetGame();
@@ -742,6 +761,7 @@ namespace Chesster
 					}
 
 					gameLayer.m_MoveHistory.clear();
+					gameLayer.ResetOldCameraData();
 					++gameLayer.m_CurrentPlayer;
 					a_IsMovePlayed = false;
 					a_IsComputerTurn = false;

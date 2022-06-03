@@ -56,6 +56,7 @@ namespace Chesster
 		virtual void OnImGuiRender() override;
 
 		void ResetGame();
+		void ResetOldCameraData();
 
 		void CameraDataReceived() { m_CameraDataReceived = true; }
 

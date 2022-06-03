@@ -227,6 +227,8 @@ namespace Chesster
 				LOG_INFO("Depth set to {0}.", m_Depth);
 				GameLayer::Get().GetConsolePanel().AddLog("Depth set to " + std::to_string(m_Depth) + ".");
 			}
+			ImGui::Text("Depth indicates the number of half\n"
+						"moves the engine looks ahead.");
 
 			ImGui::Separator();
 
