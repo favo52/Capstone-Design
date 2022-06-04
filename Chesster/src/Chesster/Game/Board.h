@@ -64,8 +64,8 @@ namespace Chesster
 		 @return Returns an array of all 64 individual squares of the board. */
 		std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
 
-		/**	Used to retrieve the board squares.
-		 @return Returns an array of all 64 individual squares of the board. */
+		/**	Used to retrieve the array of all chess pieces.
+		 @return Returns an array of all 32 individual chess pieces of the board. */
 		std::array<Piece, 32>& GetChessPieces() { return m_ChessPieces; }
 
 		Piece& GetCurrentPiece() { return *m_CurrentPiece; }

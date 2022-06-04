@@ -178,38 +178,46 @@ namespace Chesster
 				if (buffer.size() > 2)
 				{
 					GameLayer& gameLayer = GameLayer::Get();
+
+					const char NewGameButton = buffer[0];
+					const char EndTurnButton = buffer[1];
+					const char ArmSettled = buffer[2];
 					
-					if (buffer[0] == '1') // Green button pressed
+					if (NewGameButton == '1') // Green button pressed
 					{
 						gameLayer.NewGameButtonPressed();
 						network.SendToCamera("SE8\r\n");
 					}
 
-					if (buffer[1] == '1') // Black button is pressed
+					if (EndTurnButton == '1') // Black button is pressed
 					{
 						gameLayer.EndPlayerTurn();
 						network.SendToCamera("SE8\r\n");
 					}
 
-					if (buffer[2] == '1') // ArmSettled
+					if (ArmSettled == '1') // ArmSettled
 					{
-						if (gameLayer.GetGameState() == GameLayer::GameState::Gameplay)
+						switch (gameLayer.GetGameState())
 						{
-							gameLayer.ArmIsSettled();
-							network.SendToCamera("SE8\r\n");
-							network.SendToRobot(GAME_ACTIVE);
-						}
-						else if (gameLayer.GetGameState() == GameLayer::GameState::Checkmate)
-						{
-							GameLayer::Player& currentPlayer = gameLayer.GetCurrentPlayer();
-							const std::string sendCode = (currentPlayer == GameLayer::Player::White) ?
-								WHITE_WON : BLACK_WON;
+							case GameLayer::GameState::Gameplay:
+							{
+								gameLayer.ArmIsSettled();
+								network.SendToCamera("SE8\r\n");	// Take picture
+								network.SendToRobot(GAME_ACTIVE);	// Keep playing
+								break;
+							}
 
-							network.SendToRobot(sendCode);
-						}
-						else // It's stalemate
-						{
-							network.SendToRobot(GAME_LOCKED); // Don't do anything when Stalemate
+							case GameLayer::GameState::Checkmate:
+							{
+								network.SendToRobot(BLACK_WON);		// Robot will celebrate it won
+								break;
+							}
+
+							case GameLayer::GameState::Stalemate:
+							{
+								network.SendToRobot(STALEMATE);	// Don't do anything when Stalemate
+								break;
+							}
 						}
 					}
 				}

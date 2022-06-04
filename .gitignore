@@ -12,6 +12,7 @@ Chesster/validmoves.txt
 *.user
 *.userosscache
 *.sln.docstates
+*.sln
 
 # Build results
 bin/

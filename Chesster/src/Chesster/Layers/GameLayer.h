@@ -97,7 +97,9 @@ namespace Chesster
 		void OnNewGameButtonPressed();
 
 		void PawnPromotionPopupWindow();	// This popup only opens with player mouse moves
-		void DrawGameoverScreen();		
+		void DrawGameoverScreen();
+
+		void DrawIllegalMoveText();
 
 		static void ChessEngineThread();	// Multithread
 
@@ -131,6 +133,7 @@ namespace Chesster
 		GameState m_CurrentGameState{ GameState::Gameplay };
 
 		bool m_IsEventsActive{ false };
+		bool m_IsIllegalMove{ false };
 		
 		std::unique_ptr<Network> m_Network;
 
@@ -140,7 +143,8 @@ namespace Chesster
 		SettingsPanel m_SettingsPanel;
 
 		std::shared_ptr<Font> m_AbsEmpireFont;
-		std::unique_ptr<Texture> m_GameoverTextTexture;
+		std::unique_ptr<Texture> m_GameoverText;
+		std::unique_ptr<Texture> m_IllegalMoveText;
 
 	private:
 		static GameLayer* s_Instance;	// Pointer to this
@@ -161,8 +165,11 @@ namespace Chesster
 		Promote		// Promote Code. 2 = Knight, 4 = Queen.
 	};
 
-	constexpr char* GAME_LOCKED{ "00000000000" };
-	constexpr char* GAME_ACTIVE{ "10000000000" };
-	constexpr char* WHITE_WON{ "20000000000" };
-	constexpr char* BLACK_WON{ "30000000000" };
+	// Responses to the robot arm
+	constexpr char* GAME_LOCKED { "00000000000" };
+	constexpr char* GAME_ACTIVE { "10000000000" };
+	constexpr char* ILLEGAL_MOVE{ "20000000000" };
+	constexpr char* WHITE_WON	{ "30000000000" };
+	constexpr char* BLACK_WON	{ "40000000000" };
+	constexpr char* STALEMATE	{ "50000000000" };
 }

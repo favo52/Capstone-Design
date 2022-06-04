@@ -77,7 +77,6 @@ namespace Chesster
 		std::string GetFEN(const std::string& moveHistory);
 
 		/*	Executes the python script to acquire all the valid moves in the current position of the board.
-		 @param path The filepath of the python script.
 		 @param fen The FEN notation of the current board position.
 		 @return A list of all the valid moves in the current positon separated by whitespace. */
 		std::vector<std::string> GetValidMoves(const std::string& fen);

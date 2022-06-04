@@ -28,6 +28,10 @@ namespace Chesster
 	static bool s_IsHoldingPiece{ false };				// Moves the Piece's sprite while user is holding it with mouse
 
 	const std::string START_FEN = { "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
+
+	static Duration s_IllegalMoveTextDuration;
+	static Duration s_TextEffectTime;
+	static bool s_ShowIllegalMoveText{ false };
 	
 	GameLayer* GameLayer::s_Instance{ nullptr };
 
@@ -48,6 +52,15 @@ namespace Chesster
 		m_Network = std::make_unique<Network>();
 
 		m_AbsEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 100);
+
+		SDL_Color Red = { 255, 0, 0, 255 };
+		m_IllegalMoveText = std::make_unique<Texture>(m_AbsEmpireFont, "ILLEGAL MOVE", Red);
+
+		{
+			using namespace std::literals;
+			s_IllegalMoveTextDuration = 0s;
+			s_TextEffectTime = 0s;
+		}
 	}
 
 	void GameLayer::OnAttach()
@@ -168,6 +181,27 @@ namespace Chesster
 		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
 			m_MousePiece->SetPosition(m_ViewportMousePos);
+
+		// Update blinking text
+		if (m_IsIllegalMove)
+		{
+			s_IllegalMoveTextDuration += dt;
+			s_TextEffectTime += dt;
+			{
+				using namespace std::literals;
+				if (s_TextEffectTime >= 0.5s)
+				{
+					s_ShowIllegalMoveText = !s_ShowIllegalMoveText;
+					s_TextEffectTime = 0s;
+				}
+
+				if (s_IllegalMoveTextDuration >= 3s)
+				{
+					m_IsIllegalMove = false;
+					s_IllegalMoveTextDuration = 0s;
+				}
+			}
+		}
 	}
 
 	void GameLayer::OnRender()
@@ -183,6 +217,9 @@ namespace Chesster
 
 		if (m_CurrentGameState != GameState::Gameplay)
 			DrawGameoverScreen();
+
+		if (m_IsIllegalMove)
+			DrawIllegalMoveText();
 
 		m_Framebuffer.Unbind();
 	}
@@ -322,7 +359,8 @@ namespace Chesster
 		LOG_INFO("Wait... that's illegal!\n");
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
 
-		m_Network->SendToRobot(GAME_ACTIVE); // Obligatory Send, keep playing
+		m_IsIllegalMove = true;
+		m_Network->SendToRobot(ILLEGAL_MOVE); // Make arm say "no"
 	}
 
 	void GameLayer::UpdatePlayerMouseMove()
@@ -377,6 +415,8 @@ namespace Chesster
 		
 		// The piece was not released at a valid location
 		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
+
+		m_IsIllegalMove = true;
 
 		auto originalSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
 			[&](const Board::Square& sq) { return m_MousePiece->GetNotation() == sq.Notation; });
@@ -573,9 +613,8 @@ namespace Chesster
 			for (auto& move : m_NewCameraData)
 				testNew += move + " ";
 
-			LOG_INFO("Old: {0}", testOld);
-			LOG_INFO("New: {0}", testNew);
-
+			LOG_INFO("OnNewGameButtonPressed: Old: {0}", testOld);
+			LOG_INFO("OnNewGameButtonPressed: New: {0}", testNew);
 
 			if (m_NewCameraData == m_OldCameraData)
 			{
@@ -604,7 +643,7 @@ namespace Chesster
 			LOG_INFO(msg);
 			m_LogPanel.AddLog("\n" + msg);
 
-			m_Network->SendToRobot(GAME_ACTIVE); // Obligatory send, keep playing
+			m_Network->SendToRobot(ILLEGAL_MOVE); // Obligatory send, keep playing
 		}
 	}
 
@@ -713,18 +752,31 @@ namespace Chesster
 				break;
 			}
 		}
-		m_GameoverTextTexture = std::make_unique<Texture>(m_AbsEmpireFont, gameoverMsg, textColor);
+		m_GameoverText = std::make_unique<Texture>(m_AbsEmpireFont, gameoverMsg, textColor);
 
-		int offsetX = m_GameoverTextTexture->GetWidth() / 2.0f;
-		int offsetY = m_GameoverTextTexture->GetHeight() / 2.0f;
-		m_GameoverTextTexture->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY));
+		int offsetX = m_GameoverText->GetWidth() / 2.0f;
+		int offsetY = m_GameoverText->GetHeight() / 2.0f;
+		m_GameoverText->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY));
 
 		// Rectangle behind text
-		const SDL_Rect blackRect = { m_GameoverTextTexture->GetBounds().x - 2, m_GameoverTextTexture->GetBounds().y - 6, m_GameoverTextTexture->GetBounds().w, m_GameoverTextTexture->GetBounds().h };
+		const SDL_Rect blackRect = { m_GameoverText->GetBounds().x - 2, m_GameoverText->GetBounds().y - 6, m_GameoverText->GetBounds().w, m_GameoverText->GetBounds().h };
 		Renderer::DrawFilledRect(blackRect, rectColor);
 
 		// Draw text
-		Renderer::DrawTexture(m_GameoverTextTexture);
+		Renderer::DrawTexture(m_GameoverText);
+	}
+
+	void GameLayer::DrawIllegalMoveText()
+	{
+		uint32_t width = m_Framebuffer.GetWidth();
+		uint32_t height = m_Framebuffer.GetHeight();
+
+		int offsetX = m_IllegalMoveText->GetWidth() / 2.0f;
+		int offsetY = m_IllegalMoveText->GetHeight() / 2.0f;
+		m_IllegalMoveText->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY));
+		
+		if (s_ShowIllegalMoveText)
+			Renderer::DrawTexture(m_IllegalMoveText);
 	}
 
 	void GameLayer::ChessEngineThread()
@@ -745,6 +797,8 @@ namespace Chesster
 
 				// Update legal moves list
 				gameLayer.m_LegalMoves = gameLayer.m_ChessEngine.GetValidMoves(currentFEN);
+
+				// If there are no more legal moves then it means the game is over.
 				if (gameLayer.m_LegalMoves.empty())
 				{
 					if (gameLayer.m_ChessEngine.IsStalemate(currentFEN))
@@ -765,6 +819,11 @@ namespace Chesster
 					++gameLayer.m_CurrentPlayer;
 					a_IsMovePlayed = false;
 					a_IsComputerTurn = false;
+
+					// Make the robot do the sulking movement ("feeling" sad he lost)
+					if (gameLayer.m_CurrentPlayer == GameLayer::Player::White)
+						gameLayer.m_Network->SendToRobot(WHITE_WON);
+
 					continue;
 				}
 
