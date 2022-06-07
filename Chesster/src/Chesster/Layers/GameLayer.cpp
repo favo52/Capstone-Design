@@ -28,6 +28,12 @@ namespace Chesster
 	static bool s_IsHoldingPiece{ false };				// Moves the Piece's sprite while user is holding it with mouse
 
 	const std::string START_FEN = { "\"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\"" };
+	const std::vector<std::string> START_DATA =
+	{
+		"a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B", "c2P", "c7p",
+		"c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B", "f2P",
+		"f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r"
+	};
 
 	static Duration s_IllegalMoveTextDuration;
 	static Duration s_TextEffectTime;
@@ -574,12 +580,7 @@ namespace Chesster
 
 	void GameLayer::ResetOldCameraData()
 	{
-		m_OldCameraData =
-		{
-			"a1R", "a2P", "a7p", "a8r", "b1N", "b2P", "b7p", "b8n", "c1B", "c2P", "c7p",
-			"c8b", "d1Q", "d2P", "d7p", "d8q", "e1K", "e2P", "e7p", "e8k", "f1B", "f2P",
-			"f7p", "f8b", "g1N", "g2P", "g7p", "g8n", "h1R", "h2P", "h7p", "h8r"
-		};
+		m_OldCameraData = START_DATA;
 	}
 
 	void GameLayer::UpdateRobotCode(Code code, char value)
@@ -601,32 +602,20 @@ namespace Chesster
 	}	
 
 	void GameLayer::OnNewGameButtonPressed()
-	{		
-		if (IsStartingPosition())
+	{
+		if (m_NewCameraData == START_DATA)
 		{
-			// Take a peek at the data
-			std::string testOld;
-			for (auto& move : m_OldCameraData)
-				testOld += move + " ";
+			ResetGame();
 
-			std::string testNew;
-			for (auto& move : m_NewCameraData)
-				testNew += move + " ";
+			const std::string msg{ "Board is ready!" };
+			LOG_INFO(msg.c_str());
+			m_LogPanel.AddLog("\n" + msg);
 
-			LOG_INFO("OnNewGameButtonPressed: Old: {0}", testOld);
-			LOG_INFO("OnNewGameButtonPressed: New: {0}", testNew);
-
-			if (m_NewCameraData == m_OldCameraData)
-			{
-				ResetGame();
-
-				const std::string msg{ "Board is ready!" };
-				LOG_INFO(msg.c_str());
-				m_LogPanel.AddLog("\n" + msg);
-
-				m_Network->SendToRobot(GAME_ACTIVE); // begin new game
-			}
-			else
+			m_Network->SendToRobot(GAME_ACTIVE); // begin new game
+		}
+		else
+		{
+			if (IsStartingPosition())
 			{
 				const std::string msg{ "Please setup the board with the valid starting position." };
 				LOG_INFO(msg);
@@ -634,16 +623,16 @@ namespace Chesster
 
 				m_Network->SendToRobot(GAME_LOCKED);
 			}
-		}
-		else
-		{
-			const std::string msg{ "Please setup the board with the valid\n"
+			else
+			{
+				const std::string msg{ "Please setup the board with the valid\n"
 									"starting position and then press the\n"
 									"New Game button to start again." };
-			LOG_INFO(msg);
-			m_LogPanel.AddLog("\n" + msg);
+				LOG_INFO(msg);
+				m_LogPanel.AddLog("\n" + msg);
 
-			m_Network->SendToRobot(ILLEGAL_MOVE); // Obligatory send, keep playing
+				m_Network->SendToRobot(ILLEGAL_MOVE); // Obligatory send, keep playing
+			}
 		}
 	}
 
