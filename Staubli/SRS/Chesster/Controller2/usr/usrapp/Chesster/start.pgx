@@ -64,7 +64,8 @@
   
   //Starts the main loop. Loop is endless until the program is manually closed.
   while true
-    
+    //default string for game state
+    sSendString = "000"
     //Core of the main program. Stays waiting until 2 conditions are met simultaneously.
     //First, a button must be pressed, either New Game or End Turn.
     //The robot arm also MUST be stationary to exit the wait command. Otherwise, the button press is ignored.
@@ -92,6 +93,74 @@
         //Begins send function to send the string.
         call send()
       endIf
+    endIf
+    //This section only activates if there was actual communication between arm and Chesster, and forces
+    //arm to do a confirmation move:
+    //0 = Initial board state is invalid.
+    //1 = Arm move was done, finished, and arm is settled, does up and down motion to confirm player turn now.
+    //2 = Illegal move was done by player or new game was accidentally started in the middle of a game. Arm shakes in a no motion.
+    //3 = Player wins, does a sulking motion.
+    //4 = Chesster wins, does a boasting motion.
+    //5 = Stalemate. Nobody wins. 
+    if sSendString != "000"
+      switch nGameActive
+        case 0
+          //Case for initial board state invalid. Applies to both new and ongoing games.
+          //Arm does a shake saying no.
+          movej(jNoPos, tGripper, mMoveSpeed)
+          movej(jStartPos, tGripper, mMoveSpeed)
+        break
+        case 1
+          movej(jConfirmPos, tGripper, mMoveSpeed)
+          movej(jStartPos, tGripper, mMoveSpeed)
+        break
+        case 2
+          //Case for illegal turn or illegal initial board state 
+          //AFTER game has been started, goes back to 1 after
+          movej(jNoPos, tGripper, mMoveSpeed)
+          movej(jStartPos, tGripper, mMoveSpeed)
+          nGameActive = 1
+        break
+        case 3
+          //Case for Chesster losing a game, goes to a corner
+          //and sulks.
+          movej(jSulkPos, tGripper, mMoveSpeed)
+          waitEndMove()
+          delay(1)
+          movej(jSulk2Pos,tGripper,mSulkSpeed)
+          waitEndMove()
+          delay(3)
+          movej(jSulkPos,tGripper,mSulkSpeed)
+          waitEndMove()
+          delay(1)
+          movej(jStartPos,tGripper,mMoveSpeed)
+          nGameActive = 0
+        break
+        case 4
+          //Case for Chesster winning a game.
+          //Taunts the player by "laughing" and clicking the gripper.
+          movej(jWinPos, tGripper,mMoveSpeed)
+          waitEndMove()
+          delay(1)
+          for nIndex = 0 to 3
+            movej(jWin2Pos, tGripper, mMoveSpeed)
+            movej(jWinPos, tGripper, mMoveSpeed)
+          endFor
+          waitEndMove()
+          close(tGripper)
+          open(tGripper)
+          close(tGripper)
+          open(tGripper)
+          delay(1)
+          movej(jStartPos,tGripper,mMoveSpeed)
+          waitEndMove()
+          nGameActive = 0
+        break
+        case 5
+          //case for stalemate, goes back to 0 after
+          nGameActive = 0
+        break
+      endSwitch
     endIf
   endWhile
 end</code>

@@ -146,47 +146,6 @@
       endSwitch
     endFor
   endIf
-  if sSendString == "100" or sSendString == ""
-    switch nGameActive
-      case 0
-      break
-      case 1
-        movej(jConfirmPos, tGripper, mMoveSpeed)
-        movej(jStartPos, tGripper, mMoveSpeed)
-      break
-      case 2
-        movej(jSulkPos, tGripper, mMoveSpeed)
-        waitEndMove()
-        delay(1)
-        movej(jSulk2Pos,tGripper,mSulkSpeed)
-        waitEndMove()
-        delay(3)
-        movej(jSulkPos,tGripper,mSulkSpeed)
-        waitEndMove()
-        delay(1)
-        movej(jStartPos,tGripper,mMoveSpeed)
-        nGameActive = 0
-      break
-      case 3
-        movej(jWinPos, tGripper,mMoveSpeed)
-        waitEndMove()
-        delay(1)
-        for nIndex = 0 to 3
-          movej(jWin2Pos, tGripper, mMoveSpeed)
-          movej(jWinPos, tGripper, mMoveSpeed)
-        endFor
-        waitEndMove()
-        close(tGripper)
-        open(tGripper)
-        close(tGripper)
-        open(tGripper)
-        delay(1)
-        movej(jStartPos,tGripper,mMoveSpeed)
-        waitEndMove()
-        nGameActive = 0
-      break
-    endSwitch
-  endIf
 end</code>
     </source>
   </program>
