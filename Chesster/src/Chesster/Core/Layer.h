@@ -1,5 +1,6 @@
 /*
-* Copyright 2022-present, Francisco A. Villagrasa
+* Copyright 2021-present, Polytechnic University of Puerto Rico
+* AUTHOR: Francisco A. Villagrasa
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -20,42 +21,43 @@
 
 #pragma once
 
-#include "SDL_events.h"
+#include <SDL_events.h>
 
 namespace Chesster
 {
 	using Duration = std::chrono::duration<double>;
 	using Timestep = std::chrono::duration<double>;
 
-	/*	Base class to be inherited by the Title, Game, and ImGui layers.
-		It is not a pure virtual class to let the Layers decide what function to override. */
+	/* Base class to be inherited by the the different layers in the application.
+	   It is not pure virtual to let each Layer decide which functions it needs. */
 	class Layer
 	{
 	public:
+		/* The Action done to the Layer when applying changes to the LayerStack. */
 		enum class Action { None, PushLayer, PopLayer };
 
 	public:
-		/*	Default destructor */
+		/* Default virtual destructor */
 		virtual ~Layer() = default;
 
-		/*	Performs the code when a Layer is pushed to the LayerStack. Similar to a constructor. */
+		/* Runs when the Layer is pushed to the LayerStack. */
 		virtual void OnAttach() {}
 
-		/*	Performs the code when a Layer is popped from the LayerStack. Similar to a destructor. */
+		/* Runs when the Layer is popped from the LayerStack. */
 		virtual void OnDetach() {}
-
-		/**	Handles all SDL events.
-		 @param event The SDL_Event. */
+		
+		/** Handles all the events specific to the Layer.
+		 @param event The pending SDL_Event happening on this Layer. */
 		virtual void OnEvent(SDL_Event& event) {}
 
-		/** Updates the application's logic.
+		/** Updates the physics or logic specific to the Layer.
 		 @param dt The delta time used for animations. */
 		virtual void OnUpdate(const Timestep& dt) {}
 
-		/*	Draws to the screen. */
+		/* Draws all the Texture images, texts, and/or rectangles specific to the Layer. */
 		virtual void OnRender() {}
 
-		/*	Draws the ImGui graphical user interface. */
+		/* Draws the ImGui graphical user interface specific to the Layer. */
 		virtual void OnImGuiRender() {}
 	};
 }

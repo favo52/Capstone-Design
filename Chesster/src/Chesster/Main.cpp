@@ -1,7 +1,8 @@
 // Chesster's Entry-point
 
 /*
-* Copyright 2022-present, Francisco A. Villagrasa
+* Copyright 2021-present, Polytechnic University of Puerto Rico
+* AUTHOR: Francisco A. Villagrasa
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
