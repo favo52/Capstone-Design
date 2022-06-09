@@ -34,7 +34,8 @@ namespace Chesster
 	class GameLayer;
 	class ImGuiLayer;
 
-	/*	Creates the Window, handles all the events, and manages the layers. Contains the main program loop. */
+	/* Creates the Window, handles all the events, and manages the Layers.
+	   Contains the main program loop and the LayerStack. */
 	class Application
 	{
 	public:
@@ -42,49 +43,49 @@ namespace Chesster
 		 @param name The name of the application. */
 		Application(const std::string& name);
 
-		/*	Calls OnDetach() on all remaining Layers and empties the LayerStack. */
+		/* Calls OnDetach() on all remaining Layers and empties the LayerStack. */
 		virtual ~Application();
 
-		/*	Stops the application. */
-		void Quit() { m_Running = false; }
+		/* Stops the application. */
+		void Quit() { m_IsRunning = false; }
 
-		/** Adds the specified PendingChange to the PendingChanges queue.
-			The change will occur on the next loop iteration.
+		/* Adds the specified PendingChange to the PendingChanges queue. 
+		   The change will occur at the OnEvent stage.
 		 @param layerAction The action to be performed on the Layer.
 		 @param layer The Layer to be pushed or popped. */
 		void RequestLayerAction(Layer::Action layerAction, const std::shared_ptr<Layer>& layer);
 
-		/** Retrieves the Window object. A convenience function. 
-			It is used to acquire the window's properties or the SDL_Window.
+		/* Retrieves the Window object. A convenience function. 
+		   It is used to acquire the Window's properties or the SDL_Window.
 		 @return A reference to the Application's Window member variable. */
 		Window& GetWindow() { return *m_Window; }
 
-		/** It is used to retrieve the instance of the current application.
+		/* Used to retrieve the instance of this application.
 		 @return A reference to this Application object. */
 		static Application& Get() { return *s_Instance; }
 
 	private:
-		/*	Contains the main program loop.
-			It handles events on queue, layer push/pop, updates game logic,
-			draws everything to screen, and updates the screen. */
+		/* Contains the main program loop and calculates the Timestep.
+		   It handles events on queue, layer push/pop, updates game logic, 
+		   draws everything to back buffer, and updates the screen. */
 		void Run();
 
-		/** Handles events on queue. Events include Window events 
-			and mouse/keyboard input.
+		/* Handles events on queue. Events include Window events 
+		   and mouse/keyboard input.
 		 @param sdlEvent The SDL event to handle. */
 		void OnEvent(SDL_Event& sdlEvent);
 
-		/**	Inserts a Layer into the m_LayerStack and calls its OnAttach() function.
-		 @param layer A std::shared_ptr of the layer to be pushed. */
+		/* Inserts a Layer into the m_LayerStack and calls its OnAttach() function.
+		 @param layer A shared pointer of the Layer to be pushed. */
 		void PushLayer(const std::shared_ptr<Layer>& layer);
 
-		/**	Erases a Layer from the m_LayerStack and calls its OnDetach() function.
-		 @param layer A std::shared_ptr of the layer to be erased. */
+		/* Erases a Layer from the m_LayerStack and calls its OnDetach() function.
+		 @param layer A shared pointer of the Layer to be removed. */
 		void PopLayer(const std::shared_ptr<Layer>& layer);
 
 	private:
 		std::unique_ptr<Window> m_Window;
-		bool m_Running;
+		bool m_IsRunning;	// Program main loop continues while true
 
 		std::vector<std::shared_ptr<Layer>> m_LayerStack;
 		std::shared_ptr<ImGuiLayer> m_ImGuiLayer;

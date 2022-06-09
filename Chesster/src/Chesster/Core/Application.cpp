@@ -28,7 +28,7 @@ namespace Chesster
 	Application* Application::s_Instance{ nullptr };
 
 	Application::Application(const std::string& name) :
-		m_Running{ true }
+		m_IsRunning{ true }
 	{
 		assert(!s_Instance, "Application already exists!");
 		s_Instance = this;
@@ -67,8 +67,8 @@ namespace Chesster
 
 		TimePoint currentTime = Clock::now();
 
-		// Main App loop
-		while (m_Running)
+		// Main program loop
+		while (m_IsRunning)
 		{
 			// Handle events on queue
 			SDL_Event e;
@@ -105,7 +105,7 @@ namespace Chesster
 	{
 		ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
 
-		// User presses window's X
+		// User presses the window's X (Close)
 		if (sdlEvent.type == SDL_QUIT)
 			Quit();
 

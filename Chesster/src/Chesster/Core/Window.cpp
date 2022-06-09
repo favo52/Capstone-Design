@@ -51,9 +51,9 @@ namespace Chesster
 			m_WinProps.Title.c_str(),	// Window title
 			SDL_WINDOWPOS_CENTERED,		// Initial top left x position
 			SDL_WINDOWPOS_CENTERED,		// Initial top left y position
-			m_WinProps.Width,			// Width, in pixels
-			m_WinProps.Height,			// Height, in pixels
-			windowFlags					// Flags
+			m_WinProps.Width,   		// Width, in pixels
+			m_WinProps.Height,  		// Height, in pixels
+			windowFlags 				// Flags
 		);
 		if (m_Window == nullptr) // Error handling
 		{
@@ -66,9 +66,8 @@ namespace Chesster
 		m_GraphicsContext = std::make_unique<Renderer>(m_Window);
 
 		// Initialize SDL_image with PNG and JPG loading
-		int imgFlagsPNG = IMG_INIT_PNG;
-		int imgFlagsJPG = IMG_INIT_JPG;
-		if (!(IMG_Init(imgFlagsPNG) & imgFlagsPNG) || !(IMG_Init(imgFlagsJPG) & imgFlagsJPG))
+		int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
+		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
 			LOG_ERROR("SDL_image could not initialize! SDL_image error: {0}", IMG_GetError());
 			RuntimeError("Failed to initialize SDL_image. Verify Chesster.log for more info.");
