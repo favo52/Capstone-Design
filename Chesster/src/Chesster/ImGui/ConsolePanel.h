@@ -23,17 +23,25 @@
 
 namespace Chesster
 {
+	/* The ConsolePanel displays all the messages related to the Chess Engine.
+	   It also contains several utility buttons to reset the board or fix the camera data. */
 	class ConsolePanel
 	{
 	public:
 		ConsolePanel();
 
+		/* Draws the Console Panel ImGui window and all its components. */
 		void OnImGuiRender();
 
+		/* Adds a message to the text area of the Console Panel. */
 		void AddLog(const std::string& msg);
+		
+		/* Clears the text logging area. */
 		void ClearLog() { m_Items.clear(); }
 
 	private:
+		/* The next text will be changed to this Font.
+		 @param index The array index of the ImGui Font. */
 		void PushFont(int index);
 
 	private:

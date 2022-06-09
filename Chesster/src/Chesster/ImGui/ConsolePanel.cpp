@@ -37,7 +37,6 @@ namespace Chesster
 		ImGui::Begin("Chess Engine Console");
 
 		ImGui::TextWrapped("This console is used to interact with the Chess Engine.");
-		ImGui::TextWrapped("Enter 'HELP' to see a list of commands.");
 
 		if (ImGui::IsWindowFocused())
 		{
@@ -57,7 +56,7 @@ namespace Chesster
 		Filter.Draw("Filter (ex. \"d2d4\", \"error\")", 180);
 		ImGui::Separator();
 
-		// Reserve enough left-over height for 1 separator + 1 input text
+		// Reserve enough left-over height
 		const float FooterHeightToReserve = (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetFrameHeightWithSpacing();
 		ImGui::BeginChild("ScrollingRegion", ImVec2(0, -FooterHeightToReserve - 20), false, ImGuiWindowFlags_HorizontalScrollbar);
 

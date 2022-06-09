@@ -25,16 +25,24 @@
 
 namespace Chesster
 {
+	/* The LogPanel is used to print status updates of the TCP/IP communication. */
 	class LogPanel
 	{
 	public:
 		LogPanel() = default;
-		~LogPanel();
 
+		/* Clears the log. */
+		virtual ~LogPanel() { Clear(); }
+
+		/* Draws the Log Panel ImGui window. */
 		void OnImGuiRender();
 
+		/* Appends a message to the ImGuiTextBuffer. It is displayed in the Log Panel.
+		 @param message The text to be displayed. */
 		void AddLog(std::string message);
-		void Clear();
+
+		/* Clears the ImGuiTextBuffer. */
+		void Clear() { m_Log.clear(); }
 
 	private:
 		ImGuiTextBuffer m_Log;

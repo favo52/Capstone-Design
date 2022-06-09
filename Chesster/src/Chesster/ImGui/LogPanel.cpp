@@ -22,11 +22,6 @@
 
 namespace Chesster
 {
-	LogPanel::~LogPanel()
-	{
-		Clear();
-	}
-
 	void LogPanel::OnImGuiRender()
 	{
 		ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
@@ -50,10 +45,5 @@ namespace Chesster
 	{
 		message += "\n";
 		m_Log.appendf(message.c_str());
-	}
-
-	void LogPanel::Clear()
-	{
-		m_Log.clear();
 	}
 }
