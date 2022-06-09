@@ -47,8 +47,8 @@ namespace Chesster
 }
 
 // Chesster logger macro shortcuts
-#define LOG_TRACE(...)		::Chesster::Logger::GetChessterLogger()->trace(__VA_ARGS__);
-#define LOG_INFO(...)		::Chesster::Logger::GetChessterLogger()->info(__VA_ARGS__);
-#define LOG_WARN(...)		::Chesster::Logger::GetChessterLogger()->warn(__VA_ARGS__);
-#define LOG_ERROR(...)		::Chesster::Logger::GetChessterLogger()->error(__VA_ARGS__);
-#define LOG_CRITICAL(...)	::Chesster::Logger::GetChessterLogger()->critical(__VA_ARGS__);
+#define LOG_TRACE(...)		::Chesster::Logger::GetChessterLogger()->trace(__VA_ARGS__)
+#define LOG_INFO(...)		::Chesster::Logger::GetChessterLogger()->info(__VA_ARGS__)
+#define LOG_WARN(...)		::Chesster::Logger::GetChessterLogger()->warn(__VA_ARGS__)
+#define LOG_ERROR(...)		::Chesster::Logger::GetChessterLogger()->error(__VA_ARGS__)
+#define LOG_CRITICAL(...)	::Chesster::Logger::GetChessterLogger()->critical(__VA_ARGS__)

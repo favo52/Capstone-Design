@@ -64,7 +64,7 @@ namespace Chesster
 
 		// Keep thread alive waiting for any new data
 		// received from the InSight-Explorer Telnet socket
-		while (true)
+		while (network.m_CameraTelnetSocket)
 		{
 			std::array<char, 128> buffer = {};
 			if (network.RecvData(network.m_CameraTelnetSocket, buffer))
@@ -82,6 +82,7 @@ namespace Chesster
 				const std::string str{ "CameraTelnetThread ended." };
 				LOG_INFO(str);
 				logPanel.AddLog(str);
+				settingsPanel.SetCameraButtonStatus(false);
 				break;
 			}
 		}
@@ -110,7 +111,7 @@ namespace Chesster
 
 		// Keep thread alive waiting for any new data received
 		// from the InSight-Explorer TCP Device socket
-		while (true)
+		while (network.m_CameraTCPDeviceSocket)
 		{
 			std::array<char, 256> buffer = {};
 			if (network.RecvData(network.m_CameraTCPDeviceSocket, buffer))
@@ -123,6 +124,7 @@ namespace Chesster
 				const std::string str{ "CameraTCPDeviceThread ended." };
 				LOG_INFO(str);
 				logPanel.AddLog(str);
+				settingsPanel.SetCameraButtonStatus(false);
 				break;
 			}
 		}
@@ -168,7 +170,7 @@ namespace Chesster
 
 		// Keep thread alive waiting for any new
 		// data received from the robot's client socket
-		while (true)
+		while (network.m_RobotClientSocket)
 		{
 			std::array<char, 8> buffer = {};
 			if (network.RecvData(network.m_RobotClientSocket, buffer))
