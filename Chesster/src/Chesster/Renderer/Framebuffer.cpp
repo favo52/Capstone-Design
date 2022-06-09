@@ -28,7 +28,7 @@ namespace Chesster
 	Framebuffer::Framebuffer(uint32_t width, uint32_t height)
 	{
 		m_Framebuffer = std::make_unique<Texture>();
-		m_Framebuffer->CreateBlank(width, height);
+		Resize(width, height);
 	}
 
 	void Framebuffer::Bind()
