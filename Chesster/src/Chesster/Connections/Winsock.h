@@ -26,20 +26,34 @@
 
 namespace Chesster
 {
-	/*	Abstraction of Microsoft's Windows Sockets 2.
-		Facilitates the creation of TCP server and client sockets. */
+	/* Abstraction of Microsoft's Windows Sockets 2.
+	   Facilitates the creation of TCP/IP server and client sockets. */
 	class Winsock
 	{
 	public:
-		/*	Initializes Winsock populating the WSADATA. */
+		/* Initializes Winsock, filling the WSADATA. */
 		Winsock();
 
-		/*	Shut down the socket DLL. */
+		/* Shut down the socket DLL. */
 		virtual ~Winsock();
 
+		/* Creates a socket and connects it to the server with specified ip address and port.
+		 @param m_socket The socket to be used as a client.
+		 @param ip The IP address where the client socket will connect to.
+		 @param port The Port where client socket will connect to.
+		 @return True if the SOCKET connected successfully to the server, false otherwise. */
 		bool CreateClientSocket(SOCKET& m_socket, const std::string& ip, const std::string& port);
+		
+		/* Creates a server listening SOCKET with the specified ip address and port.
+		 @param m_socket The socket to be used as a listening socket.
+		 @param ip The IP address where the server socket will be listening.
+		 @param port The Port where the server socket will be listening.
+		 @return True if the listening SOCKET was created successfully, false otherwise. */
 		bool CreateServerSocket(SOCKET& m_socket, const std::string& ip, const std::string& port);
 
+		/* Accepts a client attempting to connect to the server's listening socket.
+		 @param listenSocket The server socket that is listening for clients.
+		 @return The client's SOCKET that connected to the server. */
 		SOCKET AcceptClient(SOCKET& listenSocket);
 
 	private:

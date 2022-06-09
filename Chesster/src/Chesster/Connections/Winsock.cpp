@@ -47,7 +47,7 @@ namespace Chesster
 
 		// Prepare addrinfo
 		ZeroMemory(&hints, sizeof(hints));
-		hints.ai_family = AF_INET;			// AF_INET for IPv4. AF_INET6 for IPv6.
+		hints.ai_family = AF_INET;  		// AF_INET for IPv4. AF_INET6 for IPv6.
 		hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
 		hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
 
@@ -98,11 +98,11 @@ namespace Chesster
 
 		// Prepare addrinfo
 		ZeroMemory(&hints, sizeof(hints));	// ZeroMemory fills the hints with zeros, prepares the memory to be used
-		hints.ai_family = AF_INET;			// AF_INET for IPv4. AF_INET6 for IPv6. AF_UNSPEC for either (might cause error).
+		hints.ai_family = AF_INET;  		// AF_INET for IPv4. AF_INET6 for IPv6. AF_UNSPEC for either (might cause error).
 		hints.ai_socktype = SOCK_STREAM;	// Used to specify a stream socket.
 		hints.ai_protocol = IPPROTO_TCP;	// Used to specify the TCP protocol.
 		hints.ai_flags = AI_PASSIVE;		// Indicates the caller intends to use the returned socket address structure
-											// in a call to the bind function.
+		    								// in a call to the bind function.
 		// Resolve the local address and port to be used by the server
 		// The getaddrinfo function is used to determine the values in the sockaddr structure
 		int iResult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &resultPtr);
