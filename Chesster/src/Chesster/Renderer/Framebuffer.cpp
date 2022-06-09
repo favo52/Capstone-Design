@@ -19,7 +19,6 @@
 #include "Chesster/Renderer/Framebuffer.h"
 
 #include "Chesster/Renderer/Renderer.h"
-#include "Chesster/Game/Board.h"
 
 namespace Chesster
 {
