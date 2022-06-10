@@ -32,7 +32,7 @@ namespace Chesster
 		m_PieceSpriteSheetTexture->SetHeight(PIECE_SIZE);
 	}
 
-	void Board::Construct()
+	void Board::ConstructBoard()
 	{
 		const glm::vec4 BlueColor = { 0.084f, 0.342f, 0.517f, 1.0f };
 		const glm::vec4 WhiteColor = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -43,22 +43,58 @@ namespace Chesster
 			const char file = 'a' + x;
 			for (size_t y = 0; y < 8; ++y)
 			{
-				// Set corresponding notation
+				// Get corresponding notation
 				const char rank = '8' - y;
 				std::string squareNotation{ file };
 				squareNotation += rank;
 
-				// Set corresponding color
+				// Get corresponding color
 				const glm::vec4 color = ((x + y) % 2 == 0) ? WhiteColor : BlueColor;
 
-				// Set each square's properties
+				// Set the square's notation and color
 				Square* square = &m_BoardSquares[x + y * 8];
-				square->Color = color * 255.0f;
 				square->Notation = squareNotation;
+				square->Color = color * 255.0f;
 			}
 		}
+	}
 
-		ResetPieces();
+	void Board::ConstructPieces()
+	{
+		// The numbers are according to the enum class Piece::Type values
+		int pieceLocations[8 * 4] =
+		{
+			1, 2, 3, 4, 5, 3, 2, 1,
+			6, 6, 6, 6, 6, 6, 6, 6,
+			6, 6, 6, 6, 6, 6, 6, 6,
+			1, 2, 3, 4, 5, 3, 2, 1
+		};
+
+		Piece::Color color = Piece::Color::Black;
+
+		size_t index{ 0 };
+		uint32_t offset{ 0 };
+		for (Piece& piece : m_ChessPieces)
+		{
+			if (index > 15)
+			{
+				offset = 32;
+				color = Piece::Color::White;
+			}
+
+			// Set up the piece properties
+			piece.SetPosition(m_BoardSquares[index + offset].GetCenter());
+			piece.m_Notation = m_BoardSquares[index + offset].Notation;
+			piece.m_Type = Piece::Type(pieceLocations[index]);
+			piece.m_Color = color;
+			piece.SetTextureClip();
+			piece.m_EnPassant = false;
+			piece.m_IsCaptured = false;
+			++index;
+		}
+
+		m_CurrentPiece = &m_ChessPieces[0];
+		m_PreviousPiece = &m_ChessPieces[0];
 	}
 
 	void Board::OnRender()
@@ -148,45 +184,7 @@ namespace Chesster
 				}
 			}
 		}
-	}
-
-	void Board::ResetPieces()
-	{
-		// The numbers are according to the enum class Piece::Type values
-		int pieceLocations[8 * 4] =
-		{
-			1, 2, 3, 4, 5, 3, 2, 1,
-			6, 6, 6, 6, 6, 6, 6, 6,
-			6, 6, 6, 6, 6, 6, 6, 6,
-			1, 2, 3, 4, 5, 3, 2, 1
-		};
-
-		Piece::Color color = Piece::Color::Black;
-
-		size_t index{ 0 };
-		uint32_t offset{ 0 };
-		for (Piece& piece : m_ChessPieces)
-		{
-			if (index > 15)
-			{
-				offset = 32;
-				color = Piece::Color::White;
-			}
-
-			// Set up the piece properties
-			piece.SetPosition(m_BoardSquares[index + offset].GetCenter());
-			piece.m_Notation = m_BoardSquares[index + offset].Notation;
-			piece.m_Type = Piece::Type(pieceLocations[index]);
-			piece.m_Color = color;
-			piece.SetTextureClip();
-			piece.m_EnPassant = false;
-			piece.m_IsCaptured = false;
-			++index;
-		}
-
-		m_CurrentPiece = &m_ChessPieces[0];
-		m_PreviousPiece = &m_ChessPieces[0];
-	}
+	}	
 
 	void Board::UpdatePieceCapture()
 	{
@@ -202,7 +200,7 @@ namespace Chesster
 		}
 	}
 
-	void Board::UpdateNewMove(const std::string& currentMove)
+	void Board::UpdateSpecialMove(const std::string& currentMove)
 	{
 		if (currentMove.empty()) return;
 
@@ -255,7 +253,7 @@ namespace Chesster
 		}
 	}
 
-	void Board::ResetActiveSquares()
+	void Board::HideActiveSquares()
 	{
 		m_ActiveSquares[0].Color = { 0, 0, 0, 0 };
 		m_ActiveSquares[1].Color = { 0, 0, 0, 0 };

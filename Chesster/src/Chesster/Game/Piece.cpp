@@ -103,12 +103,12 @@ namespace Chesster
 			true : false;
 	}
 
-	bool Piece::IsPromotion(const std::string& notation)
+	bool Piece::IsPromotion(const std::string& moveNotation)
 	{
 		if (IsPawn())
 		{
-			if (m_Color == Color::Black && notation[1] == '2' && notation[3] == '1' ||
-				m_Color == Color::White && notation[1] == '7' && notation[3] == '8')
+			if (m_Color == Color::Black && moveNotation[1] == '2' && moveNotation[3] == '1' ||
+				m_Color == Color::White && moveNotation[1] == '7' && moveNotation[3] == '8')
 			{
 				return true;
 			}

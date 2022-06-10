@@ -43,45 +43,47 @@ namespace Chesster
 		};
 
 	public:
-		/*	Allows a Piece object to be created with zero or empty values. */
+		/* Allows a Piece object to be created with zero or empty values. */
 		Piece();
 
-		/**	Changes a pawn's type to the newly selected one.
+		/* Changes a pawn's type to the newly selected one. Updates the texture image clip.
 		 @param notation The 5 char notation with the selected pawn promotion. */
 		void Promote(const std::string& notation);
 
-		/*	Flags the Piece as captured, changes its Notation to "00"
-			and sets its Position to a coordinate far away from the screen. */
+		/* Flags the Piece as captured, changes its Notation to "00"
+		   and sets its Position to a coordinate far away from the screen. */
 		void Capture();
 
-		/** Sets the En Passant flag to false if it was set to true on the previous turn. 
-			Sets the En Passant flag to true if the Piece has moved two squares during the current turn.
+		/* Sets the En Passant flag to true if the Piece is a Pawn and has moved two squares during the current turn.
 		 @param oldPos The original position of this Piece during the current turn.
 		 @param newPos The new position of this Piece during the current turn. */
 		void CheckEnPassant(const std::string& oldPos, const std::string& newPos);
 
-		/**	Check wether the Piece is a pawn or not.
+		/* Check wether the Piece is a pawn or not.
 		 @return True is the Piece is a pawn, false if not. */
 		bool IsPawn();
 
-		bool IsPromotion(const std::string& notation);
+		/* Checks if a Pawn moved to the corresponding promotion square.
+		 @param moveNotation The current move of this turn.
+		 @return True if a Pawn is ready for promotion, false otherwise. */
+		bool IsPromotion(const std::string& moveNotation);
 
-		/*	Sets the Piece's TextureClip according to its Type and Color.
-			NOTE: The Piece MUST have a Type and Color before this function can be used. */
+		/* Sets the Piece's TextureClip according to its Type and Color.
+		   NOTE: The Piece MUST have a Type and Color before this function can be used. */
 		void SetTextureClip();
 
-		/**	Changes the position of the chess piece. 
-		*	The new (x, y) coordinate must be the Center 
-		*	coordinates of a Board Square.
+		/* Changes the position of the chess piece. 
+		   The new (x, y) coordinate must be the Center coordinates of a Board Square.
 		 @param squareCenter The (x, y) coordinates of the square where the piece is to be moved. */
 		void SetPosition(const glm::vec2& squareCenter);
 
+		/* @return The algebraic notation where the Piece is located. */
 		const std::string& GetNotation() const { return m_Notation; }
 
-		const Color& GetColor() const{ return m_Color; }
+		/* @return The Piece's player color. Either Black or White. */
+		const Color& GetColor() const { return m_Color; }
 		
-		/**	Calculates the left, right, bottom, 
-			and top coordinates based on its center.
+		/* Calculates the left, right, bottom, and top coordinates based on its center.
 		 @return A RectBounds object containing the coords of all four sides of the Piece. */
 		const RectBounds GetBounds() const;
 

@@ -45,24 +45,28 @@ namespace Chesster
 	GameLayer::GameLayer() :
 		m_Framebuffer{ 800, 800 },
 		m_ViewportSize{ 0.0f, 0.0f },
-		m_MousePos{ 0.0f, 0.0f },
+		m_WindowMousePos{ 0.0f, 0.0f },
 		m_ViewportMousePos{ 0.0f, 0.0f },
-		m_MousePiece{ nullptr }
+		m_ClickedPiece{ nullptr }
 	{
 		assert(!s_Instance, "GameLayer already exists!");
 		s_Instance = this;
 
 		ResetOldCameraData();
-		m_Board.Construct();
-		
 		std::sort(m_OldCameraData.begin(), m_OldCameraData.end());
+
+		m_Board.ConstructBoard();
+		m_Board.ConstructPieces();
+		
 		m_Network = std::make_unique<Network>();
 
+		// Load Font and setup Text
 		m_AbsEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 100);
 
 		SDL_Color Red = { 255, 0, 0, 255 };
 		m_IllegalMoveText = std::make_unique<Texture>(m_AbsEmpireFont, "ILLEGAL MOVE", Red);
 
+		// Initialize time durations to 0 seconds
 		{
 			using namespace std::literals;
 			s_IllegalMoveTextDuration = 0s;
@@ -104,7 +108,7 @@ namespace Chesster
 				{
 					int MouseX{ 0 }, MouseY{ 0 };
 					SDL_GetMouseState(&MouseX, &MouseY);
-					m_MousePos = { MouseX, MouseY };
+					m_WindowMousePos = { MouseX, MouseY };
 
 					break;
 				}
@@ -117,7 +121,7 @@ namespace Chesster
 						{
 							if (IsPointInRect(m_ViewportMousePos, piece.GetBounds()) && !s_IsHoldingPiece)
 							{
-								m_MousePiece = &piece;
+								m_ClickedPiece = &piece;
 								s_IsHoldingPiece = true;
 							}
 						}
@@ -149,7 +153,7 @@ namespace Chesster
 		}
 
 		// Camera taking pictures
-		if (m_CameraDataReceived)
+		if (m_IsCameraDataReceived)
 		{
 			// Grab the picture data
 			m_NewCameraData.clear();
@@ -166,7 +170,7 @@ namespace Chesster
 				// Verify the board is set up correctly
 				OnNewGameButtonPressed();
 				m_IsNewGameButtonPressed = false;
-				m_CameraDataReceived = false;
+				m_IsCameraDataReceived = false;
 				return;
 			}
 
@@ -182,12 +186,12 @@ namespace Chesster
 				m_IsArmSettled = false;
 			}
 
-			m_CameraDataReceived = false;
+			m_IsCameraDataReceived = false;
 		}
 
 		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
-			m_MousePiece->SetPosition(m_ViewportMousePos);
+			m_ClickedPiece->SetPosition(m_ViewportMousePos);
 
 		// Update blinking text
 		if (m_IsIllegalMove)
@@ -272,8 +276,8 @@ namespace Chesster
 		ImGui::SetNextWindowSize(ImVec2(800.0f, 800.0f), ImGuiCond_FirstUseEver);
 		ImGui::Begin("Viewport");
 
-		m_ViewportMousePos.x = m_MousePos.x - ImGui::GetCursorScreenPos().x - ImGui::GetScrollX();
-		m_ViewportMousePos.y = m_MousePos.y - ImGui::GetCursorScreenPos().y - ImGui::GetScrollY();
+		m_ViewportMousePos.x = m_WindowMousePos.x - ImGui::GetCursorScreenPos().x - ImGui::GetScrollX();
+		m_ViewportMousePos.y = m_WindowMousePos.y - ImGui::GetCursorScreenPos().y - ImGui::GetScrollY();
 
 		ImVec2 viewportPanelSize{ ImGui::GetContentRegionAvail() };
 		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -313,8 +317,8 @@ namespace Chesster
 			UpdateRobotCode(Code::Promote, promotionCode);
 		}
 		
-		m_Board.UpdatePieceCapture();			// Remove captured piece
-		m_Board.UpdateNewMove(m_CurrentMove);	// Castling and en passant
+		m_Board.UpdatePieceCapture();				// Remove captured piece
+		m_Board.UpdateSpecialMove(m_CurrentMove);	// Castling and en passant
 		
 		m_Board.UpdateActiveSquares(m_CurrentMove);
 
@@ -342,8 +346,8 @@ namespace Chesster
 			if (currentPiece.IsPromotion(m_CurrentMove))
 				currentPiece.Promote(m_CurrentMove);
 			
-			m_Board.UpdatePieceCapture();			// Remove captured piece
-			m_Board.UpdateNewMove(m_CurrentMove);	// Castling and en passant
+			m_Board.UpdatePieceCapture();				// Remove captured piece
+			m_Board.UpdateSpecialMove(m_CurrentMove);	// Castling and en passant
 
 			m_Board.UpdateActiveSquares(m_CurrentMove);
 
@@ -380,18 +384,18 @@ namespace Chesster
 		if (targetSquareItr != std::end(boardSquares))
 		{
 			// If piece was released at same position it was originally
-			if (m_MousePiece->GetNotation() == targetSquareItr->Notation)
+			if (m_ClickedPiece->GetNotation() == targetSquareItr->Notation)
 			{
-				m_MousePiece->SetPosition(targetSquareItr->GetCenter());
+				m_ClickedPiece->SetPosition(targetSquareItr->GetCenter());
 				return;
 			}
 
 			// Current move is the original piece notation + notation of the square it was dropped at
-			m_CurrentMove = { m_MousePiece->GetNotation() + targetSquareItr->Notation };
+			m_CurrentMove = { m_ClickedPiece->GetNotation() + targetSquareItr->Notation };
 
 			// Pawn Promotions
-			if (m_MousePiece->IsPromotion(m_CurrentMove)
-				&& (int)m_MousePiece->GetColor() == (int)m_CurrentPlayer + 1)
+			if (m_ClickedPiece->IsPromotion(m_CurrentMove)
+				&& (int)m_ClickedPiece->GetColor() == (int)m_CurrentPlayer + 1)
 			{
 				m_CurrentGameState = GameState::PawnPromotion;
 				return;
@@ -401,8 +405,8 @@ namespace Chesster
 			{
 				m_Board.MovePiece(m_CurrentMove);
 
-				m_Board.UpdatePieceCapture();			// Remove captured piece
-				m_Board.UpdateNewMove(m_CurrentMove);	// Castling and en passant
+				m_Board.UpdatePieceCapture();				// Remove captured piece
+				m_Board.UpdateSpecialMove(m_CurrentMove);	// Castling and en passant
 
 				m_Board.UpdateActiveSquares(m_CurrentMove);
 
@@ -426,11 +430,11 @@ namespace Chesster
 		m_IsIllegalMove = true;
 
 		auto originalSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
-			[&](const Board::Square& sq) { return m_MousePiece->GetNotation() == sq.Notation; });
+			[&](const Board::Square& sq) { return m_ClickedPiece->GetNotation() == sq.Notation; });
 		
 		// Move it back to its original square
 		if (originalSquareItr != std::end(boardSquares))
-			m_MousePiece->SetPosition(originalSquareItr->GetCenter());
+			m_ClickedPiece->SetPosition(originalSquareItr->GetCenter());
 	}
 
 	std::string GameLayer::GetCameraMove()
@@ -572,8 +576,8 @@ namespace Chesster
 		m_CurrentMove.clear();
 		m_MoveHistory.clear();
 
-		m_Board.ResetPieces();
-		m_Board.ResetActiveSquares();
+		m_Board.ConstructPieces();
+		m_Board.HideActiveSquares();
 
 		m_ChessEngine.NewGame();
 		m_LegalMoves = m_ChessEngine.GetValidMoves(START_FEN);
@@ -686,7 +690,7 @@ namespace Chesster
 				m_Board.MovePiece(m_CurrentMove);
 
 				m_Board.UpdatePieceCapture();
-				m_Board.UpdateNewMove(m_CurrentMove);
+				m_Board.UpdateSpecialMove(m_CurrentMove);
 				m_Board.UpdateActiveSquares(m_CurrentMove);
 
 				// Update move history

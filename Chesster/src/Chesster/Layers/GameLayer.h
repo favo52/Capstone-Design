@@ -59,7 +59,7 @@ namespace Chesster
 		void ResetGame();
 		void ResetOldCameraData();
 
-		void CameraDataReceived() { m_CameraDataReceived = true; }
+		void CameraDataReceived() { m_IsCameraDataReceived = true; }
 
 		void UpdateRobotCode(Code code, char value);
 		void NewGameButtonPressed() { m_IsNewGameButtonPressed = true; }
@@ -112,16 +112,16 @@ namespace Chesster
 
 		Board m_Board;					// Holds all 64 squares of the board and all 32 chess pieces
 
-		glm::vec2 m_MousePos;			// The mouse position relative to the window
+		glm::vec2 m_WindowMousePos;		// The mouse position relative to the window
 		glm::vec2 m_ViewportMousePos;	// The mouse position within the viewport window
-		Piece* m_MousePiece;			// A pointer to the current piece clicked by the mouse
+		Piece* m_ClickedPiece;			// A pointer to the current piece clicked by the mouse
 
 		// Moves/Notations
 		std::string m_CurrentMove;
 		std::string m_MoveHistory;
 		std::vector<std::string> m_LegalMoves;
 
-		bool m_CameraDataReceived{ false };
+		bool m_IsCameraDataReceived{ false };
 		std::vector<std::string> m_NewCameraData;
 		std::vector<std::string> m_OldCameraData;
 		
@@ -153,7 +153,7 @@ namespace Chesster
 
 	enum class Code
 	{
-		GameActive,	// Code for playing. 0 = lock, 1 = playing, 2 = white won, 3 = black won.
+		GameActive,	// Code for playing. 0 = lock, 1 = playing, 2 = illegal move, 3 = white won, 4 = black won, 5 = stalemate
 		InitCol,	// First letter of initial position in ASCII code.
 		InitRow,	// First number of initial position in ASCII code.
 		EndCol,		// First letter of ending position in ASCII code.

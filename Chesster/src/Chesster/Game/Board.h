@@ -25,7 +25,7 @@
 
 namespace Chesster
 {
-	constexpr int SQUARE_SIZE{ 100 };
+	constexpr int SQUARE_SIZE{ 100 };	// The size in pixels of all 64 squares.
 
 	/*	Represents the chess board. */
 	class Board
@@ -43,32 +43,48 @@ namespace Chesster
 		};
 
 	public:
+		/* Loads the neccesary resources. */
 		Board();
 
-		void Construct();
+		/* Sets up the properties for all 64 Squares. */
+		void ConstructBoard();
 
-		/*	Draws all the 64 squares of the chess board. */
+		/* Sets up the starting position properties of all 32 Pieces. */
+		void ConstructPieces();
+
+		/* Draws all the 64 squares and the 32 Pieces of the chess board. */
 		void OnRender();
 
+		/* Updates the screen position of all Squares and Pieces when the windows is resized.
+		 @param viewportSize The new width and height of the viewport window. */
 		void OnViewportResize(const glm::vec2& viewportSize);
 
-		void MovePiece(const std::string& notation);
-		void ResetPieces();
+		/* Visually moves a Piece based on the given algebraic notation. */
+		void MovePiece(const std::string& notation);		
 
+		/* Searches if a Piece has been captured and updates its status to captured. */
 		void UpdatePieceCapture();
-		void UpdateNewMove(const std::string& currentMove);
+		
+		/* Checks if the currently made move is a special move, like castling or en passant, and perform the move.
+		 @param currentMove The current move in algebraic notation. */
+		void UpdateSpecialMove(const std::string& currentMove);
 
+		/* Sets the position of the two active squares to be the current move.
+		 @param currentMove The current move in algebraic notation. */
 		void UpdateActiveSquares(const std::string& currentMove);
-		void ResetActiveSquares();
+		
+		/* Sets the active square to be transparent. */
+		void HideActiveSquares();
 
-		/**	Used to retrieve the board squares.
+		/* Used to retrieve the board squares.
 		 @return Returns an array of all 64 individual squares of the board. */
 		std::array<Square, 64>& GetBoardSquares() { return m_BoardSquares; }
 
-		/**	Used to retrieve the array of all chess pieces.
+		/* Used to retrieve the array of all chess pieces.
 		 @return Returns an array of all 32 individual chess pieces of the board. */
 		std::array<Piece, 32>& GetChessPieces() { return m_ChessPieces; }
 
+		/* @return A reference to the currently held piece. */
 		Piece& GetCurrentPiece() { return *m_CurrentPiece; }
 
 	private:
