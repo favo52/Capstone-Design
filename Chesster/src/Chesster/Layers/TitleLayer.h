@@ -34,17 +34,17 @@ namespace Chesster
 	class TitleLayer : public Layer, public std::enable_shared_from_this<TitleLayer>
 	{
 	public:
-		/* Prepares and load, the Group's Logo Images and fonts and configure the title text. */
+		/* Prepares and loads the Group's Logo Images and fonts, and configures the title text. */
 		virtual void OnAttach() override;
 
 		/* Releases all the Textures when the Layer gets popped. */
 		virtual void OnDetach() override;
 
-		/** Handles mouse and keyboard input.
+		/* Handles mouse and keyboard input.
 		 @param sdlEvent The user's input detected by the SDL library. */
 		virtual void OnEvent(SDL_Event& sdlEvent) override;
 
-		/** Changes TitleState from Splashscreen to MainMenu after 2 seconds.
+		/* Changes TitleState from Splashscreen to MainMenu after 2 seconds.
 		 @param dt The delta time taken from Run(). */
 		virtual void OnUpdate(const Timestep& dt) override;
 
@@ -55,7 +55,7 @@ namespace Chesster
 		/* Repositions all the Textures when the user resizes the Window. */
 		void OnWindowResize();
 
-		/** Repositions the texture depending on the value of the size of the window screen.
+		/* Repositions the texture depending on the value of the size of the window screen.
 		 @param texture The Texture to be repositioned.
 		 @param value The vertical offset from the middle, in pixels. */
 		void RepositionTexture(const std::unique_ptr<Texture>& texture, float value);
