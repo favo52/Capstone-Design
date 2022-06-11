@@ -16,7 +16,7 @@
 */
 
 #include "pch.h"
-#include "Chesster/ImGui/SettingsPanel.h"
+#include "Chesster/Panels/SettingsPanel.h"
 
 #include "Chesster/Layers/GameLayer.h"
 #include "Chesster/Connections/ChessEngine.h"

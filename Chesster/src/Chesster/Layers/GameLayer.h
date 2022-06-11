@@ -30,9 +30,9 @@
 #include "Chesster/Connections/ChessEngine.h"
 #include "Chesster/Connections/Network.h"
 
-#include "Chesster/ImGui/ConsolePanel.h"
-#include "Chesster/ImGui/LogPanel.h"
-#include "Chesster/ImGui/SettingsPanel.h"
+#include "Chesster/Panels/ConsolePanel.h"
+#include "Chesster/Panels/LogPanel.h"
+#include "Chesster/Panels/SettingsPanel.h"
 
 namespace Chesster
 {

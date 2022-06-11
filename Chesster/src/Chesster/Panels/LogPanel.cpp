@@ -16,7 +16,7 @@
 */
 
 #include "pch.h"
-#include "Chesster/ImGui/LogPanel.h"
+#include "Chesster/Panels/LogPanel.h"
 
 #include <imgui.h>
 

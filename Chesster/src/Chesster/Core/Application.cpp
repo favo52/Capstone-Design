@@ -19,7 +19,7 @@
 #include "Chesster/Core/Application.h"
 
 #include "Chesster/Layers/TitleLayer.h"
-#include "Chesster/ImGui/ImGuiLayer.h"
+#include "Chesster/Layers/ImGuiLayer.h"
 
 #include <backends/imgui_impl_sdl.h>
 

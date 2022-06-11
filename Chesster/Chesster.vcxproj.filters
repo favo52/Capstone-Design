@@ -16,11 +16,11 @@
     <Filter Include="src\Chesster\Game">
       <UniqueIdentifier>{064E1DC9-7264-1B5F-BBDB-A6802731ECE6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Chesster\ImGui">
-      <UniqueIdentifier>{2735F1EC-1319-B242-7C79-AC95687C9CC4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Chesster\Layers">
       <UniqueIdentifier>{5C565991-C8B7-369F-5125-7D51BD856D5E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Chesster\Panels">
+      <UniqueIdentifier>{EFEFA79A-5B51-85A8-E4BE-CB5A501FBC67}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Chesster\Renderer">
       <UniqueIdentifier>{835EBAF0-EFCA-75EB-B8BE-0D4924EA9753}</UniqueIdentifier>
@@ -55,23 +55,23 @@
     <ClInclude Include="src\Chesster\Game\Piece.h">
       <Filter>src\Chesster\Game</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\ImGui\ConsolePanel.h">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\ImGui\ImGuiLayer.h">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\ImGui\LogPanel.h">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chesster\ImGui\SettingsPanel.h">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="src\Chesster\Layers\GameLayer.h">
+      <Filter>src\Chesster\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Layers\ImGuiLayer.h">
       <Filter>src\Chesster\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Layers\TitleLayer.h">
       <Filter>src\Chesster\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Panels\ConsolePanel.h">
+      <Filter>src\Chesster\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Panels\LogPanel.h">
+      <Filter>src\Chesster\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chesster\Panels\SettingsPanel.h">
+      <Filter>src\Chesster\Panels</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Renderer\Font.h">
       <Filter>src\Chesster\Renderer</Filter>
@@ -114,22 +114,13 @@
     <ClCompile Include="src\Chesster\Game\Piece.cpp">
       <Filter>src\Chesster\Game</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chesster\ImGui\ConsolePanel.cpp">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\ImGui\ImGuiBuild.cpp">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\ImGui\ImGuiLayer.cpp">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\ImGui\LogPanel.cpp">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Chesster\ImGui\SettingsPanel.cpp">
-      <Filter>src\Chesster\ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="src\Chesster\Layers\GameLayer.cpp">
+      <Filter>src\Chesster\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Layers\ImGuiBuild.cpp">
+      <Filter>src\Chesster\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Layers\ImGuiLayer.cpp">
       <Filter>src\Chesster\Layers</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Layers\TitleLayer.cpp">
@@ -137,6 +128,15 @@
     </ClCompile>
     <ClCompile Include="src\Chesster\Main.cpp">
       <Filter>src\Chesster</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Panels\ConsolePanel.cpp">
+      <Filter>src\Chesster\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Panels\LogPanel.cpp">
+      <Filter>src\Chesster\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Chesster\Panels\SettingsPanel.cpp">
+      <Filter>src\Chesster\Panels</Filter>
     </ClCompile>
     <ClCompile Include="src\Chesster\Renderer\Font.cpp">
       <Filter>src\Chesster\Renderer</Filter>
