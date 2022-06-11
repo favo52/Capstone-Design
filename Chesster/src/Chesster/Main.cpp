@@ -17,16 +17,6 @@
 * limitations under the License.
 */
 
-/*
-* README
-* 
-* 
-* 
-* 
-* 
-* 
-*/
-
 #include "pch.h"
 #include "Chesster/Core/Application.h"
 
