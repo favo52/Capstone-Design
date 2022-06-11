@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Chesster-Unleashed.rc
+// Used by Chesster.rc
 //
 #define IDI_ICON1                       101
 

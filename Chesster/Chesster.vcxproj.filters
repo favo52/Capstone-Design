@@ -160,4 +160,7 @@
   <ItemGroup>
     <ResourceCompile Include="Chesster.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\ChessterLogo.ico" />
+  </ItemGroup>
 </Project>
