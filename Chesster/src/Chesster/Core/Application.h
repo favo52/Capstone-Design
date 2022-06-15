@@ -22,7 +22,7 @@
 #pragma once
 
 #include "Chesster/Core/Window.h"
-#include "Chesster/Core/Layer.h"
+#include "Chesster/Layers/Layer.h"
 
 // Forward declaration
 int main(int argc, char* args[]);

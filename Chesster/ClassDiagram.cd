@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Chesster::ChessEngine">
+    <Position X="17.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQICiAgAAIAgAIAEAgAAEAAEBACAAICAAAAAkABAAAg=</HashCode>
+      <FileName>src\Chesster\Connections\ChessEngine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Network">
+    <Position X="0.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAEAAAAAAAEAAQAhBAAAgAIAASACBAASAEIA=</HashCode>
+      <FileName>src\Chesster\Connections\Network.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Winsock">
+    <Position X="0.75" Y="6.75" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Chesster::Winsock::Result" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Connections\Winsock.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAEIAAAAAQAIAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>src\Chesster\Connections\Winsock.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::TitleLayer">
+    <Position X="3" Y="4" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Chesster::TitleLayer::TitleState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Layers\TitleLayer.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Chesster::TitleLayer::MenuOptions" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Layers\TitleLayer.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AggACggAAAAIQAQAAEAAAAQAEIAAAABACKABIAEQgAA=</HashCode>
+      <FileName>src\Chesster\Layers\TitleLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::GameLayer">
+    <Position X="5.25" Y="4" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Chesster::GameLayer::GameState">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Layers\GameLayer.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Chesster::GameLayer::Player">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Layers\GameLayer.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AFgFMmQRggQQKINGBkACAAoECOJCEAEAIQQRISGROCY=</HashCode>
+      <FileName>src\Chesster\Layers\GameLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::ImGuiLayer">
+    <Position X="0.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAQAAAAAAAAgAAAAAAAAIAAEAAAAAABAAAAAAA=</HashCode>
+      <FileName>src\Chesster\Layers\ImGuiLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Application">
+    <Position X="8.25" Y="4" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAABIAAABAAEAAAAAAAAICAAAAAAAAAACAAQI=</HashCode>
+      <FileName>src\Chesster\Core\Application.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Layer">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Chesster::Layer::Action" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Layers\Layer.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAEAAAAAAAIAAEAAAAAABIAEAAAA=</HashCode>
+      <FileName>src\Chesster\Layers\Layer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Logger">
+    <Position X="3" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAACAAAAQAA=</HashCode>
+      <FileName>src\Chesster\Core\Logger.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Window">
+    <Position X="10.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAACAAAAAAAAAABQEQAAAAAAAAAACkAAIAA=</HashCode>
+      <FileName>src\Chesster\Core\Window.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Board">
+    <Position X="16" Y="4" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Chesster::Board::Square" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Game\Board.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CAAAgAAAAIAgACBAAIgACAAAAAAAAABAACEAoCABEAA=</HashCode>
+      <FileName>src\Chesster\Game\Board.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Piece">
+    <Position X="16" Y="9.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Chesster::Piece::Type" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Game\Piece.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Chesster::Piece::Color" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Chesster\Game\Piece.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAIAIAAIgCgCCAAAAAAAEAAAAAAAAgCAADAkIAkAAAA=</HashCode>
+      <FileName>src\Chesster\Game\Piece.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Texture">
+    <Position X="12.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQCAAIhAgAAAABEAAABAAAQAAgCACAIABEAAAAQ=</HashCode>
+      <FileName>src\Chesster\Renderer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Font">
+    <Position X="12.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIBAAAAAAAAAAAAAAAAAAAAAAAAAABAACAAE=</HashCode>
+      <FileName>src\Chesster\Renderer\Font.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::ConsolePanel">
+    <Position X="14.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAABAgAAAgAAAAAAAAEAQAAAAEAAAAAAA=</HashCode>
+      <FileName>src\Chesster\Panels\ConsolePanel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::LogPanel">
+    <Position X="14.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAEAAAAAAAAAAAAAAAAEQAAAAAEAABAAAA=</HashCode>
+      <FileName>src\Chesster\Panels\LogPanel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::SettingsPanel">
+    <Position X="14.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACIAACCAgIAAIAEALAAAIgAgAgAEgAAAQAEAAAQAAU=</HashCode>
+      <FileName>src\Chesster\Panels\SettingsPanel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Framebuffer">
+    <Position X="12.25" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAEAABBAAAAAAAAAAAAEAEEAAAQ=</HashCode>
+      <FileName>src\Chesster\Renderer\Framebuffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chesster::Renderer">
+    <Position X="10.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DAAgAAAAABAAAABAAAAAAAAEAAAAAAAEAACAAABAAAA=</HashCode>
+      <FileName>src\Chesster\Renderer\Renderer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Chesster::WindowProps">
+    <Position X="10.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEABAAAAEAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Chesster\Core\Window.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Chesster::RectBounds">
+    <Position X="10.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAgAAAAIAAAAAAAgAAAAgAA=</HashCode>
+      <FileName>src\Chesster\Renderer\Renderer.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="Chesster::Code">
+    <Position X="8.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAQAIAAAAEAAAAABBACEAAAQAAAABAgAAAAAAA=</HashCode>
+      <FileName>src\Chesster\Layers\GameLayer.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

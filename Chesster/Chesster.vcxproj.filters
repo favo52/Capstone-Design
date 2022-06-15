@@ -40,7 +40,7 @@
     <ClInclude Include="src\Chesster\Core\Application.h">
       <Filter>src\Chesster\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chesster\Core\Layer.h">
+    <ClInclude Include="src\Chesster\Layers\Layer.h">
       <Filter>src\Chesster\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Chesster\Core\Logger.h">
@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Chesster.aps" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chesster.rc" />

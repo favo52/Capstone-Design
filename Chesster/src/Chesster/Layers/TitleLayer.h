@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Chesster/Core/Layer.h"
+#include "Chesster/Layers/Layer.h"
 
 namespace Chesster
 {

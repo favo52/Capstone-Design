@@ -604,7 +604,7 @@ namespace Chesster
 		// Compare current move to all the legal moves
 		auto itr = std::find(std::begin(m_LegalMoves), std::end(m_LegalMoves), notation);
 		return (itr != std::end(m_LegalMoves)) ? true : false;
-	}	
+	}
 
 	void GameLayer::OnNewGameButtonPressed()
 	{
