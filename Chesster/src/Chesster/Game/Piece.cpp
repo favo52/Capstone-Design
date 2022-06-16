@@ -18,8 +18,6 @@
 #include "pch.h"
 #include "Chesster/Game/Piece.h"
 
-#include "Chesster/Layers/GameLayer.h"
-
 namespace Chesster
 {
 	Piece::Piece() :

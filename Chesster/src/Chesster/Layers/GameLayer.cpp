@@ -18,8 +18,6 @@
 #include "pch.h"
 #include "Chesster/Layers/GameLayer.h"
 
-#include <imgui.h>
-
 namespace Chesster
 {
 	std::atomic<bool> a_IsChessEngineRunning{ false };	// ChessEngineThread loops while this is true

@@ -19,7 +19,6 @@
 #include "Chesster/Panels/ConsolePanel.h"
 
 #include "Chesster/Layers/GameLayer.h"
-#include "Chesster/Connections/ChessEngine.h"
 
 #include <imgui.h>
 

@@ -18,8 +18,6 @@
 #include "pch.h"
 #include "Chesster/Panels/LogPanel.h"
 
-#include <imgui.h>
-
 namespace Chesster
 {
 	void LogPanel::OnImGuiRender()

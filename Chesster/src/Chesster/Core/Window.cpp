@@ -19,7 +19,6 @@
 #include "Chesster/Core/Window.h"
 
 #include <SDL_image.h>
-#include <SDL_ttf.h>
 
 namespace Chesster
 {

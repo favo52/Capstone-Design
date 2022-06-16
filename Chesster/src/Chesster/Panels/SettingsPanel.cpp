@@ -19,12 +19,7 @@
 #include "Chesster/Panels/SettingsPanel.h"
 
 #include "Chesster/Layers/GameLayer.h"
-#include "Chesster/Connections/ChessEngine.h"
 
-#include <imgui.h>
-#include <imgui_internal.h>
-
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Chesster
