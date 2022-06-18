@@ -87,14 +87,21 @@ namespace Chesster
 		/* @return A reference to the currently held piece. */
 		Piece& GetCurrentPiece() { return *m_CurrentPiece; }
 
+		/* @return A pointer to the currently clicked piece. */
+		Piece* GetClickedPiece() { return m_ClickedPiece; }
+
+		/* @param piece The piece that was clicked with the mouse. */
+		void SetClickedPiece(Piece& piece) { m_ClickedPiece = &piece; }
+
 	private:
 		std::array<Square, 64> m_BoardSquares;	// Represents the 64 squares of the chess board
 		std::array<Square, 2> m_ActiveSquares;	// The two highlighted squares
 
 		std::array<Piece, 32> m_ChessPieces;	// The 32 chess pieces
 		
-		Piece* m_CurrentPiece;					// A pointer to the currently held piece
-		Piece* m_PreviousPiece;					// A pointer to the previously held piece
+		Piece* m_CurrentPiece;			// A pointer to the currently held piece
+		Piece* m_PreviousPiece;			// A pointer to the previously held piece
+		Piece* m_ClickedPiece;			// A pointer to the current piece clicked by the mouse
 
 		std::unique_ptr<Texture> m_PieceSpriteSheetTexture;
 	};

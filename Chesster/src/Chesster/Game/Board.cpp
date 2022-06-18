@@ -24,7 +24,8 @@ namespace Chesster
 {
 	Board::Board() :
 		m_CurrentPiece{ nullptr },
-		m_PreviousPiece{ nullptr }
+		m_PreviousPiece{ nullptr },
+		m_ClickedPiece{ nullptr }
 	{
 		// Load and setup the sprite sheet image
 		m_PieceSpriteSheetTexture = std::make_unique<Texture>("assets/textures/ChessPieces.png");
@@ -95,6 +96,7 @@ namespace Chesster
 
 		m_CurrentPiece = &m_ChessPieces[0];
 		m_PreviousPiece = &m_ChessPieces[0];
+		m_ClickedPiece = &m_ChessPieces[0];
 	}
 
 	void Board::OnRender()
@@ -122,9 +124,9 @@ namespace Chesster
 			Renderer::DrawTexture(m_PieceSpriteSheetTexture);
 		}
 
-		// Draw the selected chess piece on top of all other chess pieces
-		m_PieceSpriteSheetTexture->SetClip(&m_CurrentPiece->m_TextureClip);
-		m_PieceSpriteSheetTexture->SetPosition(m_CurrentPiece->m_Position.x, m_CurrentPiece->m_Position.y);
+		// Draw the clicked chess piece on top of all other chess pieces
+		m_PieceSpriteSheetTexture->SetClip(&m_ClickedPiece->m_TextureClip);
+		m_PieceSpriteSheetTexture->SetPosition(m_ClickedPiece->m_Position.x, m_ClickedPiece->m_Position.y);
 		Renderer::DrawTexture(m_PieceSpriteSheetTexture);
 	}
 

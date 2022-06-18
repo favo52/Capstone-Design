@@ -180,7 +180,7 @@ namespace Chesster
 
 		glm::vec2 m_WindowMousePos;		// The mouse position relative to the window
 		glm::vec2 m_ViewportMousePos;	// The mouse position within the viewport window
-		Piece* m_ClickedPiece;			// A pointer to the current piece clicked by the mouse
+		//Piece* m_ClickedPiece;			// A pointer to the current piece clicked by the mouse
 
 		// Moves/Notations
 		std::string m_CurrentMove;
@@ -209,9 +209,11 @@ namespace Chesster
 		LogPanel m_LogPanel;
 		SettingsPanel m_SettingsPanel;
 
+		// Text textures
 		std::shared_ptr<Font> m_AbsEmpireFont;
 		std::unique_ptr<Texture> m_GameoverText;
 		std::unique_ptr<Texture> m_IllegalMoveText;
+		std::unique_ptr<Texture> m_OutSyncText;
 
 	private:
 		static GameLayer* s_Instance;	// Pointer to this

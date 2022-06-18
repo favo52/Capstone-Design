@@ -44,8 +44,8 @@ namespace Chesster
 		m_Framebuffer{ 800, 800 },
 		m_ViewportSize{ 0.0f, 0.0f },
 		m_WindowMousePos{ 0.0f, 0.0f },
-		m_ViewportMousePos{ 0.0f, 0.0f },
-		m_ClickedPiece{ nullptr }
+		m_ViewportMousePos{ 0.0f, 0.0f }
+		//m_ClickedPiece{ nullptr }
 	{
 		assert(!s_Instance, "GameLayer already exists!");
 		s_Instance = this;
@@ -59,10 +59,11 @@ namespace Chesster
 		m_Network = std::make_unique<Network>();
 
 		// Load Font and setup Text
-		m_AbsEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 100);
+		m_AbsEmpireFont = std::make_shared<Font>("assets/fonts/aAbsoluteEmpire.ttf", 75);
 
 		SDL_Color Red = { 255, 0, 0, 255 };
-		m_IllegalMoveText = std::make_unique<Texture>(m_AbsEmpireFont, "ILLEGAL MOVE", Red);
+		m_IllegalMoveText = std::make_unique<Texture>(m_AbsEmpireFont, "ILLEGAL MOVE OR", Red);
+		m_OutSyncText = std::make_unique<Texture>(m_AbsEmpireFont, "IMAGE OUT OF SYNC", Red);
 
 		// Initialize time durations to 0 seconds
 		{
@@ -119,7 +120,9 @@ namespace Chesster
 						{
 							if (IsPointInRect(m_ViewportMousePos, piece.GetBounds()) && !s_IsHoldingPiece)
 							{
-								m_ClickedPiece = &piece;
+								//Piece* clickedPiece = m_Board.GetClickedPiece();
+								//clickedPiece = &piece;
+								m_Board.SetClickedPiece(piece);
 								s_IsHoldingPiece = true;
 							}
 						}
@@ -189,25 +192,32 @@ namespace Chesster
 
 		// Dragging a piece with mouse
 		if (s_IsHoldingPiece)
-			m_ClickedPiece->SetPosition(m_ViewportMousePos);
+			m_Board.GetClickedPiece()->SetPosition(m_ViewportMousePos);
 
 		// Update blinking text
 		if (m_IsIllegalMove)
 		{
+			using namespace std::literals;
+			if (s_TextEffectTime == 0s)
+			{
+				s_ShowIllegalMoveText = true;
+			}
+
 			s_IllegalMoveTextDuration += dt;
 			s_TextEffectTime += dt;
 			{
-				using namespace std::literals;
-				if (s_TextEffectTime >= 0.5s)
+				if (s_TextEffectTime >= 4.5s)
 				{
 					s_ShowIllegalMoveText = !s_ShowIllegalMoveText;
-					s_TextEffectTime = 0s;
+					s_TextEffectTime = 4s;
 				}
 
-				if (s_IllegalMoveTextDuration >= 3s)
+				if (s_IllegalMoveTextDuration >= 8s)
 				{
 					m_IsIllegalMove = false;
+					s_ShowIllegalMoveText = false;
 					s_IllegalMoveTextDuration = 0s;
+					s_TextEffectTime = 0s;
 				}
 			}
 		}
@@ -365,8 +375,8 @@ namespace Chesster
 		}
 
 		// The piece was not placed at a valid location
-		LOG_INFO("Wait... that's illegal!\n");
-		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
+		LOG_INFO("ILLEGAL MOVE OR IMAGE OUT OF SYNC!\n");
+		m_ConsolePanel.AddLog("ILLEGAL MOVE OR IMAGE OUT OF SYNC!\n");
 
 		m_IsIllegalMove = true;
 		m_Network->SendToRobot(ILLEGAL_MOVE); // Make arm say "no"
@@ -379,21 +389,23 @@ namespace Chesster
 		auto targetSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
 			[&](const Board::Square& sq) { return IsPointInRect(m_ViewportMousePos, sq.GetBounds()); });
 
+		Piece* clickedPiece = m_Board.GetClickedPiece();
+
 		if (targetSquareItr != std::end(boardSquares))
 		{
 			// If piece was released at same position it was originally
-			if (m_ClickedPiece->GetNotation() == targetSquareItr->Notation)
+			if (clickedPiece->GetNotation() == targetSquareItr->Notation)
 			{
-				m_ClickedPiece->SetPosition(targetSquareItr->GetCenter());
+				clickedPiece->SetPosition(targetSquareItr->GetCenter());
 				return;
 			}
 
 			// Current move is the original piece notation + notation of the square it was dropped at
-			m_CurrentMove = { m_ClickedPiece->GetNotation() + targetSquareItr->Notation };
+			m_CurrentMove = { clickedPiece->GetNotation() + targetSquareItr->Notation };
 
 			// Pawn Promotions
-			if (m_ClickedPiece->IsPromotion(m_CurrentMove)
-				&& (int)m_ClickedPiece->GetColor() == (int)m_CurrentPlayer + 1)
+			if (clickedPiece->IsPromotion(m_CurrentMove)
+				&& (int)clickedPiece->GetColor() == (int)m_CurrentPlayer + 1)
 			{
 				m_CurrentGameState = GameState::PawnPromotion;
 				return;
@@ -423,16 +435,16 @@ namespace Chesster
 		}
 		
 		// The piece was not released at a valid location
-		m_ConsolePanel.AddLog("Wait... that's illegal!\n");
+		m_ConsolePanel.AddLog("ILLEGAL MOVE OR IMAGE OUT OF SYNC!\n");
 
 		m_IsIllegalMove = true;
 
 		auto originalSquareItr = std::find_if(std::begin(boardSquares), std::end(boardSquares),
-			[&](const Board::Square& sq) { return m_ClickedPiece->GetNotation() == sq.Notation; });
+			[&](const Board::Square& sq) { return clickedPiece->GetNotation() == sq.Notation; });
 		
 		// Move it back to its original square
 		if (originalSquareItr != std::end(boardSquares))
-			m_ClickedPiece->SetPosition(originalSquareItr->GetCenter());
+			clickedPiece->SetPosition(originalSquareItr->GetCenter());
 	}
 
 	std::string GameLayer::GetCameraMove()
@@ -765,10 +777,17 @@ namespace Chesster
 
 		int offsetX = m_IllegalMoveText->GetWidth() / 2.0f;
 		int offsetY = m_IllegalMoveText->GetHeight() / 2.0f;
-		m_IllegalMoveText->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY));
-		
+		m_IllegalMoveText->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY) - 50.0f);
+
+		offsetX = m_OutSyncText->GetWidth() / 2.0f;
+		offsetY = m_OutSyncText->GetHeight() / 2.0f;
+		m_OutSyncText->SetPosition((width / 2.0f) - offsetX, ((height / 2.0f) - offsetY) + 50.0f);
+
 		if (s_ShowIllegalMoveText)
+		{
 			Renderer::DrawTexture(m_IllegalMoveText);
+			Renderer::DrawTexture(m_OutSyncText);
+		}
 	}
 
 	void GameLayer::ChessEngineThread()

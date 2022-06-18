@@ -88,7 +88,7 @@ namespace Chesster
 			GameLayer::Get().ResetGame();
 
 		ImGui::SameLine();
-		if (ImGui::Button("Evaluate", ImVec2(100, 50)))
+		if (ImGui::Button("Evaluate\n   Game", ImVec2(100, 50)))
 			GameLayer::Get().GetChessEngine().EvaluateGame();
 
 		ImGui::SameLine();
@@ -96,7 +96,7 @@ namespace Chesster
 		ImGui::SameLine();
 		ImGui::BeginDisabled(!GameLayer::Get().GetSettingsPanel().IsCameraConnected());
 
-		if (ImGui::Button("Fix Board", { 100, 50 }))
+		if (ImGui::Button("Synchronize\n      Image", { 100, 50 }))
 		{
 			GameLayer::Get().ArmIsSettled();
 			GameLayer::Get().GetNetwork().SendToCamera("SE8\r\n");
